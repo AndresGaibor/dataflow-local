@@ -128,6 +128,12 @@ Dos diferencias del emulador frente a Qlik, corregidas el 2026-11-19 y verificad
 
 Ninguna credencial del tenant vive en este repo: la CLI `qlik` usa su propio contexto y el emulador solo toma de `DFEMU_SPACE_ID` y `DFEMU_BASE_APP` el espacio y el flujo base. Los `.dfw` de `samples/` están desidentificados con `scripts/deidentify.py`.
 
+## 9 bis. Cobertura del corpus
+
+`dfemu coverage` sobre los 29 `.dfw` de `samples/` da `ejecuta=6`, `requiere conexion=11`, `borrador=11`, `solo tenant=1`. Los processors usados en el corpus se emulan todos salvo `script`, que solo se ejecuta en el tenant. Fuera del corpus quedan sin emulación `pivot`, `unpivot`, `map-fields` y `clear-cells`: no hay ningún `.dfw` real que los use, así que no se inventó su configuración.
+
+Variantes reales añadidas el 2026-11-19 tras revisar los 18 flujos del tenant: `strings.UPPERCASE`, `REPLACE_ON_VALUE` con `STARTS_WITH` y `REPLACE_CELL_WITH_VALUE` con `EQUALS`.
+
 ## 10. Objetos creados en el tenant
 
 Todos en "Entrenamiento Dataflow", prefijo `emu_`. El 2026-11-19 la limpieza dejó el espacio sin objetos `emu_`:
@@ -152,6 +158,7 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 | `dfemu run archivo.dfw --data data/practica` | ejecuta el flujo sobre DuckDB |
 | `dfemu compare archivo.dfw (--app APP\|--push) --apply` | compara resultados del emulador con el tenant |
 | `dfemu cleanup [--apply]` | lista o borra apps y archivos `emu_*` |
+| `dfemu coverage [archivos...]` | mide qué processors usa el corpus y si cada flujo se puede ejecutar |
 
 El espacio de escritura se configura con `DFEMU_SPACE_ID` y el flujo base con `DFEMU_BASE_APP`.
 

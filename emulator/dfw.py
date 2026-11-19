@@ -22,7 +22,8 @@ TYPED = {
     "numbers": {"CONVERT_TO_NUMBER": "convertToNumberConfiguration"},
     "split-field": {"SPLIT_TEXT_IN_PARTS": "splitTextInPartsConfiguration"},
     "strings": {"PROPERCASE": "propercaseConfiguration", "REMOVE_NON_NUM_CHARS": "removeNonNumCharsConfiguration",
-                "REPLACE_ON_VALUE": "replaceOnValueConfiguration", "TRIM": "trimConfiguration"},
+                "REPLACE_ON_VALUE": "replaceOnValueConfiguration", "TRIM": "trimConfiguration",
+                "UPPERCASE": "uppercaseConfiguration"},
     "field-concatenator": {"CONCAT": "concatConfiguration"},
     # shortcut: edit-column (receta de tabla, dentro de subflows) solo conoce RENAME; agregar tipos al verlos
     "edit-column": {"RENAME": "renameColumnConfiguration"},

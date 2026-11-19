@@ -1,4 +1,5 @@
 import argparse
+import collections
 import glob
 import json
 import os
@@ -7,7 +8,7 @@ import sys
 import unicodedata
 import uuid
 
-from . import calibrate, compare, dfw, oracle
+from . import calibrate, compare, coverage, dfw, oracle
 from .bridge import SANDBOX_SPACE_ID, Bridge, BridgeError, DryRun, SafetyError
 from .remote import Remote, UnsupportedGraph
 
@@ -69,6 +70,26 @@ def _pull(a) -> None:
             print(f"error en {app}: {e}", file=sys.stderr)
     if failed:
         sys.exit(1)
+
+
+def _coverage(a) -> int:
+    paths = a.files or coverage.default_paths()
+    rows = coverage.report(paths, a.data)
+    counts = collections.Counter()
+    for path in paths:
+        try:
+            counts.update(coverage.processors_of(dfw.load(path)))
+        except ValueError:
+            pass  # el estado del archivo ya lo reporta coverage.report
+    print("processors usados en el corpus:")
+    for (t, v), n in sorted(counts.items()):
+        print(f"  {t}{'.' + v if v else ''}: {n}")
+    print("archivos:")
+    for path, estado, detalle in rows:
+        print(f"  {estado:<18} {path}" + (f"  ({detalle[:90]})" if detalle else ""))
+    resumen = collections.Counter(e for _, e, _ in rows)
+    print("resumen: " + ", ".join(f"{k}={v}" for k, v in sorted(resumen.items())))
+    return 1 if resumen.get(coverage.FALLA) else 0
 
 
 def _cleanup(a) -> None:
@@ -173,6 +194,9 @@ def main(argv=None):
     cp.add_argument("--apply", action="store_true", help="ejecutar en el tenant (sin esto solo simula)")
     cl = sub.add_parser("cleanup", help="borra apps y archivos emu_* del espacio permitido")
     cl.add_argument("--apply", action="store_true", help="borrar de verdad (sin esto solo lista)")
+    co = sub.add_parser("coverage", help="mide que processors usa el corpus y que se puede ejecutar")
+    co.add_argument("files", nargs="*", help="archivos .dfw (por omision, samples/**/*.dfw)")
+    co.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
     a = ap.parse_args(argv)
     if a.cmd == "validate":
         if a.remote:
@@ -199,6 +223,8 @@ def main(argv=None):
         return _compare(a)
     if a.cmd == "cleanup":
         return _cleanup(a)
+    if a.cmd == "coverage":
+        sys.exit(_coverage(a))
     if a.cmd == "pull":
         if not (a.app_id or a.all or a.all_spaces):
             ap.error("pull requiere APP_ID, --all o --all-spaces")

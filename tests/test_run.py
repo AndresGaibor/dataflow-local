@@ -88,3 +88,33 @@ def test_zzz_target_not_executable(tmp_path):
     tgt["component"]["properties"]["configuration"]["settings"]["format"] = "zzz"
     with pytest.raises(runner.Unsupported, match="zzz"):
         runner.run(d, DATA, str(tmp_path))
+
+
+def _typed(cfg, sql="SELECT ' abc ' AS x"):
+    ctx = runner.Ctx(".", ".")
+    out = runner._typed(ctx, "strings", cfg, ctx.view(sql))["DEFAULT"]
+    return ctx.con.execute(f"SELECT * FROM {out}").fetchall()
+
+
+def test_strings_uppercase():
+    cfg = {"type": "UPPERCASE", "uppercaseConfiguration": {
+        "columnsToProcess": ["x"], "newColumnName": "", "shouldCreateNewColumn": False}}
+    assert _typed(cfg) == [(" ABC ",)]
+
+
+def test_strings_replace_starts_with():
+    cfg = {"type": "REPLACE_ON_VALUE", "replaceOnValueConfiguration": {
+        "cellValue": {"operator": "STARTS_WITH", "value": "593"},
+        "columnsToProcess": ["x"], "newColumnName": "",
+        "replaceMethod": "REPLACE_MATCHING_WITH_VALUE", "replaceValue": "0",
+        "shouldCreateNewColumn": False}}
+    assert _typed(cfg, "SELECT '593123' AS x") == [("0123",)]
+
+
+def test_strings_replace_cell_equals():
+    cfg = {"type": "REPLACE_ON_VALUE", "replaceOnValueConfiguration": {
+        "cellValue": {"operator": "EQUALS", "value": " "},
+        "columnsToProcess": ["x"], "newColumnName": "",
+        "replaceMethod": "REPLACE_CELL_WITH_VALUE", "replaceValue": "",
+        "shouldCreateNewColumn": False}}
+    assert _typed(cfg, "SELECT ' ' AS x") == [("",)]

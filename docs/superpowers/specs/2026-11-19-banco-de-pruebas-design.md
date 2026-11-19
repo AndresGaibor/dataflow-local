@@ -60,9 +60,9 @@ Se mantiene `emulator/` (validar, ejecutar) y se añade, sin rehacer lo existent
 1. `bridge` con seguridad, `pull` y validación remota. **Hecho** (2026-11-19).
 2. Oráculo de validez y calibración de `emulator/dfw.py`. **Hecho** (2026-11-19).
 3. `push` y oráculo de ejecución con comparador sobre los flujos simples (`fundamentos*`). **Hecho** (2026-11-19): `dfemu compare` sin diferencias contra el tenant.
-4. Cobertura de processors del emulador, guiada por diferencias (pivot, unpivot, math, strings, window, date...).
-5. Traductor de Qlik script por construcciones, medido contra el corpus.
-6. Orquestación (programación de tareas `DATAFLOW_PREP`, encadenado), CI y empaquetado.
+4. Cobertura de processors del emulador, guiada por diferencias (pivot, unpivot, math, strings, window, date...). **Parcial** (2026-11-19): `dfemu coverage` mide el corpus y se cerraron las variantes reales que faltaban (`strings.UPPERCASE`, `REPLACE_ON_VALUE` con `STARTS_WITH`, `REPLACE_CELL_WITH_VALUE` con `EQUALS`). `pivot`, `unpivot`, `map-fields` y `clear-cells` siguen sin emulación porque ningún flujo real trae su configuración.
+5. Traductor de Qlik script por construcciones, medido contra el corpus. Pendiente.
+6. Orquestación (programación de tareas `DATAFLOW_PREP`, encadenado), CI y empaquetado. **Parcial** (2026-11-19): CI con GitHub Actions ejecuta la suite local en cada push; la orquestación sigue pendiente.
 
 Cada fase deja pruebas en `tests/` y actualiza `docs/banco-de-pruebas/`.
 

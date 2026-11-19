@@ -38,7 +38,10 @@ class Ctx:
 # ---------- origenes ----------
 def _source(ctx, node, sources):
     p = node["component"]["properties"]
-    meta = next(s for s in sources if s["sourceId"] == p["dataEntity"]["entityId"])
+    meta = next((s for s in sources if s["sourceId"] == (p.get("dataEntity") or {}).get("entityId")), None)
+    if meta is None:
+        # las fuentes de tipo connection no traen tablas en el .dfw: no se pueden emular
+        raise Unsupported(f"fuente '{node.get('label')}' sin metadatos de tabla (conexion no emulable)")
     t = meta["tables"][0]
     fields = [f["name"] for f in t["fields"] if f.get("selected", True)]
     sel = ", ".join(q(f) for f in fields)
@@ -211,8 +214,16 @@ def _typed(ctx, t, cfg, v):
             return D(_per_col(ctx, v, c, lambda x: f"array_to_string(list_transform(string_split(lower({S(x)}), ' '), lambda w: upper(w[1:1]) || w[2:]), ' ')"))
         if k == "REMOVE_NON_NUM_CHARS":
             return D(_per_col(ctx, v, c, lambda x: f"regexp_replace({S(x)}, '[^0-9]', '', 'g')"))
-        if k == "REPLACE_ON_VALUE" and c["replaceMethod"] == "REPLACE_MATCHING_WITH_VALUE" and c["cellValue"]["operator"] == "CONTAINS":
-            return D(_per_col(ctx, v, c, lambda x: f"replace({S(x)}, {lit(c['cellValue']['value'])}, {lit(c['replaceValue'])})"))
+        if k == "UPPERCASE":
+            return D(_per_col(ctx, v, c, lambda x: f"upper({S(x)})"))
+        if k == "REPLACE_ON_VALUE":
+            op, val, rep = c["cellValue"]["operator"], lit(c["cellValue"]["value"]), lit(c["replaceValue"])
+            if c["replaceMethod"] == "REPLACE_MATCHING_WITH_VALUE" and op == "CONTAINS":
+                return D(_per_col(ctx, v, c, lambda x: f"replace({S(x)}, {val}, {rep})"))
+            if c["replaceMethod"] == "REPLACE_MATCHING_WITH_VALUE" and op == "STARTS_WITH":
+                return D(_per_col(ctx, v, c, lambda x: f"CASE WHEN starts_with({S(x)}, {val}) THEN {rep} || substr({S(x)}, length({val}) + 1) ELSE {S(x)} END"))
+            if c["replaceMethod"] == "REPLACE_CELL_WITH_VALUE" and op == "EQUALS":
+                return D(_per_col(ctx, v, c, lambda x: f"CASE WHEN {S(x)} = {val} THEN {rep} ELSE {S(x)} END"))
         raise Unsupported(f"strings {k} {c.get('replaceMethod', '')}")
     if t == "numbers":
         c = cfg["convertToNumberConfiguration"]
