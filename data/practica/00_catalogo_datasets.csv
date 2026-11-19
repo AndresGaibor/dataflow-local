@@ -1,0 +1,19 @@
+﻿archivo,filas,uso_principal
+clientes.csv,500,Select/Filter/Strings/Dates/Hash/Join
+clientes_sucios.csv,523,"Data quality, duplicates, invalid dates/emails"
+cuentas.csv,760,"Join, Full Outer, Aggregate"
+transacciones.csv,40140,"Filter, Numbers, Dates, Aggregate, Window, quality exam"
+sucursales.csv,10,Join / reference data
+productos.csv,15,Lookup/reference exercises
+transacciones_enero.csv,600,Union schema A
+transacciones_febrero.csv,600,Union schema B
+transacciones_marzo.csv,600,Union schema C
+transacciones_mensuales.xlsx,60,Unpivot / Excel source
+join_nn_a.csv,4,Many-to-many join
+join_nn_b.csv,6,Many-to-many join
+strings_sucios.csv,7,"Strings, trim, case, fuzzy matching"
+fechas_sucias.csv,20,Date parsing and invalid dates
+numeros_sucios.csv,20,Number parsing / decimal separators
+pivot_520_categorias.csv,520,Pivot distinct-category limit exercise
+pivot_con_null.csv,5,Pivot with blank/null category
+window_transacciones_control.csv,50,Window/running total verification

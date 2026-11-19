@@ -1,0 +1,501 @@
+﻿cliente_id,cedula,nombre,apellido,fecha_nacimiento,ciudad,provincia,region,email,telefono,segmento,fecha_registro
+C000001,1700000001,Daniel,Quiguiri,1998-09-13,Cuenca,Azuay,Sierra,daniel.quiguiri1@correo.ec,0973430847,BÁSICO,2019-05-24
+C000002,1700000002,Carolina,Ortiz,1971-05-06,Quito,Pichincha,Sierra,carolina.ortiz2@correo.ec,0989174568,PREFERENTE,2025-08-05
+C000003,1700000003,Erik,Zambrano,1964-03-30,Riobamba,Chimborazo,Sierra,erik.zambrano3@correo.ec,0958660436,PREFERENTE,2021-03-18
+C000004,1700000004,Kevin,Bastidas,1994-09-15,Quito,Pichincha,Sierra,kevin.bastidas4@correo.ec,0987251146,BÁSICO,2022-12-15
+C000005,1700000005,Miguel,Cruz,1998-03-05,Loja,Loja,Sierra,miguel.cruz5@correo.ec,0936621548,PREFERENTE,2023-06-27
+C000006,1700000006,Camila,Apunte,1955-06-20,Cuenca,Azuay,Sierra,camila.apunte6@correo.ec,0951460670,PREFERENTE,2023-02-06
+C000007,1700000007,Fernanda,Mora,1953-08-15,Quito,Pichincha,Sierra,fernanda.mora7@correo.ec,0927910405,PREMIUM,2025-11-26
+C000008,1700000008,Valentina,Bonilla,1992-10-26,Manta,Manabí,Costa,valentina.bonilla8@correo.ec,0968287085,PREMIUM,2019-04-12
+C000009,1700000009,Diego,López,1994-08-28,Babahoyo,Los Ríos,Costa,diego.lopez9@correo.ec,0923193553,BÁSICO,2018-08-22
+C000010,1700000010,Alejandra,García,1980-07-28,Babahoyo,Los Ríos,Costa,alejandra.garcia10@correo.ec,0968237961,BÁSICO,2020-04-21
+C000011,1700000011,Miguel,Torres,1977-03-27,Riobamba,Chimborazo,Sierra,miguel.torres11@correo.ec,0985363884,PREFERENTE,2020-08-27
+C000012,1700000012,Mateo,Torres,1983-02-13,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,mateo.torres12@correo.ec,0937833639,EMPRESARIAL,2020-10-08
+C000013,1700000013,Miguel,Gaibor,1994-06-07,Ambato,Tungurahua,Sierra,miguel.gaibor13@correo.ec,0999843085,PREMIUM,2019-10-06
+C000014,1700000014,Carolina,Ortiz,1951-01-07, Babahoyo ,Los Ríos,Costa,carolina.ortiz14@correo.ec,0962149427,BÁSICO,2025-06-13
+C000015,1700000015,Miguel,Paredes,1954-07-16,Guayaquil,Guayas,Costa,miguel.paredes15@correo.ec,0975687088,BÁSICO,2022-12-25
+C000016,1700000016,Sofía,García,1970-01-21,Riobamba,Chimborazo,Sierra,sofia.garcia16@correo.ec,0985478147,BÁSICO,2021-01-27
+C000017,1700000017,Gabriela,Bastidas,1993-01-29,Manta,Manabí,Costa,gabriela.bastidas17@correo.ec,0927635988,PREFERENTE,2026-04-28
+C000018,1700000018,José,Vera,1983-01-07,Loja,Loja,Sierra,jose.vera18@correo.ec,0970426844,PREFERENTE,2021-06-25
+C000019,1700000019,Miguel,Bonilla,1992-02-23,Babahoyo,Los Ríos,Costa,miguel.bonilla19@correo.ec,0947479330,PREFERENTE,2023-02-20
+C000020,1700000020,Diana,Bonilla,1954-03-30,Guayaquil,Guayas,Costa,diana.bonilla20@correo.ec,0971995024,BÁSICO,2019-04-30
+C000021,1700000021,Mateo,Paredes,2004-06-25,ambato,Tungurahua,Sierra,mateo.paredes21@correo.ec,0933832478,BÁSICO,2024-09-04
+C000022,1700000022,Paola,Apunte,1990-12-11,Riobamba,Chimborazo,Sierra,paola.apunte22@correo.ec,0967056271,PREMIUM,2020-06-25
+C000023,1700000023,Valentina,Chávez,1955-09-27,Quito,Pichincha,Sierra,valentina.chavez23@correo.ec,0955619760,EMPRESARIAL,2020-06-13
+C000024,1700000024,Camila,Bonilla,1952-11-29,Riobamba,Chimborazo,Sierra,camila.bonilla24@correo.ec,0956896612,PREFERENTE,2020-01-07
+C000025,1700000025,Andrés,Ortiz,1990-01-11,Quito,Pichincha,Sierra,andres.ortiz25@correo.ec,0950063797,PREFERENTE,2024-10-07
+C000026,1700000026,Paola,Chávez,1955-08-18,Loja,Loja,Sierra,paola.chavez26@correo.ec,0911969149,BÁSICO,2026-08-19
+C000027,1700000027,Lucía,Toa,1973-06-12,Quito,Pichincha,Sierra,lucia.toa27@correo.ec,0973000153,BÁSICO,2024-09-07
+C000028,1700000028,Carolina,Gaibor,1983-09-14,LOJA,Loja,Sierra,carolina.gaibor28@correo.ec,0938118334,BÁSICO,2020-11-16
+C000029,1700000029,Erik,Rodríguez,1964-03-08,Ambato,Tungurahua,Sierra,erik.rodriguez29@correo.ec,0937397510,PREFERENTE,2025-01-06
+C000030,1700000030,Daniel,Zambrano,2001-01-21,Montalvo,Los Ríos,Costa,daniel.zambrano30@correo.ec,0985191311,PREFERENTE,2022-11-19
+C000031,1700000031,Daniel,García,1992-02-18,Babahoyo,Los Ríos,Costa,daniel.garcia31@correo.ec,0913584624,BÁSICO,2021-10-13
+C000032,1700000032,Erik,Mendoza,1968-06-01,Babahoyo,Los Ríos,Costa,erik.mendoza32@correo.ec,0920728773,PREFERENTE,2019-08-19
+C000033,1700000033,Paola,Mendoza,2007-02-04,Babahoyo,Los Ríos,Costa,paola.mendoza33@correo.ec,0948423151,PREMIUM,2026-05-30
+C000034,1700000034,Sofía,Mora,1975-05-09,Babahoyo,Los Ríos,Costa,sofia.mora34@correo.ec,0992073448,BÁSICO,2021-05-31
+C000035,1700000035,Camila,Redín,1960-03-08,montalvo,Los Ríos,Costa,camila.redin35@correo.ec,0984663838,PREFERENTE,2025-03-26
+C000036,1700000036,José,Mora,1972-09-18,Montalvo,Los Ríos,Costa,jose.mora36@correo.ec,0998890088,BÁSICO,2021-04-19
+C000037,1700000037,Diana,García,1988-09-19,Manta,Manabí,Costa,diana.garcia37@correo.ec,0970810336,BÁSICO,2022-06-04
+C000038,1700000038,Erik,Bastidas,2007-11-09,Cuenca,Azuay,Sierra,erik.bastidas38@correo.ec,0964439587,BÁSICO,2019-11-27
+C000039,1700000039,María,Quiguiri,2007-09-26,Loja,Loja,Sierra,maria.quiguiri39@correo.ec,0978696502,PREFERENTE,2023-06-19
+C000040,1700000040,Alejandra,García,2007-03-06,Cuenca,Azuay,Sierra,alejandra.garcia40@correo.ec,0984753421,PREFERENTE,2019-05-29
+C000041,1700000041,Sofía,Toa,1979-09-23,Quito,Pichincha,Sierra,,0918748811,BÁSICO,2025-05-14
+C000042,1700000042,Camila,Apolo,2002-05-31,Guayaquil,Guayas,Costa,camila.apolo42@correo.ec,0934546009,BÁSICO,2020-06-19
+C000043,1700000043,Paola,Mora,1990-11-03,Quito,Pichincha,Sierra,paola.mora43@correo.ec,0995058834,BÁSICO,2021-07-01
+C000044,1700000044,Gabriela,Bonilla,1992-03-29,Loja,Loja,Sierra,gabriela.bonilla44@correo.ec,0922421610,BÁSICO,2023-02-15
+C000045,1700000045,Javier,Quezada,1951-02-10,Manta,Manabí,Costa,javier.quezada45@correo.ec,0978915988,PREFERENTE,2021-06-23
+C000046,1700000046,Fernanda,Bonilla,1960-10-06,Cuenca,Azuay,Sierra,fernanda.bonilla46@correo.ec,0988150881,BÁSICO,2019-01-19
+C000047,1700000047,Erik,Quiguiri,1959-12-24,Riobamba,Chimborazo,Sierra,erik.quiguiri47@correo.ec,0984581636,PREFERENTE,2024-06-09
+C000048,1700000048,Valentina,Gaibor,1959-04-14,Quito,Pichincha,Sierra,valentina.gaibor48@correo.ec,0955472165,EMPRESARIAL,2023-02-15
+C000049,1700000049,Gabriela,Rodríguez,1958-09-16,loja,Loja,Sierra,gabriela.rodriguez49@correo.ec,0936098589,BÁSICO,2018-03-18
+C000050,1700000050,Valentina,Quiguiri,1987-07-08,Loja,Loja,Sierra,valentina.quiguiri50@correo.ec,0958655631,PREFERENTE,2023-03-05
+C000051,1700000051,Sofía,Quezada,2002-10-12,Riobamba,Chimborazo,Sierra,sofia.quezada51@correo.ec,0912298402,BÁSICO,2020-12-11
+C000052,1700000052,Luis,Cedeño,1967-10-29,Loja,Loja,Sierra,luis.cedeño52@correo.ec,0945204223,BÁSICO,2025-09-15
+C000053,1700000053,Javier,Torres,1982-12-04,Guayaquil,Guayas,Costa,javier.torres53@correo.ec,,BÁSICO,2025-12-25
+C000054,1700000054,Carolina,Mora,1961-06-30,Quito,Pichincha,Sierra,carolina.mora54@correo.ec,0922207515,BÁSICO,2020-12-21
+C000055,1700000055,Luis,Quilligana,2004-09-12,Babahoyo,Los Ríos,Costa,luis.quilligana55@correo.ec,0934886495,PREFERENTE,2022-03-25
+C000056,1700000056,Fernanda,Mendoza,1999-10-18,riobamba,Chimborazo,Sierra,fernanda.mendoza56@correo.ec,0967094352,BÁSICO,2026-01-10
+C000057,1700000057,Valentina,Chávez,1958-01-17,Montalvo,Los Ríos,Costa,valentina.chavez57@correo.ec,0973175712,BÁSICO,2025-08-17
+C000058,1700000058,Luis,Ortiz,1993-09-19,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,luis.ortiz58@correo.ec,0971059586,EMPRESARIAL,2024-05-18
+C000059,1700000059,José,Chávez,1998-03-31,Cuenca,Azuay,Sierra,jose.chavez59@correo.ec,0965664176,BÁSICO,2019-02-18
+C000060,1700000060,Henry,Toa,1968-06-10,Manta,Manabí,Costa,henry.toa60@correo.ec,0952601601,PREFERENTE,2023-12-03
+C000061,1700000061,Sebastián,Cedeño,2006-01-01,Babahoyo,Los Ríos,Costa,sebastian.cedeño61@correo.ec,0954084094,PREMIUM,2026-08-08
+C000062,1700000062,Andrés,Vera,1994-07-04,Cuenca,Azuay,Sierra,andres.vera62@correo.ec,0937579367,BÁSICO,2024-01-20
+C000063,1700000063,Fernanda,Zambrano,1999-11-01,guayaquil,Guayas,Costa,fernanda.zambrano63@correo.ec,0967580769,PREMIUM,2025-05-20
+C000064,1700000064,Javier,Quilligana,1998-04-09,Cuenca,Azuay,Sierra,javier.quilligana64@correo.ec,0956232443,BÁSICO,2024-01-15
+C000065,1700000065,Gabriela,Gaibor,1979-04-15,Guayaquil,Guayas,Costa,gabriela.gaibor65@correo.ec,0962306859,BÁSICO,2025-06-06
+C000066,1700000066,Kevin,Quilligana,2005-04-20,Loja,Loja,Sierra,kevin.quilligana66@correo.ec,0928582613,PREMIUM,2018-04-13
+C000067,1700000067,José,Paredes,1957-07-31,Guayaquil,Guayas,Costa,jose.paredes67@correo.ec,0947339293,BÁSICO,2026-03-29
+C000068,1700000068,Sofía,Cedeño,1982-02-26,Babahoyo,Los Ríos,Costa,sofia.cedeño68@correo.ec,0988313434,BÁSICO,2023-04-30
+C000069,1700000069,Paola,Apunte,1954-05-23,Cuenca,Azuay,Sierra,paola.apunte69@correo.ec,0982019997,PREFERENTE,2020-08-11
+C000070,1700000070,Andrés,Apunte,1969-01-14,Babahoyo,Los Ríos,Costa,andres.apunte70@correo.ec,0945504946,PREFERENTE,2021-04-21
+C000071,1700000071,Camila,López,1984-02-09,Quito,Pichincha,Sierra,camila.lopez71@correo.ec,0926886272,EMPRESARIAL,2018-10-13
+C000072,1700000072,María,Gaibor,1998-07-15,Loja,Loja,Sierra,maria.gaibor72@correo.ec,0964573301,BÁSICO,2022-03-26
+C000073,1700000073,Javier,Salazar,1991-07-13,Manta,Manabí,Costa,javier.salazar73@correo.ec,0962819831,BÁSICO,2023-07-10
+C000074,1700000074,Valentina,Rodríguez,1953-07-11,Manta,Manabí,Costa,valentina.rodriguez74@correo.ec,0932126568,PREFERENTE,2022-02-15
+C000075,1700000075,Diego,Rodríguez,1988-12-30,Montalvo,Los Ríos,Costa,diego.rodriguez75@correo.ec,0965562164,PREMIUM,2025-10-26
+C000076,1700000076,Carlos,Quezada,1985-10-23,Cuenca,Azuay,Sierra,carlos.quezada76@correo.ec,0957920609,BÁSICO,2020-06-06
+C000077,1700000077,Sebastián,Rodríguez,1950-05-23,Loja,Loja,Sierra,sebastian.rodriguez77@correo.ec,0927581933,PREFERENTE,2020-08-02
+C000078,1700000078,Kevin,Mendoza,1993-05-08,Cuenca,Azuay,Sierra,kevin.mendoza78@correo.ec,0996954915,PREMIUM,2022-08-05
+C000079,1700000079,Erik,Bonilla,1953-03-01,Ambato,Tungurahua,Sierra,erik.bonilla79@correo.ec,0972238785,BÁSICO,2024-06-23
+C000080,1700000080,Erik,Cedeño,1974-08-24,Montalvo,Los Ríos,Costa,erik.cedeño80@correo.ec,0969064601,EMPRESARIAL,2025-09-11
+C000081,1700000081,Camila,Quezada,1964-03-26,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,camila.quezada81@correo.ec,0998907307,PREMIUM,2021-08-05
+C000082,1700000082,Gabriela,Quezada,2007-04-05,Montalvo,Los Ríos,Costa,,0911730218,BÁSICO,2026-08-12
+C000083,1700000083,Lucía,Mora,2004-05-11,Riobamba,Chimborazo,Sierra,lucia.mora83@correo.ec,0967596251,PREFERENTE,2020-04-04
+C000084,1700000084,Daniel,Quezada,1964-11-15,CUENCA,Azuay,Sierra,daniel.quezada84@correo.ec,0974877103,BÁSICO,2018-10-17
+C000085,1700000085,Gabriela,Quezada,1985-09-27,Quito,Pichincha,Sierra,gabriela.quezada85@correo.ec,0990970638,BÁSICO,2018-05-19
+C000086,1700000086,Diana,Quezada,1998-12-18,Montalvo,Los Ríos,Costa,diana.quezada86@correo.ec,0975370098,BÁSICO,2024-05-25
+C000087,1700000087,Henry,Quezada,1986-07-26,Cuenca,Azuay,Sierra,henry.quezada87@correo.ec,0968560861,EMPRESARIAL,2024-01-11
+C000088,1700000088,José,Salazar,1964-02-18,Riobamba,Chimborazo,Sierra,jose.salazar88@correo.ec,0965388323,BÁSICO,2025-09-22
+C000089,1700000089,Diana,López,1975-09-30,Quito,Pichincha,Sierra,diana.lopez89@correo.ec,0948368337,PREMIUM,2018-11-25
+C000090,1700000090,Daniel,Paredes,1967-12-04,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,daniel.paredes90@correo.ec,0976221354,PREFERENTE,2024-08-19
+C000091,1700000091,Camila,Quilligana,2004-03-04,Montalvo,Los Ríos,Costa,camila.quilligana91@correo.ec,0936760457,BÁSICO,2022-05-13
+C000092,1700000092,Mateo,Paredes,1981-07-28,Montalvo,Los Ríos,Costa,mateo.paredes92@correo.ec,0943429633,PREFERENTE,2019-04-19
+C000093,1700000093,Camila,Bonilla,1991-12-02,Manta,Manabí,Costa,camila.bonilla93@correo.ec,0972507676,PREFERENTE,2018-11-01
+C000094,1700000094,Diego,Zambrano,1957-06-12,Loja,Loja,Sierra,diego.zambrano94@correo.ec,0928216448,BÁSICO,2023-03-31
+C000095,1700000095,Carlos,Apunte,2004-04-27,Riobamba,Chimborazo,Sierra,carlos.apunte95@correo.ec,0996860674,BÁSICO,2023-09-07
+C000096,1700000096,Diana,Zambrano,2006-04-16,Montalvo,Los Ríos,Costa,diana.zambrano96@correo.ec,0914945490,PREMIUM,2026-08-01
+C000097,1700000097,Carolina,Apunte,1969-05-30,Ambato,Tungurahua,Sierra,carolina.apunte97@correo.ec,0969416952,PREMIUM,2023-03-13
+C000098,1700000098,Paola,Quezada,1965-01-20,AMBATO,Tungurahua,Sierra,paola.quezada98@correo.ec,0973898374,PREMIUM,2021-12-15
+C000099,1700000099,Valentina,Gaibor,1972-07-16,Riobamba,Chimborazo,Sierra,valentina.gaibor99@correo.ec,0985923406,BÁSICO,2022-05-12
+C000100,1700000100,Camila,López,1953-03-16,Cuenca,Azuay,Sierra,camila.lopez100@correo.ec,0940148871,BÁSICO,2024-05-18
+C000101,1700000101,Diego,Bonilla,1981-05-09,Babahoyo,Los Ríos,Costa,diego.bonilla101@correo.ec,0938566203,EMPRESARIAL,2022-05-30
+C000102,1700000102,Diego,Bonilla,1990-08-29,Montalvo,Los Ríos,Costa,diego.bonilla102@correo.ec,0943472675,PREMIUM,2026-01-13
+C000103,1700000103,Gabriela,Rodríguez,1950-09-10,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,gabriela.rodriguez103@correo.ec,0976003468,PREFERENTE,2019-04-18
+C000104,1700000104,Carolina,Bonilla,1966-02-04,Guayaquil,Guayas,Costa,carolina.bonilla104@correo.ec,0949770398,PREFERENTE,2019-02-19
+C000105,1700000105,Daniel,Cruz,2000-04-04, Cuenca ,Azuay,Sierra,daniel.cruz105@correo.ec,0939179836,BÁSICO,2024-06-07
+C000106,1700000106,Fernanda,Ortiz,1983-12-18,Cuenca,Azuay,Sierra,fernanda.ortiz106@correo.ec,,PREFERENTE,2020-06-26
+C000107,1700000107,Lucía,Mora,1998-01-22,Cuenca,Azuay,Sierra,lucia.mora107@correo.ec,0959202621,PREMIUM,2019-08-17
+C000108,1700000108,Luis,Salazar,1974-10-17,Babahoyo,Los Ríos,Costa,luis.salazar108@correo.ec,0962702987,PREMIUM,2023-09-10
+C000109,1700000109,Kevin,Quilligana,1965-09-28,Ambato,Tungurahua,Sierra,kevin.quilligana109@correo.ec,0963922980,BÁSICO,2022-09-05
+C000110,1700000110,Diana,Salazar,1994-05-24,Guayaquil,Guayas,Costa,diana.salazar110@correo.ec,0951819770,BÁSICO,2022-07-07
+C000111,1700000111,Miguel,Quiguiri,1971-05-10,Montalvo,Los Ríos,Costa,miguel.quiguiri111@correo.ec,0931838314,PREFERENTE,2019-09-03
+C000112,1700000112,Diana,Apunte,2001-02-22,RIOBAMBA,Chimborazo,Sierra,diana.apunte112@correo.ec,0991734703,BÁSICO,2024-05-22
+C000113,1700000113,María,Chávez,1977-01-23,Cuenca,Azuay,Sierra,maria.chavez113@correo.ec,0983133207,BÁSICO,2022-02-23
+C000114,1700000114,Kevin,Cruz,1954-08-24,Babahoyo,Los Ríos,Costa,kevin.cruz114@correo.ec,0989233631,BÁSICO,2024-04-11
+C000115,1700000115,Fernanda,Bastidas,1983-12-07,Quito,Pichincha,Sierra,fernanda.bastidas115@correo.ec,0930562152,EMPRESARIAL,2018-09-08
+C000116,1700000116,Carolina,Apolo,1983-08-21,Ambato,Tungurahua,Sierra,carolina.apolo116@correo.ec,0945967426,PREFERENTE,2019-09-19
+C000117,1700000117,María,Apolo,1960-04-29,Cuenca,Azuay,Sierra,maria.apolo117@correo.ec,0952515186,BÁSICO,2021-04-30
+C000118,1700000118,Valentina,Toa,1958-08-03,Quito,Pichincha,Sierra,valentina.toa118@correo.ec,0922614294,PREMIUM,2018-02-06
+C000119,1700000119,Erik,Vera,2007-10-08, Quito ,Pichincha,Sierra,erik.vera119@correo.ec,0915691089,BÁSICO,2020-01-13
+C000120,1700000120,Fernanda,Apunte,1954-01-06,Riobamba,Chimborazo,Sierra,fernanda.apunte120@correo.ec,0916016056,BÁSICO,2023-11-05
+C000121,1700000121,Erik,Apunte,1998-04-13,Manta,Manabí,Costa,erik.apunte121@correo.ec,0928689801,PREMIUM,2018-04-26
+C000122,1700000122,Sebastián,Redín,1965-05-28,Guayaquil,Guayas,Costa,sebastian.redin122@correo.ec,0960883442,PREFERENTE,2018-05-26
+C000123,1700000123,Carlos,Gaibor,1951-03-26,Manta,Manabí,Costa,,0989313693,PREMIUM,2025-07-15
+C000124,1700000124,Alejandra,Vera,1965-08-23,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,alejandra.vera124@correo.ec,0962540932,PREMIUM,2020-07-31
+C000125,1700000125,Javier,Ortiz,1977-08-31,Montalvo,Los Ríos,Costa,javier.ortiz125@correo.ec,0993570794,BÁSICO,2018-02-14
+C000126,1700000126,Miguel,Toa,1958-08-08, Riobamba ,Chimborazo,Sierra,miguel.toa126@correo.ec,0928749089,PREFERENTE,2019-07-05
+C000127,1700000127,Erik,Torres,1998-04-19,Cuenca,Azuay,Sierra,erik.torres127@correo.ec,0936045936,PREMIUM,2021-11-13
+C000128,1700000128,Luis,López,1950-01-23,Loja,Loja,Sierra,luis.lopez128@correo.ec,0956087183,PREFERENTE,2021-03-11
+C000129,1700000129,Diego,Quilligana,1953-12-24,Montalvo,Los Ríos,Costa,diego.quilligana129@correo.ec,0971367823,PREMIUM,2018-03-24
+C000130,1700000130,Valentina,Cedeño,2002-11-14,Manta,Manabí,Costa,valentina.cedeño130@correo.ec,0933346443,PREFERENTE,2022-11-12
+C000131,1700000131,Carolina,Apunte,1983-06-07,Manta,Manabí,Costa,carolina.apunte131@correo.ec,0964739244,PREMIUM,2020-07-18
+C000132,1700000132,Diana,Paredes,1989-03-05,Manta,Manabí,Costa,diana.paredes132@correo.ec,0973859239,EMPRESARIAL,2025-03-02
+C000133,1700000133,Mateo,Zambrano,1979-10-24,QUITO,Pichincha,Sierra,mateo.zambrano133@correo.ec,0912110518,PREFERENTE,2026-03-12
+C000134,1700000134,Fernanda,Mendoza,1955-11-29,Montalvo,Los Ríos,Costa,fernanda.mendoza134@correo.ec,0982745514,PREFERENTE,2023-10-24
+C000135,1700000135,Carolina,Apunte,1956-11-09,Babahoyo,Los Ríos,Costa,carolina.apunte135@correo.ec,0964499189,BÁSICO,2024-01-22
+C000136,1700000136,Alejandra,Zambrano,1955-12-31,Cuenca,Azuay,Sierra,alejandra.zambrano136@correo.ec,0969317587,EMPRESARIAL,2022-03-20
+C000137,1700000137,Camila,Cedeño,1980-02-12,Quito,Pichincha,Sierra,camila.cedeño137@correo.ec,0970930665,EMPRESARIAL,2021-03-27
+C000138,1700000138,Fernanda,Cruz,1979-08-13,Quito,Pichincha,Sierra,fernanda.cruz138@correo.ec,0914680391,BÁSICO,2026-06-08
+C000139,1700000139,Carolina,Bonilla,2007-02-21,Loja,Loja,Sierra,carolina.bonilla139@correo.ec,0968591725,PREFERENTE,2026-01-01
+C000140,1700000140,Luis,Cruz,1970-12-17,MANTA,Manabí,Costa,luis.cruz140@correo.ec,0996455995,PREMIUM,2020-02-20
+C000141,1700000141,Camila,Paredes,2007-04-15,Babahoyo,Los Ríos,Costa,camila.paredes141@correo.ec,0917323514,PREFERENTE,2019-08-25
+C000142,1700000142,Mateo,Apolo,1952-04-25,Guayaquil,Guayas,Costa,mateo.apolo142@correo.ec,0990547640,PREMIUM,2018-04-26
+C000143,1700000143,Henry,Redín,2002-03-21,Manta,Manabí,Costa,henry.redin143@correo.ec,0966511651,BÁSICO,2026-08-22
+C000144,1700000144,Sebastián,Redín,1966-09-30,Riobamba,Chimborazo,Sierra,sebastian.redin144@correo.ec,0966447651,BÁSICO,2023-05-05
+C000145,1700000145,Luis,Redín,1997-03-23,Cuenca,Azuay,Sierra,luis.redin145@correo.ec,0959458688,PREMIUM,2020-12-23
+C000146,1700000146,Alejandra,Quezada,1996-05-25,Ambato,Tungurahua,Sierra,alejandra.quezada146@correo.ec,0921142956,BÁSICO,2020-10-14
+C000147,1700000147,Miguel,Bonilla,1973-12-22,Montalvo,Los Ríos,Costa,miguel.bonilla147@correo.ec,0978784506,BÁSICO,2025-08-16
+C000148,1700000148,Javier,Apunte,1992-08-31,Quito,Pichincha,Sierra,javier.apunte148@correo.ec,0983885717,PREMIUM,2021-12-20
+C000149,1700000149,María,Paredes,2005-10-06,Cuenca,Azuay,Sierra,maria.paredes149@correo.ec,0958194742,PREFERENTE,2023-01-18
+C000150,1700000150,Luis,Vera,1992-10-10,Manta,Manabí,Costa,luis.vera150@correo.ec,0966698147,PREFERENTE,2021-04-03
+C000151,1700000151,Kevin,Mendoza,2001-12-11,Ambato,Tungurahua,Sierra,kevin.mendoza151@correo.ec,0918292240,PREFERENTE,2024-12-17
+C000152,1700000152,Fernanda,Bonilla,2000-05-06,Riobamba,Chimborazo,Sierra,fernanda.bonilla152@correo.ec,0927566362,BÁSICO,2025-02-12
+C000153,1700000153,Diana,Mora,2006-02-22,Guayaquil,Guayas,Costa,diana.mora153@correo.ec,0929663786,PREFERENTE,2023-09-23
+C000154,1700000154,Valentina,Quilligana,2005-07-21,Manta,Manabí,Costa,valentina.quilligana154@correo.ec,0916384406,BÁSICO,2025-02-18
+C000155,1700000155,María,Rodríguez,1982-10-02,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,maria.rodriguez155@correo.ec,0953285414,PREMIUM,2018-11-20
+C000156,1700000156,Henry,Quezada,1968-12-27,Babahoyo,Los Ríos,Costa,henry.quezada156@correo.ec,0918427102,PREFERENTE,2023-09-06
+C000157,1700000157,Luis,Bastidas,1989-08-13,Montalvo,Los Ríos,Costa,luis.bastidas157@correo.ec,0945924655,PREMIUM,2020-11-19
+C000158,1700000158,Carlos,Ortiz,2000-04-04,Loja,Loja,Sierra,carlos.ortiz158@correo.ec,0932110887,PREFERENTE,2024-04-15
+C000159,1700000159,José,Chávez,1984-05-20,Quito,Pichincha,Sierra,jose.chavez159@correo.ec,,PREFERENTE,2022-03-04
+C000160,1700000160,Miguel,Bastidas,1956-03-02,Cuenca,Azuay,Sierra,miguel.bastidas160@correo.ec,0957942321,BÁSICO,2025-10-20
+C000161,1700000161,Sebastián,Gaibor,2007-03-10,MANTA,Manabí,Costa,sebastian.gaibor161@correo.ec,0959862437,BÁSICO,2022-03-21
+C000162,1700000162,Daniel,Quezada,1968-07-01,Babahoyo,Los Ríos,Costa,daniel.quezada162@correo.ec,0973902592,PREFERENTE,2021-07-16
+C000163,1700000163,Erik,Mora,1999-06-21,Guayaquil,Guayas,Costa,erik.mora163@correo.ec,0979536011,PREFERENTE,2018-12-20
+C000164,1700000164,Sebastián,Quiguiri,2006-03-05,Guayaquil,Guayas,Costa,,0962404286,BÁSICO,2025-05-08
+C000165,1700000165,Sofía,Paredes,1980-05-11,Cuenca,Azuay,Sierra,sofia.paredes165@correo.ec,0957036082,BÁSICO,2021-01-07
+C000166,1700000166,Henry,Toa,1970-06-28,Cuenca,Azuay,Sierra,henry.toa166@correo.ec,0911485883,PREFERENTE,2021-10-13
+C000167,1700000167,José,Cedeño,1983-06-10,Montalvo,Los Ríos,Costa,jose.cedeño167@correo.ec,0965992646,BÁSICO,2020-04-13
+C000168,1700000168,Henry,Mendoza,1968-01-25, Ambato ,Tungurahua,Sierra,henry.mendoza168@correo.ec,0944532699,EMPRESARIAL,2020-08-22
+C000169,1700000169,Kevin,López,1962-01-01,Guayaquil,Guayas,Costa,kevin.lopez169@correo.ec,0923630198,PREFERENTE,2018-11-10
+C000170,1700000170,José,Quiguiri,1984-03-30,Cuenca,Azuay,Sierra,jose.quiguiri170@correo.ec,0921182493,BÁSICO,2023-07-09
+C000171,1700000171,Valentina,Bastidas,1963-12-14,Babahoyo,Los Ríos,Costa,valentina.bastidas171@correo.ec,0934265673,PREFERENTE,2022-10-04
+C000172,1700000172,Henry,Mora,1974-10-11,Montalvo,Los Ríos,Costa,henry.mora172@correo.ec,0973968467,PREFERENTE,2018-12-26
+C000173,1700000173,Luis,Ortiz,1961-04-13,Loja,Loja,Sierra,luis.ortiz173@correo.ec,0992464508,BÁSICO,2018-11-29
+C000174,1700000174,Sofía,Quezada,1970-05-02,Quito,Pichincha,Sierra,sofia.quezada174@correo.ec,0966906532,PREMIUM,2023-01-10
+C000175,1700000175,Henry,García,1999-03-16,Ambato,Tungurahua,Sierra,henry.garcia175@correo.ec,0992926708,PREFERENTE,2019-02-03
+C000176,1700000176,Gabriela,Bastidas,1956-03-06,Babahoyo,Los Ríos,Costa,gabriela.bastidas176@correo.ec,0992443300,BÁSICO,2026-04-16
+C000177,1700000177,María,Torres,1978-06-28,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,maria.torres177@correo.ec,0977360690,BÁSICO,2024-02-15
+C000178,1700000178,Fernanda,Toa,1983-04-19,Cuenca,Azuay,Sierra,fernanda.toa178@correo.ec,0949483704,PREFERENTE,2023-11-21
+C000179,1700000179,Andrés,Apunte,1987-01-21,Loja,Loja,Sierra,andres.apunte179@correo.ec,0932232864,PREFERENTE,2018-11-28
+C000180,1700000180,Andrés,Quilligana,1957-11-09,Montalvo,Los Ríos,Costa,andres.quilligana180@correo.ec,0915312570,BÁSICO,2025-06-26
+C000181,1700000181,José,Paredes,1959-11-06,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,jose.paredes181@correo.ec,0956413290,PREFERENTE,2025-05-28
+C000182,1700000182,José,Mora,1989-08-17,Babahoyo,Los Ríos,Costa,jose.mora182@correo.ec,0996896476,BÁSICO,2025-07-19
+C000183,1700000183,José,Quezada,1996-08-26,Babahoyo,Los Ríos,Costa,jose.quezada183@correo.ec,0927698010,EMPRESARIAL,2018-02-12
+C000184,1700000184,Luis,Quilligana,1979-05-03,Cuenca,Azuay,Sierra,luis.quilligana184@correo.ec,0929561889,BÁSICO,2024-06-15
+C000185,1700000185,Javier,Quilligana,1958-07-28,Babahoyo,Los Ríos,Costa,javier.quilligana185@correo.ec,0977988514,BÁSICO,2023-11-28
+C000186,1700000186,Mateo,Chávez,1970-02-24,Ambato,Tungurahua,Sierra,mateo.chavez186@correo.ec,0986307991,BÁSICO,2023-03-04
+C000187,1700000187,Miguel,Cruz,1950-03-05,Loja,Loja,Sierra,miguel.cruz187@correo.ec,0971819964,PREFERENTE,2026-01-24
+C000188,1700000188,Javier,Paredes,1961-12-20,Loja,Loja,Sierra,javier.paredes188@correo.ec,0958943427,PREMIUM,2019-06-18
+C000189,1700000189,Mateo,Gaibor,1985-12-26,QUITO,Pichincha,Sierra,mateo.gaibor189@correo.ec,0970668409,PREFERENTE,2020-07-29
+C000190,1700000190,Carolina,Zambrano,1982-04-09,Babahoyo,Los Ríos,Costa,carolina.zambrano190@correo.ec,0910281071,PREFERENTE,2022-10-29
+C000191,1700000191,Sofía,Toa,1993-02-22,Babahoyo,Los Ríos,Costa,sofia.toa191@correo.ec,0979686912,PREFERENTE,2021-10-08
+C000192,1700000192,Henry,Rodríguez,1961-12-16,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,henry.rodriguez192@correo.ec,0962420412,PREFERENTE,2023-06-03
+C000193,1700000193,Valentina,García,2001-05-09,Loja,Loja,Sierra,valentina.garcia193@correo.ec,0950535772,PREFERENTE,2018-09-18
+C000194,1700000194,Gabriela,Quilligana,1997-07-27,Cuenca,Azuay,Sierra,gabriela.quilligana194@correo.ec,0935868573,PREMIUM,2021-10-19
+C000195,1700000195,Daniel,García,1960-06-05,Ambato,Tungurahua,Sierra,daniel.garcia195@correo.ec,0931614419,PREMIUM,2022-10-18
+C000196,1700000196,Diego,Apolo,1990-09-27,montalvo,Los Ríos,Costa,diego.apolo196@correo.ec,0940397096,PREMIUM,2025-02-11
+C000197,1700000197,Camila,Toa,1997-05-10,Ambato,Tungurahua,Sierra,camila.toa197@correo.ec,0921812605,PREMIUM,2025-09-05
+C000198,1700000198,José,Rodríguez,1961-07-30,Guayaquil,Guayas,Costa,jose.rodriguez198@correo.ec,0923566505,PREFERENTE,2026-03-21
+C000199,1700000199,Henry,Quezada,1994-10-04,Cuenca,Azuay,Sierra,henry.quezada199@correo.ec,0976899413,BÁSICO,2021-11-03
+C000200,1700000200,Camila,Gaibor,1961-05-25,Babahoyo,Los Ríos,Costa,camila.gaibor200@correo.ec,0994254680,BÁSICO,2026-07-01
+C000201,1700000201,Paola,Apunte,1957-03-17,Quito,Pichincha,Sierra,paola.apunte201@correo.ec,0928237680,BÁSICO,2026-05-01
+C000202,1700000202,Diego,Bastidas,2005-07-23,Loja,Loja,Sierra,diego.bastidas202@correo.ec,0919470579,BÁSICO,2019-03-26
+C000203,1700000203,Mateo,Bonilla,1950-02-06, Quito ,Pichincha,Sierra,mateo.bonilla203@correo.ec,0960440681,EMPRESARIAL,2020-12-04
+C000204,1700000204,Miguel,Torres,1981-05-30,Quito,Pichincha,Sierra,miguel.torres204@correo.ec,0916590085,PREMIUM,2024-05-03
+C000205,1700000205,Fernanda,Apunte,1958-09-23,Manta,Manabí,Costa,,0953853444,PREMIUM,2020-07-14
+C000206,1700000206,María,Mendoza,2005-01-31,Riobamba,Chimborazo,Sierra,maria.mendoza206@correo.ec,0996722945,EMPRESARIAL,2025-06-16
+C000207,1700000207,Paola,Cruz,2002-05-20,Quito,Pichincha,Sierra,paola.cruz207@correo.ec,0917913261,BÁSICO,2021-04-17
+C000208,1700000208,Lucía,Rodríguez,1966-03-17,Montalvo,Los Ríos,Costa,lucia.rodriguez208@correo.ec,0999526784,PREFERENTE,2021-01-09
+C000209,1700000209,Carolina,Quezada,1956-03-18,Loja,Loja,Sierra,carolina.quezada209@correo.ec,0928174998,BÁSICO,2018-11-25
+C000210,1700000210,María,Quilligana,1990-09-07, Riobamba ,Chimborazo,Sierra,maria.quilligana210@correo.ec,0956577246,PREMIUM,2024-05-08
+C000211,1700000211,Sofía,Rodríguez,1996-12-31,Ambato,Tungurahua,Sierra,sofia.rodriguez211@correo.ec,0941941780,PREFERENTE,2025-03-27
+C000212,1700000212,María,Bastidas,1959-02-18,Babahoyo,Los Ríos,Costa,maria.bastidas212@correo.ec,,BÁSICO,2021-01-03
+C000213,1700000213,Sebastián,Cedeño,1954-10-08,Riobamba,Chimborazo,Sierra,sebastian.cedeño213@correo.ec,0975126378,PREMIUM,2024-09-15
+C000214,1700000214,Paola,Apolo,1972-05-01,Manta,Manabí,Costa,paola.apolo214@correo.ec,0930610950,BÁSICO,2025-04-06
+C000215,1700000215,Diego,Mendoza,1951-11-02,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,diego.mendoza215@correo.ec,0912042412,PREMIUM,2021-03-26
+C000216,1700000216,Sofía,Paredes,1981-01-23,Cuenca,Azuay,Sierra,sofia.paredes216@correo.ec,0998086920,BÁSICO,2020-05-12
+C000217,1700000217,Henry,Bonilla,1998-10-29, Manta ,Manabí,Costa,henry.bonilla217@correo.ec,0970227058,BÁSICO,2020-09-14
+C000218,1700000218,Andrés,Mora,1991-11-06,Manta,Manabí,Costa,andres.mora218@correo.ec,0973060505,PREMIUM,2020-07-18
+C000219,1700000219,Diego,Torres,1980-03-28,Babahoyo,Los Ríos,Costa,diego.torres219@correo.ec,0940729244,EMPRESARIAL,2022-02-27
+C000220,1700000220,Fernanda,Torres,1967-07-20,Loja,Loja,Sierra,fernanda.torres220@correo.ec,0981558911,PREFERENTE,2026-06-07
+C000221,1700000221,Sofía,Apunte,2002-10-25,Montalvo,Los Ríos,Costa,sofia.apunte221@correo.ec,0995307556,BÁSICO,2025-12-14
+C000222,1700000222,Carlos,Bastidas,1982-11-05,Loja,Loja,Sierra,carlos.bastidas222@correo.ec,0946453486,PREMIUM,2025-02-16
+C000223,1700000223,Camila,Bonilla,1972-01-28,Riobamba,Chimborazo,Sierra,camila.bonilla223@correo.ec,0920018708,PREMIUM,2018-01-22
+C000224,1700000224,Erik,Paredes,2000-12-16,Manta,Manabí,Costa,erik.paredes224@correo.ec,0919936883,PREFERENTE,2025-11-12
+C000225,1700000225,María,García,1956-05-15,Guayaquil,Guayas,Costa,maria.garcia225@correo.ec,0983429634,PREMIUM,2026-08-28
+C000226,1700000226,José,Torres,1975-03-18,Riobamba,Chimborazo,Sierra,jose.torres226@correo.ec,0984066107,BÁSICO,2022-07-23
+C000227,1700000227,Paola,Mora,1975-09-20,Manta,Manabí,Costa,paola.mora227@correo.ec,0991016784,PREMIUM,2022-06-21
+C000228,1700000228,Andrés,Ortiz,1973-09-28,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,andres.ortiz228@correo.ec,0998765720,BÁSICO,2019-05-12
+C000229,1700000229,Javier,Torres,2006-02-21,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,javier.torres229@correo.ec,0948264964,PREMIUM,2021-11-20
+C000230,1700000230,Camila,Paredes,1971-09-12,Babahoyo,Los Ríos,Costa,camila.paredes230@correo.ec,0951506860,PREMIUM,2023-07-07
+C000231,1700000231,Erik,Mendoza,2002-02-22,loja,Loja,Sierra,erik.mendoza231@correo.ec,0993070587,BÁSICO,2023-07-15
+C000232,1700000232,María,Quiguiri,1955-04-28,Babahoyo,Los Ríos,Costa,maria.quiguiri232@correo.ec,0943508679,PREMIUM,2020-08-15
+C000233,1700000233,Henry,Mendoza,2000-01-10,Guayaquil,Guayas,Costa,henry.mendoza233@correo.ec,0998576111,PREFERENTE,2024-11-23
+C000234,1700000234,Carlos,Zambrano,1987-09-16,Babahoyo,Los Ríos,Costa,carlos.zambrano234@correo.ec,0979435491,BÁSICO,2019-02-06
+C000235,1700000235,Carlos,Salazar,1958-12-29,Montalvo,Los Ríos,Costa,carlos.salazar235@correo.ec,0941065954,EMPRESARIAL,2024-01-23
+C000236,1700000236,Carolina,Cruz,2007-01-23,Cuenca,Azuay,Sierra,carolina.cruz236@correo.ec,0931226883,BÁSICO,2022-08-01
+C000237,1700000237,Sofía,Redín,1992-09-05,Guayaquil,Guayas,Costa,sofia.redin237@correo.ec,0921528483,BÁSICO,2018-10-30
+C000238,1700000238,Valentina,Quiguiri,1977-07-02,BABAHOYO,Los Ríos,Costa,valentina.quiguiri238@correo.ec,0959312664,BÁSICO,2026-05-07
+C000239,1700000239,Javier,Bonilla,1969-01-24,Ambato,Tungurahua,Sierra,javier.bonilla239@correo.ec,0945496682,BÁSICO,2026-03-07
+C000240,1700000240,Andrés,Bonilla,1970-07-30,Quito,Pichincha,Sierra,andres.bonilla240@correo.ec,0940078465,PREFERENTE,2021-06-21
+C000241,1700000241,José,Quiguiri,1995-05-30,Cuenca,Azuay,Sierra,jose.quiguiri241@correo.ec,0954467284,PREFERENTE,2024-05-23
+C000242,1700000242,Henry,Quiguiri,1993-07-31,Cuenca,Azuay,Sierra,henry.quiguiri242@correo.ec,0911203725,PREMIUM,2025-04-20
+C000243,1700000243,José,Apolo,1979-08-04,Riobamba,Chimborazo,Sierra,jose.apolo243@correo.ec,0972985245,PREFERENTE,2025-04-29
+C000244,1700000244,Andrés,Bonilla,1969-05-06,Loja,Loja,Sierra,andres.bonilla244@correo.ec,0967305610,PREMIUM,2021-03-28
+C000245,1700000245,Mateo,Quilligana,1987-12-15,AMBATO,Tungurahua,Sierra,mateo.quilligana245@correo.ec,0983181474,PREMIUM,2021-09-18
+C000246,1700000246,Fernanda,Apolo,1951-08-09,Quito,Pichincha,Sierra,,0963181865,PREFERENTE,2018-10-09
+C000247,1700000247,Javier,Mora,1972-01-01,Montalvo,Los Ríos,Costa,javier.mora247@correo.ec,0969394811,PREFERENTE,2025-11-29
+C000248,1700000248,Andrés,Apolo,1955-07-22,Riobamba,Chimborazo,Sierra,andres.apolo248@correo.ec,0949019068,BÁSICO,2019-01-17
+C000249,1700000249,Diana,Apolo,1962-05-13,Babahoyo,Los Ríos,Costa,diana.apolo249@correo.ec,0935832635,BÁSICO,2020-07-25
+C000250,1700000250,Javier,Cedeño,1966-08-19,Manta,Manabí,Costa,javier.cedeño250@correo.ec,0986400364,EMPRESARIAL,2022-11-17
+C000251,1700000251,María,Rodríguez,1986-02-14,Guayaquil,Guayas,Costa,maria.rodriguez251@correo.ec,0986115444,PREMIUM,2023-09-09
+C000252,1700000252,Miguel,Cedeño,2007-04-09,Babahoyo,Los Ríos,Costa,miguel.cedeño252@correo.ec,0948650787,PREFERENTE,2023-06-15
+C000253,1700000253,Lucía,Vera,1976-09-13,Montalvo,Los Ríos,Costa,lucia.vera253@correo.ec,0961164261,PREMIUM,2019-11-21
+C000254,1700000254,Valentina,Zambrano,1980-10-05,Quito,Pichincha,Sierra,valentina.zambrano254@correo.ec,0988211525,BÁSICO,2021-07-31
+C000255,1700000255,Carolina,Rodríguez,1981-07-26,Manta,Manabí,Costa,carolina.rodriguez255@correo.ec,0942577945,PREFERENTE,2021-07-15
+C000256,1700000256,Sofía,Apunte,1963-06-21,Montalvo,Los Ríos,Costa,sofia.apunte256@correo.ec,0981158818,BÁSICO,2022-07-24
+C000257,1700000257,Gabriela,Ortiz,1969-08-03,Quito,Pichincha,Sierra,gabriela.ortiz257@correo.ec,0957736979,BÁSICO,2025-01-11
+C000258,1700000258,Gabriela,Ortiz,1960-11-16,Babahoyo,Los Ríos,Costa,gabriela.ortiz258@correo.ec,0985701981,PREFERENTE,2022-07-16
+C000259,1700000259,Lucía,Quiguiri,2005-02-17,babahoyo,Los Ríos,Costa,lucia.quiguiri259@correo.ec,0995020596,PREFERENTE,2026-08-06
+C000260,1700000260,Diana,Redín,2005-12-05,Riobamba,Chimborazo,Sierra,diana.redin260@correo.ec,0918795285,PREFERENTE,2025-04-03
+C000261,1700000261,Valentina,Cruz,1982-10-10,Cuenca,Azuay,Sierra,valentina.cruz261@correo.ec,0937486708,PREFERENTE,2023-09-04
+C000262,1700000262,Andrés,Quiguiri,1977-12-05,Quito,Pichincha,Sierra,andres.quiguiri262@correo.ec,0986069952,BÁSICO,2025-05-17
+C000263,1700000263,Camila,Torres,1958-10-05,Loja,Loja,Sierra,camila.torres263@correo.ec,0950623910,BÁSICO,2024-08-24
+C000264,1700000264,María,Apunte,1978-10-14,Ambato,Tungurahua,Sierra,maria.apunte264@correo.ec,0913580748,BÁSICO,2025-08-05
+C000265,1700000265,María,Salazar,1999-10-21,Guayaquil,Guayas,Costa,maria.salazar265@correo.ec,,PREFERENTE,2022-08-09
+C000266,1700000266,Camila,Mora,1993-02-13,Quito,Pichincha,Sierra,camila.mora266@correo.ec,0995516442,PREFERENTE,2026-02-03
+C000267,1700000267,Carolina,Redín,1958-07-05,Riobamba,Chimborazo,Sierra,carolina.redin267@correo.ec,0988158331,BÁSICO,2020-03-28
+C000268,1700000268,Camila,Quilligana,1967-06-25,Guayaquil,Guayas,Costa,camila.quilligana268@correo.ec,0970566788,BÁSICO,2019-03-05
+C000269,1700000269,Diana,Apunte,1971-05-29,Cuenca,Azuay,Sierra,diana.apunte269@correo.ec,0997130588,PREFERENTE,2018-11-02
+C000270,1700000270,Andrés,Toa,1976-02-12,Manta,Manabí,Costa,andres.toa270@correo.ec,0912068575,PREMIUM,2019-06-19
+C000271,1700000271,Carlos,Gaibor,1976-01-10,Manta,Manabí,Costa,carlos.gaibor271@correo.ec,0971619611,PREMIUM,2024-05-18
+C000272,1700000272,Fernanda,Ortiz,1983-04-25,Montalvo,Los Ríos,Costa,fernanda.ortiz272@correo.ec,0973928425,BÁSICO,2020-10-18
+C000273,1700000273,Valentina,García,1992-01-27,Ambato,Tungurahua,Sierra,valentina.garcia273@correo.ec,0972743131,PREFERENTE,2024-04-04
+C000274,1700000274,María,Bastidas,1962-03-04,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,maria.bastidas274@correo.ec,0930885516,PREFERENTE,2024-07-19
+C000275,1700000275,Gabriela,Zambrano,1980-10-07,Montalvo,Los Ríos,Costa,gabriela.zambrano275@correo.ec,0914082305,PREFERENTE,2023-01-05
+C000276,1700000276,Camila,Quiguiri,1969-06-29,Cuenca,Azuay,Sierra,camila.quiguiri276@correo.ec,0978429047,BÁSICO,2025-04-24
+C000277,1700000277,Carolina,Paredes,1994-09-21,Montalvo,Los Ríos,Costa,carolina.paredes277@correo.ec,0990576361,BÁSICO,2023-09-15
+C000278,1700000278,Lucía,Salazar,1963-08-07,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,lucia.salazar278@correo.ec,0994319189,BÁSICO,2018-03-24
+C000279,1700000279,Paola,Bonilla,2006-10-12,Loja,Loja,Sierra,paola.bonilla279@correo.ec,0920965625,BÁSICO,2021-07-06
+C000280,1700000280,Carolina,Paredes,1960-08-24,Loja,Loja,Sierra,carolina.paredes280@correo.ec,0928416997,PREFERENTE,2018-10-09
+C000281,1700000281,Lucía,Torres,1993-02-11,Montalvo,Los Ríos,Costa,lucia.torres281@correo.ec,0941705100,BÁSICO,2023-04-08
+C000282,1700000282,Carlos,Bastidas,2004-12-11,Babahoyo,Los Ríos,Costa,carlos.bastidas282@correo.ec,0975037058,BÁSICO,2025-01-28
+C000283,1700000283,Andrés,Paredes,1962-02-19,Riobamba,Chimborazo,Sierra,andres.paredes283@correo.ec,0958383929,BÁSICO,2024-05-22
+C000284,1700000284,Sebastián,Bastidas,1990-12-11,Ambato,Tungurahua,Sierra,sebastian.bastidas284@correo.ec,0922905692,PREFERENTE,2021-12-04
+C000285,1700000285,Camila,Toa,1991-01-29,Cuenca,Azuay,Sierra,camila.toa285@correo.ec,0911042774,BÁSICO,2020-11-27
+C000286,1700000286,Valentina,Mora,1976-02-23,Manta,Manabí,Costa,valentina.mora286@correo.ec,0999910422,PREFERENTE,2021-11-10
+C000287,1700000287,Alejandra,Cedeño,1964-11-03,santo domingo,Santo Domingo de los Tsáchilas,Costa,,0983914095,BÁSICO,2026-04-20
+C000288,1700000288,Kevin,Apolo,1980-05-29,Cuenca,Azuay,Sierra,kevin.apolo288@correo.ec,0980911632,PREMIUM,2020-12-04
+C000289,1700000289,Erik,Vera,1951-12-27,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,erik.vera289@correo.ec,0989674501,BÁSICO,2020-04-15
+C000290,1700000290,Erik,Mora,1987-04-25,Manta,Manabí,Costa,erik.mora290@correo.ec,0944096802,BÁSICO,2022-11-14
+C000291,1700000291,Lucía,Paredes,1969-01-11,Loja,Loja,Sierra,lucia.paredes291@correo.ec,0981774417,PREFERENTE,2026-01-09
+C000292,1700000292,Diego,Redín,2001-12-03,Babahoyo,Los Ríos,Costa,diego.redin292@correo.ec,0993897327,PREMIUM,2018-08-20
+C000293,1700000293,Daniel,López,2005-08-19,Cuenca,Azuay,Sierra,daniel.lopez293@correo.ec,0971123475,BÁSICO,2021-10-25
+C000294,1700000294,Carlos,Apolo,1964-07-06,Montalvo,Los Ríos,Costa,carlos.apolo294@correo.ec,0964313589,BÁSICO,2019-03-28
+C000295,1700000295,Sofía,Quilligana,1993-09-19,Guayaquil,Guayas,Costa,sofia.quilligana295@correo.ec,0961539772,BÁSICO,2021-12-01
+C000296,1700000296,Diana,Chávez,1962-10-30,Loja,Loja,Sierra,diana.chavez296@correo.ec,0952055977,BÁSICO,2018-10-09
+C000297,1700000297,Javier,Quilligana,1963-08-18,Quito,Pichincha,Sierra,javier.quilligana297@correo.ec,0996556139,BÁSICO,2020-12-06
+C000298,1700000298,Javier,Cruz,1963-05-07,Guayaquil,Guayas,Costa,javier.cruz298@correo.ec,0939930796,BÁSICO,2018-08-23
+C000299,1700000299,Henry,Zambrano,1992-11-08,Manta,Manabí,Costa,henry.zambrano299@correo.ec,0985631273,BÁSICO,2019-09-09
+C000300,1700000300,Fernanda,Quilligana,1989-05-16,Montalvo,Los Ríos,Costa,fernanda.quilligana300@correo.ec,0959844429,PREFERENTE,2018-11-19
+C000301,1700000301,Miguel,Toa,1984-08-09,Quito,Pichincha,Sierra,miguel.toa301@correo.ec,0952895926,PREFERENTE,2026-06-07
+C000302,1700000302,Daniel,Paredes,2005-09-04,Manta,Manabí,Costa,daniel.paredes302@correo.ec,0956707024,BÁSICO,2018-04-12
+C000303,1700000303,Mateo,Cedeño,1964-05-01,Guayaquil,Guayas,Costa,mateo.cedeño303@correo.ec,0999210295,BÁSICO,2026-03-11
+C000304,1700000304,Diana,Bastidas,1971-09-02,Cuenca,Azuay,Sierra,diana.bastidas304@correo.ec,0993421966,PREFERENTE,2020-01-18
+C000305,1700000305,Camila,Quiguiri,1994-02-07,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,camila.quiguiri305@correo.ec,0995710360,EMPRESARIAL,2026-05-10
+C000306,1700000306,Andrés,Rodríguez,1958-10-02,Quito,Pichincha,Sierra,andres.rodriguez306@correo.ec,0922449970,PREFERENTE,2025-04-05
+C000307,1700000307,Mateo,Cruz,2001-12-17,Quito,Pichincha,Sierra,mateo.cruz307@correo.ec,0963864828,BÁSICO,2023-02-02
+C000308,1700000308,Camila,Ortiz,1983-03-27, Ambato ,Tungurahua,Sierra,camila.ortiz308@correo.ec,0988039869,PREFERENTE,2022-08-25
+C000309,1700000309,Kevin,García,1988-01-22,Guayaquil,Guayas,Costa,kevin.garcia309@correo.ec,0942440885,PREFERENTE,2023-11-30
+C000310,1700000310,Camila,Rodríguez,1997-10-12,Loja,Loja,Sierra,camila.rodriguez310@correo.ec,0966337983,EMPRESARIAL,2023-06-27
+C000311,1700000311,Alejandra,García,1952-10-29,Montalvo,Los Ríos,Costa,alejandra.garcia311@correo.ec,0992155228,PREFERENTE,2020-04-13
+C000312,1700000312,Fernanda,Salazar,1964-11-27,Ambato,Tungurahua,Sierra,fernanda.salazar312@correo.ec,0946479723,PREFERENTE,2018-03-14
+C000313,1700000313,Paola,Bonilla,1988-06-14,Cuenca,Azuay,Sierra,paola.bonilla313@correo.ec,0950178085,PREFERENTE,2022-08-09
+C000314,1700000314,José,Quezada,1987-04-21,Riobamba,Chimborazo,Sierra,jose.quezada314@correo.ec,0954349886,BÁSICO,2019-02-28
+C000315,1700000315,José,Quiguiri,1998-05-14,quito,Pichincha,Sierra,jose.quiguiri315@correo.ec,0945728574,BÁSICO,2020-02-16
+C000316,1700000316,Lucía,Apunte,1997-11-09,Ambato,Tungurahua,Sierra,lucia.apunte316@correo.ec,0946353133,PREFERENTE,2022-09-28
+C000317,1700000317,Camila,Quezada,1977-11-04,Guayaquil,Guayas,Costa,camila.quezada317@correo.ec,0918802593,PREFERENTE,2022-07-28
+C000318,1700000318,Javier,Torres,1968-06-15,Quito,Pichincha,Sierra,javier.torres318@correo.ec,,PREMIUM,2023-01-16
+C000319,1700000319,Andrés,Mora,1987-05-25,Guayaquil,Guayas,Costa,andres.mora319@correo.ec,0926768758,PREMIUM,2023-01-30
+C000320,1700000320,Gabriela,Mendoza,1958-11-08,Montalvo,Los Ríos,Costa,gabriela.mendoza320@correo.ec,0965283742,BÁSICO,2019-11-25
+C000321,1700000321,Carlos,Quilligana,1983-04-15,Montalvo,Los Ríos,Costa,carlos.quilligana321@correo.ec,0967160841,BÁSICO,2020-05-22
+C000322,1700000322,Diana,Bonilla,1951-05-10,manta,Manabí,Costa,diana.bonilla322@correo.ec,0967697352,BÁSICO,2018-08-14
+C000323,1700000323,Luis,Zambrano,2001-12-25,Cuenca,Azuay,Sierra,luis.zambrano323@correo.ec,0933377614,BÁSICO,2025-08-12
+C000324,1700000324,Henry,Ortiz,2006-10-21,Cuenca,Azuay,Sierra,henry.ortiz324@correo.ec,0955652492,EMPRESARIAL,2019-11-03
+C000325,1700000325,Valentina,Quezada,1954-04-15,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,valentina.quezada325@correo.ec,0943172671,BÁSICO,2023-06-03
+C000326,1700000326,Henry,Quezada,1987-03-05,Loja,Loja,Sierra,henry.quezada326@correo.ec,0973814748,EMPRESARIAL,2022-11-02
+C000327,1700000327,Miguel,Bonilla,1951-01-23,Cuenca,Azuay,Sierra,miguel.bonilla327@correo.ec,0932690999,EMPRESARIAL,2022-08-13
+C000328,1700000328,Erik,Paredes,1986-02-11,Quito,Pichincha,Sierra,,0927939793,PREFERENTE,2019-05-09
+C000329,1700000329,Andrés,Toa,1967-08-19,Guayaquil,Guayas,Costa,andres.toa329@correo.ec,0975139327,BÁSICO,2018-01-01
+C000330,1700000330,Valentina,Zambrano,1979-04-30,Riobamba,Chimborazo,Sierra,valentina.zambrano330@correo.ec,0977075066,PREFERENTE,2022-04-29
+C000331,1700000331,Henry,Cruz,1978-08-03,Riobamba,Chimborazo,Sierra,henry.cruz331@correo.ec,0951329648,BÁSICO,2021-01-28
+C000332,1700000332,Daniel,García,1994-10-22,Manta,Manabí,Costa,daniel.garcia332@correo.ec,0924222184,BÁSICO,2025-10-26
+C000333,1700000333,Gabriela,Toa,1970-02-13,Ambato,Tungurahua,Sierra,gabriela.toa333@correo.ec,0943201902,BÁSICO,2024-11-22
+C000334,1700000334,Henry,Toa,1963-04-23,Babahoyo,Los Ríos,Costa,henry.toa334@correo.ec,0965320472,PREFERENTE,2020-11-10
+C000335,1700000335,Diego,Cedeño,1957-08-28,Guayaquil,Guayas,Costa,diego.cedeño335@correo.ec,0944122625,PREFERENTE,2021-03-02
+C000336,1700000336,Erik,Quezada,1951-11-18,QUITO,Pichincha,Sierra,erik.quezada336@correo.ec,0980671809,PREFERENTE,2022-07-03
+C000337,1700000337,Camila,Rodríguez,1954-03-18,Ambato,Tungurahua,Sierra,camila.rodriguez337@correo.ec,0958015624,BÁSICO,2019-05-11
+C000338,1700000338,Erik,Paredes,1996-07-22,Babahoyo,Los Ríos,Costa,erik.paredes338@correo.ec,0945652090,BÁSICO,2020-11-20
+C000339,1700000339,Miguel,Paredes,2004-08-19,Cuenca,Azuay,Sierra,miguel.paredes339@correo.ec,0975623215,PREMIUM,2018-11-15
+C000340,1700000340,Daniel,Apunte,1991-08-13,Ambato,Tungurahua,Sierra,daniel.apunte340@correo.ec,0915290370,PREMIUM,2021-09-21
+C000341,1700000341,Carlos,Mendoza,1956-10-07,Quito,Pichincha,Sierra,carlos.mendoza341@correo.ec,0926330670,PREFERENTE,2018-09-17
+C000342,1700000342,Mateo,Apolo,1979-11-30,Manta,Manabí,Costa,mateo.apolo342@correo.ec,0945547189,EMPRESARIAL,2024-07-31
+C000343,1700000343,Henry,Zambrano,1983-05-13, Loja ,Loja,Sierra,henry.zambrano343@correo.ec,0989100515,PREMIUM,2026-02-16
+C000344,1700000344,Kevin,López,1976-05-28,Manta,Manabí,Costa,kevin.lopez344@correo.ec,0944785766,BÁSICO,2024-11-03
+C000345,1700000345,Miguel,Mora,1968-03-08,Loja,Loja,Sierra,miguel.mora345@correo.ec,0913799612,PREFERENTE,2022-09-30
+C000346,1700000346,Luis,Quezada,1999-04-25,Quito,Pichincha,Sierra,luis.quezada346@correo.ec,0980431281,PREFERENTE,2018-11-28
+C000347,1700000347,Lucía,Redín,1960-01-26,Guayaquil,Guayas,Costa,lucia.redin347@correo.ec,0944944290,PREFERENTE,2021-05-02
+C000348,1700000348,Sofía,Cruz,1967-11-09,Cuenca,Azuay,Sierra,sofia.cruz348@correo.ec,0960511721,PREMIUM,2020-06-18
+C000349,1700000349,Carolina,García,1977-11-22,Babahoyo,Los Ríos,Costa,carolina.garcia349@correo.ec,0929832526,BÁSICO,2023-05-11
+C000350,1700000350,Paola,Rodríguez,2000-01-12,MONTALVO,Los Ríos,Costa,paola.rodriguez350@correo.ec,0935636671,BÁSICO,2024-10-13
+C000351,1700000351,Fernanda,Redín,1967-10-21,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,fernanda.redin351@correo.ec,0962865907,EMPRESARIAL,2022-11-29
+C000352,1700000352,Luis,Quilligana,1962-07-10,Quito,Pichincha,Sierra,luis.quilligana352@correo.ec,0957669192,BÁSICO,2019-08-16
+C000353,1700000353,Gabriela,Bastidas,1978-01-10,Riobamba,Chimborazo,Sierra,gabriela.bastidas353@correo.ec,0999780988,PREFERENTE,2024-09-23
+C000354,1700000354,Carolina,Apolo,1967-12-08,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,carolina.apolo354@correo.ec,0910019166,PREFERENTE,2024-10-25
+C000355,1700000355,Fernanda,Toa,1994-06-20,Babahoyo,Los Ríos,Costa,fernanda.toa355@correo.ec,0993748637,PREFERENTE,2023-08-09
+C000356,1700000356,Diego,Redín,2004-11-26,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,diego.redin356@correo.ec,0999395272,BÁSICO,2022-03-03
+C000357,1700000357,Miguel,Cruz,1987-12-14, Loja ,Loja,Sierra,miguel.cruz357@correo.ec,0923741165,BÁSICO,2024-04-22
+C000358,1700000358,Diana,Mora,2005-09-05,Montalvo,Los Ríos,Costa,diana.mora358@correo.ec,0926508976,EMPRESARIAL,2024-10-28
+C000359,1700000359,Diana,Bastidas,1961-10-18,Riobamba,Chimborazo,Sierra,diana.bastidas359@correo.ec,0942792955,PREFERENTE,2023-10-07
+C000360,1700000360,Carolina,Torres,1960-06-11,Riobamba,Chimborazo,Sierra,carolina.torres360@correo.ec,0962208333,PREMIUM,2020-11-28
+C000361,1700000361,Miguel,Bonilla,2002-02-19,Cuenca,Azuay,Sierra,miguel.bonilla361@correo.ec,0933496254,BÁSICO,2024-02-07
+C000362,1700000362,José,Paredes,1994-03-14,Manta,Manabí,Costa,jose.paredes362@correo.ec,0971830861,BÁSICO,2021-09-07
+C000363,1700000363,Sebastián,Gaibor,1950-07-01,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,sebastian.gaibor363@correo.ec,0969537689,PREFERENTE,2018-12-23
+C000364,1700000364,Javier,Zambrano,1958-10-07, Babahoyo ,Los Ríos,Costa,javier.zambrano364@correo.ec,0937353437,BÁSICO,2021-06-12
+C000365,1700000365,Miguel,Paredes,1974-01-02,Manta,Manabí,Costa,miguel.paredes365@correo.ec,0917988693,PREFERENTE,2021-03-10
+C000366,1700000366,Andrés,García,2006-11-10,Loja,Loja,Sierra,andres.garcia366@correo.ec,0953172823,BÁSICO,2019-06-08
+C000367,1700000367,Andrés,López,1950-02-11,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,andres.lopez367@correo.ec,0920119510,PREFERENTE,2024-08-05
+C000368,1700000368,María,Torres,2000-11-22,Guayaquil,Guayas,Costa,maria.torres368@correo.ec,0944426283,PREMIUM,2019-08-08
+C000369,1700000369,José,Toa,1968-01-05,Quito,Pichincha,Sierra,,0965668299,BÁSICO,2025-05-09
+C000370,1700000370,Diana,Bonilla,1952-07-05,Quito,Pichincha,Sierra,diana.bonilla370@correo.ec,0990118134,EMPRESARIAL,2023-12-09
+C000371,1700000371,Miguel,Paredes,1979-06-10,MONTALVO,Los Ríos,Costa,miguel.paredes371@correo.ec,,PREFERENTE,2024-04-25
+C000372,1700000372,Luis,Torres,1977-02-20,Cuenca,Azuay,Sierra,luis.torres372@correo.ec,0948027726,PREMIUM,2025-08-02
+C000373,1700000373,Carlos,Cruz,1988-09-18,Riobamba,Chimborazo,Sierra,carlos.cruz373@correo.ec,0943383128,BÁSICO,2019-02-11
+C000374,1700000374,Valentina,Cruz,1986-01-30,Manta,Manabí,Costa,valentina.cruz374@correo.ec,0970810963,BÁSICO,2020-04-04
+C000375,1700000375,Carolina,Torres,1993-01-10,Montalvo,Los Ríos,Costa,carolina.torres375@correo.ec,0975582928,BÁSICO,2024-10-10
+C000376,1700000376,Erik,Redín,1964-11-28,Montalvo,Los Ríos,Costa,erik.redin376@correo.ec,0957708550,BÁSICO,2019-01-11
+C000377,1700000377,José,Toa,2004-08-11,Ambato,Tungurahua,Sierra,jose.toa377@correo.ec,0931173593,BÁSICO,2021-12-09
+C000378,1700000378,Valentina,Bastidas,2003-06-18,Loja,Loja,Sierra,valentina.bastidas378@correo.ec,0995945134,PREMIUM,2019-02-10
+C000379,1700000379,Lucía,Mendoza,1999-08-30,Cuenca,Azuay,Sierra,lucia.mendoza379@correo.ec,0968943983,PREFERENTE,2025-10-12
+C000380,1700000380,Luis,Quezada,2005-08-15,Ambato,Tungurahua,Sierra,luis.quezada380@correo.ec,0955673200,PREFERENTE,2024-09-28
+C000381,1700000381,Henry,Ortiz,1960-01-12,Manta,Manabí,Costa,henry.ortiz381@correo.ec,0923027723,PREMIUM,2021-10-08
+C000382,1700000382,Fernanda,Quilligana,1989-10-24,Ambato,Tungurahua,Sierra,fernanda.quilligana382@correo.ec,0994942180,BÁSICO,2025-03-03
+C000383,1700000383,Sebastián,Torres,1989-05-26,Montalvo,Los Ríos,Costa,sebastian.torres383@correo.ec,0967772126,BÁSICO,2020-04-01
+C000384,1700000384,Diana,Cedeño,1970-10-29,Riobamba,Chimborazo,Sierra,diana.cedeño384@correo.ec,0932324843,PREMIUM,2026-07-04
+C000385,1700000385,Camila,Toa,2006-12-15,GUAYAQUIL,Guayas,Costa,camila.toa385@correo.ec,0956765416,BÁSICO,2024-03-18
+C000386,1700000386,Diana,Bonilla,1981-06-19,Babahoyo,Los Ríos,Costa,diana.bonilla386@correo.ec,0981733201,BÁSICO,2019-08-08
+C000387,1700000387,Kevin,Zambrano,1996-11-06,Loja,Loja,Sierra,kevin.zambrano387@correo.ec,0916674536,EMPRESARIAL,2019-08-27
+C000388,1700000388,Erik,Rodríguez,2001-10-28,Manta,Manabí,Costa,erik.rodriguez388@correo.ec,0967287752,PREFERENTE,2020-06-26
+C000389,1700000389,Valentina,Torres,1975-12-01,Quito,Pichincha,Sierra,valentina.torres389@correo.ec,0990408033,PREFERENTE,2023-10-28
+C000390,1700000390,Sofía,Gaibor,2005-03-23,Riobamba,Chimborazo,Sierra,sofia.gaibor390@correo.ec,0934007751,BÁSICO,2026-04-03
+C000391,1700000391,Miguel,Toa,1985-12-07,Babahoyo,Los Ríos,Costa,miguel.toa391@correo.ec,0954792171,PREMIUM,2018-04-13
+C000392,1700000392,Alejandra,Mendoza,1983-03-18,Cuenca,Azuay,Sierra,alejandra.mendoza392@correo.ec,0915311409,PREMIUM,2021-08-18
+C000393,1700000393,Andrés,Ortiz,1984-07-20,Quito,Pichincha,Sierra,andres.ortiz393@correo.ec,0972723731,PREFERENTE,2022-10-18
+C000394,1700000394,Diego,García,1950-08-16,Loja,Loja,Sierra,diego.garcia394@correo.ec,0966723166,BÁSICO,2018-07-01
+C000395,1700000395,Miguel,Toa,1989-05-24,Loja,Loja,Sierra,miguel.toa395@correo.ec,0975331199,PREFERENTE,2018-04-03
+C000396,1700000396,Andrés,Mora,1990-08-29,Montalvo,Los Ríos,Costa,andres.mora396@correo.ec,0932942249,PREMIUM,2023-11-09
+C000397,1700000397,Diego,Redín,2004-04-10,Guayaquil,Guayas,Costa,diego.redin397@correo.ec,0925754533,PREFERENTE,2026-08-29
+C000398,1700000398,José,Zambrano,1968-03-16,Manta,Manabí,Costa,jose.zambrano398@correo.ec,0980146513,PREFERENTE,2026-06-09
+C000399,1700000399,Daniel,Zambrano,1963-03-31,Quito,Pichincha,Sierra,daniel.zambrano399@correo.ec,0961543971,BÁSICO,2019-02-19
+C000400,1700000400,Fernanda,Salazar,2002-11-07,Cuenca,Azuay,Sierra,fernanda.salazar400@correo.ec,0950932394,BÁSICO,2022-07-26
+C000401,1700000401,José,García,1968-12-02,Cuenca,Azuay,Sierra,jose.garcia401@correo.ec,0975613889,BÁSICO,2025-05-19
+C000402,1700000402,José,Vera,1981-11-12,Quito,Pichincha,Sierra,jose.vera402@correo.ec,0970050377,PREFERENTE,2026-07-25
+C000403,1700000403,Andrés,Cruz,1989-01-25,Loja,Loja,Sierra,andres.cruz403@correo.ec,0911864722,BÁSICO,2023-09-17
+C000404,1700000404,Carlos,Cedeño,1987-12-08,Montalvo,Los Ríos,Costa,carlos.cedeño404@correo.ec,0934971832,BÁSICO,2025-07-14
+C000405,1700000405,Camila,Gaibor,2004-02-28,Montalvo,Los Ríos,Costa,camila.gaibor405@correo.ec,0977866021,PREMIUM,2024-08-05
+C000406,1700000406,Carlos,Bonilla,1978-01-02,guayaquil,Guayas,Costa,carlos.bonilla406@correo.ec,0975383675,PREFERENTE,2018-12-30
+C000407,1700000407,Fernanda,Quiguiri,1976-09-04,Quito,Pichincha,Sierra,fernanda.quiguiri407@correo.ec,0928604867,BÁSICO,2022-07-15
+C000408,1700000408,Valentina,López,1971-01-09,Cuenca,Azuay,Sierra,valentina.lopez408@correo.ec,0919750607,PREFERENTE,2018-02-25
+C000409,1700000409,Camila,Mendoza,1956-03-11,Babahoyo,Los Ríos,Costa,camila.mendoza409@correo.ec,0973269984,PREFERENTE,2019-10-06
+C000410,1700000410,Mateo,Rodríguez,1987-05-08,Riobamba,Chimborazo,Sierra,,0978795008,BÁSICO,2026-08-29
+C000411,1700000411,Erik,Toa,1958-04-23,Babahoyo,Los Ríos,Costa,erik.toa411@correo.ec,0990071812,EMPRESARIAL,2025-01-12
+C000412,1700000412,Mateo,Torres,1974-07-22,Guayaquil,Guayas,Costa,mateo.torres412@correo.ec,0953937626,PREFERENTE,2024-08-21
+C000413,1700000413,Luis,Chávez,1998-04-14,LOJA,Loja,Sierra,luis.chavez413@correo.ec,0979410374,PREMIUM,2018-01-06
+C000414,1700000414,María,Toa,1996-07-26,Manta,Manabí,Costa,maria.toa414@correo.ec,0981622284,PREFERENTE,2022-08-14
+C000415,1700000415,Andrés,Rodríguez,1955-04-30,Guayaquil,Guayas,Costa,andres.rodriguez415@correo.ec,0942524778,BÁSICO,2020-02-20
+C000416,1700000416,Paola,Gaibor,2007-06-02,Manta,Manabí,Costa,paola.gaibor416@correo.ec,0934801437,PREFERENTE,2025-04-15
+C000417,1700000417,Fernanda,Salazar,1952-04-15,Guayaquil,Guayas,Costa,fernanda.salazar417@correo.ec,0943035097,BÁSICO,2021-04-11
+C000418,1700000418,Andrés,Cruz,1989-08-08,Manta,Manabí,Costa,andres.cruz418@correo.ec,0948950923,PREFERENTE,2024-02-12
+C000419,1700000419,Javier,Apolo,1951-09-03,Cuenca,Azuay,Sierra,javier.apolo419@correo.ec,0912102998,PREFERENTE,2021-12-05
+C000420,1700000420,Erik,Bastidas,1975-02-27,guayaquil,Guayas,Costa,erik.bastidas420@correo.ec,0980780442,BÁSICO,2026-08-09
+C000421,1700000421,Henry,López,2005-07-10,Manta,Manabí,Costa,henry.lopez421@correo.ec,0998102875,PREMIUM,2025-09-18
+C000422,1700000422,Alejandra,Zambrano,1998-09-17,Riobamba,Chimborazo,Sierra,alejandra.zambrano422@correo.ec,0982518159,BÁSICO,2021-05-14
+C000423,1700000423,José,Apunte,1983-01-30,Montalvo,Los Ríos,Costa,jose.apunte423@correo.ec,0929113854,PREMIUM,2020-09-17
+C000424,1700000424,José,Mora,2000-12-02,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,jose.mora424@correo.ec,,BÁSICO,2024-12-19
+C000425,1700000425,Andrés,Quilligana,1977-11-18,Montalvo,Los Ríos,Costa,andres.quilligana425@correo.ec,0926280472,PREMIUM,2023-09-17
+C000426,1700000426,Carlos,Redín,1956-12-10,Loja,Loja,Sierra,carlos.redin426@correo.ec,0984698136,BÁSICO,2019-01-10
+C000427,1700000427,Andrés,Ortiz,2001-06-19,GUAYAQUIL,Guayas,Costa,andres.ortiz427@correo.ec,0941744194,BÁSICO,2020-04-08
+C000428,1700000428,Diana,Toa,2006-03-19,Guayaquil,Guayas,Costa,diana.toa428@correo.ec,0971665824,PREFERENTE,2025-01-12
+C000429,1700000429,María,Quezada,2003-03-17,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,maria.quezada429@correo.ec,0911687380,BÁSICO,2019-09-12
+C000430,1700000430,Paola,Ortiz,1964-07-15,Montalvo,Los Ríos,Costa,paola.ortiz430@correo.ec,0915687595,PREFERENTE,2026-01-23
+C000431,1700000431,Camila,Rodríguez,1956-09-02,Guayaquil,Guayas,Costa,camila.rodriguez431@correo.ec,0998495367,BÁSICO,2024-10-25
+C000432,1700000432,Gabriela,Zambrano,1953-07-01,Loja,Loja,Sierra,gabriela.zambrano432@correo.ec,0962843392,BÁSICO,2021-01-14
+C000433,1700000433,Henry,Bastidas,1964-06-27,Guayaquil,Guayas,Costa,henry.bastidas433@correo.ec,0986741228,BÁSICO,2025-02-26
+C000434,1700000434,Andrés,Salazar,1990-06-05,SANTO DOMINGO,Santo Domingo de los Tsáchilas,Costa,andres.salazar434@correo.ec,0917287113,BÁSICO,2019-06-07
+C000435,1700000435,Carlos,Quiguiri,2004-02-01,Ambato,Tungurahua,Sierra,carlos.quiguiri435@correo.ec,0988571491,PREMIUM,2024-12-09
+C000436,1700000436,Luis,Ortiz,1960-05-26,Babahoyo,Los Ríos,Costa,luis.ortiz436@correo.ec,0913717725,BÁSICO,2026-05-19
+C000437,1700000437,Kevin,Quiguiri,2001-09-15,Loja,Loja,Sierra,kevin.quiguiri437@correo.ec,0926539098,BÁSICO,2020-04-04
+C000438,1700000438,Paola,Toa,1953-07-01,Manta,Manabí,Costa,paola.toa438@correo.ec,0964801638,BÁSICO,2021-12-26
+C000439,1700000439,Diego,Vera,1999-07-31,Manta,Manabí,Costa,diego.vera439@correo.ec,0945404032,EMPRESARIAL,2018-08-19
+C000440,1700000440,Lucía,Quiguiri,1984-07-31,Ambato,Tungurahua,Sierra,lucia.quiguiri440@correo.ec,0949003186,PREMIUM,2024-04-02
+C000441,1700000441,Andrés,Bastidas,1966-01-30,Guayaquil,Guayas,Costa,andres.bastidas441@correo.ec,0979887135,BÁSICO,2020-01-22
+C000442,1700000442,Gabriela,Paredes,1995-10-03,Montalvo,Los Ríos,Costa,gabriela.paredes442@correo.ec,0962701793,PREMIUM,2024-10-06
+C000443,1700000443,Paola,Bonilla,1989-01-01,Loja,Loja,Sierra,paola.bonilla443@correo.ec,0934862558,BÁSICO,2022-09-21
+C000444,1700000444,Carlos,Quezada,1996-05-09,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,carlos.quezada444@correo.ec,0912892872,BÁSICO,2022-01-18
+C000445,1700000445,Miguel,García,1973-10-11,Loja,Loja,Sierra,miguel.garcia445@correo.ec,0972818756,BÁSICO,2026-08-27
+C000446,1700000446,Diana,Salazar,1959-06-20,Quito,Pichincha,Sierra,diana.salazar446@correo.ec,0991306435,PREFERENTE,2022-05-22
+C000447,1700000447,Javier,Zambrano,1961-10-11,Cuenca,Azuay,Sierra,javier.zambrano447@correo.ec,0967193604,PREMIUM,2023-09-05
+C000448,1700000448,Sebastián,Quiguiri,1986-09-06,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,sebastian.quiguiri448@correo.ec,0915155129,PREMIUM,2019-10-20
+C000449,1700000449,Erik,Bonilla,1985-06-20,Manta,Manabí,Costa,erik.bonilla449@correo.ec,0977720785,PREMIUM,2021-12-03
+C000450,1700000450,Sofía,Cruz,1991-12-12,Babahoyo,Los Ríos,Costa,sofia.cruz450@correo.ec,0939316037,BÁSICO,2018-07-22
+C000451,1700000451,Daniel,Quilligana,1998-08-19,Quito,Pichincha,Sierra,,0932176264,PREMIUM,2019-12-23
+C000452,1700000452,José,Cruz,1969-06-16,Quito,Pichincha,Sierra,jose.cruz452@correo.ec,0969517583,BÁSICO,2022-02-14
+C000453,1700000453,Sofía,García,1965-05-18,Cuenca,Azuay,Sierra,sofia.garcia453@correo.ec,0932766219,PREFERENTE,2021-11-23
+C000454,1700000454,Paola,Torres,1980-02-29,Loja,Loja,Sierra,paola.torres454@correo.ec,0954031944,BÁSICO,2020-02-20
+C000455,1700000455,Paola,García,1968-06-16, Riobamba ,Chimborazo,Sierra,paola.garcia455@correo.ec,0977079612,BÁSICO,2021-04-04
+C000456,1700000456,Alejandra,Bastidas,1995-09-09,Riobamba,Chimborazo,Sierra,alejandra.bastidas456@correo.ec,0923478061,PREMIUM,2022-10-05
+C000457,1700000457,Valentina,Quezada,2005-01-27,Quito,Pichincha,Sierra,valentina.quezada457@correo.ec,0940245669,PREFERENTE,2019-04-14
+C000458,1700000458,Mateo,Bastidas,1983-12-20,Montalvo,Los Ríos,Costa,mateo.bastidas458@correo.ec,0955189717,BÁSICO,2018-09-24
+C000459,1700000459,Carolina,Bastidas,1981-03-31,Babahoyo,Los Ríos,Costa,carolina.bastidas459@correo.ec,0923752867,BÁSICO,2021-01-07
+C000460,1700000460,Valentina,López,1981-03-09,Loja,Loja,Sierra,valentina.lopez460@correo.ec,0921965465,PREFERENTE,2019-06-05
+C000461,1700000461,José,Cruz,1953-03-14,Babahoyo,Los Ríos,Costa,jose.cruz461@correo.ec,0925058228,PREFERENTE,2018-11-06
+C000462,1700000462,Luis,Toa,1970-04-08,AMBATO,Tungurahua,Sierra,luis.toa462@correo.ec,0974812555,PREFERENTE,2020-03-13
+C000463,1700000463,Fernanda,Mora,2007-04-15,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,fernanda.mora463@correo.ec,0965882991,PREMIUM,2025-11-14
+C000464,1700000464,Javier,Toa,1993-10-20,Ambato,Tungurahua,Sierra,javier.toa464@correo.ec,0929374380,PREFERENTE,2021-12-21
+C000465,1700000465,Kevin,Bastidas,1978-10-09,Guayaquil,Guayas,Costa,kevin.bastidas465@correo.ec,0913094835,BÁSICO,2024-01-01
+C000466,1700000466,Alejandra,Apolo,1988-05-17,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,alejandra.apolo466@correo.ec,0993238457,BÁSICO,2024-01-05
+C000467,1700000467,María,Apunte,1973-07-02,Babahoyo,Los Ríos,Costa,maria.apunte467@correo.ec,0966503712,BÁSICO,2018-10-24
+C000468,1700000468,Andrés,Vera,1965-10-18,Riobamba,Chimborazo,Sierra,andres.vera468@correo.ec,0951582459,PREFERENTE,2025-08-19
+C000469,1700000469,Lucía,Toa,1966-05-24,Loja,Loja,Sierra,lucia.toa469@correo.ec,0938214595,BÁSICO,2021-08-11
+C000470,1700000470,Diana,Cedeño,1972-01-02,Riobamba,Chimborazo,Sierra,diana.cedeño470@correo.ec,0930155241,BÁSICO,2018-09-08
+C000471,1700000471,Sebastián,Gaibor,1952-04-07,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,sebastian.gaibor471@correo.ec,0981840498,PREFERENTE,2020-06-08
+C000472,1700000472,Mateo,Ortiz,2001-03-30,Manta,Manabí,Costa,mateo.ortiz472@correo.ec,0972809537,BÁSICO,2021-11-21
+C000473,1700000473,Luis,Rodríguez,1998-12-07,Loja,Loja,Sierra,luis.rodriguez473@correo.ec,0977555846,BÁSICO,2019-04-23
+C000474,1700000474,Paola,López,1973-12-16,Riobamba,Chimborazo,Sierra,paola.lopez474@correo.ec,0946170529,BÁSICO,2026-08-14
+C000475,1700000475,Luis,Redín,1978-05-01,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,luis.redin475@correo.ec,0968498434,PREMIUM,2025-07-02
+C000476,1700000476,Paola,López,1960-09-26,Ambato,Tungurahua,Sierra,paola.lopez476@correo.ec,0980108637,PREFERENTE,2024-12-06
+C000477,1700000477,José,Gaibor,1985-08-09,Montalvo,Los Ríos,Costa,jose.gaibor477@correo.ec,,PREFERENTE,2023-08-22
+C000478,1700000478,Sofía,Zambrano,1993-02-12,Montalvo,Los Ríos,Costa,sofia.zambrano478@correo.ec,0927148251,BÁSICO,2020-08-19
+C000479,1700000479,Carolina,Quilligana,1992-02-27,Montalvo,Los Ríos,Costa,carolina.quilligana479@correo.ec,0986697205,PREMIUM,2025-12-14
+C000480,1700000480,Alejandra,Chávez,1960-02-14,Cuenca,Azuay,Sierra,alejandra.chavez480@correo.ec,0975242920,PREFERENTE,2022-07-13
+C000481,1700000481,Erik,Toa,1962-04-09,Montalvo,Los Ríos,Costa,erik.toa481@correo.ec,0977856794,BÁSICO,2018-05-02
+C000482,1700000482,Javier,Ortiz,1995-03-16,Manta,Manabí,Costa,javier.ortiz482@correo.ec,0911289065,PREFERENTE,2021-01-26
+C000483,1700000483,Alejandra,López,1960-04-28,Loja,Loja,Sierra,alejandra.lopez483@correo.ec,0938759985,PREFERENTE,2019-08-25
+C000484,1700000484,Paola,Torres,1969-11-05,Riobamba,Chimborazo,Sierra,paola.torres484@correo.ec,0914986933,PREMIUM,2024-08-22
+C000485,1700000485,Valentina,Gaibor,1987-08-22,Riobamba,Chimborazo,Sierra,valentina.gaibor485@correo.ec,0938204312,BÁSICO,2019-05-02
+C000486,1700000486,Diana,Chávez,1993-12-07,Quito,Pichincha,Sierra,diana.chavez486@correo.ec,0936764681,BÁSICO,2018-05-10
+C000487,1700000487,Gabriela,García,1957-01-22,Quito,Pichincha,Sierra,gabriela.garcia487@correo.ec,0923120811,EMPRESARIAL,2023-04-28
+C000488,1700000488,Fernanda,Toa,1951-04-04,Guayaquil,Guayas,Costa,fernanda.toa488@correo.ec,0993339194,BÁSICO,2025-09-12
+C000489,1700000489,Paola,García,1997-09-18,Riobamba,Chimborazo,Sierra,paola.garcia489@correo.ec,0913051055,PREFERENTE,2019-03-10
+C000490,1700000490,Lucía,García,1974-03-12,babahoyo,Los Ríos,Costa,lucia.garcia490@correo.ec,0932232905,BÁSICO,2020-05-10
+C000491,1700000491,Diego,Toa,1961-07-01,Babahoyo,Los Ríos,Costa,diego.toa491@correo.ec,0990355016,PREFERENTE,2018-05-28
+C000492,1700000492,Fernanda,López,1979-04-08,Ambato,Tungurahua,Sierra,,0936313991,PREFERENTE,2023-08-28
+C000493,1700000493,Paola,Cruz,1970-04-24,Quito,Pichincha,Sierra,paola.cruz493@correo.ec,0995187698,PREMIUM,2025-06-13
+C000494,1700000494,Kevin,Quezada,1971-11-11,Montalvo,Los Ríos,Costa,kevin.quezada494@correo.ec,0931437237,PREFERENTE,2020-01-19
+C000495,1700000495,Gabriela,Bonilla,1955-10-23,Guayaquil,Guayas,Costa,gabriela.bonilla495@correo.ec,0947692386,PREFERENTE,2025-02-23
+C000496,1700000496,Lucía,Quiguiri,2005-04-09,Ambato,Tungurahua,Sierra,lucia.quiguiri496@correo.ec,0922092791,PREFERENTE,2020-02-01
+C000497,1700000497,Alejandra,Cedeño,1969-04-26,Babahoyo,Los Ríos,Costa,alejandra.cedeño497@correo.ec,0916336782,PREFERENTE,2018-11-26
+C000498,1700000498,Diana,Salazar,1988-06-13,Montalvo,Los Ríos,Costa,diana.salazar498@correo.ec,0925415898,BÁSICO,2024-02-24
+C000499,1700000499,Sofía,Torres,1969-03-15,Babahoyo,Los Ríos,Costa,sofia.torres499@correo.ec,0939803770,BÁSICO,2026-02-15
+C000500,1700000500,Gabriela,Rodríguez,1966-06-26,Cuenca,Azuay,Sierra,gabriela.rodriguez500@correo.ec,0941048403,EMPRESARIAL,2023-03-09

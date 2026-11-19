@@ -1,0 +1,13 @@
+﻿control,valor
+clientes_base,500
+clientes_sucios_total,523
+cuentas_total,760
+cuentas_huerfanas,10
+transacciones_total,40140
+transacciones_ids_duplicados,20
+filas_dirty_inyectadas,120
+join_nn_id10_filas_A,3
+join_nn_id10_filas_B,5
+join_nn_id10_resultado_esperado,15
+pivot_categorias_distintas,520
+wide_clientes,60

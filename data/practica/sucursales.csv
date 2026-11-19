@@ -1,0 +1,11 @@
+﻿sucursal_id,nombre_sucursal,ciudad,provincia,region,empleados
+S001,Sucursal Quito,Quito,Pichincha,Sierra,39
+S002,Sucursal Guayaquil,Guayaquil,Guayas,Costa,23
+S003,Sucursal Cuenca,Cuenca,Azuay,Sierra,24
+S004,Sucursal Riobamba,Riobamba,Chimborazo,Sierra,35
+S005,Sucursal Montalvo,Montalvo,Los Ríos,Costa,9
+S006,Sucursal Babahoyo,Babahoyo,Los Ríos,Costa,34
+S007,Sucursal Ambato,Ambato,Tungurahua,Sierra,15
+S008,Sucursal Loja,Loja,Loja,Sierra,39
+S009,Sucursal Manta,Manta,Manabí,Costa,35
+S010,Sucursal Santo Domingo,Santo Domingo,Santo Domingo de los Tsáchilas,Costa,16

@@ -1,0 +1,16 @@
+﻿producto_id,nombre,categoria,comision
+P001,Cuenta Ahorros Básica,CUENTA,0.0
+P002,Cuenta Ahorros Premium,CUENTA,3.5
+P003,Cuenta Corriente,CUENTA,5.0
+P004,Tarjeta Débito,TARJETA,1.0
+P005,Tarjeta Crédito Clásica,TARJETA,4.5
+P006,Tarjeta Crédito Gold,TARJETA,7.5
+P007,Crédito Consumo,CRÉDITO,12.0
+P008,Crédito Vehicular,CRÉDITO,8.5
+P009,Crédito Hipotecario,CRÉDITO,6.0
+P010,Transferencia Nacional,SERVICIO,0.5
+P011,Transferencia Internacional,SERVICIO,15.0
+P012,Pago Servicios,SERVICIO,0.25
+P013,Inversión 90 días,INVERSIÓN,0.0
+P014,Inversión 180 días,INVERSIÓN,0.0
+P015,Seguro Protección,SEGURO,2.75
