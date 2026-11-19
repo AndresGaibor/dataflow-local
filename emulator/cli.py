@@ -9,6 +9,7 @@ import unicodedata
 import uuid
 
 from . import calibrate, compare, coverage, dfw, oracle
+from . import script as qvs
 from .bridge import SANDBOX_SPACE_ID, Bridge, BridgeError, DryRun, SafetyError
 from .remote import Remote, UnsupportedGraph
 
@@ -70,6 +71,28 @@ def _pull(a) -> None:
             print(f"error en {app}: {e}", file=sys.stderr)
     if failed:
         sys.exit(1)
+
+
+def _read_script(path: str) -> str:
+    with open(path, encoding="utf-8") as f:
+        text = f.read()
+    if path.endswith(".json"):
+        return json.loads(text)["script"]
+    return text
+
+
+def _translate(a) -> int:
+    sql, reasons = qvs.translate(_read_script(a.file), a.data)
+    if sql is None:
+        print("no traducible:")
+        for r in reasons:
+            print(f"  - {r}")
+        return 1
+    print(sql)
+    if a.run:
+        rows, cols = qvs.run(sql)
+        print(f"{len(rows)} filas, {len(cols)} columnas: {', '.join(cols)}")
+    return 0
 
 
 def _coverage(a) -> int:
@@ -197,6 +220,10 @@ def main(argv=None):
     co = sub.add_parser("coverage", help="mide que processors usa el corpus y que se puede ejecutar")
     co.add_argument("files", nargs="*", help="archivos .dfw (por omision, samples/**/*.dfw)")
     co.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
+    tr = sub.add_parser("translate", help="traduce un script de Qlik (qvs o .pull.json) a SQL de DuckDB")
+    tr.add_argument("file")
+    tr.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
+    tr.add_argument("--run", action="store_true", help="ejecutar el SQL traducido")
     a = ap.parse_args(argv)
     if a.cmd == "validate":
         if a.remote:
@@ -225,6 +252,8 @@ def main(argv=None):
         return _cleanup(a)
     if a.cmd == "coverage":
         sys.exit(_coverage(a))
+    if a.cmd == "translate":
+        sys.exit(_translate(a))
     if a.cmd == "pull":
         if not (a.app_id or a.all or a.all_spaces):
             ap.error("pull requiere APP_ID, --all o --all-spaces")

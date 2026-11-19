@@ -134,6 +134,12 @@ Ninguna credencial del tenant vive en este repo: la CLI `qlik` usa su propio con
 
 Variantes reales añadidas el 2026-11-19 tras revisar los 18 flujos del tenant: `strings.UPPERCASE`, `REPLACE_ON_VALUE` con `STARTS_WITH` y `REPLACE_CELL_WITH_VALUE` con `EQUALS`.
 
+## 9 ter. Traductor de script
+
+Cubre `LOAD [DISTINCT] campos [AS alias] FROM [lib://conexion/archivo.csv] (...) [WHERE ...]`, con `SET`, `TRACE`, `STORE` y `DROP TABLE` ignorados. Los textos se recortan al leer el CSV, como en Qlik.
+
+Medición sobre los 6 scripts del corpus local: 3 se traducen (`fundamentos`, `fundamentos_filtro_ciudades`, `fundamentos_remove_fields`) y sus huellas coinciden con las del emulador sobre `data/practica`; los otros 3 son flujos inválidos que solo hacen `TRACE` y `throw`. No cubiertos todavía: `RESIDENT`, joins, agregaciones en script y expresiones de campo.
+
 ## 10. Objetos creados en el tenant
 
 Todos en "Entrenamiento Dataflow", prefijo `emu_`. El 2026-11-19 la limpieza dejó el espacio sin objetos `emu_`:
@@ -159,6 +165,7 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 | `dfemu compare archivo.dfw (--app APP\|--push) --apply` | compara resultados del emulador con el tenant |
 | `dfemu cleanup [--apply]` | lista o borra apps y archivos `emu_*` |
 | `dfemu coverage [archivos...]` | mide qué processors usa el corpus y si cada flujo se puede ejecutar |
+| `dfemu translate script.qvs\|.pull.json [--run]` | traduce el script de Qlik a SQL de DuckDB y, con `--run`, lo ejecuta |
 
 El espacio de escritura se configura con `DFEMU_SPACE_ID` y el flujo base con `DFEMU_BASE_APP`.
 
