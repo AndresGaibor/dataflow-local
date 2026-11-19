@@ -21,12 +21,14 @@ UUID = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 HEX24 = re.compile(r"\b[0-9a-f]{24}\b")
 HEX40_64 = re.compile(r"\b[0-9a-f]{40,64}\b")
 QRI = re.compile(r"qri:qdf:space://([^#\s\"]+)#([^\s\"]+)")
-DRIVE = re.compile(r"\b16j1s-[A-Za-z0-9_-]{10,}\b")
+# token de carpeta compartida: largo, con mayusculas, minusculas y digitos
+DRIVE = re.compile(r"\b(?=[A-Za-z0-9_-]{20,}\b)(?=[A-Za-z0-9_-]*[A-Z])(?=[A-Za-z0-9_-]*\d)[A-Za-z0-9_-]+\b")
+# nombres de conexion y proyecto del cliente (p. ej. "Google_BigQuery_<cliente>-<n>")
 NOMBRES = [
-    (re.compile(r"Google_BigQuery_lafavorita-\d+"), "Google_BigQuery_demo"),
-    (re.compile(r"lafavorita-\d+"), "proyecto-demo"),
+    (re.compile(r"Google_BigQuery_[A-Za-z0-9_-]+"), "Google_BigQuery_demo"),
+    (re.compile(r"\b[a-z][a-z0-9]*-\d{6,}\b"), "proyecto-demo"),
 ]
-SUSPECT = [UUID, HEX24, HEX40_64, QRI, DRIVE, re.compile(r"lafavorita"),
+SUSPECT = [UUID, HEX24, HEX40_64, QRI, DRIVE,
            re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")]
 
 
