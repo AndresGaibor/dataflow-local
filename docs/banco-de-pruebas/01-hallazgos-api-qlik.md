@@ -120,25 +120,43 @@ Se descartó descargar el archivo (404/406). Camino verificado:
 
 El script de Qlik no es una traducción 1 a 1 del grafo (fusiona nodos), por eso la comparación es de **resultados**, no de texto.
 
+Dos diferencias del emulador frente a Qlik, corregidas el 2026-11-19 y verificadas con `dfemu compare` sobre `fundamentos` (500 filas, 7 columnas, sin diferencias):
+1. Qlik recorta los espacios de los textos al leer un CSV; el emulador ahora también (`runner._source`). En `clientes.csv`, `ciudad` pasa de 36 valores distintos a 29, que es lo que ve Qlik.
+2. Qlik suma las fechas como números y el emulador no calcula suma para columnas de fecha. El comparador ya no compara la suma cuando solo un lado la tiene.
+
 ## 9. Seguridad
 
 Ninguna credencial del tenant vive en este repo: la CLI `qlik` usa su propio contexto y el emulador solo toma de `DFEMU_SPACE_ID` y `DFEMU_BASE_APP` el espacio y el flujo base. Los `.dfw` de `samples/` están desidentificados con `scripts/deidentify.py`.
 
 ## 10. Objetos creados en el tenant
 
-Todos en "Entrenamiento Dataflow", prefijo `emu_`.
+Todos en "Entrenamiento Dataflow", prefijo `emu_`. El 2026-11-19 la limpieza dejó el espacio sin objetos `emu_`:
 
-| Objeto | Estado |
+```
+python -m emulator.cli cleanup           # lista lo que borraría
+python -m emulator.cli cleanup --apply   # borra apps y archivos emu_*
+```
+
+`cleanup` nunca toca objetos sin prefijo `emu_` ni de otro espacio. Tras ejecutarlo, una segunda pasada responde "nada que limpiar".
+
+## 11. Comandos del banco de pruebas
+
+Todos los comandos son simulación por defecto; las escrituras en el tenant requieren `--apply`.
+
+| Comando | Qué hace |
 |---|---|
-| App `emu_probe` | Existe; su script carga y guarda `emu_probe_out.csv` |
-| Archivo `emu_probe_out.csv` (DataFiles) | Existe |
-| Clon `emu_fundamentos` | **Borrado** (quedó dañado) |
-| Clon `emu_t1` | **Borrado** (quedó dañado) |
+| `dfemu validate archivo.dfw` | valida el `.dfw` con el validador local |
+| `dfemu validate --remote --apply archivo.dfw` | sube el grafo a un clon y lee la validez del servidor |
+| `dfemu calibrate --apply` | compara el validador local con el servidor sobre una batería de mutaciones |
+| `dfemu pull [APP_ID\|--all]` | descarga flujos a `out/corpus/*.pull.json` (solo lectura) |
+| `dfemu run archivo.dfw --data data/practica` | ejecuta el flujo sobre DuckDB |
+| `dfemu compare archivo.dfw (--app APP\|--push) --apply` | compara resultados del emulador con el tenant |
+| `dfemu cleanup [--apply]` | lista o borra apps y archivos `emu_*` |
 
-## 11. Pendiente
+El espacio de escritura se configura con `DFEMU_SPACE_ID` y el flujo base con `DFEMU_BASE_APP`.
+
+## 12. Pendiente
 
 - Subir grafos con subflows (probar si el `PUT` admite un campo `subflows`) y evitar el daño del clon.
-- Cambiar el destino de los `STORE` de un flujo antes de ejecutarlo y comprobarlo con un flujo real.
 - Credencial OAuth (en lugar de API key) para ver si habilita `actions/import` y `actions/export`.
-- Calibrar `emulator/dfw.py` con una batería amplia de mutaciones; añadir la comprobación de fuentes.
 - Comparar línea a línea el script de un clon con el original (se observó que difieren sin analizar por qué).

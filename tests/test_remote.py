@@ -336,3 +336,52 @@ def test_cli_validate_remote_rejected_exit_1(tmp_path, monkeypatch, capsys):
     assert e.value.code == 1
     out = capsys.readouterr().out
     assert ": REJECTED" in out and "   - " in out and "cycle" in out
+
+
+# --- Task 7: limpieza de objetos emu_ ---------------------------------------
+def emu_routes():
+    items = [
+        {"name": "emu_probe", "spaceId": SB, "resourceSubType": None,  # app normal, no de flujo
+         "resourceAttributes": {"id": "app_emu"}},
+        {"name": "fundamentos", "spaceId": SB, "resourceSubType": "dataflow-prep",
+         "resourceAttributes": {"id": "app1"}},
+        {"name": "emu_otro", "spaceId": OTRO, "resourceSubType": "dataflow-prep",
+         "resourceAttributes": {"id": "app_otro"}},
+    ]
+    return {
+        ("GET", "v1/items"): items,
+        ("GET", "v1/data-connections"): [{"id": "conn1", "name": "DataFiles"}],
+        ("GET", "v1/data-files"): [{"id": "f1", "name": "emu_probe_out.csv"},
+                                   {"id": "f2", "name": "otro.csv"}],
+        ("GET", "v1/apps/app_emu"): {"attributes": {"name": "emu_probe", "spaceId": SB}},
+        ("DELETE", "v1/apps/app_emu"): {},
+        ("GET", "v1/data-files/f1"): {"name": "emu_probe_out.csv", "spaceId": SB},
+        ("POST", "v1/data-files/actions/delete"): {},
+    }
+
+
+def test_list_emu_ignores_non_emu_and_other_spaces(tmp_path):
+    b, _ = make_bridge(emu_routes(), tmp_path)
+    flows, files = Remote(b).list_emu()
+    assert flows == [FlowRef("emu_probe", "app_emu", SB)]
+    assert files == ["emu_probe_out.csv"]
+
+
+def test_cleanup_dry_run_deletes_nothing(tmp_path, monkeypatch, capsys):
+    runner = _patch_bridge(monkeypatch, emu_routes(), tmp_path)
+    cli.main(["cleanup"])
+    out = capsys.readouterr().out
+    assert "app emu_probe (app_emu)" in out and "archivo emu_probe_out.csv" in out
+    assert [c for c in runner.calls if c[0] in ("DELETE", "POST")] == []
+
+
+def test_cleanup_apply_deletes_only_emu(tmp_path, monkeypatch, capsys):
+    runner = _patch_bridge(monkeypatch, emu_routes(), tmp_path)
+    cli.main(["cleanup", "--apply"])
+    calls = [(c[0], c[1]) for c in runner.calls]
+    assert ("DELETE", "v1/apps/app_emu") in calls
+    assert ("DELETE", "v1/apps/app1") not in calls
+    assert ("DELETE", "v1/apps/app_otro") not in calls
+    post = [c for c in runner.calls if (c[0], c[1]) == ("POST", "v1/data-files/actions/delete")][0]
+    assert post[2] == {"delete": [{"id": "f1"}]}
+    assert "borrados: 1 app(s), 1 archivo(s)" in capsys.readouterr().out

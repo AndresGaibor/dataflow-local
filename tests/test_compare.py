@@ -67,6 +67,13 @@ def test_compare_sum_within_tolerance():
     assert compare.compare(a, b) == []
 
 
+def test_compare_sum_only_on_one_side_is_ignored():
+    # Qlik suma las fechas como numeros y el emulador las deja como fecha
+    a = {"t": fp(3, {"fecha": col(3, 3)})}
+    b = {"t": fp(3, {"fecha": col(3, 3, 45000.0)})}
+    assert compare.compare(a, b) == []
+
+
 def test_stem_of_qvd_parquet():
     assert compare.stem_of("out/files/a.qvd.parquet") == "a"
     assert compare.stem_of("x/y/clientes.csv") == "clientes"

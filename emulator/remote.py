@@ -5,7 +5,7 @@ import sys
 import uuid
 from typing import NamedTuple
 
-from .bridge import SANDBOX_SPACE_ID, Bridge, BridgeError, SafetyError, valid_id
+from .bridge import PREFIX, SANDBOX_SPACE_ID, Bridge, BridgeError, SafetyError, valid_id
 
 # Flujo base que solo se lee y se clona; se configura con DFEMU_BASE_APP.
 BASE_APP_ID = os.environ.get("DFEMU_BASE_APP", "00000000-0000-0000-0000-000000000001")
@@ -106,16 +106,37 @@ class Remote:
     def discard(self, app_id: str) -> None:
         self._b.delete(f"v1/apps/{_check(app_id)}")
 
-    def discard_files(self, names: list[str]) -> None:
-        if not names:
-            return
+    def _datafiles_conn_id(self) -> str:
         conns = self._b.get("v1/data-connections", {"spaceId": SANDBOX_SPACE_ID, "limit": 50})
         if not isinstance(conns, list):
             raise BridgeError("respuesta sin datos válidos de conexiones")
         datafiles = [c for c in conns if (c.get("qName") or c.get("name")) == "DataFiles"]
         if not datafiles:
             raise BridgeError("no se encontró la conexión DataFiles")
-        conn_id = _check(datafiles[0]["id"])
+        return _check(datafiles[0]["id"])
+
+    def list_emu(self) -> tuple[list[FlowRef], list[str]]:
+        """Apps y archivos `emu_*` del espacio permitido; nada de otros espacios.
+
+        No usa `list_dataflows`: tambien hay que borrar apps `emu_*` que no son de flujo.
+        """
+        resp = self._b.get("v1/items", {"resourceType": "app", "limit": LIST_LIMIT})
+        items = (resp.get("data") or []) if isinstance(resp, dict) else (resp or [])
+        if len(items) >= LIST_LIMIT:
+            print(f"posible listado truncado: {len(items)} items", file=sys.stderr)
+        flows = []
+        for it in items:
+            app_id = (it.get("resourceAttributes") or {}).get("id") or it.get("resourceId")
+            if app_id and it.get("spaceId") == SANDBOX_SPACE_ID and str(it.get("name", "")).startswith(PREFIX):
+                flows.append(FlowRef(it.get("name") or "", app_id, it["spaceId"]))
+        found = self._b.get("v1/data-files", {"connectionId": self._datafiles_conn_id(), "limit": 100}) or []
+        files = sorted({f["name"] for f in found if str(f.get("name", "")).startswith(PREFIX)})
+        return flows, files
+
+    def discard_files(self, names: list[str]) -> None:
+        if not names:
+            return
+        conn_id = self._datafiles_conn_id()
         ids = []
         for name in names:
             found = self._b.get("v1/data-files", {"connectionId": conn_id, "name": name}) or []

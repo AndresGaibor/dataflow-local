@@ -57,9 +57,9 @@ Se mantiene `emulator/` (validar, ejecutar) y se añade, sin rehacer lo existent
 
 ## 6. Orden de entrega
 
-1. `bridge` con seguridad, `pull` y validación remota. (Hecho de lectura ya probado; ahora código y pruebas.)
-2. Oráculo de validez y calibración de `emulator/dfw.py`.
-3. `push` y oráculo de ejecución con comparador sobre los flujos simples (`fundamentos*`).
+1. `bridge` con seguridad, `pull` y validación remota. **Hecho** (2026-11-19).
+2. Oráculo de validez y calibración de `emulator/dfw.py`. **Hecho** (2026-11-19).
+3. `push` y oráculo de ejecución con comparador sobre los flujos simples (`fundamentos*`). **Hecho** (2026-11-19): `dfemu compare` sin diferencias contra el tenant.
 4. Cobertura de processors del emulador, guiada por diferencias (pivot, unpivot, math, strings, window, date...).
 5. Traductor de Qlik script por construcciones, medido contra el corpus.
 6. Orquestación (programación de tareas `DATAFLOW_PREP`, encadenado), CI y empaquetado.
@@ -79,4 +79,4 @@ Cada fase deja pruebas en `tests/` y actualiza `docs/banco-de-pruebas/`.
 - Cómo cambiar el destino de un flujo clonado de forma robusta antes de ejecutarlo.
 - Si una credencial OAuth habilita import/export de `.dfw`.
 - Límite de velocidad de la API para la batería de mutaciones.
-- Política de limpieza de objetos `emu_` (al final de cada corrida o a demanda).
+- Política de limpieza de objetos `emu_`: implementada a demanda con `dfemu cleanup [--apply]`; borra solo apps y archivos `emu_*` del espacio permitido.

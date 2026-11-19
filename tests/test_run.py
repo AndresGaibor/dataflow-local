@@ -60,6 +60,21 @@ def test_xlsx_target_not_executable(tmp_path):
         runner.run(d, DATA, str(tmp_path))
 
 
+def test_lee_csv_recortando_espacios(tmp_path):  # Qlik recorta los textos al leer un CSV
+    d = dfw.load(os.path.join(ROOT, "samples", "fundamentos.dfw"))
+    data = tmp_path / "data"
+    data.mkdir()
+    filas = (
+        "cliente_id,cedula,nombre,apellido,fecha_nacimiento,ciudad,provincia,region,email,telefono,segmento,fecha_registro\n"
+        "1,1700000001,ana,perez,1990-01-01, Cuenca ,Azuay,Sierra,ana@correo.ec,0970000001,BASICO,2020-01-01\n"
+        "2,1700000002,luis,paz,1991-01-01,Cuenca,Azuay,Sierra,luis@correo.ec,0970000002,BASICO,2020-01-01\n"
+    )
+    (data / "clientes.csv").write_text(filas, encoding="utf-8")
+    (t,) = runner.run(d, str(data), str(tmp_path / "out"))
+    got = sql(f"SELECT DISTINCT ciudad FROM read_csv('{t['dest']}')")
+    assert got == [("Cuenca",)]
+
+
 def test_conexion_sin_configurar(tmp_path):
     with pytest.raises(runner.Unsupported):
         runner.run(make_examples.s01_db_a_s3().dump(), DATA, str(tmp_path), {})

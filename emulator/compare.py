@@ -73,6 +73,8 @@ def compare(local: dict[str, dict], remote: dict[str, dict], rel_tol: float = 1e
         for c in sorted(lc.keys() & rc.keys()):
             for k in ("count", "distinct", "sum"):
                 x, y = lc[c][k], rc[c][k]
+                if k == "sum" and (x is None or y is None):
+                    continue  # Qlik suma fechas como numeros: si un lado no tiene suma, no se compara
                 ok = _close(x, y, rel_tol) if k == "sum" else x == y
                 if not ok:
                     msgs.append(f"{t}.{c}: {k} {x} (emulador) != {y} (tenant)")

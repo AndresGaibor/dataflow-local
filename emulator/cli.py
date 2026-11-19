@@ -71,6 +71,28 @@ def _pull(a) -> None:
         sys.exit(1)
 
 
+def _cleanup(a) -> None:
+    remote = Remote(make_bridge(a.apply))
+    try:
+        flows, files = remote.list_emu()
+    except (BridgeError, SafetyError) as e:
+        sys.exit(f"error: {e}")
+    for r in flows:
+        print(f"app {r.name} ({r.app_id})")
+    for n in files:
+        print(f"archivo {n}")
+    if not flows and not files:
+        print("nada que limpiar")
+        return
+    if not a.apply:
+        print("[simulación] usa --apply para borrar")
+        return
+    for r in flows:
+        remote.discard(r.app_id)
+    remote.discard_files(files)
+    print(f"borrados: {len(flows)} app(s), {len(files)} archivo(s)")
+
+
 def _compare(a) -> None:
     d = dfw.load(a.file)
     errs = dfw.validate(d)
@@ -149,6 +171,8 @@ def main(argv=None):
     cp.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
     cp.add_argument("--out", default="out")
     cp.add_argument("--apply", action="store_true", help="ejecutar en el tenant (sin esto solo simula)")
+    cl = sub.add_parser("cleanup", help="borra apps y archivos emu_* del espacio permitido")
+    cl.add_argument("--apply", action="store_true", help="borrar de verdad (sin esto solo lista)")
     a = ap.parse_args(argv)
     if a.cmd == "validate":
         if a.remote:
@@ -173,6 +197,8 @@ def main(argv=None):
         sys.exit(1 if calibrate.disagreements(rows) else 0)
     if a.cmd == "compare":
         return _compare(a)
+    if a.cmd == "cleanup":
+        return _cleanup(a)
     if a.cmd == "pull":
         if not (a.app_id or a.all or a.all_spaces):
             ap.error("pull requiere APP_ID, --all o --all-spaces")

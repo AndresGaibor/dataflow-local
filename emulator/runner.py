@@ -46,7 +46,11 @@ def _source(ctx, node, sources):
         path = os.path.join(ctx.data_dir, t["databaseName"])
         if not os.path.exists(path):
             raise FileNotFoundError(f"dataset {t['databaseName']} no esta en {ctx.data_dir}")
-        return ctx.view(f"SELECT {sel} FROM read_csv({lit(path)}, header=true)")
+        raw = ctx.view(f"SELECT {sel} FROM read_csv({lit(path)}, header=true)")
+        # Qlik recorta los espacios de los textos al leer un CSV; DuckDB no lo hace
+        types = {r[0]: r[1].split("(")[0] for r in ctx.con.execute(f"DESCRIBE SELECT * FROM {raw}").fetchall()}
+        trimmed = [f"trim({q(f)}) AS {q(f)}" if types.get(f) == "VARCHAR" else q(f) for f in fields]
+        return ctx.view(f"SELECT {', '.join(trimmed)} FROM {raw}")
     conn = t["dataconnectorName"]
     cfg = ctx.connections.get(conn)
     if not cfg:
