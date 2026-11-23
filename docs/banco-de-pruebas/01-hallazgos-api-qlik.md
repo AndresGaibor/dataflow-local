@@ -157,7 +157,7 @@ Medición el 2026-11-23 sobre los 18 scripts distintos de `out/corpus*/`: 3 se t
 
 ## 9 quater. Processors: emulador frente al tenant
 
-Verificado el 2026-11-23 con `scripts/processor_battery.py`: **40 casos**, cada uno `clientes` → un processor → destino (los joins usan un `fork` con una rama filtrada), ejecutado en el emulador y, con el mismo grafo, en el tenant (clon `emu_v_*` del flujo base, script generado por Qlik, app `emu_oracle_*`), comparando huellas. Los casos están en `scripts/processor_battery_cases.json`. **Resultado final: los 40 coinciden.** La primera pasada (15 casos) dio diferencias en todos.
+Verificado el 2026-11-23 con `scripts/processor_battery.py`: **51 casos**: 40 individuales (`clientes` → un processor → destino; los joins usan un `fork` con una rama filtrada) y 11 cadenas de 3 o 4 pasos (ver más abajo), ejecutados en el emulador y, con el mismo grafo, en el tenant (clon `emu_v_*` del flujo base, script generado por Qlik, app `emu_oracle_*`), comparando huellas. Los casos están en `scripts/processor_battery_cases.json`. **Resultado final: los 51 coinciden.** La primera pasada (15 casos) dio diferencias en todos; las 11 cadenas coincidieron a la primera una vez corregidos los processors sueltos.
 
 ### Cómo mide el tenant (importante)
 El oráculo no mide el resultado en memoria: **vuelve a cargar el CSV que escribió el flujo** (`oracle._READBACK`) y mide la tabla cargada. En Qlik un archivo no tiene `NULL`: toda celda vacía es el texto vacío, que cuenta como valor y es distinto. Por eso `compare.fingerprint_of` cuenta `count(*)` para todas las columnas y suma 1 al número de distintos si hay algún `NULL`. Esto cubre de una vez los `NULL` que produce el emulador (join sin pareja, conversión de texto no numérico, celda vacía de la fuente). La suma sigue ignorando los vacíos. Una versión intermedia calculaba la huella en memoria; era una aproximación equivocada y se descartó.
@@ -180,6 +180,25 @@ El oráculo no mide el resultado en memoria: **vuelve a cargar el CSV que escrib
 | `STARTS_WITH` | `IF(Match(Left(c, Len(v)), v), r, c)` | prefijo reemplazado por `r` |
 | `ENDS_WITH` | `IF(Match(Right(c, Len(v)), v), r, c)` | `Left(c, Len(c) - Len(v)) & r` |
 | `CONTAINS` | `IF(Index(c, v), r, c)` | `replace` de la parte |
+
+### Cadenas de varios processors
+Once cadenas (`cadena_*` en `scripts/processor_battery_cases.json`), todas coinciden con el tenant:
+
+| Cadena | Pasos |
+|---|---|
+| `cadena_limpiar_texto` | `TRIM` → `UPPERCASE` → `REPLACE_ON_VALUE` (contiene) |
+| `cadena_filtrar_agregar_ordenar` | filtro `ANY` → agregación `COUNT`/`SUM` → orden descendente |
+| `cadena_derivar_filtrar` | `ABSOLUTE` → `MULTIPLY` por constante → filtro numérico sobre la columna nueva |
+| `cadena_fechas_agregar` | `EXTRACT_DATE_PARTS` (año) → agregación por la columna derivada |
+| `cadena_concat_hash_quitar` | `CONCAT` → `HASH_DATA` sobre la columna nueva → `field-remover` |
+| `cadena_dividir_reemplazar` | `split-field` → `REPLACE_ON_VALUE` sobre `campo-split_2` (nombre con guion) |
+| `cadena_filtrar_ventana` | filtro → `RANK` → filtro sobre la columna de la ventana |
+| `cadena_vacios_agregar` | `REPLACE_WITH_VALUE` (vacíos) → `FILL_WITH_VALUE` → agregación con `COUNT_DISTINCT` |
+| `cadena_numero_agregar` | `CONVERT_TO_NUMBER` de texto con vacíos → agregación `SUM` |
+| `cadena_join_agregar` | `fork` + join izquierdo (autounión) → agregación sobre la columna de la rama derecha |
+| `cadena_fork_union_ordenar` | `fork` en dos filtros → `union` → orden |
+
+**Lo que estas pruebas no miden:** la huella cuenta filas, valores distintos y sumas por columna, y **no el orden de las filas**. `sort` y las ventanas están verificados en su contenido, no en su orden. Tampoco se miden los tipos exactos de columna ni el formato de los números o fechas escritos; para eso haría falta comparar el CSV fila a fila.
 
 ### Lo que el servidor dijo sobre sus propios tipos
 - **Ventanas (`window`)**: los tipos válidos son `FIRST`, `AVG`, `MAX`, `CONCATENATE`, `LAST`, `SUM`, `COUNT_DISTINCT`, `ROW_NUMBER`, `COUNT`, `MIN` y `RANK`. **`DENSE_RANK` no existe** (el servidor responde `BAD_REQUEST ... not one of the values accepted for Enum class`). El emulador cubre `RANK` y `ROW_NUMBER`; las ventanas de agregación (`SUM`, `AVG`...) con rango no están emuladas.
@@ -319,7 +338,7 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 | `dfemu compare archivo.dfw (--app APP\|--push [--base-app APP]) --apply` | compara resultados del emulador con el tenant |
 | `dfemu cleanup [--apply]` | lista o borra apps y archivos `emu_*` |
 | `dfemu coverage [archivos...]` | mide qué processors usa el corpus y si cada flujo se puede ejecutar |
-| `python scripts/processor_battery.py [caso ...]` | batería de 40 casos de processors, emulador frente al tenant (escribe en el tenant; limpia lo que crea) |
+| `python scripts/processor_battery.py [caso ...]` | batería de 51 casos (40 processors y 11 cadenas), emulador frente al tenant (escribe en el tenant; limpia lo que crea) |
 | `dfemu translate script.qvs\|.pull.json [--run] [--compare [--apply]]` | traduce el script de Qlik a SQL de DuckDB; con `--run` lo ejecuta y con `--compare --apply` lo compara con la ejecución real en el tenant |
 
 El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DFEMU_BASE_APP` la CLI con `DFEMU_QLIK` (ver 10 bis) y, para usar otro contexto de la CLI sin activarlo, `DFEMU_QLIK_CONTEXT` (ver `02-guia-oauth.md`).

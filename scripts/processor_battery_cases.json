@@ -714,5 +714,532 @@
    },
    "type": "CONVERT_TO_NUMBER"
   }
+ ],
+ "cadena_limpiar_texto": [
+  "chain",
+  [
+   [
+    "strings",
+    {
+     "trimConfiguration": {
+      "columnsToProcess": [
+       "apellido"
+      ],
+      "customPaddingCharacter": "",
+      "newColumnName": "",
+      "shouldCreateNewColumn": false,
+      "type": "WHITESPACE"
+     },
+     "type": "TRIM"
+    }
+   ],
+   [
+    "strings",
+    {
+     "type": "UPPERCASE",
+     "uppercaseConfiguration": {
+      "columnsToProcess": [
+       "nombre"
+      ],
+      "newColumnName": "",
+      "shouldCreateNewColumn": false
+     }
+    }
+   ],
+   [
+    "strings",
+    {
+     "type": "REPLACE_ON_VALUE",
+     "replaceOnValueConfiguration": {
+      "cellValue": {
+       "operator": "CONTAINS",
+       "value": "u"
+      },
+      "columnsToProcess": [
+       "ciudad"
+      ],
+      "newColumnName": "",
+      "replaceMethod": "REPLACE_MATCHING_WITH_VALUE",
+      "replaceValue": "X",
+      "shouldCreateNewColumn": false
+     }
+    }
+   ]
+  ]
+ ],
+ "cadena_filtrar_agregar_ordenar": [
+  "chain",
+  [
+   [
+    "filter",
+    {
+     "logicalOpType": "ANY",
+     "filters": [
+      {
+       "columnName": "ciudad",
+       "function": "EMPTY",
+       "operator": "EQUAL",
+       "compareWith": "VALUE",
+       "value": "Quito",
+       "columnToCompareWith": ""
+      },
+      {
+       "columnName": "ciudad",
+       "function": "EMPTY",
+       "operator": "EQUAL",
+       "compareWith": "VALUE",
+       "value": "Guayaquil",
+       "columnToCompareWith": ""
+      }
+     ]
+    }
+   ],
+   [
+    "aggregate",
+    {
+     "groupBy": [
+      {
+       "fieldPath": "segmento"
+      }
+     ],
+     "operations": [
+      {
+       "operation": "COUNT",
+       "fieldPaths": [
+        "cliente_id"
+       ],
+       "delimiter": ",",
+       "outputFieldPath": "n"
+      },
+      {
+       "operation": "SUM",
+       "fieldPaths": [
+        "cedula"
+       ],
+       "delimiter": ",",
+       "outputFieldPath": "suma"
+      }
+     ]
+    }
+   ],
+   [
+    "sort",
+    {
+     "sortFields": [
+      {
+       "fieldPath": "n",
+       "sortOrder": "DESCENDING"
+      }
+     ]
+    }
+   ]
+  ]
+ ],
+ "cadena_derivar_filtrar": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "absoluteConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "newColumnName": "cedula_abs",
+      "shouldCreateNewColumn": true
+     },
+     "type": "ABSOLUTE"
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "MULTIPLY",
+     "multiplyConfiguration": {
+      "columnsToProcess": [
+       "cedula_abs"
+      ],
+      "constantValue": 2,
+      "mode": "WITH_VALUE",
+      "newColumnName": "ced_x2",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "filter",
+    {
+     "logicalOpType": "ALL",
+     "filters": [
+      {
+       "columnName": "ced_x2",
+       "function": "EMPTY",
+       "operator": "GREATER_OR_EQUAL",
+       "compareWith": "VALUE",
+       "value": "3400000500",
+       "columnToCompareWith": ""
+      }
+     ]
+    }
+   ]
+  ]
+ ],
+ "cadena_fechas_agregar": [
+  "chain",
+  [
+   [
+    "date",
+    {
+     "type": "EXTRACT_DATE_PARTS",
+     "extractDateTokensConfiguration": {
+      "columnsToProcess": [
+       "fecha_nacimiento"
+      ],
+      "datePattern": "YYYY-MM-DD",
+      "year": true,
+      "shouldCreateNewColumn": true,
+      "newColumnRename": ""
+     }
+    }
+   ],
+   [
+    "aggregate",
+    {
+     "groupBy": [
+      {
+       "fieldPath": "fecha_nacimiento_year"
+      }
+     ],
+     "operations": [
+      {
+       "operation": "COUNT",
+       "fieldPaths": [
+        "cliente_id"
+       ],
+       "delimiter": ",",
+       "outputFieldPath": "n"
+      }
+     ]
+    }
+   ]
+  ]
+ ],
+ "cadena_concat_hash_quitar": [
+  "chain",
+  [
+   [
+    "field-concatenator",
+    {
+     "concatConfiguration": {
+      "columnsToProcess": [
+       "nombre"
+      ],
+      "mode": "WITH_FIELD",
+      "newColumnName": "nombre_completo",
+      "prefix": "",
+      "selectedColumn": "apellido",
+      "separator": " ",
+      "separatorCondition": "BOTH_VALUES_NOT_EMPTY",
+      "shouldCreateNewColumn": true,
+      "suffix": ""
+     },
+     "type": "CONCAT"
+    }
+   ],
+   [
+    "masking",
+    {
+     "type": "HASH_DATA",
+     "hashDataConfiguration": {
+      "columnsToProcess": [
+       "nombre_completo"
+      ],
+      "newColumnName": "",
+      "shouldCreateNewColumn": false
+     }
+    }
+   ],
+   [
+    "field-remover",
+    {
+     "selectors": [
+      {
+       "$path_name": "email",
+       "path": "email",
+       "selected": true
+      },
+      {
+       "$path_name": "telefono",
+       "path": "telefono",
+       "selected": true
+      }
+     ]
+    }
+   ]
+  ]
+ ],
+ "cadena_dividir_reemplazar": [
+  "chain",
+  [
+   [
+    "split-field",
+    {
+     "splitTextInPartsConfiguration": {
+      "columnsToProcess": [
+       "apellido"
+      ],
+      "customSeparatorValue": "",
+      "parts": 2,
+      "separator": "SPACE"
+     },
+     "type": "SPLIT_TEXT_IN_PARTS"
+    }
+   ],
+   [
+    "strings",
+    {
+     "type": "REPLACE_ON_VALUE",
+     "replaceOnValueConfiguration": {
+      "cellValue": {
+       "operator": "EQUALS",
+       "value": ""
+      },
+      "columnsToProcess": [
+       "apellido-split_2"
+      ],
+      "newColumnName": "",
+      "replaceMethod": "REPLACE_CELL_WITH_VALUE",
+      "replaceValue": "SIN_SEGUNDO",
+      "shouldCreateNewColumn": false
+     }
+    }
+   ]
+  ]
+ ],
+ "cadena_filtrar_ventana": [
+  "chain",
+  [
+   [
+    "filter",
+    {
+     "logicalOpType": "ALL",
+     "filters": [
+      {
+       "columnName": "cedula",
+       "function": "EMPTY",
+       "operator": "GREATER_OR_EQUAL",
+       "compareWith": "VALUE",
+       "value": "1700000100",
+       "columnToCompareWith": ""
+      }
+     ]
+    }
+   ],
+   [
+    "window",
+    {
+     "operationConfiguration": {
+      "operationType": "RANK",
+      "operationFields": [],
+      "outputFieldName": "rk",
+      "delimiter": ","
+     },
+     "partitionByConfiguration": {
+      "partitionByFieldList": [
+       "segmento"
+      ]
+     },
+     "sortingConfiguration": {
+      "sortBy": "cedula",
+      "sortOrder": "DESCENDING"
+     },
+     "rangeConfiguration": {
+      "windowStartType": "UNLIMITED",
+      "windowEndType": "UNLIMITED",
+      "windowStartValue": 1,
+      "windowEndValue": 1
+     }
+    }
+   ],
+   [
+    "filter",
+    {
+     "logicalOpType": "ALL",
+     "filters": [
+      {
+       "columnName": "rk",
+       "function": "EMPTY",
+       "operator": "LOWER_OR_EQUAL",
+       "compareWith": "VALUE",
+       "value": "3",
+       "columnToCompareWith": ""
+      }
+     ]
+    }
+   ]
+  ]
+ ],
+ "cadena_vacios_agregar": [
+  "chain",
+  [
+   [
+    "data-cleansing",
+    {
+     "type": "REPLACE_WITH_VALUE",
+     "replaceWithValueConfiguration": {
+      "columnsToProcess": [
+       "email"
+      ],
+      "defaultValue": "SIN_EMAIL",
+      "mode": "WITH_VALUE",
+      "newColumnName": "",
+      "replace": [
+       "EMPTY"
+      ],
+      "selectedColumn": "email",
+      "shouldCreateNewColumn": false
+     }
+    }
+   ],
+   [
+    "data-cleansing",
+    {
+     "fillWithValueConfiguration": {
+      "columnsToProcess": [
+       "provincia"
+      ],
+      "defaultValue": "SIN_DATO",
+      "mode": "WITH_VALUE"
+     },
+     "type": "FILL_WITH_VALUE"
+    }
+   ],
+   [
+    "aggregate",
+    {
+     "groupBy": [
+      {
+       "fieldPath": "provincia"
+      }
+     ],
+     "operations": [
+      {
+       "operation": "COUNT_DISTINCT",
+       "fieldPaths": [
+        "email"
+       ],
+       "delimiter": ",",
+       "outputFieldPath": "n_emails"
+      },
+      {
+       "operation": "COUNT",
+       "fieldPaths": [
+        "cliente_id"
+       ],
+       "delimiter": ",",
+       "outputFieldPath": "n"
+      }
+     ]
+    }
+   ]
+  ]
+ ],
+ "cadena_numero_agregar": [
+  "chain",
+  [
+   [
+    "numbers",
+    {
+     "convertToNumberConfiguration": {
+      "columnsToProcess": [
+       "telefono"
+      ],
+      "decimalSeparator": ".",
+      "newColumnName": "tel_n",
+      "shouldCreateNewColumn": true,
+      "thousandSeparator": ","
+     },
+     "type": "CONVERT_TO_NUMBER"
+    }
+   ],
+   [
+    "aggregate",
+    {
+     "groupBy": [
+      {
+       "fieldPath": "segmento"
+      }
+     ],
+     "operations": [
+      {
+       "operation": "SUM",
+       "fieldPaths": [
+        "tel_n"
+       ],
+       "delimiter": ",",
+       "outputFieldPath": "suma_tel"
+      },
+      {
+       "operation": "COUNT",
+       "fieldPaths": [
+        "tel_n"
+       ],
+       "delimiter": ",",
+       "outputFieldPath": "n_tel"
+      }
+     ]
+    }
+   ]
+  ]
+ ],
+ "cadena_fork_union_ordenar": [
+  "forkunion",
+  {}
+ ],
+ "cadena_join_agregar": [
+  "joinchain",
+  {
+   "join": {
+    "joinFunction": "LEFT_OUTER_JOIN",
+    "conditions": [
+     {
+      "leftKey": "cliente_id",
+      "rightKey": "cliente_id",
+      "keepBothKeysInOutput": false
+     }
+    ]
+   },
+   "after": [
+    [
+     "aggregate",
+     {
+      "groupBy": [
+       {
+        "fieldPath": "segmento"
+       }
+      ],
+      "operations": [
+       {
+        "operation": "COUNT",
+        "fieldPaths": [
+         "ciudad_ref"
+        ],
+        "delimiter": ",",
+        "outputFieldPath": "n_ref"
+       },
+       {
+        "operation": "COUNT",
+        "fieldPaths": [
+         "cliente_id"
+        ],
+        "delimiter": ",",
+        "outputFieldPath": "n"
+       }
+      ]
+     }
+    ]
+   ]
+  }
  ]
 }

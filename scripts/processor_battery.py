@@ -1,6 +1,6 @@
 """Bateria de processors: cada caso es `clientes` -> un processor -> destino, ejecutado en el emulador y en el tenant.
 
-Para cada caso: arma el grafo con `emulator.builder`, lo sube a un clon descartable `emu_v_*` del flujo base
+Cada caso es un processor suelto o una cadena de 3 a 4 pasos. Para cada caso: arma el grafo con `emulator.builder`, lo sube a un clon descartable `emu_v_*` del flujo base
 (reutilizando su fuente `clientes`), toma el script que genera Qlik, lo ejecuta en una app `emu_oracle_*` y
 compara las huellas con las del emulador. Todo lo que crea lo borra al terminar.
 
@@ -42,16 +42,29 @@ def build(name: str, entity: str):
     f = Flow(f"emu_p_{name}")
     src = f.dataset("clientes", "clientes.csv", CLIENTES)
     tgt = f.target("Destino", f"emu_p_{name}", x=920)
-    if ctype == "join":
+    if ctype in ("join", "joinchain"):
         # autounion: fork -> rama completa (izquierda) + rama filtrada con solo cliente_id y ciudad como ciudad_ref (derecha)
-        fk, jn = f.proc("fork", "Fork", {}, x=260), f.proc("join", name, cfg, x=700)
+        jcfg, after = (cfg, []) if ctype == "join" else (cfg["join"], cfg["after"])
+        fk, jn = f.proc("fork", "Fork", {}, x=260), f.proc("join", name, jcfg, x=700)
         quito = f.proc("filter", "Solo Quito", flt(("ciudad", "EQUAL", "Quito")), x=420)
         ref = f.proc("field-selector", "Referencia", sel("cliente_id", ("ciudad", "ciudad_ref")), x=560)
         f.link(src, fk)
         f.link(fk, jn)
         f.link(fk, quito, out="OPTIONAL_1")
         f.chain(quito, ref, jn)
-        f.chain(jn, tgt)
+        f.chain(jn, *[f.proc(t, f"{name}_{i}", c, x=800 + 120 * i) for i, (t, c) in enumerate(after)], tgt)
+    elif ctype == "chain":  # pasos lineales: cada uno es [tipo, configuracion]
+        f.chain(src, *[f.proc(t, f"{name}_{i}", c, x=300 + 140 * i) for i, (t, c) in enumerate(cfg)], tgt)
+    elif ctype == "forkunion":  # fork en dos filtros que se unen y se ordenan
+        fk = f.proc("fork", "Fork", {}, x=260)
+        a, b = (f.proc("filter", c, flt(("ciudad", "EQUAL", c)), x=460) for c in ("Quito", "Guayaquil"))
+        un = f.proc("union", "Union", {"unionAll": True}, x=700)
+        f.link(src, fk)
+        f.link(fk, a)
+        f.link(fk, b, out="OPTIONAL_1")
+        f.link(a, un)
+        f.link(b, un)
+        f.chain(un, f.proc("sort", "Orden", {"sortFields": [{"fieldPath": "cedula", "sortOrder": "ASCENDING"}]}, x=820), tgt)
     else:
         f.chain(src, f.proc(ctype, name, cfg, x=380), tgt)
     dump = f.dump()
