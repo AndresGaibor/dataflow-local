@@ -50,3 +50,10 @@ def runs(b: Bridge, task_id: str) -> list[dict]:
 
 def delete(b: Bridge, task_id: str) -> None:
     b.delete(f"scheduling/tasks/{task_id}")
+
+
+def set_enabled(b: Bridge, task_id: str, enabled: bool) -> None:
+    """Habilita o deshabilita una tarea (JSON Patch, RFC 6902). El puente solo admite este cambio."""
+    if not valid_id(task_id):
+        raise SafetyError(f"id de tarea inválido: {task_id!r}")
+    b.patch(f"scheduling/tasks/{task_id}", [{"op": "replace", "path": "/enabled", "value": enabled}])

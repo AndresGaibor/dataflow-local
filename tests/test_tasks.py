@@ -95,3 +95,16 @@ def test_cli_start_refuses_a_task_that_would_overwrite_real_output(tmp_path, mon
     code, out, runner = run_cli(tmp_path, monkeypatch, capsys, ["task", "start", "T1"], extra=unsafe)
     assert code == 1 and "STORE" in out
     assert not [c for c in runner.calls if c[0] == "POST"]
+
+
+def test_set_enabled_sends_a_json_patch(tmp_path):
+    b, r = bridge(tmp_path, extra={("PATCH", "scheduling/tasks/T1"): {}})
+    tasks.set_enabled(b, "T1", True)
+    assert [c for c in r.calls if c[0] == "PATCH"][0][2] == [{"op": "replace", "path": "/enabled", "value": True}]
+
+
+def test_cli_enable_and_disable(tmp_path, monkeypatch, capsys):
+    code, out, runner = run_cli(tmp_path, monkeypatch, capsys, ["task", "disable", "T1", "--apply"],
+                                extra={("PATCH", "scheduling/tasks/T1"): {}})
+    assert code == 0 and "deshabilitada" in out
+    assert [c for c in runner.calls if c[0] == "PATCH"][0][2][0]["value"] is False

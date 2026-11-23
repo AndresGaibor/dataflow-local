@@ -230,6 +230,9 @@ def _task(a) -> int:
         elif a.action == "runs":
             for r in tasks.runs(b, a.task):
                 print(f"{r.get('id')}  {r.get('status')}  {r.get('startedAt', '')}  {r.get('endedAt', '')}")
+        elif a.action in ("enable", "disable"):
+            tasks.set_enabled(b, a.task, a.action == "enable")
+            print(f"tarea {'habilitada' if a.action == 'enable' else 'deshabilitada'}")
         elif a.action == "rm":
             tasks.delete(b, a.task)
             print("tarea borrada")
@@ -237,6 +240,8 @@ def _task(a) -> int:
         print(f"[simulación] {e.method} {e.path}")
     except (BridgeError, SafetyError, ValueError) as e:
         print(f"error: {e}")
+        if "CHO-012" in str(e):
+            print("la tarea esta deshabilitada: habilitela con `task enable TAREA --apply`")
         return 1
     return 0
 
@@ -292,6 +297,9 @@ def main(argv=None):
     t.add_argument("task")
     t = tsub.add_parser("runs", help="ultimas ejecuciones de una tarea", parents=[ap_apply])
     t.add_argument("task")
+    for act, txt in (("enable", "habilita una tarea (hace falta para arrancarla)"), ("disable", "deshabilita una tarea")):
+        t = tsub.add_parser(act, help=txt, parents=[ap_apply])
+        t.add_argument("task")
     t = tsub.add_parser("rm", help="borra una tarea", parents=[ap_apply])
     t.add_argument("task")
     su = sub.add_parser("setup", help="instala la CLI de Qlik, crea el contexto (pide la API key) y fija el espacio de pruebas")

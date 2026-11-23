@@ -410,3 +410,18 @@ def test_delete_task_only_for_emu_app(tmp_path):
     b.delete("scheduling/tasks/T1")
     with pytest.raises(SafetyError):
         b.delete("scheduling/tasks/T2")
+
+
+def test_patch_task_only_toggles_enabled_on_emu_apps(tmp_path):
+    ok = [{"op": "replace", "path": "/enabled", "value": True}]
+    b, runner = _sched(tmp_path, EMU, {("PATCH", "scheduling/tasks/T1"): {}, ("PATCH", "scheduling/tasks/T2"): {}})
+    b.patch("scheduling/tasks/T1", ok)
+    assert runner.calls[-1][2] == ok
+    for bad in ([{"op": "replace", "path": "/name", "value": "x"}],              # otro campo
+                [{"op": "replace", "path": "/enabled", "value": "si"}],          # no booleano
+                [{"op": "remove", "path": "/enabled"}],                          # otra operacion
+                ok + ok, {"enabled": True}, None):                               # forma invalida
+        with pytest.raises(SafetyError):
+            b.patch("scheduling/tasks/T1", bad)
+    with pytest.raises(SafetyError):  # la app de T2 no es emu_
+        b.patch("scheduling/tasks/T2", ok)

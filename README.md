@@ -29,6 +29,7 @@ Después, `python -m emulator.cli --help` lista los comandos; los que escriben e
 python -m emulator.cli task schedule APP --name emu_diaria --recurrence "RRULE:FREQ=DAILY;BYHOUR=3;BYMINUTE=0;BYSECOND=0" --timezone America/Bogota --enable --apply
 python -m emulator.cli task chain OTRA_APP --name emu_despues --after ID_TAREA --on succeeded --enable --apply
 python -m emulator.cli task runs ID_TAREA
+python -m emulator.cli task enable ID_TAREA --apply   # una tarea deshabilitada no se puede arrancar
 ```
 
 Sin `--apply` solo simula. Detalles y trampas (tareas deshabilitadas, destinos de Google Drive) en el apartado 10 ter del documento de hallazgos.

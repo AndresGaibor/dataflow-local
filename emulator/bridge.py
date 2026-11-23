@@ -161,6 +161,12 @@ class Bridge:
             ok = self._app_is_emu(app) and self._stores_only_emu(app)
         elif method == "DELETE" and (m := re.fullmatch(r"scheduling/tasks/([^/]+)", path)):
             ok = self._task_app_is_emu(m.group(1))
+        elif method == "PATCH" and (m := re.fullmatch(r"scheduling/tasks/([^/]+)", path)):
+            # solo habilitar o deshabilitar: un unico `replace` de /enabled con un booleano
+            patch_ok = (isinstance(body, list) and len(body) == 1 and isinstance(body[0], dict)
+                        and body[0].get("op") == "replace" and body[0].get("path") == "/enabled"
+                        and isinstance(body[0].get("value"), bool) and set(body[0]) == {"op", "path", "value"})
+            ok = patch_ok and self._task_app_is_emu(m.group(1))
         if not ok:
             raise SafetyError(f"escritura no permitida: {method} {path}")
 
@@ -210,6 +216,9 @@ class Bridge:
 
     def delete(self, path: str) -> Any:
         return self._write("DELETE", path)
+
+    def patch(self, path: str, body: list) -> Any:
+        return self._write("PATCH", path, body)
 
     def script_set(self, app_id: str, script: str) -> None:
         if not self._app_is_emu(app_id):
