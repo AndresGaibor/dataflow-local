@@ -7,7 +7,7 @@ Documento vivo. Todo lo de aquí se hizo y verificó el 2026-11-23 sobre un tena
 La API key actual hace todo lo que usa el banco de pruebas, salvo `POST v1/dataflows/actions/import` y `/export`, que devuelven 403 con API key. Un cliente OAuth se creó para comprobar si con OAuth esas llamadas se habilitan.
 
 - **No es necesario** para validar, emular, subir grafos, ejecutar scripts ni programar tareas.
-- **Estado (2026-11-23):** el cliente se creó, entrega tokens y la CLI lo usa (`TenantAdmin`). **La conclusión fue que OAuth no hacía falta:** el 403 venía de usar la ruta equivocada (`v1/dataflows/...` en lugar de `v1/dataflow-apps/...`), y las rutas correctas responden igual con API key. Detalle en el apartado 10 quinquies del documento de hallazgos. Esta guía queda por si hace falta un cliente OAuth para otra cosa; si no, conviene borrar el cliente.
+- **Estado (2026-11-23):** el cliente se creó, entrega tokens y la CLI lo usa (`TenantAdmin`). **La conclusión fue que OAuth no hacía falta:** el 403 venía de usar la ruta equivocada (`v1/dataflows/...` en lugar de `v1/dataflow-apps/...`), y las rutas correctas responden igual con API key. Detalle en el apartado 10 quinquies del documento de hallazgos. El cliente de prueba y su contexto de la CLI ya se borraron. Esta guía queda por si hace falta un cliente OAuth para otra cosa.
 - Un cliente M2M actúa como un usuario bot con poder amplio sobre el tenant: se trata como una llave maestra.
 
 ## Requisitos

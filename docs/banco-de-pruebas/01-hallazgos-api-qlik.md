@@ -286,7 +286,7 @@ El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DF
 
 - Modificar la receta dentro de un subflow (`PUT v1/dataflows/{id del subflow}`): no se probó; hoy el subflow se toma del flujo base (ver 5 bis).
 - Import y export de `.dfw` con archivo: ver 10 quinquies. OAuth no era necesario (la API key sirve); falta obtener el id de la subida a `temp-contents` (viene en la cabecera `Location`, que la CLI no muestra) y la descarga del archivo exportado.
-- Borrar el cliente OAuth `dfemu-prueba` (y el contexto `dfemu-oauth` de la CLI) si no se va a usar: tiene rol TenantAdmin.
+- Cliente OAuth `dfemu-prueba`: ya borrado en el tenant y el contexto `dfemu-oauth` ya no está en la CLI (2026-11-23). Si hace falta otro, la guía es `02-guia-oauth.md`.
 - Comparar línea a línea el script de un clon con el original (se observó que difieren sin analizar por qué).
 - Orquestación: ver "Pendiente de esta fase" en el apartado 10 ter (`usage` en tareas avanzadas, flujos reales).
 - Limpieza de archivos escritos en carpetas de Google Drive (`GDDestino`): `dfemu cleanup` solo cubre `DataFiles` y no hay API de Qlik para listar o borrar en un conector de Drive; se borran a mano.
