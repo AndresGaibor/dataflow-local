@@ -8,7 +8,7 @@ import sys
 import unicodedata
 import uuid
 
-from . import calibrate, compare, coverage, dfw, oracle, tasks
+from . import calibrate, compare, coverage, dfw, oracle, scriptnode, tasks
 from . import script as qvs
 from .bridge import SANDBOX_SPACE_ID, Bridge, BridgeError, DryRun, SafetyError
 from .remote import BASE_APP_ID, Remote, UnsupportedGraph
@@ -220,6 +220,30 @@ def _validate(files):
     return bad
 
 
+def _script_node(a) -> int:
+    with open(a.script, encoding="utf-8") as fh:
+        text = fh.read()
+    try:
+        res = scriptnode.push_script_node(Remote(make_bridge(a.apply)), a.base_app or BASE_APP_ID, a.source, a.node, text, a.target)
+    except DryRun as e:
+        print(f"[simulación] {e.method} {e.path}")
+        return 0
+    except (BridgeError, SafetyError, UnsupportedGraph) as e:
+        print(f"error: {e}")
+        return 1
+    status = res.validity.get("status")
+    print(f"validez: {status}")
+    for v in res.validity.get("nodesConstraintViolations") or []:
+        print(f"   - {v.get('code')}: {v.get('title')}")
+    if res.script:
+        os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
+        with open(a.out, "w", encoding="utf-8", newline="\n") as fh:
+            fh.write(res.script.split("///$tab Generated", 1)[-1])
+        print(f"script generado en {a.out}; para ejecutarlo en el tenant y compararlo con la traduccion: "
+              f"dfemu translate {a.out} --compare --apply")
+    return 0 if status in ("VALID", "UNCHANGED") else 1
+
+
 def _task(a) -> int:
     b = make_bridge(a.apply)
     try:
@@ -312,6 +336,14 @@ def main(argv=None):
         t.add_argument("task")
     t = tsub.add_parser("rm", help="borra una tarea", parents=[ap_apply])
     t.add_argument("task")
+    sn = sub.add_parser("script-node", help="crea un nodo `script` por API (copia de un flujo que ya tiene nodos script) y guarda el script que genera Qlik")
+    sn.add_argument("--base-app", help="flujo con nodos script que se copia (por omision DFEMU_BASE_APP)")
+    sn.add_argument("--source", required=True, help="etiqueta de la fuente de la que cuelga el nodo script")
+    sn.add_argument("--node", required=True, help="etiqueta del nodo script a reutilizar")
+    sn.add_argument("--script", required=True, help="archivo con el nuevo texto del script")
+    sn.add_argument("--target", default="emu_script_node", help="nombre del archivo de salida (debe empezar por emu_)")
+    sn.add_argument("--out", default="out/script_node.qvs", help="donde guardar el script generado por Qlik")
+    sn.add_argument("--apply", action="store_true", help="ejecutar en el tenant (sin esto solo simula)")
     su = sub.add_parser("setup", help="instala la CLI de Qlik, crea el contexto (pide la API key) y fija el espacio de pruebas")
     su.add_argument("--yes", action="store_true", help="descargar la CLI sin preguntar")
     su.add_argument("--space", help="id del espacio de pruebas (si no, se elige de una lista)")
@@ -352,6 +384,8 @@ def main(argv=None):
         sys.exit(1 if calibrate.disagreements(rows) else 0)
     if a.cmd == "compare":
         return _compare(a)
+    if a.cmd == "script-node":
+        sys.exit(_script_node(a))
     if a.cmd == "task":
         sys.exit(_task(a))
     if a.cmd == "setup":
