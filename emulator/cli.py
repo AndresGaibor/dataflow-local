@@ -8,7 +8,7 @@ import sys
 import unicodedata
 import uuid
 
-from . import calibrate, compare, coverage, dfw, oracle
+from . import calibrate, compare, coverage, dfw, oracle, tasks
 from . import script as qvs
 from .bridge import SANDBOX_SPACE_ID, Bridge, BridgeError, DryRun, SafetyError
 from .remote import Remote, UnsupportedGraph
@@ -213,6 +213,34 @@ def _validate(files):
     return bad
 
 
+def _task(a) -> int:
+    b = make_bridge(a.apply)
+    try:
+        if a.action == "ls":
+            for t in tasks.list_tasks(b, a.app):
+                print(f"{t.get('id')}  {'habilitada' if t.get('enabled') else 'deshabilitada'}  {t.get('name')}")
+        elif a.action == "schedule":
+            t = tasks.schedule(b, a.app, a.name, a.recurrence, a.timezone, a.enable)
+            print(f"tarea {t.get('id')} creada ({'habilitada' if t.get('enabled') else 'deshabilitada'})")
+        elif a.action == "chain":
+            t = tasks.chain(b, a.app, a.name, a.after, a.on, a.enable)
+            print(f"tarea {t.get('id')} creada: se ejecuta cuando {a.after} termina ({a.on})")
+        elif a.action == "start":
+            print(tasks.start(b, a.task).get("message", "iniciada"))
+        elif a.action == "runs":
+            for r in tasks.runs(b, a.task):
+                print(f"{r.get('id')}  {r.get('status')}  {r.get('startedAt', '')}  {r.get('endedAt', '')}")
+        elif a.action == "rm":
+            tasks.delete(b, a.task)
+            print("tarea borrada")
+    except DryRun as e:
+        print(f"[simulación] {e.method} {e.path}")
+    except (BridgeError, SafetyError, ValueError) as e:
+        print(f"error: {e}")
+        return 1
+    return 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="dfemu")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -242,6 +270,30 @@ def main(argv=None):
     cp.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
     cp.add_argument("--out", default="out")
     cp.add_argument("--apply", action="store_true", help="ejecutar en el tenant (sin esto solo simula)")
+    tk = sub.add_parser("task", help="programa, encadena, arranca y borra tareas de recarga de apps emu_")
+    ap_apply = argparse.ArgumentParser(add_help=False)
+    ap_apply.add_argument("--apply", action="store_true", help="ejecutar en el tenant (sin esto solo simula)")
+    tsub = tk.add_subparsers(dest="action", required=True)
+    t = tsub.add_parser("ls", help="lista las tareas de una app", parents=[ap_apply])
+    t.add_argument("app")
+    t = tsub.add_parser("schedule", help="recarga la app segun una regla RRULE", parents=[ap_apply])
+    t.add_argument("app")
+    t.add_argument("--name", required=True)
+    t.add_argument("--recurrence", required=True, help="p. ej. RRULE:FREQ=DAILY;BYHOUR=3;BYMINUTE=0;BYSECOND=0")
+    t.add_argument("--timezone", default="UTC")
+    t.add_argument("--enable", action="store_true", help="crear habilitada (por omision queda deshabilitada)")
+    t = tsub.add_parser("chain", help="recarga la app cuando termina otra tarea", parents=[ap_apply])
+    t.add_argument("app")
+    t.add_argument("--name", required=True)
+    t.add_argument("--after", required=True, help="id de la tarea previa")
+    t.add_argument("--on", default="succeeded", choices=tasks.STATUSES)
+    t.add_argument("--enable", action="store_true")
+    t = tsub.add_parser("start", help="arranca una tarea habilitada", parents=[ap_apply])
+    t.add_argument("task")
+    t = tsub.add_parser("runs", help="ultimas ejecuciones de una tarea", parents=[ap_apply])
+    t.add_argument("task")
+    t = tsub.add_parser("rm", help="borra una tarea", parents=[ap_apply])
+    t.add_argument("task")
     su = sub.add_parser("setup", help="instala la CLI de Qlik, crea el contexto (pide la API key) y fija el espacio de pruebas")
     su.add_argument("--yes", action="store_true", help="descargar la CLI sin preguntar")
     su.add_argument("--space", help="id del espacio de pruebas (si no, se elige de una lista)")
@@ -282,6 +334,8 @@ def main(argv=None):
         sys.exit(1 if calibrate.disagreements(rows) else 0)
     if a.cmd == "compare":
         return _compare(a)
+    if a.cmd == "task":
+        sys.exit(_task(a))
     if a.cmd == "setup":
         from . import setup
         try:

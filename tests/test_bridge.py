@@ -343,3 +343,70 @@ def test_ids_with_slash_rejected_before_lookup(tmp_path):
     with pytest.raises(SafetyError):
         b.post("v1/data-files/actions/delete", {"delete": [{"id": "ok/x"}]})
     assert runner.calls == []
+
+
+# --- tareas programadas (scheduling) -------------------------------------------
+
+EMU = {"attributes": {"name": "emu_x", "spaceId": SB}}
+REAL = {"attributes": {"name": "fundamentos", "spaceId": SB}}
+SAFE = "LOAD [a] FROM [lib://c/a.csv] (txt);\nSTORE [T] INTO [lib://c:GDDestino/emu_t.csv] (txt);\nDROP TABLE [T];"
+UNSAFE = SAFE.replace("emu_t.csv", "clientes.csv")
+
+
+def _sched(tmp_path, app, extra=None):
+    routes = {("GET", "v1/apps/A"): app, ("GET", "v1/apps/B"): REAL,
+              ("GET", "scheduling/tasks/T1"): {"resourceId": "A"}, ("GET", "scheduling/tasks/T2"): {"resourceId": "B"},
+              ("GET", "v1/apps/A/scripts/current"): {"script": SAFE},
+              ("POST", "scheduling/tasks/resources/A/actions/reload/on-time-schedule"): {"id": "T9"},
+              ("POST", "scheduling/tasks/resources/A/actions/reload/on-task-event"): {"id": "T9"},
+              ("POST", "scheduling/tasks/T1/actions/start"): {}, ("DELETE", "scheduling/tasks/T1"): {},
+              ("POST", "scheduling/tasks/T2/actions/start"): {}, ("DELETE", "scheduling/tasks/T2"): {}, **(extra or {})}
+    return make(routes, tmp_path, apply=True)
+
+
+SCHED = "scheduling/tasks/resources/A/actions/reload/on-time-schedule"
+CHAIN = "scheduling/tasks/resources/A/actions/reload/on-task-event"
+
+
+def test_schedule_allowed_only_for_emu_app(tmp_path):
+    b, runner = _sched(tmp_path, EMU)
+    b.post(SCHED, {"name": "n", "recurrence": "RRULE:FREQ=DAILY"})
+    assert len(writes(runner)) == 1
+    b, runner = _sched(tmp_path, REAL)
+    with pytest.raises(SafetyError):
+        b.post(SCHED, {"name": "n", "recurrence": "RRULE:FREQ=DAILY"})
+    assert not writes(runner)
+
+
+def test_chain_requires_emu_upstream_task(tmp_path):
+    b, _ = _sched(tmp_path, EMU)
+    b.post(CHAIN, {"name": "n", "onTaskId": "T1"})
+    with pytest.raises(SafetyError):  # la tarea previa es de una app que no es emu_
+        b.post(CHAIN, {"name": "n", "onTaskId": "T2"})
+    with pytest.raises(SafetyError):
+        b.post(CHAIN, {"name": "n"})
+
+
+def test_start_requires_emu_app_and_emu_store_targets(tmp_path):
+    b, runner = _sched(tmp_path, EMU)
+    b.post("scheduling/tasks/T1/actions/start", None)
+    with pytest.raises(SafetyError):  # la app de T2 no es emu_
+        b.post("scheduling/tasks/T2/actions/start", None)
+    b, runner = _sched(tmp_path, EMU, {("GET", "v1/apps/A/scripts/current"): {"script": UNSAFE}})
+    with pytest.raises(SafetyError, match="STORE"):  # escribiria en un archivo que no es emu_
+        b.post("scheduling/tasks/T1/actions/start", None)
+    assert not writes(runner)
+
+
+@pytest.mark.parametrize("script", ["IF 1 THEN STORE [T] INTO [lib://c/clientes.csv] (txt); END IF", "STORE T INTO x;"])
+def test_start_rejects_store_it_cannot_read(tmp_path, script):
+    b, _ = _sched(tmp_path, EMU, {("GET", "v1/apps/A/scripts/current"): {"script": script}})
+    with pytest.raises(SafetyError):
+        b.post("scheduling/tasks/T1/actions/start", None)
+
+
+def test_delete_task_only_for_emu_app(tmp_path):
+    b, _ = _sched(tmp_path, EMU)
+    b.delete("scheduling/tasks/T1")
+    with pytest.raises(SafetyError):
+        b.delete("scheduling/tasks/T2")

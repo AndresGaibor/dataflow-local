@@ -151,8 +151,36 @@ class Bridge:
             if not ids or not all(valid_id(i) for i in ids):
                 raise SafetyError("lista de ids de archivos inválida")
             ok = all(_is_emu(self._raw("GET", f"v1/data-files/{i}") or {}) for i in ids)
+        elif method == "POST" and (m := re.fullmatch(r"scheduling/tasks/resources/([^/]+)/actions/reload/(on-time-schedule|on-task-event)", path)):
+            ok = self._app_is_emu(m.group(1))
+            if ok and m.group(2) == "on-task-event":  # la tarea previa tambien debe ser de una app emu_
+                up = body.get("onTaskId") if isinstance(body, dict) else None
+                ok = isinstance(up, str) and self._task_app_is_emu(up)
+        elif method == "POST" and (m := re.fullmatch(r"scheduling/tasks/([^/]+)/actions/start", path)):
+            app = self._task_app(m.group(1))
+            ok = self._app_is_emu(app) and self._stores_only_emu(app)
+        elif method == "DELETE" and (m := re.fullmatch(r"scheduling/tasks/([^/]+)", path)):
+            ok = self._task_app_is_emu(m.group(1))
         if not ok:
             raise SafetyError(f"escritura no permitida: {method} {path}")
+
+    def _task_app(self, task_id: str) -> str:
+        if not valid_id(task_id):
+            raise SafetyError(f"id de tarea inválido: {task_id!r}")
+        return str((self._raw("GET", f"scheduling/tasks/{task_id}") or {}).get("resourceId", ""))
+
+    def _task_app_is_emu(self, task_id: str) -> bool:
+        return self._app_is_emu(self._task_app(task_id))
+
+    def _stores_only_emu(self, app_id: str) -> bool:
+        """Una tarea solo arranca si todo STORE del script escribe en un archivo emu_ (no pisa salidas reales)."""
+        script = str((self._raw("GET", f"v1/apps/{app_id}/scripts/current") or {}).get("script", ""))
+        words = [mm.start() for mm in re.finditer(r"(?i)\bSTORE\b", script)]
+        good = [mm.start() for mm in re.finditer(
+            r"(?i)\bSTORE\s+\[[^\]]+\]\s+INTO\s+\[lib://[^\]]*/emu_[^/\]]*\]", script)]
+        if words != good:
+            raise SafetyError("el script tiene un STORE que no escribe en un archivo emu_; la tarea no se ejecuta")
+        return True
 
     def _audit(self, method: str, path: str, applied: bool) -> None:
         os.makedirs(os.path.dirname(self._audit_path) or ".", exist_ok=True)

@@ -176,6 +176,41 @@ Si el sistema impide ejecutarlo (`OSError`), el puente devuelve el código 126 y
 
 **Uso manual en PowerShell (fuera del emulador):** anteponer la carpeta al PATH de la sesión: `$env:PATH = "C:\ProgramData\chocolatey\lib\qlik-cli\tools;" + $env:PATH`. Git Bash no puede ejecutar el shim. Al canalizar la salida de `qlik raw` hacia Python desde PowerShell se añade un BOM; usar `ConvertFrom-Json` en PowerShell o leer con `utf-8-sig`.
 
+## 10 ter. Orquestación: tareas programadas y encadenadas
+
+Verificado el 2026-11-23 con la API `scheduling` (la API `reload-tasks` está obsoleta; `v1/tasks` también aparece como reemplazada). Implementado en `emulator/tasks.py` y `dfemu task`.
+
+**Endpoints** (con `qlik raw`, ruta relativa a `/api/`, sin el prefijo `v1/`):
+
+| Operación | Llamada | Notas |
+|---|---|---|
+| Programar | `POST scheduling/tasks/resources/{appId}/actions/reload/on-time-schedule` | cuerpo: `name`, `recurrence` (RFC 5545 con prefijo `RRULE:`), `timezone` (IANA, por omisión `UTC`), `enabled` (por omisión `false`), opcionales `startDateTime`, `endDateTime`, `partial`, `description` |
+| Encadenar | `POST scheduling/tasks/resources/{appId}/actions/reload/on-task-event` | cuerpo: `name`, `onTaskId`, `onTaskStatus` (`succeeded` por omisión, `failed` o `any`), `enabled` |
+| Listar | `GET scheduling/tasks?resourceId={appId}` | devuelve un arreglo en la raíz (no `{data: [...]}`) |
+| Arrancar | `POST scheduling/tasks/{id}/actions/start` | responde `{"code": "CHO-000", "message": "OK"}` |
+| Corridas | `GET scheduling/tasks/{id}/runs` | cada corrida trae `status` (`RUNNING`, `SUCCEEDED`, `FAILED`), `log`, `endedAt`, `actionId` |
+| Borrar | `DELETE scheduling/tasks/{id}` | |
+
+**Lo que se comprobó en vivo**
+- Programar y encadenar crean la tarea con `version` "1.0.0", un estado `init_state` y `start.schedule` con la regla y la zona. La tarea nace **deshabilitada** salvo que se pida `enabled`.
+- **Una tarea deshabilitada no se puede arrancar a mano**: `422 CHO-012 "Task is disabled"`. Para probar un arranque hay que crearla habilitada (el planificador la ejecutaría a su hora, así que se borra al terminar).
+- **El encadenamiento funciona de punta a punta**: se arrancó la tarea A, terminó `SUCCEEDED` y la tarea B (encadenada con `on-task-event`, habilitada) arrancó sola y terminó `SUCCEEDED` unos 3 s después.
+- Los endpoints aceptan apps de Data Flow (`DATAFLOW_PREP`). La tarea creada no lleva campo `usage`. Un clon del flujo base con el destino cambiado a un archivo `emu_` se ejecutó como tarea: `SUCCEEDED`, 500 filas leídas y 500 escritas.
+- Errores documentados por la API: `CHO-001` cuerpo inválido, `CHO-003` app inexistente o sin permiso `app:reload`, `CHO-014` la app ya tiene el máximo de tareas, `CHO-017` regla o zona rechazada (la frecuencia mínima es `MINUTELY`), `CHO-018` cuota por usuario, `CHO-016` `onTaskId` inexistente.
+
+**Reglas de seguridad añadidas a `Bridge._authorize`**
+1. Programar y encadenar: solo si la app es `emu_` del espacio de pruebas; al encadenar, la app de la tarea previa también debe serlo.
+2. Arrancar: la app debe ser `emu_` **y** todo `STORE` de su script debe escribir en un archivo `emu_` (`STORE [t] INTO [lib://.../emu_x.csv]`). Cualquier otra aparición de la palabra `STORE` bloquea el arranque.
+3. Borrar una tarea: solo si su app es `emu_`.
+
+La regla 2 es necesaria: **un clon de un flujo conserva el destino del original**. El primer intento de arrancar una tarea sobre un clon sin cambios lo rechazó el puente ("el script tiene un STORE que no escribe en un archivo emu_"); sin la guarda habría sobrescrito la salida real.
+
+**Destinos de Google Drive (`GDDestino`)**
+- El conector exige la ruta `{idCarpeta}/{archivo}`. Si se cambia el `fileName` del nodo destino por un nombre sin carpeta, la recarga falla con `Expecting a file path of format {folderId}/{fileName}`. Hay que conservar el prefijo de carpeta del original y cambiar solo el nombre (`<carpeta>/emu_xxx`).
+- `dfemu cleanup` solo ve los archivos de la conexión `DataFiles`: **un archivo escrito en una carpeta de Google Drive no se borra solo**. La verificación del 2026-11-23 dejó `emu_task_136997.csv` en la carpeta de `GDDestino` del espacio; hay que borrarlo a mano.
+
+**Pendiente de esta fase:** habilitar o deshabilitar una tarea existente (`PATCH scheduling/tasks/{id}`) no está expuesto en el puente; `usage: DATAFLOW_PREP` en una tarea creada con `POST scheduling/tasks` (opción avanzada) no se probó; las tareas sobre flujos reales (no `emu_`) quedan fuera de la autorización actual.
+
 ## 11. Comandos del banco de pruebas
 
 Todos los comandos son simulación por defecto; las escrituras en el tenant requieren `--apply`.
@@ -183,6 +218,10 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 | Comando | Qué hace |
 |---|---|
 | `dfemu setup [--yes] [--space ID] [--base-app ID]` | instala la CLI de Qlik, crea el contexto pidiendo la API key y fija el espacio y el flujo base |
+| `dfemu task ls APP` | lista las tareas de una app `emu_` |
+| `dfemu task schedule APP --name N --recurrence RRULE [--timezone TZ] [--enable] [--apply]` | programa la recarga de una app `emu_` |
+| `dfemu task chain APP --name N --after TAREA [--on succeeded\|failed\|any] [--enable] [--apply]` | encadena: recarga la app cuando termina otra tarea |
+| `dfemu task start TAREA [--apply]` / `runs TAREA` / `rm TAREA [--apply]` | arranca (solo habilitadas), consulta corridas o borra |
 | `dfemu validate archivo.dfw` | valida el `.dfw` con el validador local |
 | `dfemu validate --remote --apply archivo.dfw` | sube el grafo a un clon y lee la validez del servidor |
 | `dfemu calibrate --apply` | compara el validador local con el servidor sobre una batería de mutaciones |
@@ -200,3 +239,6 @@ El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DF
 - Subir grafos con subflows (probar si el `PUT` admite un campo `subflows`) y evitar el daño del clon.
 - Credencial OAuth (en lugar de API key) para ver si habilita `actions/import` y `actions/export`.
 - Comparar línea a línea el script de un clon con el original (se observó que difieren sin analizar por qué).
+- Orquestación: ver "Pendiente de esta fase" en el apartado 10 ter (`PATCH` de tareas, `usage`, flujos reales).
+- Limpieza de archivos escritos en carpetas de Google Drive (`GDDestino`): `dfemu cleanup` solo cubre `DataFiles`.
+- Crear fuentes nuevas en un flujo: el `entityId` de cada nodo fuente es propio del flujo y no se encontró cómo registrar una (ver 9 ter).

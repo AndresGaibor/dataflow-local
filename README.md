@@ -20,3 +20,22 @@ python -m emulator.cli setup
 Ejecutarlo de nuevo es seguro: lo que ya funciona se salta.
 
 Después, `python -m emulator.cli --help` lista los comandos; los que escriben en el tenant simulan salvo que se pase `--apply`. Las pruebas locales (`python -m pytest`) no necesitan tenant ni red.
+
+## Orquestación
+
+`python -m emulator.cli task` programa, encadena, arranca y borra tareas de recarga con la API `scheduling` de Qlik. Solo actúa sobre apps `emu_` del espacio de pruebas, y una tarea no arranca si su script escribe en un archivo que no sea `emu_`. Ejemplo:
+
+```
+python -m emulator.cli task schedule APP --name emu_diaria --recurrence "RRULE:FREQ=DAILY;BYHOUR=3;BYMINUTE=0;BYSECOND=0" --timezone America/Bogota --enable --apply
+python -m emulator.cli task chain OTRA_APP --name emu_despues --after ID_TAREA --on succeeded --enable --apply
+python -m emulator.cli task runs ID_TAREA
+```
+
+Sin `--apply` solo simula. Detalles y trampas (tareas deshabilitadas, destinos de Google Drive) en el apartado 10 ter del documento de hallazgos.
+
+## Desarrollo
+
+- `python -m pytest` corre todo sin tenant ni red. `tests/conftest.py` fija ids de relleno aunque exista `dfemu.local.json`; con `DFEMU_TENANT=1` usa los ids reales y activa las pruebas contra el tenant.
+- Los `.dfw` de `samples/` tienen ids desidentificados: sirven para validar y emular en local, no se pueden subir al tenant. Para eso se usan los grafos descargados con `dfemu pull` en `out/` (ignorado por git).
+- `dfemu translate SCRIPT --compare --apply` ejecuta un script de Qlik en el tenant y lo compara con su traducción local a SQL.
+- Los objetos creados en el tenant llevan el prefijo `emu_`; `dfemu cleanup --apply` borra apps y archivos `emu_` de `DataFiles`. Los archivos escritos en carpetas de Google Drive no los ve.
