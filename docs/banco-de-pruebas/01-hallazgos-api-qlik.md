@@ -136,9 +136,9 @@ Variantes reales añadidas el 2026-11-19 tras revisar los 18 flujos del tenant: 
 
 ## 9 ter. Traductor de script
 
-Cubre `LOAD [DISTINCT] campos [AS alias] FROM [lib://conexion/archivo.csv] (...) [WHERE ...]`, con `SET`, `TRACE`, `STORE` y `DROP TABLE` ignorados. Los textos se recortan al leer el CSV, como en Qlik.
+Cada sentencia con nombre es una tabla; `RESIDENT [T]` lee otra tabla del script; `LEFT|INNER|RIGHT|OUTER JOIN([T])` (sin tipo = outer, como Qlik) une por los campos en común y falla si no hay; `GROUP BY` solo con campos simples. Expresiones: `Upper`, `Trim`, `Year`, `Month`, `IsNull`, `Coalesce`, `If` y condiciones simples; agregaciones `Sum`, `Avg`, `Min`, `Max`, `Count` y `Count(DISTINCT ...)`. `SET`, `TRACE`, `STORE` y `DROP TABLE` se ignoran (el `STORE` fija la tabla de salida). Los textos se recortan al leer el CSV, como en Qlik. Todo lo demás se marca no traducible; nunca se pasa SQL crudo.
 
-Medición sobre los 6 scripts del corpus local: 3 se traducen (`fundamentos`, `fundamentos_filtro_ciudades`, `fundamentos_remove_fields`) y sus huellas coinciden con las del emulador sobre `data/practica`; los otros 3 son flujos inválidos que solo hacen `TRACE` y `throw`. No cubiertos todavía: `RESIDENT`, joins, agregaciones en script y expresiones de campo.
+Medición el 2026-11-23 sobre los 18 scripts distintos de `out/corpus*/`: 3 se traducen (los de `fundamentos`, con huellas iguales al emulador sobre `data/practica`). Los otros 15: 10 cargan desde BigQuery o Postgres con `LIB CONNECT` y `SELECT` (necesitan conexión), 3 son flujos inválidos (`throw`), 1 lee un `.xlsx` y 1 no carga ninguna tabla. **Joins, `RESIDENT` y agregaciones solo están probados con scripts sintéticos en `tests/test_script.py`: ningún script local los usa con CSV, y no se han comparado con el tenant.** Sin verificar: `Sum` sobre solo nulos (aquí da NULL, como SQL; la documentación de Qlik no lo dice) y join con campos comunes de distinto tipo. Sin cubrir: `LIB CONNECT`, `xlsx`/`qvd`, `CONCATENATE`, `Match`, `SubField`, `Window`, varios destinos `STORE`.
 
 ## 10. Objetos creados en el tenant
 

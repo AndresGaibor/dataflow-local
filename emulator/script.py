@@ -85,12 +85,64 @@ def _literal(s: str) -> str:
     return "'" + s.replace("'", "''") + "'"
 
 
-def _field(item: str) -> str | None:
-    m = re.fullmatch(r"\[([^\]]+)\](?:\s+AS\s+\[([^\]]+)\])?", item.strip(), re.IGNORECASE)
-    if m:
-        return f"{_ident(m.group(1))} AS {_ident(m.group(2) or m.group(1))}"
-    m = re.fullmatch(r"\*", item.strip())
-    return "*" if m else None
+_AGG = r"\b(?:sum|avg|count|min|max)\s*\("
+_FUNCS = {"upper": "upper({0})", "trim": "trim({0})", "year": "year({0})", "month": "month({0})",
+          "isnull": "({0} IS NULL)", "sum": "SUM({0})", "avg": "AVG({0})", "min": "MIN({0})",
+          "max": "MAX({0})", "count": "COUNT({0})"}
+
+
+def _call(e: str):
+    """(nombre, argumentos) si `e` es una sola llamada `Nombre(...)`, si no None."""
+    m = re.fullmatch(r"([A-Za-z_]+)\s*\((.*)\)", e, re.DOTALL)
+    if not m:
+        return None
+    depth = 0
+    for ch in m.group(2):  # shortcut: parentesis dentro de textos cuentan, mejorar si aparece un caso real
+        depth += (ch == "(") - (ch == ")")
+        if depth < 0:
+            return None
+    return m.group(1).lower(), m.group(2)
+
+
+def _expr_sql(e: str) -> str | None:
+    """Expresion de Qlik a SQL de DuckDB; None si no se reconoce."""
+    e = e.strip()
+    if m := re.fullmatch(r"\[([^\]]+)\]", e):
+        return _ident(m.group(1))
+    if re.fullmatch(r"-?\d+(?:\.\d+)?|'(?:[^']|'')*'", e):
+        return e
+    if call := _call(e):
+        name, args = call
+        if name == "count" and (md := re.match(r"DISTINCT\s+(.*)$", args, re.IGNORECASE | re.DOTALL)):
+            inner = _expr_sql(md.group(1))
+            return f"COUNT(DISTINCT {inner})" if inner else None
+        a = [_expr_sql(x) for x in _split_top(args)]
+        if not a or None in a:
+            return None
+        if name == "if" and len(a) == 3:
+            return f"(CASE WHEN {a[0]} THEN {a[1]} ELSE {a[2]} END)"
+        if name == "coalesce":
+            return f"coalesce({', '.join(a)})"
+        t = _FUNCS.get(name)
+        return t.format(*a) if t and len(a) == 1 else None
+    if re.search(r"\b(?!AND\b|OR\b|NOT\b)[A-Za-z_]+\s*\(", e, re.IGNORECASE):
+        return None  # llamada que no conocemos: no se deja pasar como SQL crudo
+    return _where(e)
+
+
+def _item(item: str):
+    """Campo de un LOAD -> (sql, es_agregado, campo_origen | None); None si no se traduce."""
+    s = item.strip()
+    if s == "*":
+        return "*", False, None
+    m = re.fullmatch(r"(.+?)\s+AS\s+\[([^\]]+)\]", s, re.IGNORECASE | re.DOTALL)
+    expr, alias = (m.group(1), m.group(2)) if m else (s, None)
+    sql = _expr_sql(expr)
+    src = re.fullmatch(r"\[([^\]]+)\]", expr.strip())
+    if sql is None or (alias is None and not src):
+        return None
+    return (f"{sql} AS {_ident(alias)}" if alias else sql), bool(re.search(_AGG, expr, re.IGNORECASE)), \
+        (src.group(1) if src else None)
 
 
 def _where(cond: str) -> str | None:
@@ -122,59 +174,139 @@ def _reader(path: str) -> str | None:
     return f"(SELECT * REPLACE ({', '.join(trims)}) FROM {base})" if trims else base
 
 
+_HEAD = re.compile(
+    r"(?:\[(?P<name>[^\]]+)\]:\s*)?(?:NOCONCATENATE\s+)?"
+    r"(?:(?P<kind>LEFT|INNER|RIGHT|OUTER)?\s*JOIN\s*\(\s*\[(?P<jt>[^\]]+)\]\s*\)\s*)?"
+    r"LOAD\s+(?P<distinct>DISTINCT\s+)?(?P<body>.*)$", re.IGNORECASE | re.DOTALL)
+_JOINS = {None: "FULL", "LEFT": "LEFT", "INNER": "INNER", "RIGHT": "RIGHT", "OUTER": "FULL"}  # JOIN sin tipo = outer en Qlik
+
+
+def _with(ctes: list[tuple[str, str]]) -> str:
+    return "WITH " + ", ".join(f"{_ident(n)} AS ({q})" for n, q in ctes) + " " if ctes else ""
+
+
+def _columns(ctes: list[tuple[str, str]], sql: str) -> list[str]:
+    con = duckdb.connect()
+    try:
+        return [r[0] for r in con.execute(f"DESCRIBE {_with(ctes)}SELECT * FROM ({sql})").fetchall()]
+    finally:
+        con.close()
+
+
+def _load(m: re.Match, cur: dict, data_dir: str, reasons: list[str]) -> str | None:
+    """SELECT de un LOAD ... (FROM csv | RESIDENT) [WHERE] [GROUP BY]; None si no se traduce."""
+    body = m.group("body")
+    mx = re.search(r"\bFROM\s+\[([^\]]+)\]\s*(\([^)]*\))?|\bRESIDENT\s+\[([^\]]+)\]", body, re.IGNORECASE)
+    if not mx:
+        reasons.append("LOAD sin FROM ni RESIDENT")
+        return None
+    items = []
+    for raw in _split_top(body[:mx.start()]):
+        it = _item(raw)
+        if it is None:
+            reasons.append(f"campo no soportado: {raw[:40]}")
+            return None
+        items.append(it)
+    if mx.group(3):
+        if mx.group(3) not in cur:
+            reasons.append(f"RESIDENT de una tabla desconocida: {mx.group(3)}")
+            return None
+        source = _ident(cur[mx.group(3)])
+    else:
+        name = _source_file(mx.group(1))
+        if name is None:
+            reasons.append(f"origen no soportado (solo .csv): {mx.group(1)}")
+            return None
+        source = _reader(os.path.join(data_dir, name))
+        if source is None:
+            reasons.append(f"no se pudo leer el CSV: {name}")
+            return None
+    rest = body[mx.end():].strip()
+    group = None
+    if mg := re.search(r"\bGROUP\s+BY\b(.*)$", rest, re.IGNORECASE | re.DOTALL):
+        group, rest = [k.strip() for k in _split_top(mg.group(1).strip())], rest[:mg.start()].strip()
+    where = ""
+    if mw := re.fullmatch(r"WHERE\b(.*)", rest, re.IGNORECASE | re.DOTALL):
+        cond = _where(mw.group(1).strip())
+        if cond is None:
+            reasons.append(f"WHERE no soportado: {mw.group(1).strip()[:40]}")
+            return None
+        where = f" WHERE {cond}"
+    elif rest:
+        reasons.append(f"clausula no soportada: {rest[:40]}")
+        return None
+    tail = ""
+    has_agg = any(a for _, a, _ in items)
+    if group is not None or has_agg:
+        keys = [mk.group(1) for k in (group or []) if (mk := re.fullmatch(r"\[([^\]]+)\]", k))]
+        if group is None or len(keys) != len(group):
+            reasons.append("agregacion sin GROUP BY de campos simples")
+            return None
+        free = [src or sql for sql, agg, src in items if not agg and src not in keys]
+        if free:
+            reasons.append(f"campo fuera del GROUP BY: {free[0]}")
+            return None
+        tail = " GROUP BY " + ", ".join(_ident(k) for k in keys)
+    return (f"SELECT {'DISTINCT ' if m.group('distinct') else ''}{', '.join(i[0] for i in items)} "
+            f"FROM {source}{where}{tail}")
+
+
 def translate(text: str, data_dir: str) -> tuple[str | None, list[str]]:
-    """Devuelve (SQL, motivos). SQL es None si el script no es traducible."""
-    loads, reasons = [], []
+    """Devuelve (SQL, motivos). SQL es None si el script no es traducible.
+
+    Cada sentencia con nombre es una tabla (un CTE); `JOIN([T])` la reemplaza por el join;
+    el resultado es la tabla del STORE o, sin STORE, la ultima. shortcut: un solo destino y sin
+    autoconcatenacion de LOADs con los mismos campos, mejorar si aparecen flujos que los usen.
+    """
+    ctes: list[tuple[str, str]] = []  # (id del CTE, SELECT)
+    cur: dict[str, str] = {}  # nombre de tabla -> id del CTE vigente
+    stored: list[str] = []
+    reasons: list[str] = []
     for st in split_statements(text):
+        st = re.sub(r"(?m)^\s*//.*$", "", st).strip()
         mh = re.match(r"[A-Za-z_]+", st)
         head = mh.group(0).upper() if mh else ""
         if head == "THROW":
             reasons.append("el flujo se declara invalido (throw)")
             continue
-        if head in ("SET", "TRACE", "STORE", "DROP", "NOCONCATENATE"):
+        if ms := re.match(r"STORE\s+\[([^\]]+)\]", st, re.IGNORECASE):
+            stored.append(ms.group(1))
             continue
-        m = re.match(r"(?:\[[^\]]+\]:\s*)?(?:NOCONCATENATE\s+)?LOAD\s+(DISTINCT\s+)?(.*)$",
-                     st, re.IGNORECASE | re.DOTALL)
+        if head in ("SET", "TRACE", "DROP", "NOCONCATENATE"):
+            continue
+        m = _HEAD.match(st)
         if not m:
             reasons.append(f"sentencia no soportada: {st.splitlines()[0][:60]}")
             continue
-        body = m.group(2)
-        mx = re.search(r"\bFROM\s+\[([^\]]+)\]\s*(\([^)]*\))?", body, re.IGNORECASE)
-        if not mx:
-            reasons.append("LOAD sin FROM")
+        sel = _load(m, cur, data_dir, reasons)
+        if sel is None:
             continue
-        fields_sql = []
-        for item in _split_top(body[:mx.start()]):
-            f = _field(item)
-            if f is None:
-                reasons.append(f"campo no soportado: {item[:40]}")
-                break
-            fields_sql.append(f)
-        name = _source_file(mx.group(1))
-        if name is None:
-            reasons.append(f"origen no soportado (solo .csv): {mx.group(1)}")
-        rest = body[mx.end():].strip()
-        where = ""
-        mw = re.search(r"\bWHERE\b(.*)$", rest, re.IGNORECASE | re.DOTALL)
-        if mw:
-            cond = _where(mw.group(1).strip())
-            if cond is None:
-                reasons.append(f"WHERE no soportado: {mw.group(1).strip()[:40]}")
-            where = f" WHERE {cond}" if cond else ""
-        elif rest:
-            reasons.append(f"clausula no soportada: {rest[:40]}")
-        if name and len(fields_sql) and not reasons:
-            reader = _reader(os.path.join(data_dir, name))
-            if reader is None:
-                reasons.append(f"no se pudo leer el CSV: {name}")
-            else:
-                loads.append(f"SELECT {'DISTINCT ' if m.group(1) else ''}{', '.join(fields_sql)} "
-                             f"FROM {reader}{where}")
+        if m.group("jt"):
+            t = m.group("jt")
+            if t not in cur:
+                reasons.append(f"JOIN sobre una tabla desconocida: {t}")
+                continue
+            right = _columns(ctes, sel)
+            common = [c for c in _columns(ctes, f"SELECT * FROM {_ident(cur[t])}") if c in right]
+            if not common:
+                reasons.append(f"join sin campos en comun: {t}")
+                continue
+            sel = (f"SELECT * FROM {_ident(cur[t])} {_JOINS[m.group('kind') and m.group('kind').upper()]} JOIN "
+                   f"({sel}) AS j USING ({', '.join(_ident(c) for c in common)})")
+            name = t
+        else:
+            name = m.group("name") or f"_load{len(ctes) + 1}"
+        cte = f"{name}~{len(ctes)}"
+        ctes.append((cte, sel))
+        cur[name] = cte
     if reasons:
         return None, reasons
-    if len(loads) != 1:
-        return None, [f"{len(loads)} LOAD ejecutables; el traductor cubre uno por script"]
-    return loads[0], []
+    if not ctes:
+        return None, ["el script no carga ninguna tabla"]
+    dests = set(stored) or {list(cur)[-1]}
+    if len(dests) != 1 or next(iter(dests)) not in cur:
+        return None, [f"el traductor produce un solo SQL; destinos: {', '.join(sorted(dests))}"]
+    return f"{_with(ctes)}SELECT * FROM {_ident(cur[next(iter(dests))])}", []
 
 
 def run(sql: str):
