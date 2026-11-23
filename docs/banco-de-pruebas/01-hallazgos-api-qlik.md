@@ -161,7 +161,7 @@ python -m emulator.cli cleanup --apply   # borra apps y archivos emu_*
 
 1. la variable `DFEMU_QLIK`, si existe (ruta completa a un `qlik.exe`);
 2. la CLI que instala `dfemu setup` en `.tools/qlik/`;
-3. `%ChocolateyInstall%\lib\qlik-cli	ools\qlik.exe` (o `C:\ProgramData\chocolatey\lib\qlik-cli	ools\qlik.exe`), siempre que exista;
+3. `%ChocolateyInstall%\lib\qlik-cli\tools\qlik.exe` (o `C:\ProgramData\chocolatey\lib\qlik-cli\tools\qlik.exe`), siempre que exista;
 4. `qlik` del PATH.
 
 Si el sistema impide ejecutarlo (`OSError`), el puente devuelve el código 126 y un mensaje que remite a `dfemu setup` o a `DFEMU_QLIK`; si no hay CLI, devuelve 127 con la misma remisión. Verificado el 2026-11-23 con `dfemu cleanup` desde Git Bash.
