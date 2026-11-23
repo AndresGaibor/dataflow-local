@@ -86,7 +86,7 @@ def _literal(s: str) -> str:
 
 
 _AGG = r"\b(?:sum|avg|count|min|max)\s*\("
-_FUNCS = {"upper": "upper({0})", "trim": "trim({0})", "year": "year({0})", "month": "month({0})",
+_FUNCS = {"upper": "upper({0})", "lower": "lower({0})", "len": "length({0})", "trim": "trim({0})", "year": "year({0})", "month": "month({0})",
           # verificado en el tenant (2026-11-23): Sum de solo nulos o de texto da 0; Avg de solo nulos da NULL
           "isnull": "({0} IS NULL)", "sum": "COALESCE(SUM(TRY_CAST({0} AS DOUBLE)), 0)",
           "avg": "AVG(TRY_CAST({0} AS DOUBLE))", "min": "MIN({0})",
@@ -106,6 +106,54 @@ def _call(e: str):
     return m.group(1).lower(), m.group(2)
 
 
+_IDENT = r"[A-Za-z_][A-Za-z0-9_]*"  # campo sin corchetes (Qlik lo permite y los scripts de un nodo `script` lo usan)
+# de menor a mayor precedencia; cada nivel: operadores -> SQL
+_BINARY = [({"OR": "OR"}), ({"AND": "AND"}), ({"<>": "<>", "<=": "<=", ">=": ">=", "=": "=", "<": "<", ">": ">"}),
+           ({"&": "&"}), ({"+": "+", "-": "-"}), ({"*": "*", "/": "/"})]
+
+
+def _split_top_op(e: str, ops) -> tuple[str, str, str] | None:
+    """(izquierda, operador, derecha) por el ULTIMO operador de `ops` fuera de parentesis, corchetes y comillas
+    (asociatividad por la izquierda); None si no hay. `+` y `-` unarios no cuentan como operador."""
+    depth, quote, hit, i = 0, "", None, 0
+    while i < len(e):
+        ch = e[i]
+        if quote:
+            quote = "" if ch == quote else quote  # '' (comilla escapada) cierra y reabre
+        elif ch in "'\"":
+            quote = ch
+        elif ch in "([":
+            depth += 1
+        elif ch in ")]":
+            depth -= 1
+        elif depth == 0:
+            for op in sorted(ops, key=len, reverse=True):
+                if e[i:i + len(op)].upper() != op:
+                    continue
+                before, after = e[:i].rstrip(), e[i + len(op):i + len(op) + 1]
+                if op.isalpha() and (re.match(r"\w", e[i - 1:i]) or re.match(r"\w", after)):
+                    continue  # OR/AND dentro de otra palabra
+                if op in "+-" and (not before or before[-1] in "(,+-*/&<>="):
+                    continue  # signo unario
+                hit = i, op
+                i += len(op) - 1
+                break
+        i += 1
+    return (e[:hit[0]], hit[1], e[hit[0] + len(hit[1]):]) if hit else None
+
+
+def _wrapped(e: str) -> bool:
+    """True si el primer parentesis de `e` es el que se cierra en el ultimo caracter: `(a + b)` si, `(a) + (b)` no."""
+    if not (e.startswith("(") and e.endswith(")")):
+        return False
+    depth = 0
+    for k, ch in enumerate(e):
+        depth += (ch == "(") - (ch == ")")
+        if depth == 0 and k < len(e) - 1:
+            return False
+    return True
+
+
 def _expr_sql(e: str) -> str | None:
     """Expresion de Qlik a SQL de DuckDB; None si no se reconoce."""
     e = e.strip()
@@ -113,6 +161,19 @@ def _expr_sql(e: str) -> str | None:
         return _ident(m.group(1))
     if re.fullmatch(r"-?\d+(?:\.\d+)?|'(?:[^']|'')*'", e):
         return e
+    if re.fullmatch(_IDENT, e):
+        return _ident(e)
+    for ops in _BINARY:
+        if sp := _split_top_op(e, ops):
+            left, op, right = sp
+            a, c = _expr_sql(left), _expr_sql(right)
+            if a is None or c is None:
+                return None
+            if op == "&":  # en Qlik & trata NULL como texto vacio
+                return f"concat({a}, {c})"
+            return f"({a} {op} {c})"
+    if _wrapped(e):
+        return _expr_sql(e[1:-1])
     if call := _call(e):
         name, args = call
         if name == "count" and (md := re.match(r"DISTINCT\s+(.*)$", args, re.IGNORECASE | re.DOTALL)):
@@ -137,14 +198,14 @@ def _item(item: str):
     s = item.strip()
     if s == "*":
         return "*", False, None
-    m = re.fullmatch(r"(.+?)\s+AS\s+\[([^\]]+)\]", s, re.IGNORECASE | re.DOTALL)
-    expr, alias = (m.group(1), m.group(2)) if m else (s, None)
+    m = re.fullmatch(rf"(.+?)\s+AS\s+(?:\[([^\]]+)\]|({_IDENT}))", s, re.IGNORECASE | re.DOTALL)
+    expr, alias = (m.group(1), m.group(2) or m.group(3)) if m else (s, None)
     sql = _expr_sql(expr)
-    src = re.fullmatch(r"\[([^\]]+)\]", expr.strip())
+    src = re.fullmatch(rf"\[([^\]]+)\]|({_IDENT})", expr.strip())
     if sql is None or (alias is None and not src):
         return None
     return (f"{sql} AS {_ident(alias)}" if alias else sql), bool(re.search(_AGG, expr, re.IGNORECASE)), \
-        (src.group(1) if src else None)
+        ((src.group(1) or src.group(2)) if src else None)
 
 
 def _where(cond: str) -> str | None:

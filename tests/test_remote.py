@@ -434,3 +434,40 @@ def test_cleanup_apply_skips_a_listed_app_that_no_longer_exists(tmp_path, monkey
     assert "ya no existe" in out and "app_emu" in out
     assert [c for c in runner.calls if (c[0], c[1]) == ("POST", "v1/data-files/actions/delete")]  # los archivos si se borran
     assert "borrados: 0 app(s), 1 archivo(s)" in out
+
+
+STALE = {"code": "POTENTIAL_STALE_EXPRESSION", "title": "Expression may be stale", "nodeId": "n1"}
+
+
+def _puts(runner):
+    return [c for c in runner.calls if c[0] == "PUT"]
+
+
+def test_push_graph_repeats_the_put_when_only_stale_expressions_are_reported(tmp_path):
+    # un nodo calculate-fields nuevo sale INVALID (POTENTIAL_STALE_EXPRESSION) en el primer PUT y VALID en el segundo (medido)
+    answers = iter([_put_resp("INVALID", [STALE]), _put_resp("VALID")])
+    b, runner = apply_bridge(write_routes(put=lambda _b: next(answers)), tmp_path)
+    res = Remote(b).push_graph(Clone(CLONE_APP, CLONE_DF, "emu_v_x"), GRAPH)
+    assert len(_puts(runner)) == 2 and res.validity["status"] == "VALID"
+
+
+def test_push_graph_does_not_repeat_the_put_for_other_violations(tmp_path):
+    other = {"code": "NODE_TOPOLOGY_NOT_FULFILLED", "title": "x", "nodeId": "n1"}
+    b, runner = apply_bridge(write_routes(put=lambda _b: _put_resp("INVALID", [STALE, other])), tmp_path)
+    res = Remote(b).push_graph(Clone(CLONE_APP, CLONE_DF, "emu_v_x"), GRAPH)
+    assert len(_puts(runner)) == 1 and res.validity["status"] == "INVALID"
+
+
+def test_push_graph_needs_one_more_put_per_level_of_chained_expressions(tmp_path):
+    # dos calculate-fields seguidos: cada subida evalua un nivel mas (medido: INVALID, INVALID, VALID)
+    answers = iter([_put_resp("INVALID", [STALE]), _put_resp("INVALID", [STALE]), _put_resp("VALID")])
+    b, runner = apply_bridge(write_routes(put=lambda _b: next(answers)), tmp_path)
+    res = Remote(b).push_graph(Clone(CLONE_APP, CLONE_DF, "emu_v_x"), GRAPH)
+    assert len(_puts(runner)) == 3 and res.validity["status"] == "VALID"
+
+
+def test_push_graph_stops_repeating_after_the_cap(tmp_path):
+    from emulator.remote import MAX_STALE_PUTS
+    b, runner = apply_bridge(write_routes(put=lambda _b: _put_resp("INVALID", [STALE])), tmp_path)
+    res = Remote(b).push_graph(Clone(CLONE_APP, CLONE_DF, "emu_v_x"), GRAPH)
+    assert len(_puts(runner)) == MAX_STALE_PUTS and res.validity["status"] == "INVALID"

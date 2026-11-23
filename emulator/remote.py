@@ -35,6 +35,8 @@ class PushResult(NamedTuple):
 
 
 REJECT_CODE = "DATAFLOW_STRUCTURAL_ERROR"  # el servidor rechaza el PUT con error HTTP, sin validity
+STALE_EXPRESSION = "POTENTIAL_STALE_EXPRESSION"  # nodo calculate-fields nuevo: se limpia repitiendo el PUT
+MAX_STALE_PUTS = 6  # un PUT por cada nivel de expresiones encadenadas, con tope
 
 
 def _rejection_label(stderr: str) -> str:
@@ -94,18 +96,26 @@ class Remote:
         return Clone(_check(resp["id"]), _check(resp["dataflowId"]), name)
 
     def push_graph(self, clone: Clone, graph: dict) -> PushResult:
-        df = self._get(f"v1/dataflows/{_check(clone.dataflow_id)}")
-        body = {k: v for k, v in df.items() if k != "validity"}
-        body["graph"] = graph
-        try:
-            resp = self._b.put(f"v1/dataflows/{clone.dataflow_id}", body)
-        except BridgeError as e:
-            if REJECT_CODE not in (e.stderr or ""):
-                raise
-            return PushResult({"status": "REJECTED", "label": _rejection_label(e.stderr),
-                               "nodesConstraintViolations": []}, "")
-        if not isinstance(resp, dict) or "validity" not in resp:
-            raise BridgeError("respuesta del PUT sin validity")
+        for attempt in range(1, MAX_STALE_PUTS + 1):
+            df = self._get(f"v1/dataflows/{_check(clone.dataflow_id)}")
+            body = {k: v for k, v in df.items() if k != "validity"}
+            body["graph"] = graph
+            try:
+                resp = self._b.put(f"v1/dataflows/{clone.dataflow_id}", body)
+            except BridgeError as e:
+                if REJECT_CODE not in (e.stderr or ""):
+                    raise
+                return PushResult({"status": "REJECTED", "label": _rejection_label(e.stderr),
+                                   "nodesConstraintViolations": []}, "")
+            if not isinstance(resp, dict) or "validity" not in resp:
+                raise BridgeError("respuesta del PUT sin validity")
+            codes = {v.get("code") for v in resp["validity"].get("nodesConstraintViolations") or []}
+            # un nodo calculate-fields nuevo sale INVALID con POTENTIAL_STALE_EXPRESSION y un PUT identico lo limpia
+            # (medido): el servidor evalua las expresiones al ver el nodo. Con calculate-fields encadenados cada PUT
+            # evalua un nivel mas (dos niveles: INVALID, INVALID, VALID), asi que se repite mientras solo queden esas
+            if attempt < MAX_STALE_PUTS and codes == {STALE_EXPRESSION}:
+                continue
+            break
         return PushResult(resp["validity"], self.script_of(clone.app_id))
 
     def discard(self, app_id: str) -> None:

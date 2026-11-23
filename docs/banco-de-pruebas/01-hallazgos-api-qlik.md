@@ -157,7 +157,7 @@ Medición el 2026-11-23 sobre los 18 scripts distintos de `out/corpus*/`: 3 se t
 
 ## 9 quater. Processors: emulador frente al tenant
 
-Verificado el 2026-11-23 con `scripts/processor_battery.py`: **56 casos**: 45 individuales (`clientes` → un processor → destino; los joins usan un `fork` con una rama filtrada) y 11 cadenas de 3 o 4 pasos (ver más abajo), ejecutados en el emulador y, con el mismo grafo, en el tenant (clon `emu_v_*` del flujo base, script generado por Qlik, app `emu_oracle_*`), comparando huellas. Los casos están en `scripts/processor_battery_cases.json`. **Resultado final: los 56 coinciden** (contenido, y orden y formato de las 8 primeras filas, salvo lo indicado en "Orden y formato"). La primera pasada (15 casos) dio diferencias en todos; las 11 cadenas coincidieron a la primera una vez corregidos los processors sueltos.
+Verificado el 2026-11-23 con `scripts/processor_battery.py`: **65 casos**: 54 individuales (`clientes` → un processor → destino; los joins usan un `fork` con una rama filtrada) y 11 cadenas de 3 o 4 pasos (ver más abajo), ejecutados en el emulador y, con el mismo grafo, en el tenant (clon `emu_v_*` del flujo base, script generado por Qlik, app `emu_oracle_*`), comparando huellas. Los casos están en `scripts/processor_battery_cases.json`. **Resultado final: los 65 coinciden** (contenido, y orden y formato de las 8 primeras filas, salvo lo indicado en "Orden y formato"). La primera pasada (15 casos) dio diferencias en todos; las 11 cadenas coincidieron a la primera una vez corregidos los processors sueltos.
 
 ### Cómo mide el tenant (importante)
 El oráculo no mide el resultado en memoria: **vuelve a cargar el CSV que escribió el flujo** (`oracle._READBACK`) y mide la tabla cargada. En Qlik un archivo no tiene `NULL`: toda celda vacía es el texto vacío, que cuenta como valor y es distinto. Por eso `compare.fingerprint_of` cuenta `count(*)` para todas las columnas y suma 1 al número de distintos si hay algún `NULL`. Esto cubre de una vez los `NULL` que produce el emulador (join sin pareja, conversión de texto no numérico, celda vacía de la fuente). La suma sigue ignorando los vacíos. Una versión intermedia calculaba la huella en memoria; era una aproximación equivocada y se descartó.
@@ -200,6 +200,22 @@ Once cadenas (`cadena_*` en `scripts/processor_battery_cases.json`), todas coinc
 
 **Lo que estas pruebas no miden:** los tipos exactos de columna y las filas más allá de las 8 primeras (ver siguiente apartado).
 
+### Crear `calculate-fields` y `script` por API
+Las dos cosas se dieron por imposibles al principio y se resolvieron el 2026-11-23.
+
+**`calculate-fields`** (9 casos `calc_*`: `Upper`, `If`, `&`, `Left`, `Len`, `SubField`, `Round`, aritmética, varias expresiones en un nodo y dos nodos encadenados; los 9 coinciden con el tenant, incluidas las 8 primeras filas).
+- Un nodo nuevo sale `INVALID` con `POTENTIAL_STALE_EXPRESSION` ("la expresión debe reevaluarse por un cambio en un nodo anterior"). **Un `PUT` idéntico lo limpia**: el servidor evalúa las expresiones al volver a ver el nodo. El tercer `PUT` ya responde `UNCHANGED`.
+- Con nodos encadenados cada `PUT` evalúa **un nivel más** (dos niveles: `INVALID`, `INVALID`, `VALID`). `Remote.push_graph` repite el `PUT` mientras solo queden advertencias de ese tipo, con un tope (`MAX_STALE_PUTS` = 6). Si aparece cualquier otra violación no repite.
+- La estructura del nodo es la de siempre (`calculateFields`: `newColumnName`, `expressionStatement`, `anchorColumn`, `rightOfAnchor`, `fieldReferences` vacío); no hace falta nada más.
+
+**`script`**
+- Con `PUT` doble desaparece `POTENTIAL_STALE_SCRIPT`, pero el servidor exige `configuration.schemaEntityId` (`VALUE_MISSING_ON_REQUIRED_FIELD`). Ese id lo crea la interfaz al detectar el esquema de salida. Vacío o prestado de otro flujo da `500 INTERNAL_SERVER_ERROR`. No es un dataset ni un item, y ninguna ruta de lectura lo resuelve. Los `POST` que lo crearían (todo `POST` bajo `v1/dataflows/...`) responden `403` sin detalle, con API key y con OAuth; los `GET` equivalentes, "no existe".
+- **Vía que sí funciona**: `actions/copy` de un flujo que ya tiene nodos `script` **asigna `schemaEntityId` nuevos y válidos a la copia**. Se parte de esa copia, se arma un grafo reducido (fuente, nodo `script` de la copia, destino nuevo) y se cambia solo el texto del script. Resultado: `VALID`, el tenant lo ejecuta y el traductor lo traduce. El servidor no comprobó el texto contra el esquema; solo se probó con un script que conserva las mismas columnas de salida (no se sabe qué hace si difieren).
+- El texto debe seguir las reglas de la documentación del nodo: `Resident` de la tabla de entrada (el nombre de la entrada es la etiqueta del nodo anterior), `NoConcatenate LOAD` y `Drop Table` de la entrada.
+- Esto verifica el **traductor** con scripts de nodo `script` (el emulador no los ejecuta). Para ello se amplió el traductor: nombres de campo y alias **sin corchetes** (`id,`, `as fecha`), operadores con precedencia (`OR`, `AND`, comparaciones, `&`, `+ - * /`), paréntesis y `Len`/`Lower`. `&` usa `concat`, que trata `NULL` como texto vacío, como Qlik.
+- **Diferencia que se midió y no se corrigió**: en una columna de texto con aspecto de fecha, Qlik **unifica los textos que interpreta como la misma fecha** al cargar el CSV (`2026-09-09` y `09/09/2026`), y cuenta 18 valores distintos donde el emulador cuenta 20. Afecta solo a `distinct` de esas columnas.
+- No se añadió a la batería porque depende de un flujo base con nodos `script` de cada tenant.
+
 ### Orden y formato de lo escrito
 Las huellas cuentan filas, distintos y sumas, pero no ven el orden ni el texto de las celdas. Una sonda que **carga el archivo del tenant con el número de fila** (`RecNo()`) y compara el texto de las primeras 8 filas de cada columna con las del emulador encontró 5 diferencias reales, ya corregidas. La comprobación es ahora permanente: `dfemu compare --rows N`, y `scripts/processor_battery.py` compara 8 filas de cada caso (`HEAD`).
 
@@ -230,7 +246,7 @@ Solo se midió la configuración regional en-US: otras conservan el formato ISO 
 ### Límites que quedan
 - `Avg` sobre valores grandes (~1,7·10⁹) sale cuantizado en Qlik (ver 9 ter); la batería usa solo `COUNT` y `SUM` en el caso de agregación simple.
 - `split-field` con `parts` mayor que 2 supone la misma regla (solo se midió con 2).
-- `calculate-fields` no se puede crear por `PUT`: el servidor responde `POTENTIAL_STALE_EXPRESSION` ("la expresión debe reevaluarse por un cambio en un nodo anterior"), porque el editor de la interfaz la evalúa al guardar. Tampoco `script`.
+- `script` no se puede crear desde cero por API (ver "Crear `calculate-fields` y `script` por API"); el emulador no ejecuta nodos `script`, que se verifican con el traductor.
 - `masking.HASH_DATA` se emula con `md5`; la huella solo ve cuenta y distintos, así que no detecta que el algoritmo sea otro.
 - `sample.SAMPLE_RANDOM_ROWS` es aleatorio y no se compara.
 - Los joins se probaron como autounión (misma fuente en dos ramas): un join entre dos datasets distintos necesita una segunda fuente registrada en el flujo, y no se encontró cómo crearla por API.
@@ -361,7 +377,7 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 | `dfemu compare archivo.dfw (--app APP\|--push [--base-app APP]) --apply` | compara resultados del emulador con el tenant |
 | `dfemu cleanup [--apply]` | lista o borra apps y archivos `emu_*` |
 | `dfemu coverage [archivos...]` | mide qué processors usa el corpus y si cada flujo se puede ejecutar |
-| `python scripts/processor_battery.py [caso ...]` | batería de 56 casos (45 processors y 11 cadenas), emulador frente al tenant (escribe en el tenant; limpia lo que crea) |
+| `python scripts/processor_battery.py [caso ...]` | batería de 65 casos (54 processors y 11 cadenas), emulador frente al tenant (escribe en el tenant; limpia lo que crea) |
 | `dfemu translate script.qvs\|.pull.json [--run] [--compare [--apply]]` | traduce el script de Qlik a SQL de DuckDB; con `--run` lo ejecuta y con `--compare --apply` lo compara con la ejecución real en el tenant |
 
 El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DFEMU_BASE_APP` la CLI con `DFEMU_QLIK` (ver 10 bis) y, para usar otro contexto de la CLI sin activarlo, `DFEMU_QLIK_CONTEXT` (ver `02-guia-oauth.md`).

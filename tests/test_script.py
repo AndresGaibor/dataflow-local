@@ -299,3 +299,38 @@ def test_without_store_the_result_is_the_last_table_touched_even_after_a_join(tm
                                "[C]:\nLOAD [k] FROM [lib://c/c.csv] (txt);\n"
                                "LEFT JOIN([A]) LOAD [id], [w] FROM [lib://c/b.csv] (txt);")
     assert cols == ["id", "v", "w"]  # la ultima sentencia toco A (el join), no C
+
+
+# --- scripts de un nodo `script` real: campos sin corchetes y comparaciones con funciones --------------------
+
+def test_bare_field_names_without_brackets(tmp_path):
+    _csv(tmp_path, "t.csv", "id,nombre\n1,ana\n")
+    rows, cols = _go(tmp_path, "LOAD id, Upper(nombre) as n, nombre as copia FROM [lib://c/t.csv] (txt);")
+    assert cols == ["id", "n", "copia"] and rows == [(1, "ANA", "ana")]
+
+
+@pytest.mark.parametrize("expr,expected", [
+    ("If(Len(Trim(t)) = 0, 'VACIA', 'CON_DATO')", "CON_DATO"),            # comparacion con funciones a ambos lados
+    ("If(Len(Trim(e)) = 0, 'VACIA', 'CON_DATO')", "VACIA"),
+    ("If(IsNull(e) OR Len(t) > 5, 'A', 'B')", "B"),                        # OR entre condiciones
+    ("If(Len(t) = 3 AND Upper(t) = 'ABC', 'si', 'no')", "si"),             # AND
+    ("t & '-' & Upper(t)", "abc-ABC"),                                      # & es concatenacion
+    ("Len(t) + 2 * 3", 9),                                                  # precedencia: * antes que +
+    ("(Len(t) + 2) * 3", 15),
+    ("Len(t) <> 3", False),
+])
+def test_expression_operators_and_precedence(tmp_path, expr, expected):
+    _csv(tmp_path, "t.csv", "t,e\nabc,\n")
+    rows, _ = _go(tmp_path, f"LOAD {expr} AS [r] FROM [lib://c/t.csv] (txt);")
+    assert rows == [(expected,)]
+
+
+def test_unknown_function_inside_an_operator_is_still_reported(tmp_path):
+    sql, reasons = script.translate("LOAD If(Foo(t) = 1, 'a', 'b') AS [r] FROM [lib://c/t.csv] (txt);", str(tmp_path))
+    assert sql is None and any("campo no soportado" in r for r in reasons)
+
+
+def test_parentheses_that_do_not_wrap_the_whole_expression(tmp_path):
+    _csv(tmp_path, "t.csv", "t\nabc\n")
+    rows, _ = _go(tmp_path, "LOAD (Len(t) + 1) * (Len(t) - 1) AS [r], (Len(t)) AS [s] FROM [lib://c/t.csv] (txt);")
+    assert rows == [(8, 3)]  # (3 + 1) * (3 - 1)

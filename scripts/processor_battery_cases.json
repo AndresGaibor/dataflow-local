@@ -1339,5 +1339,199 @@
     ]
    }
   }
+ ],
+ "calc_upper": [
+  "calculate-fields",
+  {
+   "calculateFields": [
+    {
+     "newColumnName": "ciudad_mayus",
+     "expressionStatement": "Upper([ciudad])",
+     "anchorColumn": "",
+     "rightOfAnchor": true,
+     "fieldReferences": []
+    }
+   ]
+  }
+ ],
+ "calc_if": [
+  "calculate-fields",
+  {
+   "calculateFields": [
+    {
+     "newColumnName": "nivel",
+     "expressionStatement": "if([cedula] > 1700000250, 'ALTA', 'BAJA')",
+     "anchorColumn": "",
+     "rightOfAnchor": true,
+     "fieldReferences": []
+    }
+   ]
+  }
+ ],
+ "calc_concat": [
+  "calculate-fields",
+  {
+   "calculateFields": [
+    {
+     "newColumnName": "nombre_completo",
+     "expressionStatement": "[nombre] & ' ' & [apellido]",
+     "anchorColumn": "",
+     "rightOfAnchor": true,
+     "fieldReferences": []
+    }
+   ]
+  }
+ ],
+ "calc_left_len": [
+  "calculate-fields",
+  {
+   "calculateFields": [
+    {
+     "newColumnName": "pref_email",
+     "expressionStatement": "Left([email], 3)",
+     "anchorColumn": "",
+     "rightOfAnchor": true,
+     "fieldReferences": []
+    },
+    {
+     "newColumnName": "largo_email",
+     "expressionStatement": "Len([email])",
+     "anchorColumn": "",
+     "rightOfAnchor": true,
+     "fieldReferences": []
+    }
+   ]
+  }
+ ],
+ "calc_subfield": [
+  "calculate-fields",
+  {
+   "calculateFields": [
+    {
+     "newColumnName": "dominio",
+     "expressionStatement": "SubField([email], '@', 2)",
+     "anchorColumn": "",
+     "rightOfAnchor": true,
+     "fieldReferences": []
+    }
+   ]
+  }
+ ],
+ "calc_numerica": [
+  "calculate-fields",
+  {
+   "calculateFields": [
+    {
+     "newColumnName": "ced_rel",
+     "expressionStatement": "[cedula] - 1700000000",
+     "anchorColumn": "",
+     "rightOfAnchor": true,
+     "fieldReferences": []
+    },
+    {
+     "newColumnName": "ced_7",
+     "expressionStatement": "Round([cedula] / 7)",
+     "anchorColumn": "",
+     "rightOfAnchor": true,
+     "fieldReferences": []
+    }
+   ]
+  }
+ ],
+ "calc_multi": [
+  "calculate-fields",
+  {
+   "calculateFields": [
+    {
+     "newColumnName": "n_up",
+     "expressionStatement": "Upper([nombre])",
+     "anchorColumn": "",
+     "rightOfAnchor": true,
+     "fieldReferences": []
+    },
+    {
+     "newColumnName": "a_low",
+     "expressionStatement": "Lower([apellido])",
+     "anchorColumn": "",
+     "rightOfAnchor": true,
+     "fieldReferences": []
+    },
+    {
+     "newColumnName": "t_len",
+     "expressionStatement": "Len(Trim([telefono]))",
+     "anchorColumn": "",
+     "rightOfAnchor": true,
+     "fieldReferences": []
+    }
+   ]
+  }
+ ],
+ "calc_encadenado": [
+  "chain",
+  [
+   [
+    "calculate-fields",
+    {
+     "calculateFields": [
+      {
+       "newColumnName": "nombre_completo",
+       "expressionStatement": "[nombre] & ' ' & [apellido]",
+       "anchorColumn": "",
+       "rightOfAnchor": true,
+       "fieldReferences": []
+      }
+     ]
+    }
+   ],
+   [
+    "calculate-fields",
+    {
+     "calculateFields": [
+      {
+       "newColumnName": "iniciales",
+       "expressionStatement": "Left([nombre_completo], 2)",
+       "anchorColumn": "",
+       "rightOfAnchor": true,
+       "fieldReferences": []
+      }
+     ]
+    }
+   ]
+  ]
+ ],
+ "calc_y_filtro": [
+  "chain",
+  [
+   [
+    "calculate-fields",
+    {
+     "calculateFields": [
+      {
+       "newColumnName": "nivel",
+       "expressionStatement": "if([cedula] > 1700000250, 'ALTA', 'BAJA')",
+       "anchorColumn": "",
+       "rightOfAnchor": true,
+       "fieldReferences": []
+      }
+     ]
+    }
+   ],
+   [
+    "filter",
+    {
+     "logicalOpType": "ALL",
+     "filters": [
+      {
+       "columnName": "nivel",
+       "function": "EMPTY",
+       "operator": "EQUAL",
+       "compareWith": "VALUE",
+       "value": "ALTA",
+       "columnToCompareWith": ""
+      }
+     ]
+    }
+   ]
+  ]
  ]
 }
