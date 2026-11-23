@@ -26,8 +26,14 @@ def _reader(path: str) -> str:
 
 
 def local_fingerprint(dest: str) -> dict:
-    src = _reader(dest)
-    con = duckdb.connect()
+    return fingerprint_of(_reader(dest))
+
+
+def fingerprint_of(src: str, con=None) -> dict:
+    """Huella de una relacion SQL (vista o lectura de archivo). Con `con` se mide sobre el resultado en memoria,
+    que distingue texto vacio de NULL; un CSV escrito no (ambos quedan como celda vacia)."""
+    own = con is None
+    con = con or duckdb.connect()
     try:
         desc = con.execute(f"DESCRIBE SELECT * FROM {src}").fetchall()
         exprs = ["count(*)"]
@@ -37,7 +43,8 @@ def local_fingerprint(dest: str) -> dict:
                       f"sum(CAST({c} AS DOUBLE))" if typ.split("(")[0] in NUMERIC else "NULL"]
         row = con.execute(f"SELECT {', '.join(exprs)} FROM {src}").fetchone()
     finally:
-        con.close()
+        if own:
+            con.close()
     columns = {}
     for i, (name, _, *_) in enumerate(desc):
         count, distinct, total = row[1 + 3 * i: 4 + 3 * i]
@@ -52,6 +59,15 @@ def local_fingerprints(dests: list[str]) -> dict[str, dict]:
         if stems.count(s) > 1:
             raise ValueError(f"destinos con el mismo nombre: {s}")
     return {stem_of(d): local_fingerprint(d) for d in dests}
+
+
+def target_fingerprints(targets: list[dict]) -> dict[str, dict]:
+    """Huellas de los destinos que devuelve `runner.run`: la medida en memoria si existe, si no la del archivo."""
+    stems = [stem_of(t["dest"]) for t in targets]
+    for s in stems:
+        if stems.count(s) > 1:
+            raise ValueError(f"destinos con el mismo nombre: {s}")
+    return {stem_of(t["dest"]): t.get("fingerprint") or local_fingerprint(t["dest"]) for t in targets}
 
 
 def _close(a, b, rel_tol: float) -> bool:

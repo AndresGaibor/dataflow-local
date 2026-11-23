@@ -106,7 +106,7 @@ def _compare_translation(a, sql: str) -> int:
         return 1
     path = os.path.join(a.out, "translated", stem + ".csv")
     qvs.write_csv(sql, path)
-    local = compare.local_fingerprints([path])
+    local = {compare.stem_of(path): compare.fingerprint_of(f"({sql})")}  # en memoria: el CSV no distingue vacio de NULL
     try:
         remote = oracle.run_script(make_bridge(a.apply), text, uuid.uuid4().hex[:8])
     except DryRun as e:
@@ -175,7 +175,7 @@ def _compare(a) -> None:
     except runner.Unsupported as e:
         sys.exit(f"no soportado por el emulador: {e}")
     try:
-        local = compare.local_fingerprints([t["dest"] for t in targets])
+        local = compare.target_fingerprints(targets)
     except ValueError as e:
         sys.exit(f"error: {e}")
     bridge = make_bridge(a.apply)

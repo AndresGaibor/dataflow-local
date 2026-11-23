@@ -1,0 +1,257 @@
+{
+ "uppercase": [
+  "strings",
+  {
+   "type": "UPPERCASE",
+   "uppercaseConfiguration": {
+    "columnsToProcess": [
+     "nombre"
+    ],
+    "newColumnName": "",
+    "shouldCreateNewColumn": false
+   }
+  }
+ ],
+ "propercase": [
+  "strings",
+  {
+   "propercaseConfiguration": {
+    "columnsToProcess": [
+     "nombre"
+    ],
+    "newColumnName": "nombre_limpio",
+    "shouldCreateNewColumn": true
+   },
+   "type": "PROPERCASE"
+  }
+ ],
+ "trim": [
+  "strings",
+  {
+   "trimConfiguration": {
+    "columnsToProcess": [
+     "apellido"
+    ],
+    "customPaddingCharacter": "",
+    "newColumnName": "",
+    "shouldCreateNewColumn": false,
+    "type": "WHITESPACE"
+   },
+   "type": "TRIM"
+  }
+ ],
+ "solo_digitos": [
+  "strings",
+  {
+   "removeNonNumCharsConfiguration": {
+    "columnsToProcess": [
+     "telefono"
+    ],
+    "newColumnName": "tel_num",
+    "shouldCreateNewColumn": true
+   },
+   "type": "REMOVE_NON_NUM_CHARS"
+  }
+ ],
+ "hash": [
+  "masking",
+  {
+   "hashDataConfiguration": {
+    "columnsToProcess": [
+     "email"
+    ],
+    "newColumnName": "",
+    "shouldCreateNewColumn": false
+   },
+   "type": "HASH_DATA"
+  }
+ ],
+ "rellenar": [
+  "data-cleansing",
+  {
+   "fillWithValueConfiguration": {
+    "columnsToProcess": [
+     "provincia"
+    ],
+    "defaultValue": "SIN_DATO",
+    "mode": "WITH_VALUE"
+   },
+   "type": "FILL_WITH_VALUE"
+  }
+ ],
+ "dividir": [
+  "split-field",
+  {
+   "splitTextInPartsConfiguration": {
+    "columnsToProcess": [
+     "apellido"
+    ],
+    "customSeparatorValue": "",
+    "parts": 2,
+    "separator": "SPACE"
+   },
+   "type": "SPLIT_TEXT_IN_PARTS"
+  }
+ ],
+ "concatenar": [
+  "field-concatenator",
+  {
+   "concatConfiguration": {
+    "columnsToProcess": [
+     "nombre"
+    ],
+    "mode": "WITH_FIELD",
+    "newColumnName": "nombre_completo",
+    "prefix": "",
+    "selectedColumn": "apellido",
+    "separator": " ",
+    "separatorCondition": "BOTH_VALUES_NOT_EMPTY",
+    "shouldCreateNewColumn": true,
+    "suffix": ""
+   },
+   "type": "CONCAT"
+  }
+ ],
+ "absoluto": [
+  "math",
+  {
+   "absoluteConfiguration": {
+    "columnsToProcess": [
+     "cedula"
+    ],
+    "newColumnName": "cedula_abs",
+    "shouldCreateNewColumn": true
+   },
+   "type": "ABSOLUTE"
+  }
+ ],
+ "a_numero": [
+  "numbers",
+  {
+   "convertToNumberConfiguration": {
+    "columnsToProcess": [
+     "cedula"
+    ],
+    "decimalSeparator": ".",
+    "newColumnName": "ced_n",
+    "shouldCreateNewColumn": true,
+    "thousandSeparator": ","
+   },
+   "type": "CONVERT_TO_NUMBER"
+  }
+ ],
+ "partes_fecha": [
+  "date",
+  {
+   "extractDateTokensConfiguration": {
+    "amPm": false,
+    "columnsToProcess": [
+     "fecha_nacimiento"
+    ],
+    "datePattern": "YYYY-MM-DD",
+    "day": true,
+    "dayLabel": false,
+    "dayOfWeek": false,
+    "dayOfYear": false,
+    "hour12": false,
+    "hour24": false,
+    "minute": false,
+    "month": true,
+    "monthLabel": false,
+    "newColumnRename": "fecha_",
+    "prefix": "fecha_",
+    "quarter": false,
+    "quarterNumber": false,
+    "second": false,
+    "shouldCreateNewColumn": true,
+    "weekOfYear": false,
+    "year": true,
+    "yearAndMonth": false,
+    "yearAndQuarter": false,
+    "yearAndWeek": false
+   },
+   "type": "EXTRACT_DATE_PARTS"
+  }
+ ],
+ "ordenar": [
+  "sort",
+  {
+   "sortFields": [
+    {
+     "fieldPath": "cedula",
+     "sortOrder": "DESCENDING"
+    }
+   ]
+  }
+ ],
+ "filtrar": [
+  "filter",
+  {
+   "logicalOpType": "ALL",
+   "filters": [
+    {
+     "columnName": "ciudad",
+     "function": "EMPTY",
+     "operator": "EQUAL",
+     "compareWith": "VALUE",
+     "value": "Quito",
+     "columnToCompareWith": ""
+    }
+   ]
+  }
+ ],
+ "agregar": [
+  "aggregate",
+  {
+   "groupBy": [
+    {
+     "fieldPath": "segmento"
+    }
+   ],
+   "operations": [
+    {
+     "operation": "COUNT",
+     "fieldPaths": [
+      "cliente_id"
+     ],
+     "delimiter": ",",
+     "outputFieldPath": "n"
+    },
+    {
+     "operation": "SUM",
+     "fieldPaths": [
+      "cedula"
+     ],
+     "delimiter": ",",
+     "outputFieldPath": "suma"
+    }
+   ]
+  }
+ ],
+ "ventana_rank": [
+  "window",
+  {
+   "operationConfiguration": {
+    "operationType": "RANK",
+    "operationFields": [],
+    "outputFieldName": "rk",
+    "delimiter": ","
+   },
+   "partitionByConfiguration": {
+    "partitionByFieldList": [
+     "segmento"
+    ]
+   },
+   "sortingConfiguration": {
+    "sortBy": "cedula",
+    "sortOrder": "DESCENDING"
+   },
+   "rangeConfiguration": {
+    "windowStartType": "UNLIMITED",
+    "windowEndType": "UNLIMITED",
+    "windowStartValue": 1,
+    "windowEndValue": 1
+   }
+  }
+ ]
+}

@@ -5,7 +5,7 @@ import re
 
 import duckdb
 
-from . import dfw
+from . import compare, dfw
 
 q = lambda c: '"' + str(c).replace('"', '""') + '"'
 lit = lambda s: "'" + str(s).replace("'", "''") + "'"
@@ -50,9 +50,10 @@ def _source(ctx, node, sources):
         if not os.path.exists(path):
             raise FileNotFoundError(f"dataset {t['databaseName']} no esta en {ctx.data_dir}")
         raw = ctx.view(f"SELECT {sel} FROM read_csv({lit(path)}, header=true)")
-        # Qlik recorta los espacios de los textos al leer un CSV; DuckDB no lo hace
+        # Qlik recorta los espacios de los textos al leer un CSV y una celda vacia es texto vacio (cuenta como valor,
+        # medido en el tenant); DuckDB no recorta y la lee como NULL. Las columnas numericas con vacios siguen con NULL.
         types = {r[0]: r[1].split("(")[0] for r in ctx.con.execute(f"DESCRIBE SELECT * FROM {raw}").fetchall()}
-        trimmed = [f"trim({q(f)}) AS {q(f)}" if types.get(f) == "VARCHAR" else q(f) for f in fields]
+        trimmed = [f"coalesce(trim({q(f)}), '') AS {q(f)}" if types.get(f) == "VARCHAR" else q(f) for f in fields]
         return ctx.view(f"SELECT {', '.join(trimmed)} FROM {raw}")
     conn = t["dataconnectorName"]
     cfg = ctx.connections.get(conn)
@@ -235,12 +236,20 @@ def _typed(ctx, t, cfg, v):
             c = cfg["replaceWithValueConfiguration"]
             return D(_per_col(ctx, v, c, lambda x: f"CASE WHEN {x} IS NULL OR trim(CAST({x} AS VARCHAR)) = '' THEN {lit(c['defaultValue'])} ELSE {x} END"))
         c = cfg["fillWithValueConfiguration"]
-        return D(_per_col(ctx, v, {**c, "shouldCreateNewColumn": False}, lambda x: f"coalesce(CAST({x} AS VARCHAR), {lit(c['defaultValue'])})"))
+        if c.get("mode") != "WITH_VALUE":
+            raise Unsupported(f"data-cleansing FILL_WITH_VALUE modo {c.get('mode')}")
+        # "Fill cells with value" rellena TODAS las celdas (Qlik: 'X' AS [campo]); las vacias son REPLACE_WITH_VALUE
+        return D(_per_col(ctx, v, {**c, "shouldCreateNewColumn": False}, lambda x: lit(c['defaultValue'])))
     if t == "split-field":
         c = cfg["splitTextInPartsConfiguration"]
         sep = " " if c["separator"] == "SPACE" else c["customSeparatorValue"]
         col = c["columnsToProcess"][0]
-        return D(f"SELECT *, {', '.join(f'split_part(CAST({q(col)} AS VARCHAR), {lit(sep)}, {i}) AS {q(f'{col}_{i}')}' for i in range(1, c['parts'] + 1))} FROM {v}")
+        n, S = c["parts"], f"CAST({q(col)} AS VARCHAR)"
+        # Qlik: SubField(c, sep, i) AS [c-split_i]; la ultima parte conserva el resto (Mid(c, Index(c, sep, n-1) + 1)), '' si falta.
+        # shortcut: para parts > 2 se supone la misma regla (solo se midio parts = 2); verificar con un flujo de 3 partes
+        parts = [f"split_part({S}, {lit(sep)}, {i}) AS {q(f'{col}-split_{i}')}" for i in range(1, n)]
+        parts.append(f"array_to_string(list_slice(string_split({S}, {lit(sep)}), {n}, 1000000), {lit(sep)}) AS {q(f'{col}-split_{n}')}")
+        return D(f"SELECT *, {', '.join(parts)} FROM {v}")
     if t == "field-concatenator":
         c = cfg["concatConfiguration"]
         a, b = q(c["columnsToProcess"][0]), q(c["selectedColumn"])
@@ -259,7 +268,8 @@ def _date(ctx, v, k, c):
     S = f"CAST({q(col)} AS VARCHAR)"
     if k == "EXTRACT_DATE_PARTS":
         ts = f"try_strptime({S}, {lit(_jfmt(c['datePattern']))})"
-        parts = [f"{_DATE_TOKENS[t]}({ts}) AS {q(f'{col}_{t}')}" for t in _DATE_TOKENS if c.get(t)]
+        prefix = c.get("newColumnRename") or col  # medido: con rename "fecha_" Qlik genera [fecha__day]
+        parts = [f"{_DATE_TOKENS[t]}({ts}) AS {q(f'{prefix}_{t}')}" for t in _DATE_TOKENS if c.get(t)]
         for t in c:
             if c[t] is True and t not in _DATE_TOKENS and t not in ("shouldCreateNewColumn", "amPm"):
                 raise Unsupported(f"date token {t}")
@@ -319,7 +329,9 @@ def _write(ctx, n, view):
     opts = "FORMAT parquet" if fmt == "parquet" else "FORMAT csv, HEADER"
     ctx.con.execute(f"COPY (SELECT * FROM {view}) TO {lit(dest)} ({opts})")
     rows = ctx.con.execute(f"SELECT count(*) FROM {view}").fetchone()[0]
-    return {"target": n["label"], "dest": dest, "rows": rows, "emulated_qvd": emulated}
+    # huella sobre el resultado en memoria: el archivo escrito no distingue texto vacio de NULL
+    return {"target": n["label"], "dest": dest, "rows": rows, "emulated_qvd": emulated,
+            "fingerprint": compare.fingerprint_of(view, ctx.con)}
 
 
 def run(d, data_dir, out_dir, connections=None, s3=None):

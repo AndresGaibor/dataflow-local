@@ -172,7 +172,8 @@ def _reader(path: str) -> str | None:
     finally:
         con.close()
     base = f"read_csv({_literal(path)}, header=true)"
-    trims = [f"trim({_ident(r[0])}) AS {_ident(r[0])}" for r in desc if r[1].split("(")[0] == "VARCHAR"]
+    # como Qlik: textos recortados y celda vacia = texto vacio (cuenta como valor), no NULL
+    trims = [f"coalesce(trim({_ident(r[0])}), '') AS {_ident(r[0])}" for r in desc if r[1].split("(")[0] == "VARCHAR"]
     return f"(SELECT * REPLACE ({', '.join(trims)}) FROM {base})" if trims else base
 
 

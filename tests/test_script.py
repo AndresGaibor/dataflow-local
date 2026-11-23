@@ -190,8 +190,9 @@ def test_translate_join_without_common_fields_is_reported(tmp_path):
     ("Trim([t])", "abc"),
     ("Year([d])", 2024),
     ("Month([d])", 3),
-    ("IsNull([n])", True),
-    ("Coalesce([n], 'z')", "z"),
+    # medido en el tenant (2026-11-23): una celda vacia de CSV es texto vacio, no NULL
+    ("IsNull([n])", False),
+    ("Coalesce([n], 'z')", ""),
     ("If([k] > 1, 'big', 'small')", "big"),
 ])
 def test_translate_expressions(tmp_path, expr, expected):

@@ -155,6 +155,29 @@ Medición el 2026-11-23 sobre los 18 scripts distintos de `out/corpus*/`: 3 se t
 
 **Limitaciones del banco de pruebas descubiertas:** el `entityId` de cada nodo fuente es propio del flujo (el mismo dataset tiene un id distinto en cada flujo), así que un grafo nuevo no puede referenciar datasets del catálogo (`GHOST_SOURCE`); solo sirve reutilizar las fuentes del flujo base clonado. Por la misma razón los `.dfw` de `samples/` (con ids desidentificados) no se pueden subir al tenant; para eso se usan los grafos descargados con `dfemu pull` en `out/`. Sin cubrir: `LIB CONNECT`, `xlsx`/`qvd`, `CONCATENATE`, `Match`, `SubField`, `Window`, varios destinos `STORE`, joins entre campos comunes de distinto tipo y `Sum`/`Avg` con parte de los valores nulos.
 
+## 9 quater. Processors: emulador frente al tenant
+
+Verificado el 2026-11-23 con `scripts/processor_battery.py`: 15 casos, cada uno `clientes` → un processor → destino, ejecutado en el emulador y, con el mismo grafo, en el tenant (clon `emu_v_*` del flujo base, script generado por Qlik, app `emu_oracle_*`), comparando huellas. Los casos están en `scripts/processor_battery_cases.json`. Resultado final: **los 15 coinciden**; la primera pasada dio diferencias en los 15.
+
+**Qué se encontró y se corrigió en el emulador** (con pruebas en `tests/test_processors_vs_qlik.py`)
+
+| Comportamiento de Qlik | Antes en el emulador |
+|---|---|
+| Una celda vacía de un CSV es **texto vacío**: cuenta como valor (`Count` = 500 en `clientes.csv`), `IsNull` da falso, `Coalesce([x], 'z')` conserva el vacío y `[x] = ''` es verdadero. Medido: 12 emails vacíos | Las leía como `NULL` (488). Era la causa de la mayoría de las diferencias. También se corrigió en el traductor de scripts |
+| `data-cleansing FILL_WITH_VALUE` ("Fill cells with value") pone la constante en **todas** las celdas (`'X' AS [campo]`); rellenar solo las vacías es `REPLACE_WITH_VALUE` | Rellenaba solo los `NULL` |
+| `split-field` nombra las columnas `campo-split_1`, `campo-split_2` y la **última parte conserva el resto** (`SubField(c, ' ', 1)` y `Mid(c, Index(c, ' ', 1) + 1)`, vacío si no hay separador) | Usaba `campo_1` y la segunda palabra |
+| `EXTRACT_DATE_PARTS` usa `newColumnRename` como prefijo cuando no está vacío (`fecha_` da `fecha__day`); si está vacío, el nombre de la columna | Siempre usaba el nombre de la columna |
+
+**Cómo se miden las huellas:** `runner.run` devuelve ahora la huella calculada sobre el resultado en memoria (`fingerprint`), porque el CSV escrito no distingue texto vacío de `NULL` y al releerlo todo vacío vuelve como `NULL`. `compare.target_fingerprints` la usa; `dfemu compare` y `dfemu translate --compare` también.
+
+**Límites que quedan**
+- `num#()` conserva como texto lo que no puede convertir (incluido el vacío); el emulador da `NULL` en `CONVERT_TO_NUMBER` de texto no numérico. Una columna tipada no puede mezclar ambos. La batería usa una columna numérica para ese caso.
+- `Avg` sobre valores grandes (~1,7·10⁹) sale cuantizado en Qlik (ver 9 ter); la batería usa solo `COUNT` y `SUM`.
+- `split-field` con `parts` mayor que 2 supone la misma regla (solo se midió con 2).
+- `calculate-fields` no se puede crear por `PUT`: el servidor responde `POTENTIAL_STALE_EXPRESSION` ("la expresión debe reevaluarse por un cambio en un nodo anterior"), porque el editor de la interfaz la evalúa al guardar. Se compara con flujos creados en la interfaz.
+- Las columnas numéricas con celdas vacías siguen leyéndose como `NULL` en el emulador.
+- `masking.HASH_DATA` se emula con `md5`; la huella solo ve cuenta y distintos, así que no detecta que el algoritmo sea otro.
+
 ## 10. Objetos creados en el tenant
 
 Todos en "Entrenamiento Dataflow", prefijo `emu_`. El 2026-11-19 la limpieza dejó el espacio sin objetos `emu_`:
@@ -278,6 +301,7 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 | `dfemu compare archivo.dfw (--app APP\|--push [--base-app APP]) --apply` | compara resultados del emulador con el tenant |
 | `dfemu cleanup [--apply]` | lista o borra apps y archivos `emu_*` |
 | `dfemu coverage [archivos...]` | mide qué processors usa el corpus y si cada flujo se puede ejecutar |
+| `python scripts/processor_battery.py [caso ...]` | batería de 15 processors, emulador frente al tenant (escribe en el tenant; limpia lo que crea) |
 | `dfemu translate script.qvs\|.pull.json [--run] [--compare [--apply]]` | traduce el script de Qlik a SQL de DuckDB; con `--run` lo ejecuta y con `--compare --apply` lo compara con la ejecución real en el tenant |
 
 El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DFEMU_BASE_APP` la CLI con `DFEMU_QLIK` (ver 10 bis) y, para usar otro contexto de la CLI sin activarlo, `DFEMU_QLIK_CONTEXT` (ver `02-guia-oauth.md`).
