@@ -10,7 +10,7 @@ Documento vivo. Cada afirmación dice si fue **verificada** (ejecutada contra el
 | **Descargar** un flujo | Sí | `GET v1/dataflows/{dataflowId}` (grafo idéntico al `.dfw` de la interfaz) |
 | **Validar** con el servidor | Sí | campo `validity` al leer o al guardar |
 | **Subir** un grafo local | Sí, con límites | clonar y `PUT v1/dataflows/{dataflowId}` con el grafo del `.dfw` (sección 5) |
-| Importar o exportar el archivo `.dfw` completo | No con API key | `POST v1/dataflows/actions/import` y `/export` existen pero devuelven 403 |
+| Importar o exportar el archivo `.dfw` completo | Parcial (ver 10 quinquies) | `POST v1/dataflows/actions/import` y `/export` dan 403 con API key **y con OAuth**, pero esa ruta era la equivocada: las que existen son `POST v1/dataflow-apps/{id}/actions/export` y `POST v1/dataflow-apps/actions/import` |
 | **Modificar** un flujo | Sí | `PUT v1/dataflows/{dataflowId}` |
 | Obtener el script que Qlik genera | Sí | `GET v1/apps/{appId}/scripts/current` |
 | **Ejecutar** un script | Sí | `POST v1/reloads` y sondear `GET v1/reloads/{id}` |
@@ -61,7 +61,7 @@ Usar `qlik raw <método> <ruta> < /dev/null` (ver 7.2).
 
 ## 5. Subir un `.dfw` local: lo que funciona y sus límites
 
-Como el import de `.dfw` está cerrado a la API key, la vía verificada es: **clonar un flujo base y reemplazar su grafo** con `PUT`.
+La vía verificada para subir un grafo es: **clonar un flujo base y reemplazar su grafo** con `PUT`. Las rutas de import y export con archivo existen y responden con API key (apartado 10 quinquies), pero falta cerrar la descarga y la subida del archivo.
 
 Resultados sobre clones `emu_` (cada `.dfw` se subió como grafo):
 
@@ -236,6 +236,26 @@ Guía completa, paso a paso y desde cero, en `02-guia-oauth.md`. Lo esencial, ve
 - La prueba directa a `/oauth/token` con PowerShell (`Read-Host -AsSecureString`) enseña el error real que la CLI oculta.
 - El token de un cliente M2M con `user_default` dura 21600 s (6 horas).
 
+## 10 quinquies. Importar y exportar `.dfw` con archivo
+
+Verificado el 2026-11-23, con la API key y con un cliente OAuth M2M (rol `TenantAdmin`, scope `user_default`). **OAuth no cambió nada:** lo que funciona con uno funciona con el otro, y lo que da 403 lo da con ambos.
+
+| Llamada | Resultado |
+|---|---|
+| `POST v1/dataflows/actions/export`, `.../import`, `v1/dataflows/{id}/actions/export`, `v1/dataflows/export` | **403** sin detalle (`{"status": 403, "error": "Forbidden", "path": ...}`) con API key y con OAuth: ruta equivocada o no expuesta |
+| `POST v1/dataflow-apps/{appId}/actions/export` (con o sin cuerpo) | **200**, devuelve solo `{"fileName": "fundamentos.dfw"}` |
+| `POST v1/dataflow-apps/actions/import` con `{}` | **400 `ADF-406` "The request is missing a file ID"**: la ruta existe y exige el id de un archivo ya subido |
+| `POST v1/dataflow-apps/actions/export`, `v1/dataflow-apps/import`, `v1/dataflow-apps/{id}/export` | 404 |
+| `GET v1/dataflow-apps/{id}/actions/export[/{fileName}]`, `.../exports` | 404 |
+| `POST v1/temp-contents?filename=X&ttl=60` (cuerpo `application/octet-stream`) | **rc 0** con cuerpo vacío: el archivo se sube, pero su id viaja en la cabecera `Location` |
+
+**Lo que se concluye**
+- El 403 que se anotó al principio era por usar `v1/dataflows/...`; la API correcta es `v1/dataflow-apps/...`. No hace falta OAuth para esto. El cliente OAuth creado puede borrarse (ver 10 quater).
+- **Importar** sería: subir el `.dfw` a `POST v1/temp-contents` (almacén temporal, TTL máximo 3 días), tomar el id de la cabecera `Location`, y llamar a `POST v1/dataflow-apps/actions/import` con ese id (el nombre exacto del campo falta por confirmar; el servidor dice "file ID").
+- **Exportar** devuelve el nombre del archivo; dónde se descarga el contenido no se encontró (el cuerpo no lo trae y las rutas `GET` probadas dan 404).
+
+**Por qué quedó abierto:** `qlik raw` solo imprime el cuerpo de la respuesta. La cabecera `Location` solo se ve con `--verbose`, que también imprime el token de autorización, así que no se usó. Opciones para seguir: (a) un cliente HTTP propio que pida el token con el flujo OAuth M2M y lea la cabecera sin imprimirla (más código y manejo de credenciales), (b) la subida con el protocolo tus (`POST v1/temp-contents/files`), que también devuelve `Location`, o (c) seguir con la vía de clonar y reemplazar el grafo, que ya cubre lo que el banco de pruebas necesita.
+
 ## 11. Comandos del banco de pruebas
 
 Todos los comandos son simulación por defecto; las escrituras en el tenant requieren `--apply`.
@@ -263,7 +283,8 @@ El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DF
 ## 12. Pendiente
 
 - Modificar la receta dentro de un subflow (`PUT v1/dataflows/{id del subflow}`): no se probó; hoy el subflow se toma del flujo base (ver 5 bis).
-- Credencial OAuth: el cliente M2M ya se creó y entrega tokens (guía en `02-guia-oauth.md`). Falta probar `actions/import` y `actions/export` con él (`DFEMU_QLIK_CONTEXT`); no están en la documentación pública, así que sus cuerpos hay que descubrirlos probando.
+- Import y export de `.dfw` con archivo: ver 10 quinquies. OAuth no era necesario (la API key sirve); falta obtener el id de la subida a `temp-contents` (viene en la cabecera `Location`, que la CLI no muestra) y la descarga del archivo exportado.
+- Borrar el cliente OAuth `dfemu-prueba` (y el contexto `dfemu-oauth` de la CLI) si no se va a usar: tiene rol TenantAdmin.
 - Comparar línea a línea el script de un clon con el original (se observó que difieren sin analizar por qué).
 - Orquestación: ver "Pendiente de esta fase" en el apartado 10 ter (`usage` en tareas avanzadas, flujos reales).
 - Limpieza de archivos escritos en carpetas de Google Drive (`GDDestino`): `dfemu cleanup` solo cubre `DataFiles` y no hay API de Qlik para listar o borrar en un conector de Drive; se borran a mano.
