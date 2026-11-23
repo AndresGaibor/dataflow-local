@@ -102,6 +102,7 @@ def compare(local: dict[str, dict], remote: dict[str, dict], rel_tol: float = 1e
                 if not ok:
                     msgs.append(f"{t}.{c}: {k} {x} (emulador) != {y} (tenant)")
             lh, rh = lc[c].get("head"), rc[c].get("head")
-            if lh is not None and rh is not None and c not in skip_head and lh != rh:  # `skip_head`: p. ej. HASH_DATA
+            if lh is not None and rh is not None and c not in skip_head and "*" not in skip_head and lh != rh:
+                # `skip_head`: columnas cuyos valores no coinciden (HASH_DATA); "*" salta todas (joins: el orden de Qlik no es reproducible)
                 msgs.append(f"{t}.{c}: primeras filas {lh[:60]!r} (emulador) != {rh[:60]!r} (tenant)")
     return sorted(msgs)

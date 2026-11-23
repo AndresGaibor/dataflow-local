@@ -157,7 +157,16 @@ def run_processor(ctx, t, cfg, ins, node):
         rsel = [f"r.{q(c)} AS {q(c + '_1' if c in lc else c)}" for c in rc if c not in drop]  # shortcut: colision -> sufijo _1
         kind = {"INNER_JOIN": "INNER", "LEFT_OUTER_JOIN": "LEFT", "RIGHT_OUTER_JOIN": "RIGHT", "FULL_OUTER_JOIN": "FULL"}[cfg["joinFunction"]]
         on = " AND ".join(f"l.{q(c['leftKey'])} = r.{q(c['rightKey'])}" for c in cfg["conditions"])
-        return D(f"SELECT l.*{''.join(', ' + x for x in rsel)} FROM {l} l {kind} JOIN {r} r ON {on}")
+        # Orden de salida determinista: filas de la izquierda en su orden y al final las que solo estan a la derecha. NO es el orden
+        # de Qlik, que no se pudo deducir (con claves unicas y ordenadas coincide; con claves repetidas agrupa por clave y reordena
+        # las filas dentro del grupo): por eso la bateria compara los joins por contenido y no por orden.
+        # En las filas solo-derecha la clave viene de la derecha (medido en FULL y RIGHT)
+        lsel = "l.* EXCLUDE (__ln)"
+        if kind in ("FULL", "RIGHT"):
+            lsel += " REPLACE (" + ", ".join(f"coalesce(l.{q(c['leftKey'])}, r.{q(c['rightKey'])}) AS {q(c['leftKey'])}"
+                                             for c in cfg["conditions"] if c["rightKey"] in drop) + ")" if drop else ""
+        return D(f"SELECT {lsel}{''.join(', ' + x for x in rsel)} FROM (SELECT *, row_number() OVER () AS __ln FROM {l}) l "
+                 f"{kind} JOIN (SELECT *, row_number() OVER () AS __rn FROM {r}) r ON {on} ORDER BY l.__ln NULLS LAST, r.__rn")
     if t == "aggregate":
         ops = {"SUM": "sum", "COUNT": "count", "AVG": "avg", "MIN": "min", "MAX": "max", "MEDIAN": "median", "COUNT_DISTINCT": "count(DISTINCT"}
         g = [x["fieldPath"] for x in cfg["groupBy"]]
@@ -260,8 +269,11 @@ def _typed(ctx, t, cfg, v):
         n, S = c["parts"], f"CAST({q(col)} AS VARCHAR)"
         # Qlik: SubField(c, sep, i) AS [c-split_i]; la ultima parte conserva el resto (Mid(c, Index(c, sep, n-1) + 1)), '' si falta.
         # shortcut: para parts > 2 se supone la misma regla (solo se midio parts = 2); verificar con un flujo de 3 partes
-        parts = [f"split_part({S}, {lit(sep)}, {i}) AS {q(f'{col}-split_{i}')}" for i in range(1, n)]
-        parts.append(f"array_to_string(list_slice(string_split({S}, {lit(sep)}), {n}, 1000000), {lit(sep)}) AS {q(f'{col}-split_{n}')}")
+        # una parte que no existe es NULL, no '' (SubField fuera de rango y Mid(c, '') dan NULL; medido en una cadena con REPLACE_ON_VALUE)
+        parts = [f"CASE WHEN len(string_split({S}, {lit(sep)})) >= {i} THEN split_part({S}, {lit(sep)}, {i}) END AS {q(f'{col}-split_{i}')}"
+                 for i in range(1, n)]
+        parts.append(f"CASE WHEN len(string_split({S}, {lit(sep)})) >= {n} THEN "
+                     f"array_to_string(list_slice(string_split({S}, {lit(sep)}), {n}, 1000000), {lit(sep)}) END AS {q(f'{col}-split_{n}')}")
         return D(f"SELECT *, {', '.join(parts)} FROM {v}")
     if t == "field-concatenator":
         c = cfg["concatConfiguration"]

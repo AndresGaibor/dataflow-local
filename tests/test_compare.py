@@ -152,6 +152,7 @@ def test_compare_can_skip_columns_whose_values_cannot_match():
     local, remote = {"t": fp(1, {"h": col_head(1, 1, "aa")})}, {"t": fp(1, {"h": col_head(1, 1, "bb")})}
     assert compare.compare(local, remote) != []
     assert compare.compare(local, remote, skip_head={"h"}) == []
+    assert compare.compare(local, remote, skip_head={"*"}) == []  # "*": todas las columnas (joins)
 
 
 def test_cli_compare_rows_reports_a_different_order(tmp_path, monkeypatch, capsys):

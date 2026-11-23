@@ -144,3 +144,68 @@ def test_converted_dates_keep_iso_for_a_locale_other_than_en(tmp_path):
            "format": "custom", "newColumnRename": "f", "shouldCreateNewColumn": True}}
     cols, out = run_one(tmp_path, "id,d\n1,2019-05-24\n", ["id", "d"], "date", cfg, locale="es-ES")
     assert out[0][cols.index("f")] == "2019-05-24"
+
+
+def run_join(tmp_path, kind):
+    """a.csv (ids 1,2,3,4) y b.csv (ids 3,1,9) unidos por id; devuelve (columnas, filas) del archivo de salida."""
+    from emulator.builder import join
+    (tmp_path / "a.csv").write_text("id,v\n1,a1\n2,a2\n3,a3\n4,a4\n", encoding="utf-8")
+    (tmp_path / "b.csv").write_text("id,w\n3,b3\n1,b1\n9,b9\n", encoding="utf-8")
+    f = Flow("t")
+    a, b = f.dataset("a", "a.csv", ["id", "v"]), f.dataset("b", "b.csv", ["id", "w"])
+    j = f.proc("join", "j", join(kind, ("id", "id")))
+    f.link(a, j)
+    f.link(b, j)
+    f.chain(j, f.target("Destino", "salida"))
+    (t,) = runner.run(f.dump(), str(tmp_path), str(tmp_path / "out"))
+    cur = duckdb.connect().execute(f"SELECT * FROM read_csv('{t['dest']}', header=true, all_varchar=true)")
+    return [d[0] for d in cur.description], cur.fetchall()
+
+
+@pytest.mark.parametrize("kind,ids", [
+    ("INNER_JOIN", ["1", "3"]),                       # filas de la izquierda, en su orden
+    ("LEFT_OUTER_JOIN", ["1", "2", "3", "4"]),
+    ("FULL_OUTER_JOIN", ["1", "2", "3", "4", "9"]),   # izquierda en su orden y despues las que solo estan a la derecha
+])
+def test_join_output_order_is_deterministic_left_then_right_only(tmp_path, kind, ids):
+    # orden propio del emulador (reproducible); el de Qlik con claves repetidas no se pudo deducir, ver 9 quater
+    cols, out = run_join(tmp_path, kind)
+    assert [r[cols.index("id")] for r in out] == ids
+
+
+def test_full_join_takes_the_key_from_the_right_side_for_right_only_rows(tmp_path):
+    cols, out = run_join(tmp_path, "FULL_OUTER_JOIN")
+    last = out[-1]
+    assert last[cols.index("id")] == "9" and last[cols.index("w")] == "b9" and last[cols.index("v")] in ("", None)
+
+
+def run_chain(tmp_path, csv_text, fields, steps):
+    """t.csv -> varios processors en serie -> destino; devuelve (columnas, filas) del archivo de salida."""
+    (tmp_path / "t.csv").write_text(csv_text, encoding="utf-8")
+    f = Flow("t")
+    src = f.dataset("t", "t.csv", fields)
+    nodes = [f.proc(t, f"p{i}", c) for i, (t, c) in enumerate(steps)]
+    f.chain(src, *nodes, f.target("Destino", "salida"))
+    (t,) = runner.run(f.dump(), str(tmp_path), str(tmp_path / "out"))
+    cur = duckdb.connect().execute(f"SELECT * FROM read_csv('{t['dest']}', header=true, all_varchar=true)")
+    return [d[0] for d in cur.description], cur.fetchall()
+
+
+def test_split_leaves_null_not_empty_text_when_the_part_does_not_exist(tmp_path):
+    # en Qlik, SubField fuera de rango y Mid(c, '') dan NULL: un paso posterior ve NULL (Count = 0; reemplazar "vacios" no lo toca)
+    split = ["split-field", {"type": "SPLIT_TEXT_IN_PARTS", "splitTextInPartsConfiguration": {
+        "columnsToProcess": ["n"], "customSeparatorValue": "", "parts": 2, "separator": "SPACE"}}]
+    count = ["aggregate", {"groupBy": [{"fieldPath": "id"}], "operations": [
+        {"operation": "COUNT", "fieldPaths": ["n-split_2"], "delimiter": ",", "outputFieldPath": "c2"}]}]
+    cols, out = run_chain(tmp_path, "id,n\n1,Garcia Perez\n2,Solo\n", ["id", "n"], [split, count])
+    assert {r[cols.index("id")]: r[cols.index("c2")] for r in out} == {"1": "1", "2": "0"}
+
+
+def test_replace_cell_equals_empty_does_not_touch_a_null_part(tmp_path):
+    split = ["split-field", {"type": "SPLIT_TEXT_IN_PARTS", "splitTextInPartsConfiguration": {
+        "columnsToProcess": ["n"], "customSeparatorValue": "", "parts": 2, "separator": "SPACE"}}]
+    rep = ["strings", {"type": "REPLACE_ON_VALUE", "replaceOnValueConfiguration": {
+        "cellValue": {"operator": "EQUALS", "value": ""}, "columnsToProcess": ["n-split_2"], "newColumnName": "",
+        "replaceMethod": "REPLACE_CELL_WITH_VALUE", "replaceValue": "SIN", "shouldCreateNewColumn": False}}]
+    cols, out = run_chain(tmp_path, "id,n\n2,Solo\n", ["id", "n"], [split, rep])
+    assert out[0][cols.index("n-split_2")] in ("", None)  # medido en la cadena cadena_dividir_reemplazar: no se reemplaza

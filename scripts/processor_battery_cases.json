@@ -1241,5 +1241,103 @@
     ]
    ]
   }
+ ],
+ "join_full_disjunto": [
+  "joinchain",
+  {
+   "join": {
+    "joinFunction": "FULL_OUTER_JOIN",
+    "conditions": [
+     {
+      "leftKey": "cliente_id",
+      "rightKey": "cliente_id",
+      "keepBothKeysInOutput": false
+     }
+    ]
+   },
+   "after": [],
+   "left_city": "Guayaquil"
+  }
+ ],
+ "join_right_disjunto": [
+  "joinchain",
+  {
+   "join": {
+    "joinFunction": "RIGHT_OUTER_JOIN",
+    "conditions": [
+     {
+      "leftKey": "cliente_id",
+      "rightKey": "cliente_id",
+      "keepBothKeysInOutput": false
+     }
+    ]
+   },
+   "after": [],
+   "left_city": "Guayaquil"
+  }
+ ],
+ "join_left_orden": [
+  "joinchain",
+  {
+   "join": {
+    "joinFunction": "LEFT_OUTER_JOIN",
+    "conditions": [
+     {
+      "leftKey": "cliente_id",
+      "rightKey": "cliente_id",
+      "keepBothKeysInOutput": false
+     }
+    ]
+   },
+   "after": [],
+   "left_sort_desc": true
+  }
+ ],
+ "join_full_orden": [
+  "joinchain",
+  {
+   "join": {
+    "joinFunction": "FULL_OUTER_JOIN",
+    "conditions": [
+     {
+      "leftKey": "cliente_id",
+      "rightKey": "cliente_id",
+      "keepBothKeysInOutput": false
+     }
+    ]
+   },
+   "after": [],
+   "left_city": "Guayaquil",
+   "left_sort_desc": true
+  }
+ ],
+ "join_clave_ciudad": [
+  "joinchain",
+  {
+   "join": {
+    "joinFunction": "LEFT_OUTER_JOIN",
+    "conditions": [
+     {
+      "leftKey": "ciudad",
+      "rightKey": "ciudad",
+      "keepBothKeysInOutput": false
+     }
+    ]
+   },
+   "after": [],
+   "right": {
+    "cities": [
+     "Cuenca",
+     "Quito"
+    ],
+    "select": [
+     "ciudad",
+     [
+      "segmento",
+      "seg_seg"
+     ]
+    ]
+   }
+  }
  ]
 }

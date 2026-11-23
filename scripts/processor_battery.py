@@ -1,6 +1,6 @@
 """Bateria de processors: cada caso es `clientes` -> un processor -> destino, ejecutado en el emulador y en el tenant.
 
-Cada caso es un processor suelto o una cadena de 3 a 4 pasos. Para cada caso: arma el grafo con `emulator.builder`, lo sube a un clon descartable `emu_v_*` del flujo base
+Cada caso es un processor suelto, un join o una cadena de 3 a 4 pasos; compara contenido y las 8 primeras filas (orden y formato). Para cada caso: arma el grafo con `emulator.builder`, lo sube a un clon descartable `emu_v_*` del flujo base
 (reutilizando su fuente `clientes`), toma el script que genera Qlik, lo ejecuta en una app `emu_oracle_*` y
 compara las huellas con las del emulador. Todo lo que crea lo borra al terminar.
 
@@ -26,7 +26,10 @@ CLIENTES = ["cliente_id", "cedula", "nombre", "apellido", "fecha_nacimiento", "c
             "email", "telefono", "segmento", "fecha_registro"]
 HEAD = 8  # primeras filas que se comparan como texto (orden y formato de lo escrito)
 # columnas cuyos valores no pueden coincidir: HASH_DATA se emula con md5 y Qlik usa otro algoritmo
-NO_HEAD = {"hash": {"email"}, "cadena_concat_hash_quitar": {"nombre_completo"}}
+# joins: el orden de salida de Qlik no es reproducible (se comparan por contenido), "*" salta todas las columnas
+NO_HEAD = {"hash": {"email"}, "cadena_concat_hash_quitar": {"nombre_completo"},
+           **{n: {"*"} for n in ("join_inner", "join_left", "join_full", "join_full_disjunto", "join_right_disjunto",
+                                 "join_left_orden", "join_full_orden", "join_clave_ciudad")}}
 with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "processor_battery_cases.json"), encoding="utf-8") as fh:
     CASES = json.load(fh)
 
@@ -48,11 +51,19 @@ def build(name: str, entity: str):
     if ctype in ("join", "joinchain"):
         # autounion: fork -> rama completa (izquierda) + rama filtrada con solo cliente_id y ciudad como ciudad_ref (derecha)
         jcfg, after = (cfg, []) if ctype == "join" else (cfg["join"], cfg["after"])
+        left_city = None if ctype == "join" else cfg.get("left_city")  # rama izquierda filtrada: ramas disjuntas (filas solo a la derecha)
         fk, jn = f.proc("fork", "Fork", {}, x=260), f.proc("join", name, jcfg, x=700)
-        quito = f.proc("filter", "Solo Quito", flt(("ciudad", "EQUAL", "Quito")), x=420)
-        ref = f.proc("field-selector", "Referencia", sel("cliente_id", ("ciudad", "ciudad_ref")), x=560)
+        right = {} if ctype == "join" else cfg.get("right", {})  # rama derecha a medida (por omision: Quito, cliente_id y ciudad_ref)
+        quito = f.proc("filter", "Rama derecha", flt(*[("ciudad", "EQUAL", c) for c in right.get("cities", ["Quito"])], op="ANY"), x=420)
+        ref = f.proc("field-selector", "Referencia", sel(*[c if isinstance(c, str) else tuple(c) for c in
+                                                         right.get("select", ["cliente_id", ["ciudad", "ciudad_ref"]])]), x=560)
         f.link(src, fk)
-        f.link(fk, jn)
+        left = []  # pasos de la rama izquierda antes del join
+        if left_city:
+            left.append(f.proc("filter", f"Solo {left_city}", flt(("ciudad", "EQUAL", left_city)), x=420))
+        if ctype == "joinchain" and cfg.get("left_sort_desc"):  # distingue "orden de la izquierda" de "orden por clave"
+            left.append(f.proc("sort", "Izquierda desc", {"sortFields": [{"fieldPath": "cedula", "sortOrder": "DESCENDING"}]}, x=500))
+        f.chain(fk, *left, jn) if left else f.link(fk, jn)
         f.link(fk, quito, out="OPTIONAL_1")
         f.chain(quito, ref, jn)
         f.chain(jn, *[f.proc(t, f"{name}_{i}", c, x=800 + 120 * i) for i, (t, c) in enumerate(after)], tgt)
