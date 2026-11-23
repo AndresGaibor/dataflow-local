@@ -215,6 +215,10 @@ def main(argv=None):
     cp.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
     cp.add_argument("--out", default="out")
     cp.add_argument("--apply", action="store_true", help="ejecutar en el tenant (sin esto solo simula)")
+    su = sub.add_parser("setup", help="instala la CLI de Qlik, crea el contexto (pide la API key) y fija el espacio de pruebas")
+    su.add_argument("--yes", action="store_true", help="descargar la CLI sin preguntar")
+    su.add_argument("--space", help="id del espacio de pruebas (si no, se elige de una lista)")
+    su.add_argument("--base-app", help="id del flujo base (si no, se elige de una lista)")
     cl = sub.add_parser("cleanup", help="borra apps y archivos emu_* del espacio permitido")
     cl.add_argument("--apply", action="store_true", help="borrar de verdad (sin esto solo lista)")
     co = sub.add_parser("coverage", help="mide que processors usa el corpus y que se puede ejecutar")
@@ -248,6 +252,12 @@ def main(argv=None):
         sys.exit(1 if calibrate.disagreements(rows) else 0)
     if a.cmd == "compare":
         return _compare(a)
+    if a.cmd == "setup":
+        from . import setup
+        try:
+            return setup.run(a.yes, a.space, a.base_app)
+        except (setup.SetupError, BridgeError, EOFError) as e:
+            sys.exit(f"error: {e}")
     if a.cmd == "cleanup":
         return _cleanup(a)
     if a.cmd == "coverage":

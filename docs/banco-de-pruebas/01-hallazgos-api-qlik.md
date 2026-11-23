@@ -160,10 +160,15 @@ python -m emulator.cli cleanup --apply   # borra apps y archivos emu_*
 **Solución automática:** `emulator/bridge.py` (`_qlik_exe`) elige el ejecutable en este orden, sin tocar el PATH:
 
 1. la variable `DFEMU_QLIK`, si existe (ruta completa a un `qlik.exe`);
-2. `%ChocolateyInstall%\lib\qlik-cli\tools\qlik.exe`, o `C:\ProgramData\chocolatey\lib\qlik-cli\tools\qlik.exe` si la variable no existe, siempre que el archivo exista;
-3. `qlik` del PATH.
+2. la CLI que instala `dfemu setup` en `.tools/qlik/`;
+3. `%ChocolateyInstall%\lib\qlik-cli	ools\qlik.exe` (o `C:\ProgramData\chocolatey\lib\qlik-cli	ools\qlik.exe`), siempre que exista;
+4. `qlik` del PATH.
 
-Si el sistema operativo impide ejecutarlo (`OSError`), el puente devuelve el código 126 y un mensaje que indica definir `DFEMU_QLIK`. Verificado con `dfemu cleanup` desde Git Bash: llega al tenant sin cambiar el PATH.
+Si el sistema impide ejecutarlo (`OSError`), el puente devuelve el código 126 y un mensaje que remite a `dfemu setup` o a `DFEMU_QLIK`; si no hay CLI, devuelve 127 con la misma remisión. Verificado el 2026-11-23 con `dfemu cleanup` desde Git Bash.
+
+**Instalación automática (`dfemu setup`):** descarga `qlik-<sistema>-x86_64` de `github.com/qlik-oss/qlik-cli/releases/download/v4.0.0/`, comprueba su SHA-256 contra `qlik_4.0.0_checksums.txt` del mismo release y extrae solo el binario. Alcance de la comprobación: detecta descargas corruptas, no un release comprometido. El release solo publica x86_64 (en Apple Silicon corre con Rosetta; Linux arm64 no tiene binario). Si una política WDAC también bloquea el binario descargado, `setup` lo dice y pide `DFEMU_QLIK`. Verificado: la CLI instalada por Chocolatey es el mismo binario firmado por QlikTech International AB.
+
+**API key:** `setup` la pide sin mostrarla y la entrega a `qlik context create|update --api-key`; la CLI la guarda en su propio contexto. No se escribe en el repositorio, en `dfemu.local.json` ni en el registro de auditoría. Limitación de la CLI: no admite la clave por variable de entorno ni por entrada estándar, así que durante esa llamada es visible en la lista de procesos.
 
 **Uso manual en PowerShell (fuera del emulador):** anteponer la carpeta al PATH de la sesión: `$env:PATH = "C:\ProgramData\chocolatey\lib\qlik-cli\tools;" + $env:PATH`. Git Bash no puede ejecutar el shim. Al canalizar la salida de `qlik raw` hacia Python desde PowerShell se añade un BOM; usar `ConvertFrom-Json` en PowerShell o leer con `utf-8-sig`.
 
@@ -173,6 +178,7 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 
 | Comando | Qué hace |
 |---|---|
+| `dfemu setup [--yes] [--space ID] [--base-app ID]` | instala la CLI de Qlik, crea el contexto pidiendo la API key y fija el espacio y el flujo base |
 | `dfemu validate archivo.dfw` | valida el `.dfw` con el validador local |
 | `dfemu validate --remote --apply archivo.dfw` | sube el grafo a un clon y lee la validez del servidor |
 | `dfemu calibrate --apply` | compara el validador local con el servidor sobre una batería de mutaciones |

@@ -11,6 +11,9 @@ from typing import Any, Callable
 # con DFEMU_SPACE_ID para que ninguna instalacion escriba en un tenant ajeno.
 SANDBOX_SPACE_ID = os.environ.get("DFEMU_SPACE_ID", "000000000000000000000000")
 PREFIX = "emu_"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TOOLS_DIR = os.path.join(ROOT, ".tools", "qlik")  # donde `dfemu setup` instala la CLI
+CLI_FILE = os.path.join(TOOLS_DIR, "qlik.exe" if os.name == "nt" else "qlik")
 TIMEOUT_S = 60
 VALIDATE = "v1/apps/validatescript"  # única escritura-lectura permitida sin simulación
 
@@ -38,10 +41,13 @@ Runner = Callable[[list[str]], tuple[int, str, str]]
 
 
 def _qlik_exe() -> str:
-    """Ejecutable de la CLI. En Windows con Code Integrity (WDAC) el acceso directo de
-    Chocolatey (`bin/qlik.exe`, sin firma) se bloquea; el binario real, firmado por Qlik, corre."""
+    """Ejecutable de la CLI, por orden: DFEMU_QLIK, la instalada por `dfemu setup`, el binario real de
+    Chocolatey y el del PATH. En Windows con Code Integrity (WDAC) el acceso directo de Chocolatey
+    (`bin/qlik.exe`, sin firma) se bloquea; el binario real, firmado por Qlik, corre."""
     if os.environ.get("DFEMU_QLIK"):
         return os.environ["DFEMU_QLIK"]
+    if os.path.isfile(CLI_FILE):
+        return CLI_FILE
     choco = os.environ.get("ChocolateyInstall") or r"C:\ProgramData\chocolatey"
     real = os.path.join(choco, "lib", "qlik-cli", "tools", "qlik.exe")
     return real if os.path.isfile(real) else "qlik"
@@ -55,9 +61,9 @@ def qlik_runner(args: list[str]) -> tuple[int, str, str]:
     except subprocess.TimeoutExpired:
         return 124, "", f"timeout tras {TIMEOUT_S}s"
     except FileNotFoundError:  # la CLI no está instalada
-        return 127, "", "no se encontro la CLI qlik"
+        return 127, "", "no se encontro la CLI qlik; ejecute `python -m emulator.cli setup`"
     except OSError as e:  # p. ej. bloqueada por una politica de control de aplicaciones
-        return 126, "", f"no se pudo ejecutar {exe}: {e}. Defina DFEMU_QLIK con la ruta del qlik.exe firmado"
+        return 126, "", f"no se pudo ejecutar {exe}: {e}. Ejecute `python -m emulator.cli setup` o defina DFEMU_QLIK con la ruta del qlik.exe firmado"
     return p.returncode, p.stdout, p.stderr
 
 
