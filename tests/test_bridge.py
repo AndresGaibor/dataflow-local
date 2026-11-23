@@ -437,3 +437,13 @@ def test_qlik_runner_uses_the_context_from_the_environment(monkeypatch):
     monkeypatch.setenv("DFEMU_QLIK_CONTEXT", "dfemu-oauth")
     B.qlik_runner(["raw", "get", "v1/x"])
     assert seen[-1] == ["qlik", "--context", "dfemu-oauth", "raw", "get", "v1/x"]  # sin activarlo
+
+
+@pytest.mark.parametrize("target", ["lib://c/emu_$(v)", "lib://c:$(base)/emu_t.csv", "lib://c/emu_t$(x).csv"])
+def test_start_rejects_store_paths_built_with_variables(tmp_path, target):
+    # una variable de Qlik se expande al ejecutar y podria apuntar fuera de un archivo emu_
+    script = f"STORE [T] INTO [{target}] (txt);"
+    b, runner = _sched(tmp_path, EMU, {("GET", "v1/apps/A/scripts/current"): {"script": script}})
+    with pytest.raises(SafetyError, match="STORE"):
+        b.post("scheduling/tasks/T1/actions/start", None)
+    assert not writes(runner)

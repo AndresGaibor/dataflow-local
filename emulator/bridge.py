@@ -185,7 +185,7 @@ class Bridge:
         script = str((self._raw("GET", f"v1/apps/{app_id}/scripts/current") or {}).get("script", ""))
         words = [mm.start() for mm in re.finditer(r"(?i)\bSTORE\b", script)]
         good = [mm.start() for mm in re.finditer(
-            r"(?i)\bSTORE\s+\[[^\]]+\]\s+INTO\s+\[lib://[^\]]*/emu_[^/\]]*\]", script)]
+            r"(?i)\bSTORE\s+\[[^\]]+\]\s+INTO\s+\[lib://[^\]$]*/emu_[^/\]$]*\]", script)]  # sin `$`: una variable se expande al ejecutar
         if words != good:
             raise SafetyError("el script tiene un STORE que no escribe en un archivo emu_; la tarea no se ejecuta")
         return True
