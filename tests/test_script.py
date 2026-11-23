@@ -220,3 +220,60 @@ def test_translate_group_by_with_free_field_is_reported(tmp_path):
     sql, reasons = script.translate(
         "[T]:\nLOAD [k], [b], Sum([a]) AS [s] FROM [lib://c/g.csv] (txt)\nGROUP BY [k];", str(tmp_path))
     assert sql is None and any("GROUP BY" in r for r in reasons)
+
+
+# --- comportamiento verificado contra el tenant el 2026-11-23 -----------------
+
+def test_sum_of_nulls_or_text_is_zero_and_avg_of_nulls_is_null(tmp_path):
+    _csv(tmp_path, "g.csv", "k,t,n\nA,x,\nA,y,\n")
+    rows, cols = _go(tmp_path, """
+[R]:
+LOAD [k], Sum([n]) AS [s_nul], Sum([t]) AS [s_txt], Avg([n]) AS [a_nul], Count([t]) AS [c_txt]
+FROM [lib://c/g.csv] (txt)
+GROUP BY [k];
+""")
+    assert rows == [("A", 0, 0, None, 2)]  # Qlik: Sum sin numeros = 0, Avg sin numeros = nulo, Count cuenta el texto
+
+
+FIXTURE = os.path.join(ROOT, "tests", "fixtures", "join_agg.qvs")  # script que genero el servidor para fork + join + aggregate
+
+
+@pytest.mark.skipif(not os.path.exists(os.path.join(ROOT, "data", "practica", "clientes.csv")),
+                    reason="faltan los CSV de practica en data/practica")
+def test_server_generated_join_aggregate_script():
+    data = os.path.join(ROOT, "data", "practica")
+    with open(FIXTURE, encoding="utf-8") as fh:
+        sql, reasons = script.translate(fh.read(), data)
+    assert reasons == []
+    rows, cols = script.run(sql)
+    assert cols == ["segmento", "n", "suma_ced", "media_ced"]
+    expected, _ = script.run(
+        f"SELECT trim(segmento), count(*), sum(cedula), avg(cedula) "
+        f"FROM read_csv('{data}/clientes.csv', header=true) GROUP BY 1")
+    assert sorted(rows) == sorted(expected)
+
+
+def test_store_stem():
+    assert script.store_stem("STORE [T] INTO [lib://x:GDDestino/emu_a.csv] (txt);") == "emu_a"
+    assert script.store_stem("LOAD [a] FROM [lib://x/a.csv] (txt);") is None
+
+
+def test_cli_translate_compare_simulates_without_apply(tmp_path, capsys):
+    _csv(tmp_path, "g.csv", "k,v\nA,1\nA,2\n")
+    p = tmp_path / "s.qvs"
+    p.write_text("[T]:\nLOAD [k], Sum([v]) AS [s] FROM [lib://c/g.csv] (txt) GROUP BY [k];\n"
+                 "STORE [T] INTO [lib://c:GDDestino/emu_t.csv] (txt);\n", encoding="utf-8")
+    with pytest.raises(SystemExit) as e:
+        cli.main(["translate", str(p), "--data", str(tmp_path), "--compare", "--out", str(tmp_path / "o")])
+    assert e.value.code == 0
+    assert "[simulación]" in capsys.readouterr().out
+    assert (tmp_path / "o" / "translated" / "emu_t.csv").exists()
+
+
+def test_cli_translate_compare_requires_store(tmp_path, capsys):
+    _csv(tmp_path, "g.csv", "k\nA\n")
+    p = tmp_path / "s.qvs"
+    p.write_text("LOAD [k] FROM [lib://c/g.csv] (txt);", encoding="utf-8")
+    with pytest.raises(SystemExit) as e:
+        cli.main(["translate", str(p), "--data", str(tmp_path), "--compare", "--out", str(tmp_path / "o")])
+    assert e.value.code == 1 and "no tiene STORE" in capsys.readouterr().out

@@ -138,7 +138,11 @@ Variantes reales añadidas el 2026-11-19 tras revisar los 18 flujos del tenant: 
 
 Cada sentencia con nombre es una tabla; `RESIDENT [T]` lee otra tabla del script; `LEFT|INNER|RIGHT|OUTER JOIN([T])` (sin tipo = outer, como Qlik) une por los campos en común y falla si no hay; `GROUP BY` solo con campos simples. Expresiones: `Upper`, `Trim`, `Year`, `Month`, `IsNull`, `Coalesce`, `If` y condiciones simples; agregaciones `Sum`, `Avg`, `Min`, `Max`, `Count` y `Count(DISTINCT ...)`. `SET`, `TRACE`, `STORE` y `DROP TABLE` se ignoran (el `STORE` fija la tabla de salida). Los textos se recortan al leer el CSV, como en Qlik. Todo lo demás se marca no traducible; nunca se pasa SQL crudo.
 
-Medición el 2026-11-23 sobre los 18 scripts distintos de `out/corpus*/`: 3 se traducen (los de `fundamentos`, con huellas iguales al emulador sobre `data/practica`). Los otros 15: 10 cargan desde BigQuery o Postgres con `LIB CONNECT` y `SELECT` (necesitan conexión), 3 son flujos inválidos (`throw`), 1 lee un `.xlsx` y 1 no carga ninguna tabla. **Joins, `RESIDENT` y agregaciones solo están probados con scripts sintéticos en `tests/test_script.py`: ningún script local los usa con CSV, y no se han comparado con el tenant.** Sin verificar: `Sum` sobre solo nulos (aquí da NULL, como SQL; la documentación de Qlik no lo dice) y join con campos comunes de distinto tipo. Sin cubrir: `LIB CONNECT`, `xlsx`/`qvd`, `CONCATENATE`, `Match`, `SubField`, `Window`, varios destinos `STORE`.
+Medición el 2026-11-23 sobre los 18 scripts distintos de `out/corpus*/`: 3 se traducen (los de `fundamentos`, con huellas iguales al emulador sobre `data/practica`). Los otros 15: 10 cargan desde BigQuery o Postgres con `LIB CONNECT` y `SELECT` (necesitan conexión), 3 son flujos inválidos (`throw`), 1 lee un `.xlsx` y 1 no carga ninguna tabla. **Verificado contra el tenant el 2026-11-23** con `dfemu translate script --compare --apply` (ejecuta el script en una app `emu_oracle_*`, compara huellas con la traducción local y limpia): un flujo `clientes` → fork → field-selector → join (LEFT OUTER, autounión por `cliente_id`) → aggregate por `segmento`. El servidor generó `RESIDENT` y `LEFT JOIN([T])`; filas, `Count` y `Sum` coinciden con la traducción, y una variante con `Avg`, `Min`, `Max` y una resta da `OK: sin diferencias`. Comportamiento de Qlik medido y reproducido en la traducción: `Sum` de solo nulos o de texto da 0; `Avg` de solo nulos da nulo; `Count` cuenta también los textos. El script real del servidor quedó como fixture en `tests/fixtures/join_agg.qvs`.
+
+**Divergencia conocida:** `Avg` sobre valores grandes (aquí ~1,7·10⁹) sale cuantizado en el modelo de Qlik (el texto es `1.7000002e+09`; 4 promedios distintos pasan a 2 valores y su suma cambia en el noveno dígito). `dfemu` la reporta como diferencia en `distinct` y `sum` de esa columna; no es un error de la traducción. Con magnitudes pequeñas coincide.
+
+**Limitaciones del banco de pruebas descubiertas:** el `entityId` de cada nodo fuente es propio del flujo (el mismo dataset tiene un id distinto en cada flujo), así que un grafo nuevo no puede referenciar datasets del catálogo (`GHOST_SOURCE`); solo sirve reutilizar las fuentes del flujo base clonado. Por la misma razón los `.dfw` de `samples/` (con ids desidentificados) no se pueden subir al tenant; para eso se usan los grafos descargados con `dfemu pull` en `out/`. Sin cubrir: `LIB CONNECT`, `xlsx`/`qvd`, `CONCATENATE`, `Match`, `SubField`, `Window`, varios destinos `STORE`, joins entre campos comunes de distinto tipo y `Sum`/`Avg` con parte de los valores nulos.
 
 ## 10. Objetos creados en el tenant
 
@@ -153,7 +157,7 @@ python -m emulator.cli cleanup --apply   # borra apps y archivos emu_*
 
 ## 10 bis. Windows: la CLI `qlik` bloqueada por Code Integrity
 
-**Síntoma (verificado el 2026-11-23):** `qlik` falla con "Una directiva de Control de aplicaciones bloqueó este archivo" en PowerShell y con "Permission denied" en Git Bash. El registro `Microsoft-Windows-CodeIntegrity/Operational` trae los eventos 3033 y 3077: el archivo bloqueado es `C:\ProgramData\chocolateyin\qlik.exe`.
+**Síntoma (verificado el 2026-11-23):** `qlik` falla con "Una directiva de Control de aplicaciones bloqueó este archivo" en PowerShell y con "Permission denied" en Git Bash. El registro `Microsoft-Windows-CodeIntegrity/Operational` trae los eventos 3033 y 3077: el archivo bloqueado es `C:\ProgramData\chocolatey\bin\qlik.exe`.
 
 **Causa:** ese archivo es un acceso directo (shim) que genera Chocolatey. No está firmado y la política WDAC de la máquina solo admite binarios con firma de nivel empresarial. El binario real, `C:\ProgramData\chocolatey\lib\qlik-cli\tools\qlik.exe`, está firmado por QlikTech International AB y sí corre (versión 4.0.0).
 
@@ -187,7 +191,7 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 | `dfemu compare archivo.dfw (--app APP\|--push) --apply` | compara resultados del emulador con el tenant |
 | `dfemu cleanup [--apply]` | lista o borra apps y archivos `emu_*` |
 | `dfemu coverage [archivos...]` | mide qué processors usa el corpus y si cada flujo se puede ejecutar |
-| `dfemu translate script.qvs\|.pull.json [--run]` | traduce el script de Qlik a SQL de DuckDB y, con `--run`, lo ejecuta |
+| `dfemu translate script.qvs\|.pull.json [--run] [--compare [--apply]]` | traduce el script de Qlik a SQL de DuckDB; con `--run` lo ejecuta y con `--compare --apply` lo compara con la ejecución real en el tenant |
 
 El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DFEMU_BASE_APP` y, solo si hace falta, la CLI con `DFEMU_QLIK` (ver 10 bis).
 

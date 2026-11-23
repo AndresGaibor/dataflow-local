@@ -92,7 +92,34 @@ def _translate(a) -> int:
     if a.run:
         rows, cols = qvs.run(sql)
         print(f"{len(rows)} filas, {len(cols)} columnas: {', '.join(cols)}")
+    if a.compare:
+        return _compare_translation(a, sql)
     return 0
+
+
+def _compare_translation(a, sql: str) -> int:
+    """Ejecuta el script original en el tenant y lo compara con el resultado de la traduccion."""
+    text = _read_script(a.file)
+    stem = qvs.store_stem(text)
+    if stem is None:
+        print("error: el script no tiene STORE; no hay resultado que comparar")
+        return 1
+    path = os.path.join(a.out, "translated", stem + ".csv")
+    qvs.write_csv(sql, path)
+    local = compare.local_fingerprints([path])
+    try:
+        remote = oracle.run_script(make_bridge(a.apply), text, uuid.uuid4().hex[:8])
+    except DryRun as e:
+        print(f"[simulación] {e.method} {e.path}")
+        return 0
+    except (BridgeError, SafetyError, oracle.OracleError) as e:
+        print(f"error: {e}")
+        return 1
+    diffs = compare.compare(local, remote)
+    for m in diffs:
+        print(m)
+    print("OK: sin diferencias" if not diffs else f"{len(diffs)} diferencias")
+    return 1 if diffs else 0
 
 
 def _coverage(a) -> int:
@@ -228,6 +255,9 @@ def main(argv=None):
     tr.add_argument("file")
     tr.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
     tr.add_argument("--run", action="store_true", help="ejecutar el SQL traducido")
+    tr.add_argument("--compare", action="store_true", help="ejecutar el script en el tenant y comparar las huellas con la traduccion")
+    tr.add_argument("--apply", action="store_true", help="con --compare: ejecutar en el tenant (sin esto solo simula)")
+    tr.add_argument("--out", default="out")
     a = ap.parse_args(argv)
     if a.cmd == "validate":
         if a.remote:

@@ -87,7 +87,9 @@ def _literal(s: str) -> str:
 
 _AGG = r"\b(?:sum|avg|count|min|max)\s*\("
 _FUNCS = {"upper": "upper({0})", "trim": "trim({0})", "year": "year({0})", "month": "month({0})",
-          "isnull": "({0} IS NULL)", "sum": "SUM({0})", "avg": "AVG({0})", "min": "MIN({0})",
+          # verificado en el tenant (2026-11-23): Sum de solo nulos o de texto da 0; Avg de solo nulos da NULL
+          "isnull": "({0} IS NULL)", "sum": "COALESCE(SUM(TRY_CAST({0} AS DOUBLE)), 0)",
+          "avg": "AVG(TRY_CAST({0} AS DOUBLE))", "min": "MIN({0})",
           "max": "MAX({0})", "count": "COUNT({0})"}
 
 
@@ -313,5 +315,20 @@ def run(sql: str):
     con = duckdb.connect()
     try:
         return con.execute(sql).fetchall(), [d[0] for d in con.execute(f"DESCRIBE ({sql})").fetchall()]
+    finally:
+        con.close()
+
+
+def store_stem(text: str) -> str | None:
+    """Nombre (sin extension) del primer destino de un STORE, o None si no hay."""
+    m = re.search(r"\bSTORE\s+\[[^\]]+\]\s+INTO\s+\[([^\]]+)\]", text, re.IGNORECASE)
+    return os.path.splitext(m.group(1).rsplit("/", 1)[-1])[0] if m else None
+
+
+def write_csv(sql: str, path: str) -> None:
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    con = duckdb.connect()
+    try:
+        con.execute(f"COPY ({sql}) TO {_literal(path)} (FORMAT csv, HEADER)")
     finally:
         con.close()
