@@ -1533,5 +1533,185 @@
     }
    ]
   ]
+ ],
+ "unpivot_texto": [
+  "chain",
+  [
+   [
+    "field-selector",
+    {
+     "selectors": [
+      {
+       "path": "cliente_id",
+       "field": "cliente_id",
+       "output": "",
+       "selected": true
+      },
+      {
+       "path": "provincia",
+       "field": "provincia",
+       "output": "",
+       "selected": true
+      },
+      {
+       "path": "region",
+       "field": "region",
+       "output": "",
+       "selected": true
+      }
+     ],
+     "distinct": false
+    }
+   ],
+   [
+    "unpivot",
+    {
+     "unpivotColumns": [
+      "provincia",
+      "region"
+     ],
+     "attributeColumn": "atributo",
+     "valueColumn": "valor"
+    }
+   ]
+  ]
+ ],
+ "unpivot_mixto": [
+  "chain",
+  [
+   [
+    "field-selector",
+    {
+     "selectors": [
+      {
+       "path": "cliente_id",
+       "field": "cliente_id",
+       "output": "",
+       "selected": true
+      },
+      {
+       "path": "cedula",
+       "field": "cedula",
+       "output": "",
+       "selected": true
+      },
+      {
+       "path": "ciudad",
+       "field": "ciudad",
+       "output": "",
+       "selected": true
+      },
+      {
+       "path": "fecha_nacimiento",
+       "field": "fecha_nacimiento",
+       "output": "",
+       "selected": true
+      }
+     ],
+     "distinct": false
+    }
+   ],
+   [
+    "unpivot",
+    {
+     "unpivotColumns": [
+      "cedula",
+      "ciudad",
+      "fecha_nacimiento"
+     ],
+     "attributeColumn": "campo",
+     "valueColumn": "dato"
+    }
+   ]
+  ]
+ ],
+ "unpivot_medio": [
+  "chain",
+  [
+   [
+    "field-selector",
+    {
+     "selectors": [
+      {
+       "path": "cliente_id",
+       "field": "cliente_id",
+       "output": "",
+       "selected": true
+      },
+      {
+       "path": "cedula",
+       "field": "cedula",
+       "output": "",
+       "selected": true
+      },
+      {
+       "path": "ciudad",
+       "field": "ciudad",
+       "output": "",
+       "selected": true
+      },
+      {
+       "path": "segmento",
+       "field": "segmento",
+       "output": "",
+       "selected": true
+      }
+     ],
+     "distinct": false
+    }
+   ],
+   [
+    "unpivot",
+    {
+     "unpivotColumns": [
+      "cedula"
+     ],
+     "attributeColumn": "atributo",
+     "valueColumn": "valor"
+    }
+   ]
+  ]
+ ],
+ "unpivot_vacios": [
+  "chain",
+  [
+   [
+    "field-selector",
+    {
+     "selectors": [
+      {
+       "path": "cliente_id",
+       "field": "cliente_id",
+       "output": "",
+       "selected": true
+      },
+      {
+       "path": "email",
+       "field": "email",
+       "output": "",
+       "selected": true
+      },
+      {
+       "path": "telefono",
+       "field": "telefono",
+       "output": "",
+       "selected": true
+      }
+     ],
+     "distinct": false
+    }
+   ],
+   [
+    "unpivot",
+    {
+     "unpivotColumns": [
+      "email",
+      "telefono"
+     ],
+     "attributeColumn": "atributo",
+     "valueColumn": "valor"
+    }
+   ]
+  ]
  ]
 }

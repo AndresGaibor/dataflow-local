@@ -11,6 +11,8 @@ REQUIRED = {
     "script": ["script"], "sort": ["sortFields"], "split-field": ["type"], "strings": ["type"],
     "union": ["unionAll"], "window": ["operationConfiguration", "partitionByConfiguration", "sortingConfiguration"],
     "fork": [], "subflow": ["dataflowId"], "edit-column": ["type"],
+    "unpivot": ["unpivotColumns", "attributeColumn", "valueColumn"],
+    "pivot": ["fieldToPivot", "valueField", "aggregation", "delimiter", "schemaEntityId"],
 }
 # processor -> {type: clave con su configuracion especifica}
 TYPED = {

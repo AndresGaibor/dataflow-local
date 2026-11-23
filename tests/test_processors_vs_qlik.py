@@ -209,3 +209,26 @@ def test_replace_cell_equals_empty_does_not_touch_a_null_part(tmp_path):
         "replaceMethod": "REPLACE_CELL_WITH_VALUE", "replaceValue": "SIN", "shouldCreateNewColumn": False}}]
     cols, out = run_chain(tmp_path, "id,n\n2,Solo\n", ["id", "n"], [split, rep])
     assert out[0][cols.index("n-split_2")] in ("", None)  # medido en la cadena cadena_dividir_reemplazar: no se reemplaza
+
+
+# --- unpivot (CROSSTABLE de Qlik) ------------------------------------------------------------------------------
+
+def unpivot_cfg(cols, attr="atributo", val="valor"):
+    return {"unpivotColumns": cols, "attributeColumn": attr, "valueColumn": val}
+
+
+def test_unpivot_turns_columns_into_rows_keeping_the_other_columns_as_keys(tmp_path):
+    cols, out = run_one(tmp_path, "id,a,b\n1,x,y\n2,z,w\n", ["id", "a", "b"], "unpivot", unpivot_cfg(["a", "b"]))
+    assert cols == ["id", "atributo", "valor"]
+    assert [tuple(r) for r in out] == [("1", "a", "x"), ("1", "b", "y"), ("2", "a", "z"), ("2", "b", "w")]  # por fila y por columna
+
+
+def test_unpivot_of_a_middle_column_keeps_the_other_columns_in_their_order(tmp_path):
+    cols, out = run_one(tmp_path, "id,x,k\n1,5,A\n", ["id", "x", "k"], "unpivot", unpivot_cfg(["x"]))
+    assert cols == ["id", "k", "atributo", "valor"] and [tuple(r) for r in out] == [("1", "A", "x", "5")]
+
+
+def test_unpivot_mixed_types_become_text_and_empty_cells_are_kept(tmp_path):
+    cols, out = run_one(tmp_path, "id,n,t\n1,10,\n", ["id", "n", "t"], "unpivot", unpivot_cfg(["n", "t"]))
+    # la celda vacia no se descarta (CROSSTABLE solo omite los NULL); el CSV de salida no distingue '' de NULL
+    assert [tuple(r[:2]) for r in out] == [("1", "n"), ("1", "t")] and out[0][2] == "10"

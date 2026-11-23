@@ -195,6 +195,19 @@ def run_processor(ctx, t, cfg, ins, node):
         return D(f"SELECT * EXCLUDE (__rn) FROM (SELECT *, {fn}() OVER ({'PARTITION BY ' + part if part else ''} "
                  f"ORDER BY {q(s['sortBy'])} {'DESC' if s['sortOrder'] == 'DESCENDING' else ''}) AS {q(op['outputFieldName'])} "
                  f"FROM (SELECT *, row_number() OVER () AS __rn FROM {v})) ORDER BY __rn")
+    if t == "unpivot":
+        # CROSSTABLE(atributo, valor, n) de Qlik: las columnas no seleccionadas quedan como claves (en su orden), cada columna
+        # seleccionada pasa a una fila por cada fila de origen, y los NULL se omiten. Los valores se mezclan como texto
+        cols = cfg["unpivotColumns"]
+        keys = [c for c in ctx.cols(v) if c not in cols]
+        ksql = ", ".join(q(c) for c in keys)
+        parts = [f"SELECT {ksql + ', ' if keys else ''}{lit(c)} AS {q(cfg['attributeColumn'])}, CAST({q(c)} AS VARCHAR) AS "
+                 f"{q(cfg['valueColumn'])}, __rn, {i} AS __ord FROM (SELECT *, row_number() OVER () AS __rn FROM {v}) WHERE {q(c)} IS NOT NULL"
+                 for i, c in enumerate(cols)]
+        out = ", ".join([q(c) for c in keys] + [q(cfg["attributeColumn"]), q(cfg["valueColumn"])])
+        return D(f"SELECT {out} FROM ({' UNION ALL '.join(parts)}) ORDER BY __rn, __ord")
+    if t == "pivot":
+        raise Unsupported("pivot: no se pudo crear por API (necesita un schemaEntityId que crea la interfaz), asi que no se verifico contra el tenant")
     if t == "sample":
         k = cfg["type"]
         if k == "SAMPLE_FIRST_ROWS":

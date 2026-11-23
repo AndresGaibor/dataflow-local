@@ -157,7 +157,7 @@ Medición el 2026-11-23 sobre los 18 scripts distintos de `out/corpus*/`: 3 se t
 
 ## 9 quater. Processors: emulador frente al tenant
 
-Verificado el 2026-11-23 con `scripts/processor_battery.py`: **65 casos**: 54 individuales (`clientes` → un processor → destino; los joins usan un `fork` con una rama filtrada) y 11 cadenas de 3 o 4 pasos (ver más abajo), ejecutados en el emulador y, con el mismo grafo, en el tenant (clon `emu_v_*` del flujo base, script generado por Qlik, app `emu_oracle_*`), comparando huellas. Los casos están en `scripts/processor_battery_cases.json`. **Resultado final: los 65 coinciden** (contenido, y orden y formato de las 8 primeras filas, salvo lo indicado en "Orden y formato"). La primera pasada (15 casos) dio diferencias en todos; las 11 cadenas coincidieron a la primera una vez corregidos los processors sueltos.
+Verificado el 2026-11-23 con `scripts/processor_battery.py`: **69 casos**: 58 individuales (`clientes` → un processor → destino; los joins usan un `fork` con una rama filtrada) y 11 cadenas de 3 o 4 pasos (ver más abajo), ejecutados en el emulador y, con el mismo grafo, en el tenant (clon `emu_v_*` del flujo base, script generado por Qlik, app `emu_oracle_*`), comparando huellas. Los casos están en `scripts/processor_battery_cases.json`. **Resultado final: los 69 coinciden** (contenido, y orden y formato de las 8 primeras filas, salvo lo indicado en "Orden y formato"). La primera pasada (15 casos) dio diferencias en todos; las 11 cadenas coincidieron a la primera una vez corregidos los processors sueltos.
 
 ### Cómo mide el tenant (importante)
 El oráculo no mide el resultado en memoria: **vuelve a cargar el CSV que escribió el flujo** (`oracle._READBACK`) y mide la tabla cargada. En Qlik un archivo no tiene `NULL`: toda celda vacía es el texto vacío, que cuenta como valor y es distinto. Por eso `compare.fingerprint_of` cuenta `count(*)` para todas las columnas y suma 1 al número de distintos si hay algún `NULL`. Esto cubre de una vez los `NULL` que produce el emulador (join sin pareja, conversión de texto no numérico, celda vacía de la fuente). La suma sigue ignorando los vacíos. Una versión intermedia calculaba la huella en memoria; era una aproximación equivocada y se descartó.
@@ -217,6 +217,19 @@ Las dos cosas se dieron por imposibles al principio y se resolvieron el 2026-11-
 - **Diferencia que se midió y no se corrigió**: en una columna de texto con aspecto de fecha, Qlik **unifica los textos que interpreta como la misma fecha** al cargar el CSV (`2026-09-09` y `09/09/2026`), y cuenta 18 valores distintos donde el emulador cuenta 20. Afecta solo a `distinct` de esas columnas.
 - **Comando**: `dfemu script-node --base-app APP --source ETIQUETA --node ETIQUETA --script archivo.qvs [--target emu_x] [--out out/script_node.qvs] --apply` (`emulator/scriptnode.py`). Copia el flujo base, arma el grafo reducido, valida y guarda el script generado; se niega si el script nuevo no declara la tabla de salida registrada. Después, `dfemu translate out/script_node.qvs --compare --apply` lo ejecuta en el tenant y lo compara con la traducción local.
 - No se añadió a la batería porque depende de un flujo base con nodos `script` de cada tenant.
+
+### `unpivot` y `pivot`
+**Cómo se descubrieron las claves del JSON** (sirve para cualquier processor): con una configuración vacía, el servidor responde `VALUE_MISSING_ON_REQUIRED_FIELD` y en `parameters.attributePath` dice **qué campo falta** (`/fieldToPivot`, `/unpivotColumns`...). Se rellena ese campo y se repite hasta que deja de quejarse. El servidor **ignora las claves desconocidas** (no las lista), pero un valor inválido de un tipo enumerado sí enumera los válidos (`not one of the values accepted for Enum class: [...]`). Un tipo de nodo desconocido y el resto de la estructura salen de las pruebas.
+
+**`unpivot`** (4 casos `unpivot_*`; los 4 coinciden con el tenant, incluidas las 8 primeras filas):
+- Claves: `unpivotColumns` (lista), `attributeColumn` (nombre de la columna con los nombres de campo) y `valueColumn`. Se crea por API sin más (no pide `schemaEntityId`).
+- Qlik genera `CROSSTABLE('atributo', 'valor', n) LOAD ...`: las columnas **no seleccionadas** quedan como claves en su orden (también si la columna seleccionada está en el medio), después van la columna de atributo y la de valor; cada fila de origen da una fila por cada columna seleccionada, en ese orden (por fila y luego por columna). Los `NULL` se omiten; una celda vacía de CSV no (es texto vacío). Los valores de columnas de tipos distintos se escriben como texto.
+- Un nombre igual para las dos columnas nuevas da `DUPLICATE_COLUMN_NAMES_IN_TABLE`.
+
+**`pivot`** (**no se pudo verificar**; el emulador responde que no lo soporta y por qué):
+- Claves: `fieldToPivot`, `valueField`, `aggregation` y `delimiter`; `aggregation` admite `AVG`, `MAX`, `CONCATENATE`, `SUM`, `COUNT_DISTINCT`, `COUNT`, `MIN` y `ONLY` (sin agregación). Las demás columnas son las claves de agrupación.
+- Exige `schemaEntityId`: el esquema de las columnas dinámicas lo calcula la interfaz ("el flujo tiene que ejecutarse en segundo plano primero", dice la documentación). Sin él: `VALUE_MISSING_ON_REQUIRED_FIELD`. Un id **prestado** del nodo `script` de una copia da `500 Unable to find projection with entityId...`: la proyección está ligada a su nodo, así que el truco del nodo `script` (reutilizar el nodo entero) no sirve aquí.
+- Para medirlo haría falta un nodo `pivot` creado en la interfaz dentro de un flujo del espacio, y generalizar `dfemu script-node` para reutilizarlo.
 
 ### Orden y formato de lo escrito
 Las huellas cuentan filas, distintos y sumas, pero no ven el orden ni el texto de las celdas. Una sonda que **carga el archivo del tenant con el número de fila** (`RecNo()`) y compara el texto de las primeras 8 filas de cada columna con las del emulador encontró 5 diferencias reales, ya corregidas. La comprobación es ahora permanente: `dfemu compare --rows N`, y `scripts/processor_battery.py` compara 8 filas de cada caso (`HEAD`).
@@ -397,7 +410,7 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 | `dfemu compare archivo.dfw (--app APP\|--push [--base-app APP]) --apply` | compara resultados del emulador con el tenant |
 | `dfemu cleanup [--apply]` | lista o borra apps y archivos `emu_*` |
 | `dfemu coverage [archivos...]` | mide qué processors usa el corpus y si cada flujo se puede ejecutar |
-| `python scripts/processor_battery.py [caso ...]` | batería de 65 casos (54 processors y 11 cadenas), emulador frente al tenant (escribe en el tenant; limpia lo que crea) |
+| `python scripts/processor_battery.py [caso ...]` | batería de 69 casos (58 processors y 11 cadenas), emulador frente al tenant (escribe en el tenant; limpia lo que crea) |
 | `dfemu translate script.qvs\|.pull.json [--run] [--compare [--apply]]` | traduce el script de Qlik a SQL de DuckDB; con `--run` lo ejecuta y con `--compare --apply` lo compara con la ejecución real en el tenant |
 
 El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DFEMU_BASE_APP` la CLI con `DFEMU_QLIK` (ver 10 bis) y, para usar otro contexto de la CLI sin activarlo, `DFEMU_QLIK_CONTEXT` (ver `02-guia-oauth.md`).
