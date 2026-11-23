@@ -371,3 +371,40 @@ def test_discard_files_without_names_does_nothing(tmp_path):
     b, runner = make(tmp_path, routes())
     Remote(b).discard_files([])
     assert runner.calls == []
+
+
+# --- primeras filas ---------------------------------------------------------------------------------------
+
+def test_retarget_rowno_adds_the_row_number_to_the_readback():
+    script = f"[t]:\r\nLOAD * FROM [lib://c/a.csv] (txt);\r\nSTORE [t] INTO [{GDDEST}] (txt);"
+    assert "RecNo() AS [__rowno]" not in retarget(script, TAG).script  # por omision, como siempre
+    assert f"LOAD *, RecNo() AS [__rowno] FROM [{READ_FILE}]" in retarget(script, TAG, rowno=True).script
+
+
+class FakeEval:
+    """Bridge falso para _fingerprints: `app tables` y `app eval` (medidas y primeras filas)."""
+
+    def __init__(self):
+        self.evals = []
+
+    def cli_read(self, args):
+        if args[:2] == ["app", "tables"]:
+            return ("Name  Rows  Size  Fields\n"
+                    "emu_out_1  2  1  emu_out_1.id, emu_out_1.nombre, emu_out_1.__rowno\n")
+        exprs = args[args.index("--app") + 2:args.index("--json")]
+        self.evals.append(exprs)
+        cell = lambda e: ({"qNum": "2", "qText": "2"} if e.startswith("Count") else {"qNum": "NaN", "qText": "1|2"} if e.startswith("Concat") else {"qNum": "3", "qText": "3"})
+        return json.dumps([{"qMatrix": [[cell(e) for e in exprs]]}])
+
+
+def test_fingerprints_skip_the_rowno_column_and_add_heads_only_when_asked():
+    from emulator.oracle import Retargeted, _fingerprints
+    rt = Retargeted("", {"salida": "f.csv"}, {"salida": "emu_out_1"})
+    plain = _fingerprints(FakeEval(), "app", rt)
+    assert sorted(plain["salida"]["columns"]) == ["id", "nombre"] and "head" not in plain["salida"]["columns"]["id"]
+    b = FakeEval()
+    with_head = _fingerprints(b, "app", rt, head=5)
+    assert with_head["salida"]["columns"]["id"]["head"] == "1|2" and "__rowno" not in with_head["salida"]["columns"]
+    heads = [e for ex in b.evals for e in ex if e.startswith("Concat")]
+    assert heads == ["Concat(If([emu_out_1.__rowno] <= 5, Text([emu_out_1.id])), '|', [emu_out_1.__rowno])",
+                     "Concat(If([emu_out_1.__rowno] <= 5, Text([emu_out_1.nombre])), '|', [emu_out_1.__rowno])"]

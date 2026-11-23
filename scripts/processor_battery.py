@@ -24,6 +24,9 @@ from emulator.remote import BASE_APP_ID, Remote  # noqa: E402
 
 CLIENTES = ["cliente_id", "cedula", "nombre", "apellido", "fecha_nacimiento", "ciudad", "provincia", "region",
             "email", "telefono", "segmento", "fecha_registro"]
+HEAD = 8  # primeras filas que se comparan como texto (orden y formato de lo escrito)
+# columnas cuyos valores no pueden coincidir: HASH_DATA se emula con md5 y Qlik usa otro algoritmo
+NO_HEAD = {"hash": {"email"}, "cadena_concat_hash_quitar": {"nombre_completo"}}
 with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "processor_battery_cases.json"), encoding="utf-8") as fh:
     CASES = json.load(fh)
 
@@ -78,7 +81,7 @@ def build(name: str, entity: str):
 def run_case(name: str, b: bridge.Bridge, r: Remote, entity: str, data: str, out: str) -> tuple[str, str]:
     dump, graph = build(name, entity)
     try:
-        local = compare.local_fingerprints([t["dest"] for t in runner.run(dump, data, os.path.join(out, name))])
+        local = compare.local_fingerprints([t["dest"] for t in runner.run(dump, data, os.path.join(out, name))], head=HEAD)
     except Exception as e:  # noqa: BLE001
         return "EMULADOR", f"{type(e).__name__}: {str(e)[:150]}"
     clone = r.clone(BASE_APP_ID, "emu_v_" + uuid.uuid4().hex[:8])
@@ -90,10 +93,10 @@ def run_case(name: str, b: bridge.Bridge, r: Remote, entity: str, data: str, out
         codes = [v.get("code") for v in res.validity.get("nodesConstraintViolations") or []]
         return "SERVIDOR " + str(res.validity.get("status")), str(codes)
     try:
-        remote = oracle.run_script(b, res.script, uuid.uuid4().hex[:8])
+        remote = oracle.run_script(b, res.script, uuid.uuid4().hex[:8], head=HEAD)
     except Exception as e:  # noqa: BLE001
         return "TENANT", f"{type(e).__name__}: {str(e)[:200]}"
-    diffs = compare.compare(local, remote)
+    diffs = compare.compare(local, remote, skip_head=NO_HEAD.get(name, frozenset()))
     return ("OK" if not diffs else "DIFERENCIAS"), "; ".join(diffs)[:400]
 
 

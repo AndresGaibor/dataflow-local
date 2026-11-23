@@ -101,7 +101,7 @@ def _patch(monkeypatch, tmp_path, remote_rows, csv_text):
     monkeypatch.setattr(dfw, "validate", lambda d: [])
     monkeypatch.setattr(runner, "run", lambda d, data, out: [
         {"target": "clientes", "dest": str(csv), "rows": 3, "emulated_qvd": False}])
-    monkeypatch.setattr(oracle, "run_script", lambda bridge, script, tag: {"clientes": remote_rows})
+    monkeypatch.setattr(oracle, "run_script", lambda bridge, script, tag, head=0: {"clientes": remote_rows})
 
 
 def test_cli_compare_exit_code(tmp_path, monkeypatch, capsys):
@@ -116,3 +116,48 @@ def test_cli_compare_exit_code(tmp_path, monkeypatch, capsys):
     _patch(monkeypatch, tmp_path, local_fp, csv_text)
     cli.main(["compare", _dfw(tmp_path), "--app", APP])  # sin SystemExit: exit 0
     assert "OK: sin diferencias" in capsys.readouterr().out
+
+
+# --- primeras filas: orden y formato de lo escrito (sonda fila a fila contra el tenant, 2026-11-23) -----------
+
+def col_head(count, distinct, head=None, sum=None):
+    c = {"count": count, "distinct": distinct, "sum": sum}
+    if head is not None:
+        c["head"] = head
+    return c
+
+
+def test_local_fingerprint_head_reads_the_first_rows_of_the_file_as_text(tmp_path):
+    p = tmp_path / "t.csv"
+    p.write_text("id,n\n1,\n2,x\n3,y\n4,z\n", encoding="utf-8")
+    fp = compare.local_fingerprint(str(p), head=3)
+    assert fp["columns"]["id"]["head"] == "1|2|3"
+    assert fp["columns"]["n"]["head"] == "|x|y"  # la celda vacia cuenta, como en el archivo que lee Qlik
+    assert "head" not in compare.local_fingerprint(str(p))["columns"]["id"]  # sin head, la huella es la de siempre
+
+
+def test_compare_reports_different_first_rows():
+    a = fp(2, {"id": col_head(2, 2, "1|2")})
+    assert compare.compare({"t": a}, {"t": fp(2, {"id": col_head(2, 2, "1|2")})}) == []
+    msgs = compare.compare({"t": a}, {"t": fp(2, {"id": col_head(2, 2, "2|1")})})
+    assert len(msgs) == 1 and "primeras filas" in msgs[0] and "t.id" in msgs[0]
+
+
+def test_compare_ignores_heads_when_only_one_side_has_them():
+    assert compare.compare({"t": fp(2, {"id": col_head(2, 2, "1|2")})}, {"t": fp(2, {"id": col_head(2, 2)})}) == []
+
+
+def test_compare_can_skip_columns_whose_values_cannot_match():
+    # p. ej. HASH_DATA: Qlik no usa md5, asi que los valores difieren aunque cuenta y distintos coincidan
+    local, remote = {"t": fp(1, {"h": col_head(1, 1, "aa")})}, {"t": fp(1, {"h": col_head(1, 1, "bb")})}
+    assert compare.compare(local, remote) != []
+    assert compare.compare(local, remote, skip_head={"h"}) == []
+
+
+def test_cli_compare_rows_reports_a_different_order(tmp_path, monkeypatch, capsys):
+    csv_text = "id\n1\n2\n3\n"
+    local_fp = fp(3, {"id": col_head(3, 3, "3|2|1", 6.0)})  # el tenant devuelve las filas en otro orden
+    _patch(monkeypatch, tmp_path, local_fp, csv_text)
+    with pytest.raises(SystemExit) as e:
+        cli.main(["compare", _dfw(tmp_path), "--app", APP, "--rows", "3"])
+    assert e.value.code == 1 and "primeras filas" in capsys.readouterr().out

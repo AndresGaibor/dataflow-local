@@ -182,7 +182,7 @@ def _compare(a) -> None:
     except runner.Unsupported as e:
         sys.exit(f"no soportado por el emulador: {e}")
     try:
-        local = compare.local_fingerprints([t["dest"] for t in targets])
+        local = compare.local_fingerprints([t["dest"] for t in targets], head=a.rows)
     except ValueError as e:
         sys.exit(f"error: {e}")
     bridge = make_bridge(a.apply)
@@ -194,7 +194,7 @@ def _compare(a) -> None:
             if res.validity["status"] == "REJECTED" or not res.script:
                 sys.exit(f"error: el servidor no generó script: {res.validity.get('label', '')}")
             script = res.script
-        remote = oracle.run_script(bridge, script, uuid.uuid4().hex[:8])
+        remote = oracle.run_script(bridge, script, uuid.uuid4().hex[:8], head=a.rows)
     except DryRun as e:
         print(f"[simulación] {e.method} {e.path}")
         sys.exit(0)
@@ -283,6 +283,7 @@ def main(argv=None):
     cp.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
     cp.add_argument("--out", default="out")
     cp.add_argument("--base-app", help="con --push: flujo a clonar (por omision DFEMU_BASE_APP)")
+    cp.add_argument("--rows", type=int, default=0, metavar="N", help="compara tambien el texto de las primeras N filas (orden y formato)")
     cp.add_argument("--apply", action="store_true", help="ejecutar en el tenant (sin esto solo simula)")
     tk = sub.add_parser("task", help="programa, encadena, arranca y borra tareas de recarga de apps emu_")
     ap_apply = argparse.ArgumentParser(add_help=False)

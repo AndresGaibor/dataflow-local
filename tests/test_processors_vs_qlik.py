@@ -11,10 +11,10 @@ from emulator import runner  # noqa: E402
 from emulator.builder import Flow  # noqa: E402
 
 
-def run_one(tmp_path, csv_text, fields, ctype, cfg):
+def run_one(tmp_path, csv_text, fields, ctype, cfg, locale="en-US"):
     """clientes.csv -> un processor -> destino; devuelve (columnas, filas) del archivo de salida."""
     (tmp_path / "t.csv").write_text(csv_text, encoding="utf-8")
-    f = Flow("t")
+    f = Flow("t", locale=locale)
     src = f.dataset("t", "t.csv", fields)
     p = f.proc(ctype, "p", cfg)
     f.chain(src, p, f.target("Destino", "salida"))
@@ -99,3 +99,48 @@ def test_replace_on_value_matrix(tmp_path, op, val, method, new, expected):
         "replaceMethod": method, "replaceValue": new, "shouldCreateNewColumn": False}}
     cols, out = run_one(tmp_path, "id,c\n1,Guayaquil\n", ["id", "c"], "strings", cfg)
     assert out[0][cols.index("c")] == expected
+
+
+# --- orden y formato de lo que se escribe (sonda fila a fila contra el tenant, 2026-11-23) --------------------
+
+def test_numbers_are_written_like_qlik_without_trailing_dot_zero(tmp_path):
+    cfg = {"type": "CONVERT_TO_NUMBER", "convertToNumberConfiguration": {
+        "columnsToProcess": ["n"], "decimalSeparator": ".", "thousandSeparator": ",", "newColumnName": "m", "shouldCreateNewColumn": True}}
+    cols, out = run_one(tmp_path, "id,n\n1,5\n2,7.5\n3,-4\n", ["id", "n"], "numbers", cfg)
+    assert [r[cols.index("m")] for r in out] == ["5", "7.5", "-4"]  # antes: 5.0, 7.5, -4.0
+
+
+def test_window_keeps_the_original_row_order(tmp_path):
+    # Qlik devuelve las filas en el orden de origen con la columna de la ventana; no las reordena por la ventana
+    cfg = {"operationConfiguration": {"operationType": "RANK", "operationFields": [], "outputFieldName": "rk", "delimiter": ","},
+           "partitionByConfiguration": {"partitionByFieldList": []}, "sortingConfiguration": {"sortBy": "v", "sortOrder": "DESCENDING"},
+           "rangeConfiguration": {"windowStartType": "UNLIMITED", "windowEndType": "UNLIMITED", "windowStartValue": 1, "windowEndValue": 1}}
+    cols, out = run_one(tmp_path, "id,v\n1,10\n2,30\n3,20\n", ["id", "v"], "window", cfg)
+    assert [r[cols.index("id")] for r in out] == ["1", "2", "3"]
+    assert [r[cols.index("rk")] for r in out] == ["3", "1", "2"]
+
+
+def test_aggregate_returns_groups_in_order_of_first_appearance(tmp_path):
+    cfg = {"groupBy": [{"fieldPath": "s"}], "operations": [{"operation": "COUNT", "fieldPaths": ["id"], "delimiter": ",", "outputFieldPath": "n"}]}
+    cols, out = run_one(tmp_path, "id,s\n1,B\n2,A\n3,B\n4,C\n5,A\n", ["id", "s"], "aggregate", cfg)
+    assert [r[cols.index("s")] for r in out] == ["B", "A", "C"]
+
+
+@pytest.mark.parametrize("ctype,key,expected", [
+    ("CONVERT_TO_DATE", "convertToDateConfiguration", "5/24/2019"),                       # DateFormat='M/D/YYYY'
+    ("CONVERT_TO_TIMESTAMP", "convertToTimestampConfiguration", "5/24/2019 12:00:00 AM"),  # TimestampFormat='M/D/YYYY h:mm:ss TT'
+])
+def test_converted_dates_use_the_en_us_script_format(tmp_path, ctype, key, expected):
+    cfg = {"type": ctype, key: {"columnsToProcess": ["d"], "datePattern": "YYYY-MM-DD", "format": "custom",
+                                "newColumnRename": "f", "shouldCreateNewColumn": True}}
+    cols, out = run_one(tmp_path, "id,d\n1,2019-05-24\n", ["id", "d"], "date", cfg)
+    assert out[0][cols.index("f")] == expected
+    assert out[0][cols.index("d")] == "2019-05-24"  # una fecha que solo pasa de largo conserva su texto original
+
+
+def test_converted_dates_keep_iso_for_a_locale_other_than_en(tmp_path):
+    # el formato sale de los SET del script segun la configuracion regional del flujo; solo se midio en-US
+    cfg = {"type": "CONVERT_TO_DATE", "convertToDateConfiguration": {"columnsToProcess": ["d"], "datePattern": "YYYY-MM-DD",
+           "format": "custom", "newColumnRename": "f", "shouldCreateNewColumn": True}}
+    cols, out = run_one(tmp_path, "id,d\n1,2019-05-24\n", ["id", "d"], "date", cfg, locale="es-ES")
+    assert out[0][cols.index("f")] == "2019-05-24"

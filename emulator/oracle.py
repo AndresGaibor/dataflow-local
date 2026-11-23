@@ -49,7 +49,7 @@ def _stem(path: str) -> str:
     return os.path.splitext(path.rsplit("/", 1)[-1])[0]
 
 
-def retarget(script: str, tag: str) -> Retargeted:
+def retarget(script: str, tag: str, rowno: bool = False) -> Retargeted:
     if not re.fullmatch(r"[A-Za-z0-9_]+", tag):
         raise OracleError(f"etiqueta inválida: {tag!r}")
     script = script.removeprefix(_BOM)
@@ -72,7 +72,8 @@ def retarget(script: str, tag: str) -> Retargeted:
     nl = "\r\n" if "\r\n" in script else "\n"
     block = ["QUALIFY *;"]
     for stem in files:
-        block += [f"[{tables[stem]}]:", f"LOAD * FROM [{DATAFILES_PREFIX}{files[stem]}] {_READBACK};"]
+        fields = "*, RecNo() AS [__rowno]" if rowno else "*"  # el numero de fila permite leer las primeras filas en orden
+        block += [f"[{tables[stem]}]:", f"LOAD {fields} FROM [{DATAFILES_PREFIX}{files[stem]}] {_READBACK};"]
     parts.append(nl + nl + nl.join(block) + nl)
     return Retargeted("".join(parts), files, tables)
 
@@ -113,13 +114,14 @@ def _cells(out: str) -> list:
         raise OracleError("respuesta de eval no reconocida") from e
 
 
-def _fingerprints(bridge: Bridge, app_id: str, rt: Retargeted) -> dict:
+def _fingerprints(bridge: Bridge, app_id: str, rt: Retargeted, head: int = 0) -> dict:
     tables = parse_tables(bridge.cli_read(["app", "tables", "--app", app_id]))
     fp = {}
     for stem, table in rt.tables.items():
         if table not in tables:
             raise OracleError(f"la tabla {table} no aparece en el modelo")
         rows, fields = tables[table]
+        fields = [f for f in fields if not f.endswith("__rowno")]
         qs = [f if f.startswith(table + ".") else f"{table}.{f}" for f in fields]
         cols = {}
         if qs:  # un solo app eval por tabla: tres medidas por campo, en orden
@@ -135,6 +137,13 @@ def _fingerprints(bridge: Bridge, app_id: str, rt: Retargeted) -> dict:
                     raise OracleError(f"conteo no numérico para {q}")
                 cols[q[len(table) + 1:]] = {"count": int(count), "distinct": int(distinct),
                                             "sum": _num(cells[3 * i + 2])}
+        if head and qs:  # texto de las primeras filas de cada columna, en el orden del archivo
+            heads = [f"Concat(If([{table}.__rowno] <= {head}, Text([{q}])), '|', [{table}.__rowno])" for q in qs]
+            hcells = _cells(bridge.cli_read(["app", "eval", "--app", app_id, *heads, "--json"]))
+            if len(hcells) != len(heads):
+                raise OracleError(f"el eval de primeras filas devolvió {len(hcells)} celdas; se esperaban {len(heads)}")
+            for q, cell in zip(qs, hcells):
+                cols[q[len(table) + 1:]]["head"] = (cell.get("qText") or "") if isinstance(cell, dict) else ""
         fp[stem] = {"rows": rows, "columns": cols}
     return fp
 
@@ -159,8 +168,8 @@ def _best_effort(what: str, fn, arg) -> None:
 
 
 def run_script(bridge: Bridge, script: str, tag: str, timeout: int = 180,
-               poll_seconds: float = 2) -> dict:
-    rt = retarget(script, tag)
+               poll_seconds: float = 2, head: int = 0) -> dict:
+    rt = retarget(script, tag, rowno=bool(head))
     assert_safe(rt.script)
     remote = Remote(bridge)
     app_id = reload_id = None
@@ -183,7 +192,7 @@ def run_script(bridge: Bridge, script: str, tag: str, timeout: int = 180,
         reload_done = True
         if status != "SUCCEEDED":
             raise OracleError(f"la recarga falló: {log[-LOG_TAIL:]}")
-        return _fingerprints(bridge, app_id, rt)
+        return _fingerprints(bridge, app_id, rt, head)
     finally:
         if reload_id and not reload_done:  # recarga viva: cancelarla antes de borrar nada
             _best_effort("cancelar la recarga", bridge.post, f"v1/reloads/{reload_id}/actions/cancel")

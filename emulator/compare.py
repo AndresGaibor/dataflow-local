@@ -25,8 +25,22 @@ def _reader(path: str) -> str:
     raise ValueError(f"formato no soportado para la huella: {path}")
 
 
-def local_fingerprint(dest: str) -> dict:
-    return fingerprint_of(_reader(dest))
+def local_fingerprint(dest: str, head: int = 0) -> dict:
+    """Huella de un archivo. Con `head` agrega por columna el texto de las primeras filas ('|' como separador, celda
+    vacia incluida), para comparar el orden y el formato de lo escrito; solo para CSV."""
+    fp = fingerprint_of(_reader(dest))
+    if head and dest.endswith(".csv"):
+        cols = list(fp["columns"])
+        con = duckdb.connect()
+        try:
+            aggs = ", ".join("string_agg(coalesce(" + q(c) + ", ''), '|')" for c in cols)
+            row = con.execute(f"SELECT {aggs} FROM (SELECT * FROM read_csv({lit(dest)}, header=true, all_varchar=true) "
+                              f"LIMIT {int(head)})").fetchone()
+        finally:
+            con.close()
+        for c, h in zip(cols, row):
+            fp["columns"][c]["head"] = h or ""
+    return fp
 
 
 def fingerprint_of(src: str, con=None) -> dict:
@@ -55,12 +69,12 @@ def fingerprint_of(src: str, con=None) -> dict:
     return {"rows": row[0], "columns": columns}
 
 
-def local_fingerprints(dests: list[str]) -> dict[str, dict]:
+def local_fingerprints(dests: list[str], head: int = 0) -> dict[str, dict]:
     stems = [stem_of(d) for d in dests]
     for s in stems:
         if stems.count(s) > 1:
             raise ValueError(f"destinos con el mismo nombre: {s}")
-    return {stem_of(d): local_fingerprint(d) for d in dests}
+    return {stem_of(d): local_fingerprint(d, head) for d in dests}
 
 
 def _close(a, b, rel_tol: float) -> bool:
@@ -69,7 +83,7 @@ def _close(a, b, rel_tol: float) -> bool:
     return abs(a - b) <= rel_tol * max(abs(a), abs(b), 1.0)
 
 
-def compare(local: dict[str, dict], remote: dict[str, dict], rel_tol: float = 1e-9) -> list[str]:
+def compare(local: dict[str, dict], remote: dict[str, dict], rel_tol: float = 1e-9, skip_head=frozenset()) -> list[str]:
     msgs = [f"tabla '{t}' solo en el emulador" for t in local.keys() - remote.keys()]
     msgs += [f"tabla '{t}' solo en el tenant" for t in remote.keys() - local.keys()]
     for t in sorted(local.keys() & remote.keys()):
@@ -87,4 +101,7 @@ def compare(local: dict[str, dict], remote: dict[str, dict], rel_tol: float = 1e
                 ok = _close(x, y, rel_tol) if k == "sum" else x == y
                 if not ok:
                     msgs.append(f"{t}.{c}: {k} {x} (emulador) != {y} (tenant)")
+            lh, rh = lc[c].get("head"), rc[c].get("head")
+            if lh is not None and rh is not None and c not in skip_head and lh != rh:  # `skip_head`: p. ej. HASH_DATA
+                msgs.append(f"{t}.{c}: primeras filas {lh[:60]!r} (emulador) != {rh[:60]!r} (tenant)")
     return sorted(msgs)

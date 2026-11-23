@@ -20,6 +20,8 @@ class Ctx:
         self.con = duckdb.connect()
         self.data_dir, self.out_dir, self.connections, self.s3 = data_dir, out_dir, connections or {}, s3
         self.n, self.attached, self.report = 0, set(), []
+        self.locale = ""  # collationLocale del flujo; de el salen los SET de formato de fecha del script de Qlik
+        self.converted_dates = {}  # columna -> 'date' | 'timestamp' (salida de CONVERT_TO_DATE / CONVERT_TO_TIMESTAMP)
         if s3:  # {"endpoint","key","secret"} -> MinIO/S3 real
             self.con.execute("INSTALL httpfs; LOAD httpfs")
             self.con.execute(f"SET s3_endpoint={lit(s3['endpoint'])}; SET s3_access_key_id={lit(s3['key'])}; "
@@ -166,7 +168,11 @@ def run_processor(ctx, t, cfg, ins, node):
             f = q(o["fieldPaths"][0])
             e = f"count(DISTINCT {f})" if o["operation"] == "COUNT_DISTINCT" else f"{ops[o['operation']]}({f})"
             sel.append(f"{e} AS {q(o['outputFieldPath'])}")
-        return D(f"SELECT {', '.join(sel)} FROM {v}" + (f" GROUP BY {', '.join(q(x) for x in g)}" if g else ""))
+        if not g:
+            return D(f"SELECT {', '.join(sel)} FROM {v}")
+        # Qlik devuelve los grupos en el orden en que aparecen en la tabla de origen (medido); DuckDB no lo garantiza
+        return D(f"SELECT {', '.join(sel)} FROM (SELECT *, row_number() OVER () AS __rn FROM {v}) "
+                 f"GROUP BY {', '.join(q(x) for x in g)} ORDER BY min(__rn)")
     if t == "calculate-fields":
         return D(f"SELECT *, {', '.join(qexpr(c['expressionStatement']) + ' AS ' + q(c['newColumnName']) for c in cfg['calculateFields'])} FROM {v}")
     if t == "window":
@@ -176,8 +182,10 @@ def run_processor(ctx, t, cfg, ins, node):
         part = ", ".join(q(x) for x in cfg["partitionByConfiguration"]["partitionByFieldList"])
         s = cfg["sortingConfiguration"]
         fn = op["operationType"].lower()
-        return D(f"SELECT *, {fn}() OVER ({'PARTITION BY ' + part if part else ''} ORDER BY {q(s['sortBy'])} "
-                 f"{'DESC' if s['sortOrder'] == 'DESCENDING' else ''}) AS {q(op['outputFieldName'])} FROM {v}")
+        # Qlik devuelve las filas en el orden de origen con la columna de la ventana (medido); no las reordena por ella
+        return D(f"SELECT * EXCLUDE (__rn) FROM (SELECT *, {fn}() OVER ({'PARTITION BY ' + part if part else ''} "
+                 f"ORDER BY {q(s['sortBy'])} {'DESC' if s['sortOrder'] == 'DESCENDING' else ''}) AS {q(op['outputFieldName'])} "
+                 f"FROM (SELECT *, row_number() OVER () AS __rn FROM {v})) ORDER BY __rn")
     if t == "sample":
         k = cfg["type"]
         if k == "SAMPLE_FIRST_ROWS":
@@ -282,6 +290,7 @@ def _date(ctx, v, k, c):
     cast = "DATE" if k == "CONVERT_TO_DATE" else "TIMESTAMP"
     e = f"TRY_CAST({S} AS {cast})" if c["format"] == "auto" else f"CAST(try_strptime({S}, {lit(_jfmt(c['datePattern']))}) AS {cast})"
     name = c["newColumnRename"] or col
+    ctx.converted_dates[name] = "date" if k == "CONVERT_TO_DATE" else "timestamp"
     return f"SELECT *, {e} AS {q(name)} FROM {v}" if c["shouldCreateNewColumn"] and name != col else f"SELECT * REPLACE ({e} AS {q(col)}) FROM {v}"
 
 
@@ -316,6 +325,23 @@ def run_graph(ctx, graph, sources, bind):
     return {k: v[1] for k, v in targets.items()} if bind else targets
 
 
+def _qlik_text_format(ctx, view):
+    """Formato de las celdas de un CSV como las escribe Qlik (medido en el tenant, ver 9 quater):
+    un numero entero no lleva `.0`, y una fecha convertida usa el SET del script (en-US: M/D/YYYY y M/D/YYYY h:mm:ss TT).
+    shortcut: solo en-US; otras configuraciones regionales conservan el formato ISO, y los decimales de segundo no se emulan."""
+    swaps = []
+    en = ctx.locale.lower().startswith("en")
+    for name, typ in ((r[0], r[1].split("(")[0]) for r in ctx.con.execute(f"DESCRIBE SELECT * FROM {view}").fetchall()):
+        c = q(name)
+        if typ in ("DOUBLE", "FLOAT"):
+            swaps.append(f"regexp_replace(CAST({c} AS VARCHAR), '[.]0$', '') AS {c}")
+        elif en and ctx.converted_dates.get(name) == "date" and typ == "DATE":
+            swaps.append(f"strftime({c}, '%-m/%-d/%Y') AS {c}")
+        elif en and ctx.converted_dates.get(name) == "timestamp" and typ.startswith("TIMESTAMP"):
+            swaps.append(f"strftime({c}, '%-m/%-d/%Y %-I:%M:%S %p') AS {c}")
+    return ctx.view(f"SELECT * REPLACE ({', '.join(swaps)}) FROM {view}") if swaps else view
+
+
 def _write(ctx, n, view):
     cfg = n["component"]["properties"]["configuration"]
     s = cfg["settings"]
@@ -332,6 +358,8 @@ def _write(ctx, n, view):
         dest = os.path.join(ctx.out_dir, "s3" if s3 else s.get("connectionName", "files"), name + suffix)
         os.makedirs(os.path.dirname(dest), exist_ok=True)
     opts = "FORMAT parquet" if fmt == "parquet" else "FORMAT csv, HEADER"
+    if fmt == "csv":
+        view = _qlik_text_format(ctx, view)
     ctx.con.execute(f"COPY (SELECT * FROM {view}) TO {lit(dest)} ({opts})")
     rows = ctx.con.execute(f"SELECT count(*) FROM {view}").fetchone()[0]
     return {"target": n["label"], "dest": dest, "rows": rows, "emulated_qvd": emulated}
@@ -340,5 +368,6 @@ def _write(ctx, n, view):
 def run(d, data_dir, out_dir, connections=None, s3=None):
     ctx = Ctx(data_dir, out_dir, connections, s3)
     ctx.subflows = d.get("subflows", [])
+    ctx.locale = d.get("collationLocale") or ""
     targets = run_graph(ctx, d["dataflow"]["graph"], d["sources"], {})
     return [_write(ctx, n, v) for n, v in targets.values()]
