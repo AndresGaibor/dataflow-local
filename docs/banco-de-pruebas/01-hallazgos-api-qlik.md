@@ -155,17 +155,17 @@ python -m emulator.cli cleanup --apply   # borra apps y archivos emu_*
 
 **Síntoma (verificado el 2026-11-23):** `qlik` falla con "Una directiva de Control de aplicaciones bloqueó este archivo" en PowerShell y con "Permission denied" en Git Bash. El registro `Microsoft-Windows-CodeIntegrity/Operational` trae los eventos 3033 y 3077: el archivo bloqueado es `C:\ProgramData\chocolateyin\qlik.exe`.
 
-**Causa:** ese archivo es un acceso directo (shim) que genera Chocolatey. No está firmado y la política WDAC de la máquina solo admite binarios con firma de nivel empresarial. El binario real, `C:\ProgramData\chocolatey\lib\qlik-cli	ools\qlik.exe`, está firmado por QlikTech International AB y sí corre (versión 4.0.0).
+**Causa:** ese archivo es un acceso directo (shim) que genera Chocolatey. No está firmado y la política WDAC de la máquina solo admite binarios con firma de nivel empresarial. El binario real, `C:\ProgramData\chocolatey\lib\qlik-cli\tools\qlik.exe`, está firmado por QlikTech International AB y sí corre (versión 4.0.0).
 
 **Solución automática:** `emulator/bridge.py` (`_qlik_exe`) elige el ejecutable en este orden, sin tocar el PATH:
 
 1. la variable `DFEMU_QLIK`, si existe (ruta completa a un `qlik.exe`);
-2. `%ChocolateyInstall%\lib\qlik-cli	ools\qlik.exe`, o `C:\ProgramData\chocolatey\lib\qlik-cli	ools\qlik.exe` si la variable no existe, siempre que el archivo exista;
+2. `%ChocolateyInstall%\lib\qlik-cli\tools\qlik.exe`, o `C:\ProgramData\chocolatey\lib\qlik-cli\tools\qlik.exe` si la variable no existe, siempre que el archivo exista;
 3. `qlik` del PATH.
 
 Si el sistema operativo impide ejecutarlo (`OSError`), el puente devuelve el código 126 y un mensaje que indica definir `DFEMU_QLIK`. Verificado con `dfemu cleanup` desde Git Bash: llega al tenant sin cambiar el PATH.
 
-**Uso manual en PowerShell (fuera del emulador):** anteponer la carpeta al PATH de la sesión: `$env:PATH = "C:\ProgramData\chocolatey\lib\qlik-cli	ools;" + $env:PATH`. Git Bash no puede ejecutar el shim. Al canalizar la salida de `qlik raw` hacia Python desde PowerShell se añade un BOM; usar `ConvertFrom-Json` en PowerShell o leer con `utf-8-sig`.
+**Uso manual en PowerShell (fuera del emulador):** anteponer la carpeta al PATH de la sesión: `$env:PATH = "C:\ProgramData\chocolatey\lib\qlik-cli\tools;" + $env:PATH`. Git Bash no puede ejecutar el shim. Al canalizar la salida de `qlik raw` hacia Python desde PowerShell se añade un BOM; usar `ConvertFrom-Json` en PowerShell o leer con `utf-8-sig`.
 
 ## 11. Comandos del banco de pruebas
 
