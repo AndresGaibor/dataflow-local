@@ -151,6 +151,22 @@ python -m emulator.cli cleanup --apply   # borra apps y archivos emu_*
 
 `cleanup` nunca toca objetos sin prefijo `emu_` ni de otro espacio. Tras ejecutarlo, una segunda pasada responde "nada que limpiar".
 
+## 10 bis. Windows: la CLI `qlik` bloqueada por Code Integrity
+
+**Síntoma (verificado el 2026-11-23):** `qlik` falla con "Una directiva de Control de aplicaciones bloqueó este archivo" en PowerShell y con "Permission denied" en Git Bash. El registro `Microsoft-Windows-CodeIntegrity/Operational` trae los eventos 3033 y 3077: el archivo bloqueado es `C:\ProgramData\chocolateyin\qlik.exe`.
+
+**Causa:** ese archivo es un acceso directo (shim) que genera Chocolatey. No está firmado y la política WDAC de la máquina solo admite binarios con firma de nivel empresarial. El binario real, `C:\ProgramData\chocolatey\lib\qlik-cli	ools\qlik.exe`, está firmado por QlikTech International AB y sí corre (versión 4.0.0).
+
+**Solución automática:** `emulator/bridge.py` (`_qlik_exe`) elige el ejecutable en este orden, sin tocar el PATH:
+
+1. la variable `DFEMU_QLIK`, si existe (ruta completa a un `qlik.exe`);
+2. `%ChocolateyInstall%\lib\qlik-cli	ools\qlik.exe`, o `C:\ProgramData\chocolatey\lib\qlik-cli	ools\qlik.exe` si la variable no existe, siempre que el archivo exista;
+3. `qlik` del PATH.
+
+Si el sistema operativo impide ejecutarlo (`OSError`), el puente devuelve el código 126 y un mensaje que indica definir `DFEMU_QLIK`. Verificado con `dfemu cleanup` desde Git Bash: llega al tenant sin cambiar el PATH.
+
+**Uso manual en PowerShell (fuera del emulador):** anteponer la carpeta al PATH de la sesión: `$env:PATH = "C:\ProgramData\chocolatey\lib\qlik-cli	ools;" + $env:PATH`. Git Bash no puede ejecutar el shim. Al canalizar la salida de `qlik raw` hacia Python desde PowerShell se añade un BOM; usar `ConvertFrom-Json` en PowerShell o leer con `utf-8-sig`.
+
 ## 11. Comandos del banco de pruebas
 
 Todos los comandos son simulación por defecto; las escrituras en el tenant requieren `--apply`.
@@ -167,7 +183,7 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 | `dfemu coverage [archivos...]` | mide qué processors usa el corpus y si cada flujo se puede ejecutar |
 | `dfemu translate script.qvs\|.pull.json [--run]` | traduce el script de Qlik a SQL de DuckDB y, con `--run`, lo ejecuta |
 
-El espacio de escritura se configura con `DFEMU_SPACE_ID` y el flujo base con `DFEMU_BASE_APP`.
+El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DFEMU_BASE_APP` y, solo si hace falta, la CLI con `DFEMU_QLIK` (ver 10 bis).
 
 ## 12. Pendiente
 

@@ -37,14 +37,27 @@ class DryRun(Exception):
 Runner = Callable[[list[str]], tuple[int, str, str]]
 
 
+def _qlik_exe() -> str:
+    """Ejecutable de la CLI. En Windows con Code Integrity (WDAC) el acceso directo de
+    Chocolatey (`bin/qlik.exe`, sin firma) se bloquea; el binario real, firmado por Qlik, corre."""
+    if os.environ.get("DFEMU_QLIK"):
+        return os.environ["DFEMU_QLIK"]
+    choco = os.environ.get("ChocolateyInstall") or r"C:\ProgramData\chocolatey"
+    real = os.path.join(choco, "lib", "qlik-cli", "tools", "qlik.exe")
+    return real if os.path.isfile(real) else "qlik"
+
+
 def qlik_runner(args: list[str]) -> tuple[int, str, str]:
+    exe = _qlik_exe()
     try:
-        p = subprocess.run(["qlik", *args], capture_output=True, text=True, encoding="utf-8",
+        p = subprocess.run([exe, *args], capture_output=True, text=True, encoding="utf-8",
                            stdin=subprocess.DEVNULL, timeout=TIMEOUT_S)
     except subprocess.TimeoutExpired:
         return 124, "", f"timeout tras {TIMEOUT_S}s"
     except FileNotFoundError:  # la CLI no está instalada
         return 127, "", "no se encontro la CLI qlik"
+    except OSError as e:  # p. ej. bloqueada por una politica de control de aplicaciones
+        return 126, "", f"no se pudo ejecutar {exe}: {e}. Defina DFEMU_QLIK con la ruta del qlik.exe firmado"
     return p.returncode, p.stdout, p.stderr
 
 

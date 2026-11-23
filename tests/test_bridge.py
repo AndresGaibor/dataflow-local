@@ -195,6 +195,7 @@ def test_qlik_runner_closes_stdin_and_sets_timeout(monkeypatch):
         return SimpleNamespace(returncode=0, stdout="{}", stderr="")
 
     monkeypatch.setattr(B.subprocess, "run", fake_run)
+    monkeypatch.setattr(B, "_qlik_exe", lambda: "qlik")
     assert B.qlik_runner(["raw", "get", "v1/x"]) == (0, "{}", "")
     assert seen["cmd"][0] == "qlik"
     assert seen["stdin"] is subprocess.DEVNULL
@@ -204,6 +205,7 @@ def test_qlik_runner_closes_stdin_and_sets_timeout(monkeypatch):
 @pytest.mark.parametrize("exc, rc", [
     (subprocess.TimeoutExpired(["qlik"], 60), 124),
     (FileNotFoundError("qlik"), 127),
+    (OSError(4551, "bloqueado por la politica de control de aplicaciones"), 126),
 ])
 def test_qlik_runner_exceptions_become_bridgeerror(monkeypatch, tmp_path, exc, rc):
     def boom(cmd, **kwargs):
@@ -214,6 +216,18 @@ def test_qlik_runner_exceptions_become_bridgeerror(monkeypatch, tmp_path, exc, r
     with pytest.raises(BridgeError) as e:
         b.get("v1/x")
     assert e.value.rc == rc
+
+
+def test_qlik_exe_resolution(monkeypatch, tmp_path):
+    real = tmp_path / "lib" / "qlik-cli" / "tools" / "qlik.exe"
+    monkeypatch.delenv("DFEMU_QLIK", raising=False)
+    monkeypatch.setenv("ChocolateyInstall", str(tmp_path))
+    assert B._qlik_exe() == "qlik"  # sin binario real: el del PATH
+    real.parent.mkdir(parents=True)
+    real.write_bytes(b"")
+    assert B._qlik_exe() == str(real)  # el firmado gana al acceso directo
+    monkeypatch.setenv("DFEMU_QLIK", "C:/otro/qlik.exe")
+    assert B._qlik_exe() == "C:/otro/qlik.exe"  # el override gana a todo
 
 
 def test_reload_of_non_emu_app_rejected(tmp_path):
