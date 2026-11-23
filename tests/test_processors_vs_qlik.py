@@ -280,3 +280,57 @@ def test_doubles_are_written_with_14_significant_digits_like_qlik(tmp_path):
                         {"type": "SQUARE_ROOT_NUMBERS", "squareRootNumbersConfiguration": {
                             "columnsToProcess": ["n"], "newColumnName": "m", "shouldCreateNewColumn": True}})
     assert [r[cols.index("m")] for r in out] == ["1.4142135623731", "2.2360679774998", "4"]
+
+
+# --- variantes cuya expresion se leyo en el script que genera Qlik (2026-11-23) ------------------------------------
+
+def vcfg(subtype, key, **extra):
+    return {"type": subtype, key: {"columnsToProcess": ["n"], "newColumnName": "m", "shouldCreateNewColumn": True, **extra}}
+
+
+def test_compute_length_creates_col_length_with_the_length(tmp_path):  # Len([c]) AS [c_length]
+    cols, out = run_one(tmp_path, "id,n\n1,Quito\n", ["id", "n"], "strings", vcfg("COMPUTE_LENGTH", "computeLengthConfiguration"))
+    assert out[0][cols.index("n_length")] == "5"
+
+
+def test_contains_creates_col_contains_value_with_true_or_false(tmp_path):  # IF(Index([c], 'ui'), Dual('TRUE', -1), Dual('FALSE', 0))
+    cols, out = run_one(tmp_path, "id,n\n1,Quito\n2,Loja\n", ["id", "n"], "strings",
+                        vcfg("CONTAINS", "containsConfiguration", constantValue="ui"))
+    assert [r[cols.index("n_contains_ui")] for r in out] == ["TRUE", "FALSE"]
+
+
+def test_padding_defaults_and_substring_defaults(tmp_path):
+    # sin parametros Qlik genera Repeat('0', 5 - Len(c)) & c y Mid(c, 1, 5); no se conocen las claves de los parametros
+    cols, out = run_one(tmp_path, "id,n\n1,ab\n2,abcdefg\n", ["id", "n"], "strings", vcfg("PADDING", "paddingConfiguration"))
+    assert [r[cols.index("m")] for r in out] == ["000ab", "abcdefg"]  # lpad de DuckDB truncaria 'abcdefg'
+    cols, out = run_one(tmp_path, "id,n\n1,Guayaquil\n", ["id", "n"], "strings", vcfg("SUBSTRING", "substringConfiguration"))
+    assert out[0][cols.index("m")] == "Guaya"
+
+
+def test_convert_to_string_and_remove_non_alpha_num(tmp_path):
+    cols, out = run_one(tmp_path, "id,n\n1,5\n", ["id", "n"], "strings", vcfg("CONVERT_TO_STRING", "convertToStringConfiguration"))
+    assert out[0][cols.index("m")] == "5"
+    cols, out = run_one(tmp_path, "id,n\n1,a.b-c d1\n", ["id", "n"], "strings",
+                        vcfg("REMOVE_NON_ALPHA_NUM_CHARS", "removeNonAlphaNumCharsConfiguration"))
+    assert out[0][cols.index("m")] == "abcd1"  # KeepChar solo conserva letras y digitos
+
+
+def test_remove_negative_values_blanks_them_in_place(tmp_path):  # IF([c] < 0, Null(), [c]) AS [c]
+    cols, out = run_one(tmp_path, "id,n\n1,-5\n2,7\n", ["id", "n"], "numbers",
+                        vcfg("REMOVE_NEGATIVE_VALUES", "removeNegativeValuesConfiguration"))
+    assert [r[cols.index("n")] for r in out] == [None, "7"] and "m" not in cols
+
+
+@pytest.mark.parametrize("unit,expected", [
+    ("YEAR", "1/1/1998"), ("MONTH", "9/1/1998"), ("DAY", "9/13/1998"), ("HOUR", "9/13/1998 12:00:00 AM"),
+])
+def test_truncate_date_creates_col_truncated_in_the_script_date_format(tmp_path, unit, expected):
+    cfg = vcfg("TRUNCATE_DATE", "truncateDateConfiguration", timeUnit=unit)
+    cols, out = run_one(tmp_path, "id,n\n1,1998-09-13\n", ["id", "n"], "date", cfg)
+    assert out[0][cols.index("n_truncated")] == expected
+
+
+def test_truncate_date_rejects_the_units_the_server_rejects(tmp_path):
+    from emulator import runner as r
+    with pytest.raises(r.Unsupported):
+        run_one(tmp_path, "id,n\n1,1998-09-13\n", ["id", "n"], "date", vcfg("TRUNCATE_DATE", "truncateDateConfiguration", timeUnit="WEEK"))

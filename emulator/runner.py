@@ -256,6 +256,22 @@ def _typed(ctx, t, cfg, v):
             return D(_per_col(ctx, v, c, lambda x: f"upper({S(x)})"))
         if k == "LOWERCASE":
             return D(_per_col(ctx, v, c, lambda x: f"lower({S(x)})"))
+        # expresiones leidas en el script que genera Qlik (2026-11-23); los parametros finos (ancho del relleno, posiciones de
+        # SUBSTRING) no se descubrieron: se emulan los valores por defecto del servidor (5)
+        if k == "COMPUTE_LENGTH":  # Len([c]) AS [c_length]
+            return D(_derived(v, c, "length", lambda x: f"length({S(x)})"))
+        if k == "CONTAINS":  # IF(Index([c], 'v'), Dual('TRUE', -1), Dual('FALSE', 0)) AS [c_contains_v]
+            val = lit(c["constantValue"])
+            return D(_derived(v, c, f"contains_{c['constantValue']}",
+                              lambda x: f"CASE WHEN strpos({S(x)}, {val}) > 0 THEN 'TRUE' ELSE 'FALSE' END"))
+        if k == "PADDING":  # Repeat('0', 5 - Len([c])) & [c]; nunca trunca
+            return D(_per_col(ctx, v, c, lambda x: f"repeat('0', greatest(5 - length({S(x)}), 0)) || {S(x)}"))
+        if k == "SUBSTRING":  # Mid([c], 1, 5)
+            return D(_per_col(ctx, v, c, lambda x: f"substr({S(x)}, 1, 5)"))
+        if k == "CONVERT_TO_STRING":  # Text([c])
+            return D(_per_col(ctx, v, c, lambda x: S(x)))
+        if k == "REMOVE_NON_ALPHA_NUM_CHARS":  # KeepChar([c], ALPHA_NUM_CHARS); shortcut: solo letras ASCII y digitos
+            return D(_per_col(ctx, v, c, lambda x: f"regexp_replace({S(x)}, '[^A-Za-z0-9]', '', 'g')"))
         if k == "REPLACE_ON_VALUE":
             op, val, rep = c["cellValue"]["operator"], lit(c["cellValue"]["value"]), lit(c["replaceValue"])
             # matriz operador x metodo medida en el tenant (scripts de Qlik: Match, Left/Right con Len, Index)
@@ -271,6 +287,10 @@ def _typed(ctx, t, cfg, v):
                 return D(_per_col(ctx, v, c, lambda x: f"CASE WHEN {cond(x)} THEN {new(x)} ELSE {S(x)} END"))
         raise Unsupported(f"strings {k} {c.get('replaceMethod', '')}")
     if t == "numbers":
+        if k == "REMOVE_NEGATIVE_VALUES":  # IF([c] < 0, Null(), [c]) AS [c]: siempre en sitio, aunque pida columna nueva
+            c = cfg["removeNegativeValuesConfiguration"]
+            return D(_per_col(ctx, v, {**c, "shouldCreateNewColumn": False},
+                              lambda x: f"CASE WHEN TRY_CAST({x} AS DOUBLE) < 0 THEN NULL ELSE {x} END"))
         c = cfg["convertToNumberConfiguration"]
         return D(_per_col(ctx, v, c, lambda x: f"TRY_CAST(replace(replace(CAST({x} AS VARCHAR), {lit(c['thousandSeparator'])}, ''), {lit(c['decimalSeparator'])}, '.') AS DOUBLE)"))
     if t == "masking":
@@ -310,9 +330,24 @@ def _typed(ctx, t, cfg, v):
     raise Unsupported(f"processor {t}")
 
 
+_TRUNC = {"YEAR": ("year", "date"), "MONTH": ("month", "date"), "DAY": ("day", "date"),
+          "HOUR": ("hour", "timestamp"), "MINUTE": ("minute", "timestamp"), "SECOND": ("second", "timestamp")}
+
+
+def _derived(v, c, suffix, fn):
+    """columna nueva `<col>_<suffix>` por cada columna a procesar (el nombre no sale de newColumnName: medido en Qlik)"""
+    return f"SELECT *, {', '.join(f'{fn(q(t))} AS {q(t + chr(95) + suffix)}' for t in c['columnsToProcess'])} FROM {v}"
+
+
 def _date(ctx, v, k, c):
     col = c["columnsToProcess"][0]
     S = f"CAST({q(col)} AS VARCHAR)"
+    if k == "TRUNCATE_DATE":  # YearStart/MonthStart/Floor(x)/Floor(x*24)/24... AS [c_truncated]; WEEK y sub-segundos los rechaza el servidor
+        if c["timeUnit"] not in _TRUNC:
+            raise Unsupported(f"TRUNCATE_DATE {c['timeUnit']}: el servidor no lo compila")
+        unit, kind = _TRUNC[c["timeUnit"]]
+        ctx.converted_dates[f"{col}_truncated"] = kind
+        return _derived(v, c, "truncated", lambda x: f"CAST(date_trunc('{unit}', TRY_CAST(CAST({x} AS VARCHAR) AS TIMESTAMP)) AS {kind.upper()})")
     if k == "EXTRACT_DATE_PARTS":
         ts = f"try_strptime({S}, {lit(_jfmt(c['datePattern']))})"
         prefix = c.get("newColumnRename") or col  # medido: con rename "fecha_" Qlik genera [fecha__day]

@@ -157,7 +157,7 @@ Medición el 2026-11-23 sobre los 18 scripts distintos de `out/corpus*/`: 3 se t
 
 ## 9 quater. Processors: emulador frente al tenant
 
-Verificado el 2026-11-23 con `scripts/processor_battery.py`: **80 casos**: 69 individuales (`clientes` → un processor → destino; los joins usan un `fork` con una rama filtrada) y 11 cadenas de 3 o 4 pasos (ver más abajo), ejecutados en el emulador y, con el mismo grafo, en el tenant (clon `emu_v_*` del flujo base, script generado por Qlik, app `emu_oracle_*`), comparando huellas. Los casos están en `scripts/processor_battery_cases.json`. **Resultado final: los 80 coinciden** (contenido, y orden y formato de las 8 primeras filas, salvo lo indicado en "Orden y formato"). La primera pasada (15 casos) dio diferencias en todos; las 11 cadenas coincidieron a la primera una vez corregidos los processors sueltos.
+Verificado el 2026-11-23 con `scripts/processor_battery.py`: **91 casos**: 80 individuales (`clientes` → un processor → destino; los joins usan un `fork` con una rama filtrada) y 11 cadenas de 3 o 4 pasos (ver más abajo), ejecutados en el emulador y, con el mismo grafo, en el tenant (clon `emu_v_*` del flujo base, script generado por Qlik, app `emu_oracle_*`), comparando huellas. Los casos están en `scripts/processor_battery_cases.json`. **Resultado final: los 91 coinciden** (contenido, y orden y formato de las 8 primeras filas, salvo lo indicado en "Orden y formato"). La primera pasada (15 casos) dio diferencias en todos; las 11 cadenas coincidieron a la primera una vez corregidos los processors sueltos.
 
 ### Cómo mide el tenant (importante)
 El oráculo no mide el resultado en memoria: **vuelve a cargar el CSV que escribió el flujo** (`oracle._READBACK`) y mide la tabla cargada. En Qlik un archivo no tiene `NULL`: toda celda vacía es el texto vacío, que cuenta como valor y es distinto. Por eso `compare.fingerprint_of` cuenta `count(*)` para todas las columnas y suma 1 al número de distintos si hay algún `NULL`. Esto cubre de una vez los `NULL` que produce el emulador (join sin pareja, conversión de texto no numérico, celda vacía de la fuente). La suma sigue ignorando los vacíos. Una versión intermedia calculaba la huella en memoria; era una aproximación equivocada y se descartó.
@@ -241,14 +241,16 @@ El servidor lista todas las variantes de un processor si se le manda un `type` i
 
 | Processor | Verificadas contra el tenant | Configuración descubierta, sin emular | Sin descubrir o sin probar |
 |---|---|---|---|
-| `strings` | `UPPERCASE`, `LOWERCASE`, `PROPERCASE`, `TRIM`, `REPLACE_ON_VALUE` (matriz completa), `REMOVE_NON_NUM_CHARS` | `COMPUTE_LENGTH`, `CONTAINS` (`constantValue`), `PADDING`, `CONVERT_TO_STRING`, `REMOVE_NON_ALPHA_NUM_CHARS`, `SUBSTRING` | `CUT`, `MATCHES_PATTERN`, `FUZZY_MATCHING`, `REMOVE_CONSECUTIVE_CHARACTERS` |
+| `strings` | `UPPERCASE`, `LOWERCASE`, `PROPERCASE`, `TRIM`, `REPLACE_ON_VALUE` (matriz completa), `REMOVE_NON_NUM_CHARS`, `COMPUTE_LENGTH`, `CONTAINS`, `PADDING`*, `SUBSTRING`*, `CONVERT_TO_STRING`, `REMOVE_NON_ALPHA_NUM_CHARS` | | `CUT`, `MATCHES_PATTERN`, `FUZZY_MATCHING`, `REMOVE_CONSECUTIVE_CHARACTERS` |
 | `math` | `ABSOLUTE`, `MULTIPLY`, `ADD`, `SUBTRACT`, `DIVIDE`, `MODULO`, `POW_NUMBERS`, `MIN_NUMBERS`, `MAX_NUMBERS`, `NEGATE_NUMBERS`, `SQUARE_ROOT_NUMBERS` | | `NUMERIC_OPS`, `TAN_NUMBERS`, `COS_NUMBERS`, `SIN_NUMBERS`, `LOGARITHM_NUMBERS`, `NATURAL_LOGARITHM_NUMBERS`, `EXPONENTIEL_NUMBERS` |
-| `numbers` | `CONVERT_TO_NUMBER` | `REMOVE_NEGATIVE_VALUES` | `ROUND`, `FLOOR`, `CEIL`, `ROUND_DOWN`, `ROUND_DOWN_REAL`, `FORMAT_NUMBER`, `FORMAT_MONEY`, `COMPARE_NUMBERS` |
-| `date` | `EXTRACT_DATE_PARTS`, `CONVERT_TO_DATE`, `CONVERT_TO_TIMESTAMP` | `TRUNCATE_DATE` (`timeUnit`) | `MODIFY_DATES`, `FORMAT_DATES`, `CONVERT_TO_TIME`, `TIME_SINCE`, `COMPARE_DATES`, `DATE_FROM_PARTS`, `TIME_FROM_PARTS`, `TIMESTAMP_FROM_PARTS` |
+| `numbers` | `CONVERT_TO_NUMBER`, `REMOVE_NEGATIVE_VALUES` | | `ROUND`, `FLOOR`, `CEIL`, `ROUND_DOWN`, `ROUND_DOWN_REAL`, `FORMAT_NUMBER`, `FORMAT_MONEY`, `COMPARE_NUMBERS` |
+| `date` | `EXTRACT_DATE_PARTS`, `CONVERT_TO_DATE`, `CONVERT_TO_TIMESTAMP`, `TRUNCATE_DATE` (`YEAR`, `MONTH`, `DAY`, `HOUR`) | | `MODIFY_DATES`, `FORMAT_DATES`, `CONVERT_TO_TIME`, `TIME_SINCE`, `COMPARE_DATES`, `DATE_FROM_PARTS`, `TIME_FROM_PARTS`, `TIMESTAMP_FROM_PARTS` |
 | `split-field` | `SPLIT_TEXT_IN_PARTS` | | `EXTRACT_VALUES_BY_REGEX` |
 | `window` | `RANK`, `ROW_NUMBER` | | `FIRST`, `LAST`, `AVG`, `MAX`, `MIN`, `SUM`, `COUNT`, `COUNT_DISTINCT`, `CONCATENATE` |
 | `unpivot` | todas | | |
 | `pivot` | | claves conocidas | no se puede crear por API (ver arriba) |
+
+**Variantes leídas del script de Qlik y verificadas (11 casos):** `COMPUTE_LENGTH` crea `[c_length]` (`Len`); `CONTAINS` crea `[c_contains_<valor>]` con `TRUE`/`FALSE` (`Index`, distingue mayúsculas); `PADDING` es `Repeat('0', 5 - Len(c)) & c` (nunca trunca) y `SUBSTRING` es `Mid(c, 1, 5)`: *solo se comprobaron los valores por defecto, no se descubrieron las claves de ancho y posición*; `CONVERT_TO_STRING` es `Text`; `REMOVE_NON_ALPHA_NUM_CHARS` es `KeepChar` (letras y dígitos ASCII); `REMOVE_NEGATIVE_VALUES` es `IF(c < 0, Null(), c)` siempre en sitio aunque se pida columna nueva; `TRUNCATE_DATE` crea `[c_truncated]` (`YearStart`, `MonthStart`, `Floor`, `Floor(x*24)/24`...; `MINUTE` y `SECOND` compilan pero no se midieron) y el servidor rechaza `WEEK`, `MILLISECOND` y `MICROSECOND` ("unsupported formats for truncate date"), igual que el emulador. El nombre de la columna nueva en `COMPUTE_LENGTH`, `CONTAINS` y `TRUNCATE_DATE` no sale de `newColumnName`.
 
 **`math` con otro campo o con un valor fijo:** las operaciones binarias (`ADD`, `SUBTRACT`, `MULTIPLY`, `DIVIDE`, `MODULO`, `POW_NUMBERS`, `MIN_NUMBERS`, `MAX_NUMBERS`) usan `mode` (`WITH_VALUE` o `WITH_FIELD`), `constantValue` y `selectedColumn`, igual que `MULTIPLY`. Las unarias (`ABSOLUTE`, `NEGATE_NUMBERS`, `SQUARE_ROOT_NUMBERS`) solo `columnsToProcess`. Las 11 se verificaron en el tenant (hipótesis confirmadas a la primera).
 
@@ -433,7 +435,7 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 | `dfemu compare archivo.dfw (--app APP\|--push [--base-app APP]) --apply` | compara resultados del emulador con el tenant |
 | `dfemu cleanup [--apply]` | lista o borra apps y archivos `emu_*` |
 | `dfemu coverage [archivos...]` | mide qué processors usa el corpus y si cada flujo se puede ejecutar |
-| `python scripts/processor_battery.py [caso ...]` | batería de 80 casos (69 processors y 11 cadenas), emulador frente al tenant (escribe en el tenant; limpia lo que crea) |
+| `python scripts/processor_battery.py [caso ...]` | batería de 91 casos (80 processors y 11 cadenas), emulador frente al tenant (escribe en el tenant; limpia lo que crea) |
 | `dfemu translate script.qvs\|.pull.json [--run] [--compare [--apply]]` | traduce el script de Qlik a SQL de DuckDB; con `--run` lo ejecuta y con `--compare --apply` lo compara con la ejecución real en el tenant |
 
 El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DFEMU_BASE_APP` la CLI con `DFEMU_QLIK` (ver 10 bis) y, para usar otro contexto de la CLI sin activarlo, `DFEMU_QLIK_CONTEXT` (ver `02-guia-oauth.md`).

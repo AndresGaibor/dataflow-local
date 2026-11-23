@@ -1928,5 +1928,174 @@
     }
    ]
   ]
+ ],
+ "str_largo": [
+  "strings",
+  {
+   "type": "COMPUTE_LENGTH",
+   "computeLengthConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "str_contiene": [
+  "strings",
+  {
+   "type": "CONTAINS",
+   "containsConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "constantValue": "ui"
+   }
+  }
+ ],
+ "str_relleno": [
+  "strings",
+  {
+   "type": "PADDING",
+   "paddingConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "str_subcadena": [
+  "strings",
+  {
+   "type": "SUBSTRING",
+   "substringConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "str_a_texto": [
+  "strings",
+  {
+   "type": "CONVERT_TO_STRING",
+   "convertToStringConfiguration": {
+    "columnsToProcess": [
+     "cedula"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "str_alfanum": [
+  "strings",
+  {
+   "type": "REMOVE_NON_ALPHA_NUM_CHARS",
+   "removeNonAlphaNumCharsConfiguration": {
+    "columnsToProcess": [
+     "email"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "num_quitar_neg": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "numbers",
+    {
+     "type": "REMOVE_NEGATIVE_VALUES",
+     "removeNegativeValuesConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ]
+  ]
+ ],
+ "fecha_trunc_year": [
+  "date",
+  {
+   "type": "TRUNCATE_DATE",
+   "truncateDateConfiguration": {
+    "columnsToProcess": [
+     "fecha_nacimiento"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "timeUnit": "YEAR"
+   }
+  }
+ ],
+ "fecha_trunc_month": [
+  "date",
+  {
+   "type": "TRUNCATE_DATE",
+   "truncateDateConfiguration": {
+    "columnsToProcess": [
+     "fecha_nacimiento"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "timeUnit": "MONTH"
+   }
+  }
+ ],
+ "fecha_trunc_day": [
+  "date",
+  {
+   "type": "TRUNCATE_DATE",
+   "truncateDateConfiguration": {
+    "columnsToProcess": [
+     "fecha_nacimiento"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "timeUnit": "DAY"
+   }
+  }
+ ],
+ "fecha_trunc_hour": [
+  "date",
+  {
+   "type": "TRUNCATE_DATE",
+   "truncateDateConfiguration": {
+    "columnsToProcess": [
+     "fecha_nacimiento"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "timeUnit": "HOUR"
+   }
+  }
  ]
 }
