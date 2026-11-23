@@ -2,7 +2,6 @@
 import json
 import uuid
 
-_id = lambda: str(uuid.uuid4())
 _CONFIGURED = {"$state": "CONFIGURED"}
 
 # processor -> (handles entrantes, handles salientes), segun .dfw reales
@@ -19,10 +18,16 @@ class Flow:
     def __init__(self, name, locale="en-US"):
         self.name, self.nodes, self.edges, self.sources, self.subflows, self.locale = name, [], [], [], [], locale
         self._h = {}  # (node_id, direction, handle_type) -> handle_id
+        self._n = 0
+
+    def _id(self):
+        # ids deterministas por flujo: regenerar samples/ no ensucia git
+        self._n += 1
+        return str(uuid.uuid5(uuid.NAMESPACE_URL, f"{self.name}:{self._n}"))
 
     def _node(self, kind, ctype, label, props, inc, out, x):
-        n = {"type": kind, "id": _id(), "label": label, "graphical": {"position": {"x": x, "y": 120}},
-             "handles": {"incoming": [{"id": _id(), "type": t} for t in inc], "outgoing": [{"id": _id(), "type": t} for t in out]},
+        n = {"type": kind, "id": self._id(), "label": label, "graphical": {"position": {"x": x, "y": 120}},
+             "handles": {"incoming": [{"id": self._id(), "type": t} for t in inc], "outgoing": [{"id": self._id(), "type": t} for t in out]},
              "component": {"type": ctype, "properties": props}}
         if kind == "source":
             del n["handles"]["incoming"][:]
@@ -35,21 +40,21 @@ class Flow:
         return n
 
     def dataset(self, label, file, fields, space="Entrenamiento Dataflow", x=60):
-        sid, dsid = _id(), _id()
+        sid, dsid = self._id(), self._id()
         self.sources.append({"connections": {"DataFiles": {"name": "DataFiles", "typeName": "qix-datafiles", "sourceConnectorID": "qix-datafiles",
-                             "dataconnectorPrefix": f"{space}:", "space": _id()}}, "sourceId": sid, "datasetId": dsid, "qri": None,
+                             "dataconnectorPrefix": f"{space}:", "space": self._id()}}, "sourceId": sid, "datasetId": dsid, "qri": None,
                              "tables": [{"databaseName": file, "dataconnectorName": "DataFiles", "dataconnectorPrefix": f"{space}:",
-                                         "fields": [{"name": f, "id": _id()} for f in fields], "tableName": file.rsplit(".", 1)[0],
+                                         "fields": [{"name": f, "id": self._id()} for f in fields], "tableName": file.rsplit(".", 1)[0],
                                          "formatSpec": "(txt, utf8, embedded labels, delimiter is ',', msq)", "ownerName": "TYPE9_CSV"}]})
         return self._node("source", "analyticsSource", label, {"dataEntity": {"entityId": sid}, "configuration": {}, "type": "dataset"}, [], ["DEFAULT"], x)
 
     def db(self, label, connector, conn_name, table, fields, space="Entrenamiento Dataflow", x=60):
         """Origen de base de datos via conector ODBC (ej. gbq, postgres)."""
-        sid = _id()
+        sid = self._id()
         self.sources.append({"connections": {conn_name: {"name": conn_name, "typeName": "QvOdbcConnectorPackage.exe", "sourceConnectorID": connector,
                              "dataconnectorPrefix": f"{space}:"}}, "sourceId": sid, "datasetId": None, "qri": None,
                              "tables": [{"databaseName": table, "dataconnectorName": conn_name, "dataconnectorPrefix": f"{space}:",
-                                         "fields": [{"name": f, "alias": f, "selected": True, "id": _id()} for f in fields]}]})
+                                         "fields": [{"name": f, "alias": f, "selected": True, "id": self._id()} for f in fields]}]})
         return self._node("source", "analyticsSource", label, {"dataEntity": {"entityId": sid}, "configuration": {}, "type": "connection"}, [], ["DEFAULT"], x)
 
     def proc(self, ctype, label, cfg, x=380, inc=None, out=None):
@@ -72,7 +77,7 @@ class Flow:
         src = self._h[(a["id"], "outgoing", out)]
         used = {e["targetHandle"] for e in self.edges}
         free = [h["id"] for h in b["handles"]["incoming"] if h["id"] not in used and (inc is None or h["type"] == inc)]
-        self.edges.append({"id": _id(), "sourceHandle": src, "targetHandle": free[0]})
+        self.edges.append({"id": self._id(), "sourceHandle": src, "targetHandle": free[0]})
         return b
 
     def chain(self, *nodes):
@@ -81,10 +86,10 @@ class Flow:
         return nodes[-1]
 
     def dump(self):
-        return {"dataflow": {"id": _id(), "description": "sintetico", "name": self.name,
-                             "context": {"projectId": _id(), "dataAppId": _id(), "version": 8, "usage": "DATAFLOW_PREP"},
+        return {"dataflow": {"id": self._id(), "description": "sintetico", "name": self.name,
+                             "context": {"projectId": self._id(), "dataAppId": self._id(), "version": 8, "usage": "DATAFLOW_PREP"},
                              "createdAt": "2026-11-17T00:00:00.000Z", "createdBy": "synthetic", "updatedAt": "2026-11-17T00:00:00.000Z",
-                             "updatedBy": "synthetic", "checksum": _id(), "modelVersion": "1.0.0",
+                             "updatedBy": "synthetic", "checksum": self._id(), "modelVersion": "1.0.0",
                              "graph": {"nodes": self.nodes, "edges": self.edges}},
                 "subflows": self.subflows, "sources": self.sources, "projections": [], "schemas": [], "collationLocale": self.locale}
 
