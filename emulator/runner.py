@@ -5,7 +5,7 @@ import re
 
 import duckdb
 
-from . import compare, dfw
+from . import dfw
 
 q = lambda c: '"' + str(c).replace('"', '""') + '"'
 lit = lambda s: "'" + str(s).replace("'", "''") + "'"
@@ -219,12 +219,17 @@ def _typed(ctx, t, cfg, v):
             return D(_per_col(ctx, v, c, lambda x: f"upper({S(x)})"))
         if k == "REPLACE_ON_VALUE":
             op, val, rep = c["cellValue"]["operator"], lit(c["cellValue"]["value"]), lit(c["replaceValue"])
-            if c["replaceMethod"] == "REPLACE_MATCHING_WITH_VALUE" and op == "CONTAINS":
-                return D(_per_col(ctx, v, c, lambda x: f"replace({S(x)}, {val}, {rep})"))
-            if c["replaceMethod"] == "REPLACE_MATCHING_WITH_VALUE" and op == "STARTS_WITH":
-                return D(_per_col(ctx, v, c, lambda x: f"CASE WHEN starts_with({S(x)}, {val}) THEN {rep} || substr({S(x)}, length({val}) + 1) ELSE {S(x)} END"))
-            if c["replaceMethod"] == "REPLACE_CELL_WITH_VALUE" and op == "EQUALS":
-                return D(_per_col(ctx, v, c, lambda x: f"CASE WHEN {S(x)} = {val} THEN {rep} ELSE {S(x)} END"))
+            # matriz operador x metodo medida en el tenant (scripts de Qlik: Match, Left/Right con Len, Index)
+            cond = {"EQUALS": lambda x: f"{S(x)} = {val}", "STARTS_WITH": lambda x: f"starts_with({S(x)}, {val})",
+                    "ENDS_WITH": lambda x: f"ends_with({S(x)}, {val})", "CONTAINS": lambda x: f"contains({S(x)}, {val})"}.get(op)
+            if cond and c["replaceMethod"] == "REPLACE_CELL_WITH_VALUE":  # toda la celda
+                return D(_per_col(ctx, v, c, lambda x: f"CASE WHEN {cond(x)} THEN {rep} ELSE {S(x)} END"))
+            if cond and c["replaceMethod"] == "REPLACE_MATCHING_WITH_VALUE":  # solo la parte que coincide (EQUALS: toda la celda)
+                if op == "CONTAINS":
+                    return D(_per_col(ctx, v, c, lambda x: f"replace({S(x)}, {val}, {rep})"))
+                new = {"EQUALS": lambda x: rep, "STARTS_WITH": lambda x: f"{rep} || substr({S(x)}, length({val}) + 1)",
+                       "ENDS_WITH": lambda x: f"substr({S(x)}, 1, length({S(x)}) - length({val})) || {rep}"}[op]
+                return D(_per_col(ctx, v, c, lambda x: f"CASE WHEN {cond(x)} THEN {new(x)} ELSE {S(x)} END"))
         raise Unsupported(f"strings {k} {c.get('replaceMethod', '')}")
     if t == "numbers":
         c = cfg["convertToNumberConfiguration"]
@@ -329,9 +334,7 @@ def _write(ctx, n, view):
     opts = "FORMAT parquet" if fmt == "parquet" else "FORMAT csv, HEADER"
     ctx.con.execute(f"COPY (SELECT * FROM {view}) TO {lit(dest)} ({opts})")
     rows = ctx.con.execute(f"SELECT count(*) FROM {view}").fetchone()[0]
-    # huella sobre el resultado en memoria: el archivo escrito no distingue texto vacio de NULL
-    return {"target": n["label"], "dest": dest, "rows": rows, "emulated_qvd": emulated,
-            "fingerprint": compare.fingerprint_of(view, ctx.con)}
+    return {"target": n["label"], "dest": dest, "rows": rows, "emulated_qvd": emulated}
 
 
 def run(d, data_dir, out_dir, connections=None, s3=None):

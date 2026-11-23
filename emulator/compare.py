@@ -30,8 +30,9 @@ def local_fingerprint(dest: str) -> dict:
 
 
 def fingerprint_of(src: str, con=None) -> dict:
-    """Huella de una relacion SQL (vista o lectura de archivo). Con `con` se mide sobre el resultado en memoria,
-    que distingue texto vacio de NULL; un CSV escrito no (ambos quedan como celda vacia)."""
+    """Huella de una relacion SQL (vista o lectura de archivo), medida como la ve el oraculo del tenant: este vuelve a
+    cargar el archivo escrito (oracle._READBACK), y en Qlik un archivo no tiene NULL; todo NULL del emulador (join sin
+    pareja, conversion fallida, celda vacia) es una celda vacia que cuenta como valor."""
     own = con is None
     con = con or duckdb.connect()
     try:
@@ -39,7 +40,8 @@ def fingerprint_of(src: str, con=None) -> dict:
         exprs = ["count(*)"]
         for name, typ, *_ in desc:
             c = q(name)
-            exprs += [f"count({c})", f"count(DISTINCT {c})",
+            # como Qlik al cargar el archivo escrito: no hay NULL, una celda vacia es un valor ('') que cuenta y es distinto
+            exprs += ["count(*)", f"count(DISTINCT {c}) + CASE WHEN count(*) > count({c}) THEN 1 ELSE 0 END",
                       f"sum(CAST({c} AS DOUBLE))" if typ.split("(")[0] in NUMERIC else "NULL"]
         row = con.execute(f"SELECT {', '.join(exprs)} FROM {src}").fetchone()
     finally:
@@ -59,15 +61,6 @@ def local_fingerprints(dests: list[str]) -> dict[str, dict]:
         if stems.count(s) > 1:
             raise ValueError(f"destinos con el mismo nombre: {s}")
     return {stem_of(d): local_fingerprint(d) for d in dests}
-
-
-def target_fingerprints(targets: list[dict]) -> dict[str, dict]:
-    """Huellas de los destinos que devuelve `runner.run`: la medida en memoria si existe, si no la del archivo."""
-    stems = [stem_of(t["dest"]) for t in targets]
-    for s in stems:
-        if stems.count(s) > 1:
-            raise ValueError(f"destinos con el mismo nombre: {s}")
-    return {stem_of(t["dest"]): t.get("fingerprint") or local_fingerprint(t["dest"]) for t in targets}
 
 
 def _close(a, b, rel_tol: float) -> bool:

@@ -19,7 +19,7 @@ import uuid
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from emulator import bridge, compare, oracle, runner  # noqa: E402
-from emulator.builder import Flow  # noqa: E402
+from emulator.builder import Flow, flt, sel  # noqa: E402
 from emulator.remote import BASE_APP_ID, Remote  # noqa: E402
 
 CLIENTES = ["cliente_id", "cedula", "nombre", "apellido", "fecha_nacimiento", "ciudad", "provincia", "region",
@@ -41,7 +41,19 @@ def build(name: str, entity: str):
     ctype, cfg = CASES[name]
     f = Flow(f"emu_p_{name}")
     src = f.dataset("clientes", "clientes.csv", CLIENTES)
-    f.chain(src, f.proc(ctype, name, cfg, x=380), f.target("Destino", f"emu_p_{name}", x=700))
+    tgt = f.target("Destino", f"emu_p_{name}", x=920)
+    if ctype == "join":
+        # autounion: fork -> rama completa (izquierda) + rama filtrada con solo cliente_id y ciudad como ciudad_ref (derecha)
+        fk, jn = f.proc("fork", "Fork", {}, x=260), f.proc("join", name, cfg, x=700)
+        quito = f.proc("filter", "Solo Quito", flt(("ciudad", "EQUAL", "Quito")), x=420)
+        ref = f.proc("field-selector", "Referencia", sel("cliente_id", ("ciudad", "ciudad_ref")), x=560)
+        f.link(src, fk)
+        f.link(fk, jn)
+        f.link(fk, quito, out="OPTIONAL_1")
+        f.chain(quito, ref, jn)
+        f.chain(jn, tgt)
+    else:
+        f.chain(src, f.proc(ctype, name, cfg, x=380), tgt)
     dump = f.dump()
     graph = copy.deepcopy(dump["dataflow"]["graph"])
     for n in graph["nodes"]:
@@ -53,7 +65,7 @@ def build(name: str, entity: str):
 def run_case(name: str, b: bridge.Bridge, r: Remote, entity: str, data: str, out: str) -> tuple[str, str]:
     dump, graph = build(name, entity)
     try:
-        local = compare.target_fingerprints(runner.run(dump, data, os.path.join(out, name)))
+        local = compare.local_fingerprints([t["dest"] for t in runner.run(dump, data, os.path.join(out, name))])
     except Exception as e:  # noqa: BLE001
         return "EMULADOR", f"{type(e).__name__}: {str(e)[:150]}"
     clone = r.clone(BASE_APP_ID, "emu_v_" + uuid.uuid4().hex[:8])

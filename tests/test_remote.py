@@ -422,3 +422,15 @@ def test_validity_of_rejects_a_clone_subflow_without_dataflow_id(tmp_path):
     b, _ = apply_bridge(rt, tmp_path)
     with pytest.raises(UnsupportedGraph):
         Remote(b).validity_of({"nodes": [_subflow_node("SUB_ORIGINAL")]}, base_app_id=APP)
+
+
+def test_cleanup_apply_skips_a_listed_app_that_no_longer_exists(tmp_path, monkeypatch, capsys):
+    # el indice de items puede listar una app ya borrada (GET v1/apps/{id} da 404): no debe romper el resto del borrado
+    rt = emu_routes()
+    rt[("GET", "v1/apps/app_emu")] = (1, "", "Error: 404 - Not Found (empty response)")
+    runner = _patch_bridge(monkeypatch, rt, tmp_path)
+    cli.main(["cleanup", "--apply"])
+    out = capsys.readouterr().out
+    assert "ya no existe" in out and "app_emu" in out
+    assert [c for c in runner.calls if (c[0], c[1]) == ("POST", "v1/data-files/actions/delete")]  # los archivos si se borran
+    assert "borrados: 0 app(s), 1 archivo(s)" in out

@@ -253,5 +253,466 @@
     "windowEndValue": 1
    }
   }
+ ],
+ "agg_extra": [
+  "aggregate",
+  {
+   "groupBy": [
+    {
+     "fieldPath": "segmento"
+    }
+   ],
+   "operations": [
+    {
+     "operation": "MIN",
+     "fieldPaths": [
+      "cedula"
+     ],
+     "delimiter": ",",
+     "outputFieldPath": "min_c"
+    },
+    {
+     "operation": "MAX",
+     "fieldPaths": [
+      "cedula"
+     ],
+     "delimiter": ",",
+     "outputFieldPath": "max_c"
+    },
+    {
+     "operation": "MEDIAN",
+     "fieldPaths": [
+      "cedula"
+     ],
+     "delimiter": ",",
+     "outputFieldPath": "med_c"
+    },
+    {
+     "operation": "COUNT_DISTINCT",
+     "fieldPaths": [
+      "ciudad"
+     ],
+     "delimiter": ",",
+     "outputFieldPath": "n_ciu"
+    }
+   ]
+  }
+ ],
+ "ventana_row_number": [
+  "window",
+  {
+   "operationConfiguration": {
+    "operationType": "ROW_NUMBER",
+    "operationFields": [],
+    "outputFieldName": "w",
+    "delimiter": ","
+   },
+   "partitionByConfiguration": {
+    "partitionByFieldList": [
+     "segmento"
+    ]
+   },
+   "sortingConfiguration": {
+    "sortBy": "cedula",
+    "sortOrder": "ASCENDING"
+   },
+   "rangeConfiguration": {
+    "windowStartType": "UNLIMITED",
+    "windowEndType": "UNLIMITED",
+    "windowStartValue": 1,
+    "windowEndValue": 1
+   }
+  }
+ ],
+ "filtro_notnull": [
+  "filter",
+  {
+   "logicalOpType": "ALL",
+   "filters": [
+    {
+     "columnName": "email",
+     "function": "EMPTY",
+     "operator": "IS_NOT_NULL",
+     "compareWith": "VALUE",
+     "value": "",
+     "columnToCompareWith": ""
+    }
+   ]
+  }
+ ],
+ "filtro_num": [
+  "filter",
+  {
+   "logicalOpType": "ALL",
+   "filters": [
+    {
+     "columnName": "cedula",
+     "function": "EMPTY",
+     "operator": "GREATER_OR_EQUAL",
+     "compareWith": "VALUE",
+     "value": "1700000250",
+     "columnToCompareWith": ""
+    }
+   ]
+  }
+ ],
+ "filtro_neq": [
+  "filter",
+  {
+   "logicalOpType": "ALL",
+   "filters": [
+    {
+     "columnName": "ciudad",
+     "function": "EMPTY",
+     "operator": "NOT_EQUAL",
+     "compareWith": "VALUE",
+     "value": "Quito",
+     "columnToCompareWith": ""
+    }
+   ]
+  }
+ ],
+ "filtro_regex": [
+  "filter",
+  {
+   "logicalOpType": "ALL",
+   "filters": [
+    {
+     "columnName": "email",
+     "function": "EMPTY",
+     "operator": "MATCH_REGEX",
+     "compareWith": "VALUE",
+     "value": "^[a-c].*",
+     "columnToCompareWith": ""
+    }
+   ]
+  }
+ ],
+ "filtro_any": [
+  "filter",
+  {
+   "logicalOpType": "ANY",
+   "filters": [
+    {
+     "columnName": "ciudad",
+     "function": "EMPTY",
+     "operator": "EQUAL",
+     "compareWith": "VALUE",
+     "value": "Quito",
+     "columnToCompareWith": ""
+    },
+    {
+     "columnName": "ciudad",
+     "function": "EMPTY",
+     "operator": "EQUAL",
+     "compareWith": "VALUE",
+     "value": "Cuenca",
+     "columnToCompareWith": ""
+    }
+   ]
+  }
+ ],
+ "reemplazar_contiene": [
+  "strings",
+  {
+   "type": "REPLACE_ON_VALUE",
+   "replaceOnValueConfiguration": {
+    "cellValue": {
+     "operator": "CONTAINS",
+     "value": "u"
+    },
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "",
+    "replaceMethod": "REPLACE_MATCHING_WITH_VALUE",
+    "replaceValue": "X",
+    "shouldCreateNewColumn": false
+   }
+  }
+ ],
+ "reemplazar_igual": [
+  "strings",
+  {
+   "type": "REPLACE_ON_VALUE",
+   "replaceOnValueConfiguration": {
+    "cellValue": {
+     "operator": "EQUALS",
+     "value": "Quito"
+    },
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "",
+    "replaceMethod": "REPLACE_CELL_WITH_VALUE",
+    "replaceValue": "CAPITAL",
+    "shouldCreateNewColumn": false
+   }
+  }
+ ],
+ "reemplazar_vacios": [
+  "data-cleansing",
+  {
+   "type": "REPLACE_WITH_VALUE",
+   "replaceWithValueConfiguration": {
+    "columnsToProcess": [
+     "email"
+    ],
+    "defaultValue": "SIN_EMAIL",
+    "mode": "WITH_VALUE",
+    "newColumnName": "",
+    "replace": [
+     "EMPTY"
+    ],
+    "selectedColumn": "email",
+    "shouldCreateNewColumn": false
+   }
+  }
+ ],
+ "multiplicar_valor": [
+  "math",
+  {
+   "type": "MULTIPLY",
+   "multiplyConfiguration": {
+    "columnsToProcess": [
+     "cedula"
+    ],
+    "constantValue": 2,
+    "mode": "WITH_VALUE",
+    "newColumnName": "ced_x2",
+    "selectedColumn": "",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "a_fecha_custom": [
+  "date",
+  {
+   "type": "CONVERT_TO_DATE",
+   "convertToDateConfiguration": {
+    "columnsToProcess": [
+     "fecha_registro"
+    ],
+    "datePattern": "YYYY-MM-DD",
+    "format": "custom",
+    "newColumnRename": "f_reg",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "a_fecha_auto": [
+  "date",
+  {
+   "type": "CONVERT_TO_DATE",
+   "convertToDateConfiguration": {
+    "columnsToProcess": [
+     "fecha_registro"
+    ],
+    "datePattern": "YYYY-MM-DD",
+    "format": "auto",
+    "newColumnRename": "f_reg",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "a_timestamp": [
+  "date",
+  {
+   "type": "CONVERT_TO_TIMESTAMP",
+   "convertToTimestampConfiguration": {
+    "columnsToProcess": [
+     "fecha_registro"
+    ],
+    "datePattern": "YYYY-MM-DD",
+    "format": "custom",
+    "newColumnRename": "f_reg",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "quitar_campos": [
+  "field-remover",
+  {
+   "selectors": [
+    {
+     "$path_name": "email",
+     "path": "email",
+     "selected": true
+    },
+    {
+     "$path_name": "telefono",
+     "path": "telefono",
+     "selected": true
+    }
+   ]
+  }
+ ],
+ "join_inner": [
+  "join",
+  {
+   "joinFunction": "INNER_JOIN",
+   "conditions": [
+    {
+     "leftKey": "cliente_id",
+     "rightKey": "cliente_id",
+     "keepBothKeysInOutput": false
+    }
+   ]
+  }
+ ],
+ "join_left": [
+  "join",
+  {
+   "joinFunction": "LEFT_OUTER_JOIN",
+   "conditions": [
+    {
+     "leftKey": "cliente_id",
+     "rightKey": "cliente_id",
+     "keepBothKeysInOutput": false
+    }
+   ]
+  }
+ ],
+ "join_full": [
+  "join",
+  {
+   "joinFunction": "FULL_OUTER_JOIN",
+   "conditions": [
+    {
+     "leftKey": "cliente_id",
+     "rightKey": "cliente_id",
+     "keepBothKeysInOutput": false
+    }
+   ]
+  }
+ ],
+ "reemplazar_celda_inicia": [
+  "strings",
+  {
+   "type": "REPLACE_ON_VALUE",
+   "replaceOnValueConfiguration": {
+    "cellValue": {
+     "operator": "STARTS_WITH",
+     "value": "Gua"
+    },
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "",
+    "replaceMethod": "REPLACE_CELL_WITH_VALUE",
+    "replaceValue": "GUA",
+    "shouldCreateNewColumn": false
+   }
+  }
+ ],
+ "reemplazar_parte_inicia": [
+  "strings",
+  {
+   "type": "REPLACE_ON_VALUE",
+   "replaceOnValueConfiguration": {
+    "cellValue": {
+     "operator": "STARTS_WITH",
+     "value": "Gua"
+    },
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "",
+    "replaceMethod": "REPLACE_MATCHING_WITH_VALUE",
+    "replaceValue": "GUA",
+    "shouldCreateNewColumn": false
+   }
+  }
+ ],
+ "reemplazar_celda_contiene": [
+  "strings",
+  {
+   "type": "REPLACE_ON_VALUE",
+   "replaceOnValueConfiguration": {
+    "cellValue": {
+     "operator": "CONTAINS",
+     "value": "ito"
+    },
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "",
+    "replaceMethod": "REPLACE_CELL_WITH_VALUE",
+    "replaceValue": "CIUDAD",
+    "shouldCreateNewColumn": false
+   }
+  }
+ ],
+ "reemplazar_celda_termina": [
+  "strings",
+  {
+   "type": "REPLACE_ON_VALUE",
+   "replaceOnValueConfiguration": {
+    "cellValue": {
+     "operator": "ENDS_WITH",
+     "value": "to"
+    },
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "",
+    "replaceMethod": "REPLACE_CELL_WITH_VALUE",
+    "replaceValue": "FIN",
+    "shouldCreateNewColumn": false
+   }
+  }
+ ],
+ "reemplazar_parte_termina": [
+  "strings",
+  {
+   "type": "REPLACE_ON_VALUE",
+   "replaceOnValueConfiguration": {
+    "cellValue": {
+     "operator": "ENDS_WITH",
+     "value": "to"
+    },
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "",
+    "replaceMethod": "REPLACE_MATCHING_WITH_VALUE",
+    "replaceValue": "FIN",
+    "shouldCreateNewColumn": false
+   }
+  }
+ ],
+ "reemplazar_parte_igual": [
+  "strings",
+  {
+   "type": "REPLACE_ON_VALUE",
+   "replaceOnValueConfiguration": {
+    "cellValue": {
+     "operator": "EQUALS",
+     "value": "Quito"
+    },
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "",
+    "replaceMethod": "REPLACE_MATCHING_WITH_VALUE",
+    "replaceValue": "QTO",
+    "shouldCreateNewColumn": false
+   }
+  }
+ ],
+ "a_numero_texto": [
+  "numbers",
+  {
+   "convertToNumberConfiguration": {
+    "columnsToProcess": [
+     "telefono"
+    ],
+    "decimalSeparator": ".",
+    "newColumnName": "tel_n",
+    "shouldCreateNewColumn": true,
+    "thousandSeparator": ","
+   },
+   "type": "CONVERT_TO_NUMBER"
+  }
  ]
 }

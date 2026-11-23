@@ -157,26 +157,44 @@ Medición el 2026-11-23 sobre los 18 scripts distintos de `out/corpus*/`: 3 se t
 
 ## 9 quater. Processors: emulador frente al tenant
 
-Verificado el 2026-11-23 con `scripts/processor_battery.py`: 15 casos, cada uno `clientes` → un processor → destino, ejecutado en el emulador y, con el mismo grafo, en el tenant (clon `emu_v_*` del flujo base, script generado por Qlik, app `emu_oracle_*`), comparando huellas. Los casos están en `scripts/processor_battery_cases.json`. Resultado final: **los 15 coinciden**; la primera pasada dio diferencias en los 15.
+Verificado el 2026-11-23 con `scripts/processor_battery.py`: **40 casos**, cada uno `clientes` → un processor → destino (los joins usan un `fork` con una rama filtrada), ejecutado en el emulador y, con el mismo grafo, en el tenant (clon `emu_v_*` del flujo base, script generado por Qlik, app `emu_oracle_*`), comparando huellas. Los casos están en `scripts/processor_battery_cases.json`. **Resultado final: los 40 coinciden.** La primera pasada (15 casos) dio diferencias en todos.
 
-**Qué se encontró y se corrigió en el emulador** (con pruebas en `tests/test_processors_vs_qlik.py`)
+### Cómo mide el tenant (importante)
+El oráculo no mide el resultado en memoria: **vuelve a cargar el CSV que escribió el flujo** (`oracle._READBACK`) y mide la tabla cargada. En Qlik un archivo no tiene `NULL`: toda celda vacía es el texto vacío, que cuenta como valor y es distinto. Por eso `compare.fingerprint_of` cuenta `count(*)` para todas las columnas y suma 1 al número de distintos si hay algún `NULL`. Esto cubre de una vez los `NULL` que produce el emulador (join sin pareja, conversión de texto no numérico, celda vacía de la fuente). La suma sigue ignorando los vacíos. Una versión intermedia calculaba la huella en memoria; era una aproximación equivocada y se descartó.
+
+### Qué se encontró y se corrigió en el emulador (pruebas en `tests/test_processors_vs_qlik.py`)
 
 | Comportamiento de Qlik | Antes en el emulador |
 |---|---|
-| Una celda vacía de un CSV es **texto vacío**: cuenta como valor (`Count` = 500 en `clientes.csv`), `IsNull` da falso, `Coalesce([x], 'z')` conserva el vacío y `[x] = ''` es verdadero. Medido: 12 emails vacíos | Las leía como `NULL` (488). Era la causa de la mayoría de las diferencias. También se corrigió en el traductor de scripts |
-| `data-cleansing FILL_WITH_VALUE` ("Fill cells with value") pone la constante en **todas** las celdas (`'X' AS [campo]`); rellenar solo las vacías es `REPLACE_WITH_VALUE` | Rellenaba solo los `NULL` |
-| `split-field` nombra las columnas `campo-split_1`, `campo-split_2` y la **última parte conserva el resto** (`SubField(c, ' ', 1)` y `Mid(c, Index(c, ' ', 1) + 1)`, vacío si no hay separador) | Usaba `campo_1` y la segunda palabra |
-| `EXTRACT_DATE_PARTS` usa `newColumnRename` como prefijo cuando no está vacío (`fecha_` da `fecha__day`); si está vacío, el nombre de la columna | Siempre usaba el nombre de la columna |
+| Una celda vacía de un CSV es **texto vacío** (con 12 emails vacíos: `IsNull` da falso, `Coalesce([x], 'z')` conserva el vacío, `[x] = ''` es verdadero). También en el traductor de scripts | Las leía como `NULL` |
+| `data-cleansing FILL_WITH_VALUE` ("Fill cells with value") pone la constante en **todas** las celdas; rellenar solo las vacías es `REPLACE_WITH_VALUE` | Rellenaba solo los `NULL` |
+| `split-field`: columnas `campo-split_N`; la **última parte conserva el resto** (`SubField(c, ' ', 1)` y `Mid(c, Index(c, ' ', 1) + 1)`, vacío si no hay separador) | `campo_N` y la segunda palabra |
+| `EXTRACT_DATE_PARTS`: el prefijo es `newColumnRename` si no está vacío (`fecha_` da `fecha__day`) | Siempre el nombre de la columna |
+| `strings REPLACE_ON_VALUE`: matriz operador x método (ver abajo) | Soportaba 3 de las 8 combinaciones |
 
-**Cómo se miden las huellas:** `runner.run` devuelve ahora la huella calculada sobre el resultado en memoria (`fingerprint`), porque el CSV escrito no distingue texto vacío de `NULL` y al releerlo todo vacío vuelve como `NULL`. `compare.target_fingerprints` la usa; `dfemu compare` y `dfemu translate --compare` también.
+**Matriz de `REPLACE_ON_VALUE`** (scripts de Qlik medidos; `c` es la columna, `v` el valor buscado, `r` el reemplazo):
 
-**Límites que quedan**
-- `num#()` conserva como texto lo que no puede convertir (incluido el vacío); el emulador da `NULL` en `CONVERT_TO_NUMBER` de texto no numérico. Una columna tipada no puede mezclar ambos. La batería usa una columna numérica para ese caso.
-- `Avg` sobre valores grandes (~1,7·10⁹) sale cuantizado en Qlik (ver 9 ter); la batería usa solo `COUNT` y `SUM`.
+| Operador | `REPLACE_CELL_WITH_VALUE` (toda la celda) | `REPLACE_MATCHING_WITH_VALUE` (solo la parte) |
+|---|---|---|
+| `EQUALS` | `IF(Match(c, v), r, c)` | igual que la celda completa |
+| `STARTS_WITH` | `IF(Match(Left(c, Len(v)), v), r, c)` | prefijo reemplazado por `r` |
+| `ENDS_WITH` | `IF(Match(Right(c, Len(v)), v), r, c)` | `Left(c, Len(c) - Len(v)) & r` |
+| `CONTAINS` | `IF(Index(c, v), r, c)` | `replace` de la parte |
+
+### Lo que el servidor dijo sobre sus propios tipos
+- **Ventanas (`window`)**: los tipos válidos son `FIRST`, `AVG`, `MAX`, `CONCATENATE`, `LAST`, `SUM`, `COUNT_DISTINCT`, `ROW_NUMBER`, `COUNT`, `MIN` y `RANK`. **`DENSE_RANK` no existe** (el servidor responde `BAD_REQUEST ... not one of the values accepted for Enum class`). El emulador cubre `RANK` y `ROW_NUMBER`; las ventanas de agregación (`SUM`, `AVG`...) con rango no están emuladas.
+- **Agregaciones** reales en los flujos: `SUM`, `AVG`, `COUNT`, `MEDIAN`, `MAX`, `MIN`, `COUNT_DISTINCT`. **Filtros**: `EQUAL`, `NOT_EQUAL`, `GREATER`, `GREATER_OR_EQUAL`, `LOWER`, `LOWER_OR_EQUAL`, `IS_NOT_NULL`, `MATCH_REGEX`, con `logicalOpType` `ALL` o `ANY`. **Joins**: `INNER_JOIN`, `LEFT_OUTER_JOIN`, `FULL_OUTER_JOIN`.
+
+### Límites que quedan
+- `Avg` sobre valores grandes (~1,7·10⁹) sale cuantizado en Qlik (ver 9 ter); la batería usa solo `COUNT` y `SUM` en el caso de agregación simple.
 - `split-field` con `parts` mayor que 2 supone la misma regla (solo se midió con 2).
-- `calculate-fields` no se puede crear por `PUT`: el servidor responde `POTENTIAL_STALE_EXPRESSION` ("la expresión debe reevaluarse por un cambio en un nodo anterior"), porque el editor de la interfaz la evalúa al guardar. Se compara con flujos creados en la interfaz.
-- Las columnas numéricas con celdas vacías siguen leyéndose como `NULL` en el emulador.
+- `calculate-fields` no se puede crear por `PUT`: el servidor responde `POTENTIAL_STALE_EXPRESSION` ("la expresión debe reevaluarse por un cambio en un nodo anterior"), porque el editor de la interfaz la evalúa al guardar. Tampoco `script`.
 - `masking.HASH_DATA` se emula con `md5`; la huella solo ve cuenta y distintos, así que no detecta que el algoritmo sea otro.
+- `sample.SAMPLE_RANDOM_ROWS` es aleatorio y no se compara.
+- Los joins se probaron como autounión (misma fuente en dos ramas): un join entre dos datasets distintos necesita una segunda fuente registrada en el flujo, y no se encontró cómo crearla por API.
+
+### Limpieza
+Tras una pasada completa puede quedar listada una app `emu_oracle_*` que ya no existe (`GET v1/apps/{id}` da 404): el índice de items de Qlik tarda en actualizarse. `dfemu cleanup --apply` lo avisa ("ya no existe") y sigue con el resto en lugar de fallar.
 
 ## 10. Objetos creados en el tenant
 
@@ -301,7 +319,7 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 | `dfemu compare archivo.dfw (--app APP\|--push [--base-app APP]) --apply` | compara resultados del emulador con el tenant |
 | `dfemu cleanup [--apply]` | lista o borra apps y archivos `emu_*` |
 | `dfemu coverage [archivos...]` | mide qué processors usa el corpus y si cada flujo se puede ejecutar |
-| `python scripts/processor_battery.py [caso ...]` | batería de 15 processors, emulador frente al tenant (escribe en el tenant; limpia lo que crea) |
+| `python scripts/processor_battery.py [caso ...]` | batería de 40 casos de processors, emulador frente al tenant (escribe en el tenant; limpia lo que crea) |
 | `dfemu translate script.qvs\|.pull.json [--run] [--compare [--apply]]` | traduce el script de Qlik a SQL de DuckDB; con `--run` lo ejecuta y con `--compare --apply` lo compara con la ejecución real en el tenant |
 
 El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DFEMU_BASE_APP` la CLI con `DFEMU_QLIK` (ver 10 bis) y, para usar otro contexto de la CLI sin activarlo, `DFEMU_QLIK_CONTEXT` (ver `02-guia-oauth.md`).

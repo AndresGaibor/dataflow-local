@@ -32,8 +32,9 @@ def test_local_fingerprint_csv(tmp_path):
     p.write_text("id,nombre,monto\n1,ana,10.5\n2,luis,\n2,,4\n", encoding="utf-8")
     assert compare.local_fingerprint(str(p)) == fp(3, {
         "id": col(3, 2, 5.0),
-        "nombre": col(2, 2, None),
-        "monto": col(2, 2, 14.5),
+        # el oraculo del tenant recarga el archivo y ahi no hay NULL: la celda vacia es un valor que cuenta y es distinto
+        "nombre": col(3, 3, None),
+        "monto": col(3, 3, 14.5),
     })
 
 

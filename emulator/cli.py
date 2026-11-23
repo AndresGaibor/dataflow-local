@@ -158,10 +158,17 @@ def _cleanup(a) -> None:
     if not a.apply:
         print("[simulación] usa --apply para borrar")
         return
+    gone = 0
     for r in flows:
-        remote.discard(r.app_id)
+        try:
+            remote.discard(r.app_id)
+        except BridgeError as e:  # el indice de items puede listar una app ya borrada (404): no hay nada que borrar
+            if "404" not in str(e) and "Not Found" not in str(e):
+                raise
+            gone += 1
+            print(f"ya no existe (entrada obsoleta del indice de Qlik): {r.name} ({r.app_id})")
     remote.discard_files(files)
-    print(f"borrados: {len(flows)} app(s), {len(files)} archivo(s)")
+    print(f"borrados: {len(flows) - gone} app(s), {len(files)} archivo(s)")
 
 
 def _compare(a) -> None:
@@ -175,7 +182,7 @@ def _compare(a) -> None:
     except runner.Unsupported as e:
         sys.exit(f"no soportado por el emulador: {e}")
     try:
-        local = compare.target_fingerprints(targets)
+        local = compare.local_fingerprints([t["dest"] for t in targets])
     except ValueError as e:
         sys.exit(f"error: {e}")
     bridge = make_bridge(a.apply)

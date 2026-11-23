@@ -67,14 +67,35 @@ def test_extract_date_parts_prefix_is_new_column_rename_or_the_column(tmp_path, 
     assert sorted(c for c in cols if c not in ("id", "d")) == sorted(expected)
 
 
-def test_runner_fingerprint_counts_empty_text_even_though_the_csv_file_cannot(tmp_path):
+def test_fingerprint_sees_a_written_csv_the_way_qlik_reloads_it():
+    # el oraculo del tenant vuelve a cargar el CSV escrito: ahi no hay NULL, una celda vacia es un valor ('') que cuenta
+    # (join izquierdo sin pareja, CONVERT_TO_NUMBER de texto no numerico... todo NULL del emulador queda como celda vacia)
+    import tempfile
     from emulator import compare
-    (tmp_path / "t.csv").write_text("id,t\n1,\n2,x\n", encoding="utf-8")
-    f = Flow("t")
-    src = f.dataset("t", "t.csv", ["id", "t"])
-    p = f.proc("sort", "p", {"sortFields": [{"fieldPath": "id", "sortOrder": "ASCENDING"}]})
-    f.chain(src, p, f.target("Destino", "salida"))
-    (t,) = runner.run(f.dump(), str(tmp_path), str(tmp_path / "out"))
-    assert t["fingerprint"]["columns"]["t"]["count"] == 2  # '' y 'x'
-    assert compare.local_fingerprint(t["dest"])["columns"]["t"]["count"] == 1  # el archivo leido si pierde el vacio
-    assert compare.target_fingerprints([t])["salida"] == t["fingerprint"]
+    with tempfile.TemporaryDirectory() as d:
+        path = os.path.join(d, "t.csv")
+        open(path, "w", encoding="utf-8").write("id,t,n\n1,,5\n2,x,\n3,x,7\n")
+        fp = compare.local_fingerprint(path)
+    assert fp["rows"] == 3
+    assert fp["columns"]["t"] == {"count": 3, "distinct": 2, "sum": None}  # '', 'x'
+    assert fp["columns"]["n"] == {"count": 3, "distinct": 3, "sum": 12.0}  # 5, 7 y vacio; la suma ignora el vacio
+
+
+@pytest.mark.parametrize("op,val,method,new,expected", [
+    # script de Qlik medido en el tenant (2026-11-23); texto de prueba: 'Guayaquil'
+    ("STARTS_WITH", "Gua", "REPLACE_CELL_WITH_VALUE", "X", "X"),             # IF(Match(Left(c, Len(v)), v), rep, c)
+    ("STARTS_WITH", "Gua", "REPLACE_MATCHING_WITH_VALUE", "X", "Xyaquil"),
+    ("ENDS_WITH", "quil", "REPLACE_CELL_WITH_VALUE", "X", "X"),              # IF(Match(Right(c, Len(v)), v), rep, c)
+    ("ENDS_WITH", "quil", "REPLACE_MATCHING_WITH_VALUE", "X", "GuayaX"),     # Left(c, Len(c) - Len(v)) & rep
+    ("CONTAINS", "ya", "REPLACE_CELL_WITH_VALUE", "X", "X"),                 # IF(Index(c, v), rep, c)
+    ("CONTAINS", "ya", "REPLACE_MATCHING_WITH_VALUE", "X", "GuaXquil"),
+    ("EQUALS", "Guayaquil", "REPLACE_CELL_WITH_VALUE", "X", "X"),
+    ("EQUALS", "Guayaquil", "REPLACE_MATCHING_WITH_VALUE", "X", "X"),        # IF(Match(c, v), rep, c)
+    ("EQUALS", "Quito", "REPLACE_CELL_WITH_VALUE", "X", "Guayaquil"),
+])
+def test_replace_on_value_matrix(tmp_path, op, val, method, new, expected):
+    cfg = {"type": "REPLACE_ON_VALUE", "replaceOnValueConfiguration": {
+        "cellValue": {"operator": op, "value": val}, "columnsToProcess": ["c"], "newColumnName": "",
+        "replaceMethod": method, "replaceValue": new, "shouldCreateNewColumn": False}}
+    cols, out = run_one(tmp_path, "id,c\n1,Guayaquil\n", ["id", "c"], "strings", cfg)
+    assert out[0][cols.index("c")] == expected
