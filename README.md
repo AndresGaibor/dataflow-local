@@ -21,6 +21,8 @@ Ejecutarlo de nuevo es seguro: lo que ya funciona se salta.
 
 Después, `python -m emulator.cli --help` lista los comandos; los que escriben en el tenant simulan salvo que se pase `--apply`. Las pruebas locales (`python -m pytest`) no necesitan tenant ni red.
 
+- Para crear un cliente OAuth (opcional, solo si se quiere probar `import`/`export` de `.dfw`): `docs/banco-de-pruebas/02-guia-oauth.md`.
+
 ## Orquestación
 
 `python -m emulator.cli task` programa, encadena, arranca y borra tareas de recarga con la API `scheduling` de Qlik. Solo actúa sobre apps `emu_` del espacio de pruebas, y una tarea no arranca si su script escribe en un archivo que no sea `emu_`. Ejemplo:

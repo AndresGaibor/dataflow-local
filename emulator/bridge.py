@@ -55,6 +55,8 @@ def _qlik_exe() -> str:
 
 def qlik_runner(args: list[str]) -> tuple[int, str, str]:
     exe = _qlik_exe()
+    if os.environ.get("DFEMU_QLIK_CONTEXT"):  # usar otro contexto de la CLI sin activarlo
+        args = ["--context", os.environ["DFEMU_QLIK_CONTEXT"], *args]
     try:
         p = subprocess.run([exe, *args], capture_output=True, text=True, encoding="utf-8",
                            stdin=subprocess.DEVNULL, timeout=TIMEOUT_S)

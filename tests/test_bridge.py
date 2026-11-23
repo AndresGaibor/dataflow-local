@@ -425,3 +425,15 @@ def test_patch_task_only_toggles_enabled_on_emu_apps(tmp_path):
             b.patch("scheduling/tasks/T1", bad)
     with pytest.raises(SafetyError):  # la app de T2 no es emu_
         b.patch("scheduling/tasks/T2", ok)
+
+
+def test_qlik_runner_uses_the_context_from_the_environment(monkeypatch):
+    seen = []
+    monkeypatch.setattr(B.subprocess, "run", lambda cmd, **kw: seen.append(cmd) or SimpleNamespace(returncode=0, stdout="{}", stderr=""))
+    monkeypatch.setattr(B, "_qlik_exe", lambda: "qlik")
+    monkeypatch.delenv("DFEMU_QLIK_CONTEXT", raising=False)
+    B.qlik_runner(["raw", "get", "v1/x"])
+    assert seen[-1] == ["qlik", "raw", "get", "v1/x"]  # sin variable: el contexto activo, como siempre
+    monkeypatch.setenv("DFEMU_QLIK_CONTEXT", "dfemu-oauth")
+    B.qlik_runner(["raw", "get", "v1/x"])
+    assert seen[-1] == ["qlik", "--context", "dfemu-oauth", "raw", "get", "v1/x"]  # sin activarlo

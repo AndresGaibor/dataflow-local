@@ -225,6 +225,17 @@ La regla 2 es necesaria: **un clon de un flujo conserva el destino del original*
 
 **Pendiente de esta fase:** `usage: DATAFLOW_PREP` en una tarea creada con `POST scheduling/tasks` (opción avanzada) no se probó; las tareas sobre flujos reales (no `emu_`) quedan fuera de la autorización actual.
 
+## 10 quater. Clientes OAuth: lo aprendido
+
+Guía completa, paso a paso y desde cero, en `02-guia-oauth.md`. Lo esencial, verificado el 2026-11-23:
+
+- Un cliente M2M necesita, además de la casilla M2M y el scope `user_default`, el **consentimiento "De confianza"**. Sin él, `POST /oauth/token` responde `401 OAUTH-5 "oauth client is not approved with trusted consent method"`; la CLI lo muestra como un 401 genérico con el cuerpo vacío.
+- Las URL de redireccionamiento y los orígenes permitidos se dejan vacíos en M2M: el asistente deja continuar así.
+- `qlik context init` **activa** el contexto nuevo, aunque falle. Con credenciales inválidas rompe todos los comandos hasta `qlik context use <contexto de siempre>`.
+- La API key de un usuario que no es Tenant Admin no puede listar clientes OAuth (`OAUTH-CLIENTS-27`).
+- La prueba directa a `/oauth/token` con PowerShell (`Read-Host -AsSecureString`) enseña el error real que la CLI oculta.
+- El token de un cliente M2M con `user_default` dura 21600 s (6 horas).
+
 ## 11. Comandos del banco de pruebas
 
 Todos los comandos son simulación por defecto; las escrituras en el tenant requieren `--apply`.
@@ -247,12 +258,12 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 | `dfemu coverage [archivos...]` | mide qué processors usa el corpus y si cada flujo se puede ejecutar |
 | `dfemu translate script.qvs\|.pull.json [--run] [--compare [--apply]]` | traduce el script de Qlik a SQL de DuckDB; con `--run` lo ejecuta y con `--compare --apply` lo compara con la ejecución real en el tenant |
 
-El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DFEMU_BASE_APP` y, solo si hace falta, la CLI con `DFEMU_QLIK` (ver 10 bis).
+El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DFEMU_BASE_APP` la CLI con `DFEMU_QLIK` (ver 10 bis) y, para usar otro contexto de la CLI sin activarlo, `DFEMU_QLIK_CONTEXT` (ver `02-guia-oauth.md`).
 
 ## 12. Pendiente
 
 - Modificar la receta dentro de un subflow (`PUT v1/dataflows/{id del subflow}`): no se probó; hoy el subflow se toma del flujo base (ver 5 bis).
-- Credencial OAuth (en lugar de API key) para ver si habilita `actions/import` y `actions/export`.
+- Credencial OAuth: el cliente M2M ya se creó y entrega tokens (guía en `02-guia-oauth.md`). Falta probar `actions/import` y `actions/export` con él (`DFEMU_QLIK_CONTEXT`); no están en la documentación pública, así que sus cuerpos hay que descubrirlos probando.
 - Comparar línea a línea el script de un clon con el original (se observó que difieren sin analizar por qué).
 - Orquestación: ver "Pendiente de esta fase" en el apartado 10 ter (`usage` en tareas avanzadas, flujos reales).
 - Limpieza de archivos escritos en carpetas de Google Drive (`GDDestino`): `dfemu cleanup` solo cubre `DataFiles` y no hay API de Qlik para listar o borrar en un conector de Drive; se borran a mano.
