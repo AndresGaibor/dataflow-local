@@ -231,11 +231,18 @@ def run_processor(ctx, t, cfg, ins, node):
 def _typed(ctx, t, cfg, v):
     k, D = cfg.get("type"), (lambda sql: {"DEFAULT": ctx.view(sql)})
     if t == "math":
-        if k == "ABSOLUTE":
-            return D(_per_col(ctx, v, cfg["absoluteConfiguration"], lambda x: f"abs({x})"))
-        c = cfg["multiplyConfiguration"]
+        c = cfg[dfw.TYPED["math"][k]]
+        unary = {"ABSOLUTE": "abs({x})", "NEGATE_NUMBERS": "(-{x})", "SQUARE_ROOT_NUMBERS": "sqrt({x})"}
+        if k in unary:
+            return D(_per_col(ctx, v, c, lambda x: unary[k].format(x=x)))
+        # operaciones con otro campo (mode WITH_FIELD) o con un valor fijo; hipotesis contrastada con el tenant en la bateria
+        binary = {"MULTIPLY": "({x} * {r})", "ADD": "({x} + {r})", "SUBTRACT": "({x} - {r})", "DIVIDE": "({x} / {r})",
+                  "MODULO": "({x} % {r})", "POW_NUMBERS": "pow({x}, {r})", "MIN_NUMBERS": "least({x}, {r})",
+                  "MAX_NUMBERS": "greatest({x}, {r})"}
+        if k not in binary:
+            raise Unsupported(f"math {k}")
         rhs = q(c["selectedColumn"]) if c["mode"] == "WITH_FIELD" else str(c["constantValue"])
-        return D(_per_col(ctx, v, c, lambda x: f"({x} * {rhs})"))
+        return D(_per_col(ctx, v, c, lambda x: binary[k].format(x=x, r=rhs)))
     if t == "strings":
         c = cfg[dfw.TYPED["strings"][k]]
         S = lambda x: f"CAST({x} AS VARCHAR)"
@@ -247,6 +254,8 @@ def _typed(ctx, t, cfg, v):
             return D(_per_col(ctx, v, c, lambda x: f"regexp_replace({S(x)}, '[^0-9]', '', 'g')"))
         if k == "UPPERCASE":
             return D(_per_col(ctx, v, c, lambda x: f"upper({S(x)})"))
+        if k == "LOWERCASE":
+            return D(_per_col(ctx, v, c, lambda x: f"lower({S(x)})"))
         if k == "REPLACE_ON_VALUE":
             op, val, rep = c["cellValue"]["operator"], lit(c["cellValue"]["value"]), lit(c["replaceValue"])
             # matriz operador x metodo medida en el tenant (scripts de Qlik: Match, Left/Right con Len, Index)
@@ -359,7 +368,10 @@ def _qlik_text_format(ctx, view):
     for name, typ in ((r[0], r[1].split("(")[0]) for r in ctx.con.execute(f"DESCRIBE SELECT * FROM {view}").fetchall()):
         c = q(name)
         if typ in ("DOUBLE", "FLOAT"):
-            swaps.append(f"regexp_replace(CAST({c} AS VARCHAR), '[.]0$', '') AS {c}")
+            # Qlik escribe los numeros con 14 cifras significativas (medido: sqrt(2) -> 1.4142135623731) y sin `.0`;
+            # shortcut: a partir de 1e14 se conserva el texto de DuckDB (no se midio como escribe Qlik esos valores)
+            swaps.append(f"CASE WHEN abs({c}) < 1e14 THEN printf('%.14g', {c}) "
+                         f"ELSE regexp_replace(CAST({c} AS VARCHAR), '[.]0$', '') END AS {c}")
         elif en and ctx.converted_dates.get(name) == "date" and typ == "DATE":
             swaps.append(f"strftime({c}, '%-m/%-d/%Y') AS {c}")
         elif en and ctx.converted_dates.get(name) == "timestamp" and typ.startswith("TIMESTAMP"):

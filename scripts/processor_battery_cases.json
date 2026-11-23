@@ -1713,5 +1713,220 @@
     }
    ]
   ]
+ ],
+ "lowercase": [
+  "strings",
+  {
+   "type": "LOWERCASE",
+   "lowercaseConfiguration": {
+    "columnsToProcess": [
+     "nombre"
+    ],
+    "newColumnName": "",
+    "shouldCreateNewColumn": false
+   }
+  }
+ ],
+ "math_add_valor": [
+  "math",
+  {
+   "type": "ADD",
+   "addConfiguration": {
+    "columnsToProcess": [
+     "cedula"
+    ],
+    "constantValue": 5,
+    "mode": "WITH_VALUE",
+    "newColumnName": "m",
+    "selectedColumn": "",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "math_add_campo": [
+  "math",
+  {
+   "type": "ADD",
+   "addConfiguration": {
+    "columnsToProcess": [
+     "cedula"
+    ],
+    "constantValue": 0,
+    "mode": "WITH_FIELD",
+    "newColumnName": "m",
+    "selectedColumn": "cedula",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "math_sub_valor": [
+  "math",
+  {
+   "type": "SUBTRACT",
+   "subtractConfiguration": {
+    "columnsToProcess": [
+     "cedula"
+    ],
+    "constantValue": 4,
+    "mode": "WITH_VALUE",
+    "newColumnName": "m",
+    "selectedColumn": "",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "math_div_valor": [
+  "math",
+  {
+   "type": "DIVIDE",
+   "divideConfiguration": {
+    "columnsToProcess": [
+     "cedula"
+    ],
+    "constantValue": 4,
+    "mode": "WITH_VALUE",
+    "newColumnName": "m",
+    "selectedColumn": "",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "math_mod_valor": [
+  "math",
+  {
+   "type": "MODULO",
+   "moduloConfiguration": {
+    "columnsToProcess": [
+     "cedula"
+    ],
+    "constantValue": 7,
+    "mode": "WITH_VALUE",
+    "newColumnName": "m",
+    "selectedColumn": "",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "math_min_valor": [
+  "math",
+  {
+   "type": "MIN_NUMBERS",
+   "minNumbersConfiguration": {
+    "columnsToProcess": [
+     "cedula"
+    ],
+    "constantValue": 1700000250,
+    "mode": "WITH_VALUE",
+    "newColumnName": "m",
+    "selectedColumn": "",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "math_max_valor": [
+  "math",
+  {
+   "type": "MAX_NUMBERS",
+   "maxNumbersConfiguration": {
+    "columnsToProcess": [
+     "cedula"
+    ],
+    "constantValue": 1700000250,
+    "mode": "WITH_VALUE",
+    "newColumnName": "m",
+    "selectedColumn": "",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "math_negar": [
+  "math",
+  {
+   "type": "NEGATE_NUMBERS",
+   "negateNumbersConfiguration": {
+    "columnsToProcess": [
+     "cedula"
+    ],
+    "constantValue": 0,
+    "mode": "WITH_VALUE",
+    "newColumnName": "m",
+    "selectedColumn": "",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "math_pow": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000000,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "POW_NUMBERS",
+     "powNumbersConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "constantValue": 2,
+      "mode": "WITH_VALUE",
+      "newColumnName": "m",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ]
+  ]
+ ],
+ "math_raiz": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000000,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "SQUARE_ROOT_NUMBERS",
+     "squareRootNumbersConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "constantValue": 0,
+      "mode": "WITH_VALUE",
+      "newColumnName": "m",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ]
+  ]
  ]
 }

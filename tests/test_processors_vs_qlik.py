@@ -232,3 +232,51 @@ def test_unpivot_mixed_types_become_text_and_empty_cells_are_kept(tmp_path):
     cols, out = run_one(tmp_path, "id,n,t\n1,10,\n", ["id", "n", "t"], "unpivot", unpivot_cfg(["n", "t"]))
     # la celda vacia no se descarta (CROSSTABLE solo omite los NULL); el CSV de salida no distingue '' de NULL
     assert [tuple(r[:2]) for r in out] == [("1", "n"), ("1", "t")] and out[0][2] == "10"
+
+
+# --- variantes de strings descubiertas con scripts/discover_config.py ---------------------------------------------
+
+def test_lowercase_in_place_and_into_a_new_column(tmp_path):
+    cfg = {"type": "LOWERCASE", "lowercaseConfiguration": {"columnsToProcess": ["n"], "newColumnName": "", "shouldCreateNewColumn": False}}
+    cols, out = run_one(tmp_path, "id,n\n1,Guayaquil\n", ["id", "n"], "strings", cfg)
+    assert out[0][cols.index("n")] == "guayaquil"
+    cfg["lowercaseConfiguration"].update({"newColumnName": "n_min", "shouldCreateNewColumn": True})
+    cols, out = run_one(tmp_path, "id,n\n1,Guayaquil\n", ["id", "n"], "strings", cfg)
+    assert out[0][cols.index("n")] == "Guayaquil" and out[0][cols.index("n_min")] == "guayaquil"
+
+
+# --- math: operaciones binarias y unarias (hipotesis; la bateria las contrasta con el tenant) --------------------
+
+def math_cfg(subtype, key, const=0, mode="WITH_VALUE", selected=""):
+    return {"type": subtype, key: {"columnsToProcess": ["n"], "constantValue": const, "mode": mode, "newColumnName": "m",
+                                   "selectedColumn": selected, "shouldCreateNewColumn": True}}
+
+
+@pytest.mark.parametrize("subtype,key,n,const,expected", [
+    ("ADD", "addConfiguration", 10, 5, "15"),
+    ("SUBTRACT", "subtractConfiguration", 10, 4, "6"),
+    ("DIVIDE", "divideConfiguration", 10, 4, "2.5"),
+    ("MODULO", "moduloConfiguration", 10, 3, "1"),
+    ("POW_NUMBERS", "powNumbersConfiguration", 10, 2, "100"),
+    ("MIN_NUMBERS", "minNumbersConfiguration", 10, 7, "7"),
+    ("MAX_NUMBERS", "maxNumbersConfiguration", 10, 7, "10"),
+    ("NEGATE_NUMBERS", "negateNumbersConfiguration", 10, 0, "-10"),
+    ("SQUARE_ROOT_NUMBERS", "squareRootNumbersConfiguration", 16, 0, "4"),
+])
+def test_math_operations_with_a_constant(tmp_path, subtype, key, n, const, expected):
+    cols, out = run_one(tmp_path, f"id,n,k\n1,{n},3\n", ["id", "n", "k"], "math", math_cfg(subtype, key, const))
+    assert out[0][cols.index("m")] == expected
+
+
+def test_math_add_with_another_field(tmp_path):
+    cols, out = run_one(tmp_path, "id,n,k\n1,10,3\n", ["id", "n", "k"], "math",
+                        math_cfg("ADD", "addConfiguration", mode="WITH_FIELD", selected="k"))
+    assert out[0][cols.index("m")] == "13"
+
+
+def test_doubles_are_written_with_14_significant_digits_like_qlik(tmp_path):
+    # medido en el tenant con raiz cuadrada: Qlik escribe 1.4142135623731 donde DuckDB da 1.4142135623730951
+    cols, out = run_one(tmp_path, "id,n\n1,2\n2,5\n3,16\n", ["id", "n"], "math",
+                        {"type": "SQUARE_ROOT_NUMBERS", "squareRootNumbersConfiguration": {
+                            "columnsToProcess": ["n"], "newColumnName": "m", "shouldCreateNewColumn": True}})
+    assert [r[cols.index("m")] for r in out] == ["1.4142135623731", "2.2360679774998", "4"]
