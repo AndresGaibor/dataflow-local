@@ -1,4 +1,5 @@
 """Lectura de flujos del tenant (solo GET, a través de Bridge)."""
+import copy
 import json
 import os
 import sys
@@ -44,6 +45,10 @@ def _rejection_label(stderr: str) -> str:
         return err.get("detail") or err.get("title") or stderr[:200]
     except (ValueError, KeyError, IndexError, TypeError):
         return stderr[:200]
+
+
+def _is_subflow(node: dict) -> bool:
+    return (node.get("component") or {}).get("type") == "subflow"
 
 
 def _check(x: str) -> str:
@@ -145,18 +150,37 @@ class Remote:
             self._b.post("v1/data-files/actions/delete", {"delete": [{"id": i} for i in ids]})
 
     def validity_of(self, graph: dict, base_app_id: str = BASE_APP_ID) -> PushResult:
-        # subflow daña el clon: se rechaza antes de tocar el tenant
-        if any(isinstance(n, dict) and (n.get("component") or {}).get("type") == "subflow"
-               for n in graph.get("nodes", [])):
-            raise UnsupportedGraph("el grafo tiene nodos subflow; no se sube")
         clone = self.clone(base_app_id, "emu_v_" + uuid.uuid4().hex[:8])
         try:
-            return self.push_graph(clone, graph)
+            return self.push_graph(clone, self._with_clone_subflows(clone, graph))
         finally:
             try:
                 self.discard(clone.app_id)
             except (BridgeError, SafetyError) as e:  # no ocultar el error original
                 print(f"aviso: no se pudo descartar el clon {clone.app_id}: {e}", file=sys.stderr)
+
+    def _with_clone_subflows(self, clone: Clone, graph: dict) -> dict:
+        """Apunta cada nodo subflow al subflow que el clon tiene como propio.
+
+        Clonar un flujo copia sus subflows con ids nuevos; subir un grafo que apunta a los subflows
+        del original daña el clon (SUBFLOW_CREATION_ERROR). El nodo se empareja por su id, que se
+        conserva en la copia. Un subflow que el flujo base no tiene no se puede crear: se rechaza.
+        """
+        nodes = [n for n in graph.get("nodes", []) if isinstance(n, dict) and _is_subflow(n)]
+        if not nodes:
+            return graph
+        own = {n["id"]: n["component"]["properties"]["configuration"]["dataflowId"]
+               for n in self._get(f"v1/dataflows/{_check(clone.dataflow_id)}")["graph"]["nodes"] if _is_subflow(n)}
+        for n in nodes:
+            if n.get("id") not in own:
+                raise UnsupportedGraph(f"el flujo base no tiene el subflow del nodo {n.get('id')}; "
+                                       "use --base-app con el flujo del que viene el grafo")
+        graph = copy.deepcopy(graph)
+        for n in graph["nodes"]:
+            if _is_subflow(n):
+                cfg = n["component"].setdefault("properties", {}).setdefault("configuration", {})
+                cfg["dataflowId"] = own[n["id"]]
+        return graph
 
     def pull(self, app_id: str) -> dict:
         df_id = _check(self.dataflow_id(app_id))

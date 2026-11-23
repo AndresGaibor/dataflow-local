@@ -76,6 +76,17 @@ Consecuencia: para cualquier `.dfw` local se puede obtener (a) el veredicto real
 
 No se obtuvo cómo leer `sources`, `subflows`, `projections` ni `schemas` por rutas de `v1/dataflows/{id}/...` (404). Para armar un `.dfw` completo, `sources` se puede reconstruir desde `v1/data-sets/{datasetId}`; `projections` y `schemas` vienen vacíos en todos los ejemplos.
 
+## 5 bis. Subflows: cómo subirlos sin dañar el clon
+
+Verificado el 2026-11-23 con `DF_03_TRANSACCIONES` (un flujo con un nodo `subflow` que contiene una receta de tabla).
+
+- **Un subflow es otro `dataflow` de la misma app**, no parte del grafo. El nodo subflow lo referencia con `component.properties.configuration.dataflowId`. `GET v1/dataflows/{ese id}` devuelve su grafo (`linkedSource` → `edit-column` → `noOpTarget`), con `context.dataAppId` igual a la app padre y un nombre `Subflow <id del nodo> of <flujo>`. No existe como `dataflow-app`: `GET v1/dataflow-apps/{id}` da `ADF-002`.
+- **Clonar un flujo copia también sus subflows**, con ids nuevos que pertenecen al clon. El nodo conserva el mismo id (`55067239-...` en el original y en el clon), así que sirve para emparejarlos. Volver a subir el grafo propio del clon es seguro (`UNCHANGED`).
+- **La causa del daño** era subir un grafo cuyos nodos subflow apuntan a los `dataflowId` del **original**: el servidor intenta crear el subflow en el clon y choca con el id ajeno.
+- **Solución** (`Remote._with_clone_subflows`): tras clonar, leer el grafo del clon, emparejar cada nodo subflow por su id y reescribir su `dataflowId` con el del clon antes del `PUT`. Con eso el servidor acepta el grafo y el clon sigue sano en subidas posteriores (probado con dos `PUT` seguidos).
+- **Límite:** el flujo base debe ser uno que ya tenga ese subflow (en la práctica, el flujo del que viene el grafo). Un nodo subflow que el base no tiene no se puede crear: `UnsupportedGraph` con el mensaje "use --base-app", sin subir nada y descartando el clon. Se indica con `dfemu validate --remote --apply --base-app APP archivo.dfw` o `dfemu compare --push --base-app APP`.
+- **Qué no cubre:** el contenido del subflow se toma del flujo base tal cual; un `.dfw` que cambie la receta dentro del subflow no la modifica en el clon (no se probó `PUT v1/dataflows/{id del subflow}`).
+
 ## 6. Paridad entre el validador del servidor y `emulator/dfw.py`
 
 Método: se muta una copia de `samples/fundamentos.dfw`, se sube el grafo a un clon con `PUT` y se lee `validity`; la misma mutación pasa por `dfw.validate`. Las mutaciones y sus nombres están en `emulator/calibrate.py`. Medido el 2026-11-19 contra el tenant.
@@ -103,7 +114,7 @@ Conclusión:
 
 1. **Un clon escribe en el mismo destino que el original.** Verificado: el `STORE` del script de un clon de `fundamentos` apunta a la misma ruta de `GDDestino` (Google Drive) que el original. Ejecutar un clon sobrescribiría la salida original. Hay que cambiar el destino antes (por ejemplo a `DataFiles` con prefijo `emu_`).
 2. **Los cuelgues de la CLI se deben a stdin.** `qlik item ls --limit 10` y `qlik reload create` se quedaban esperando; con `< /dev/null` ambos responden al instante. Regla: ejecutar siempre `qlik ... < /dev/null`.
-3. **Subir un grafo con subflows daña el clon.** Tras subir `DF_03_TRANSACCIONES`, todo `PUT` posterior falla con `SUBFLOW_CREATION_ERROR: Resource conflict. Expected ID <clon>, but got <otro id>`, incluso con el grafo original. Un clon dañado se descarta (borrar y clonar de nuevo). Un clon por cada subida con subflows.
+3. **Subir un grafo con subflows apuntando a los subflows del original daña el clon.** Tras subir `DF_03_TRANSACCIONES` a un clon de otro flujo, todo `PUT` posterior fallaba con `SUBFLOW_CREATION_ERROR: Resource conflict. Expected ID <clon>, but got <otro id>`, incluso con el grafo original. **Resuelto el 2026-11-23, ver 5 bis.** Un clon dañado sigue sin tener arreglo: se descarta (borrar y clonar de nuevo).
 4. **`PUT` exige el cuerpo completo menos `validity`.** `PATCH` da 405; sin `id` o sin `createdAt` da error estructural; el cuerpo del `GET` tal cual y solo `{name,description,graph}` dan 500.
 5. El servidor **acepta** grafos inválidos y solo marca `INVALID`; no los rechaza.
 6. Los scripts del tenant llevan `μ`: la consola de Windows (cp1252) falla al imprimirlos; usar `sys.stdout.reconfigure(encoding="utf-8")`.
@@ -227,11 +238,11 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 | `dfemu task enable TAREA [--apply]` / `disable TAREA [--apply]` | habilita o deshabilita una tarea |
 | `dfemu task start TAREA [--apply]` / `runs TAREA` / `rm TAREA [--apply]` | arranca (solo habilitadas), consulta corridas o borra |
 | `dfemu validate archivo.dfw` | valida el `.dfw` con el validador local |
-| `dfemu validate --remote --apply archivo.dfw` | sube el grafo a un clon y lee la validez del servidor |
+| `dfemu validate --remote --apply [--base-app APP] archivo.dfw` | sube el grafo a un clon y lee la validez del servidor |
 | `dfemu calibrate --apply` | compara el validador local con el servidor sobre una batería de mutaciones |
 | `dfemu pull [APP_ID\|--all]` | descarga flujos a `out/corpus/*.pull.json` (solo lectura) |
 | `dfemu run archivo.dfw --data data/practica` | ejecuta el flujo sobre DuckDB |
-| `dfemu compare archivo.dfw (--app APP\|--push) --apply` | compara resultados del emulador con el tenant |
+| `dfemu compare archivo.dfw (--app APP\|--push [--base-app APP]) --apply` | compara resultados del emulador con el tenant |
 | `dfemu cleanup [--apply]` | lista o borra apps y archivos `emu_*` |
 | `dfemu coverage [archivos...]` | mide qué processors usa el corpus y si cada flujo se puede ejecutar |
 | `dfemu translate script.qvs\|.pull.json [--run] [--compare [--apply]]` | traduce el script de Qlik a SQL de DuckDB; con `--run` lo ejecuta y con `--compare --apply` lo compara con la ejecución real en el tenant |
@@ -240,7 +251,7 @@ El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DF
 
 ## 12. Pendiente
 
-- Subir grafos con subflows (probar si el `PUT` admite un campo `subflows`) y evitar el daño del clon.
+- Modificar la receta dentro de un subflow (`PUT v1/dataflows/{id del subflow}`): no se probó; hoy el subflow se toma del flujo base (ver 5 bis).
 - Credencial OAuth (en lugar de API key) para ver si habilita `actions/import` y `actions/export`.
 - Comparar línea a línea el script de un clon con el original (se observó que difieren sin analizar por qué).
 - Orquestación: ver "Pendiente de esta fase" en el apartado 10 ter (`usage` en tareas avanzadas, flujos reales).

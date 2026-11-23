@@ -181,7 +181,6 @@ def test_accented_name_and_unicode_script_round_trip(tmp_path, monkeypatch):
 CLONE_APP = "clone-app"
 CLONE_DF = "clone-df"
 GRAPH = {"nodes": [{"id": "n1", "component": {"type": "load"}}]}
-SUBFLOW_GRAPH = {"nodes": [{"id": "n1", "component": {"type": "subflow"}}]}
 
 
 def _put_resp(status, violations=()):
@@ -233,11 +232,31 @@ def test_validity_of_discards_clone_when_put_fails(tmp_path):
     assert ("DELETE", f"v1/apps/{CLONE_APP}") in [(c[0], c[1]) for c in runner.calls]
 
 
-def test_validity_of_rejects_subflow_graph_without_any_call(tmp_path):
-    b, runner = apply_bridge(write_routes(), tmp_path)
-    with pytest.raises(UnsupportedGraph):
-        Remote(b).validity_of(SUBFLOW_GRAPH, base_app_id=APP)
-    assert runner.calls == []
+def _subflow_node(dataflow_id):
+    return {"id": "n1", "component": {"type": "subflow", "properties": {"configuration": {"dataflowId": dataflow_id}}}}
+
+
+def test_validity_of_remaps_subflow_ids_to_the_clones_own(tmp_path):
+    rt = write_routes()
+    clone_graph = {"nodes": [_subflow_node("SUB_CLONE")]}
+    rt[("GET", f"v1/dataflows/{CLONE_DF}")] = {
+        "id": CLONE_DF, "name": "emu_v_x", "graph": clone_graph, "checksum": "c",
+        "context": {"dataAppId": CLONE_APP}, "validity": {"status": "UNCHANGED"}}
+    b, runner = apply_bridge(rt, tmp_path)
+    pushed = {"nodes": [_subflow_node("SUB_ORIGINAL")]}
+    Remote(b).validity_of(pushed, base_app_id=APP)
+    put = next(c for c in runner.calls if c[0] == "PUT")
+    assert put[2]["graph"]["nodes"][0]["component"]["properties"]["configuration"]["dataflowId"] == "SUB_CLONE"
+    assert pushed["nodes"][0]["component"]["properties"]["configuration"]["dataflowId"] == "SUB_ORIGINAL"  # no se muta
+
+
+def test_validity_of_rejects_a_subflow_the_base_flow_does_not_have(tmp_path):
+    b, runner = apply_bridge(write_routes(), tmp_path)  # el clon no trae subflows
+    with pytest.raises(UnsupportedGraph, match="--base-app"):
+        Remote(b).validity_of({"nodes": [_subflow_node("SUB_ORIGINAL")]}, base_app_id=APP)
+    calls = [(c[0], c[1]) for c in runner.calls]
+    assert not [c for c in calls if c[0] == "PUT"]  # nada se sube
+    assert ("DELETE", f"v1/apps/{CLONE_APP}") in calls  # y el clon se descarta
 
 
 def test_validity_of_dry_run_creates_nothing(tmp_path):
@@ -385,3 +404,11 @@ def test_cleanup_apply_deletes_only_emu(tmp_path, monkeypatch, capsys):
     post = [c for c in runner.calls if (c[0], c[1]) == ("POST", "v1/data-files/actions/delete")][0]
     assert post[2] == {"delete": [{"id": "f1"}]}
     assert "borrados: 1 app(s), 1 archivo(s)" in capsys.readouterr().out
+
+
+def test_validate_remote_clones_the_base_app_given(tmp_path, monkeypatch):
+    _patch_bridge(monkeypatch, {}, tmp_path)
+    sample = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "samples", "synthetic", "s02_estrella_ventas.dfw")
+    with pytest.raises(DryRun) as e:
+        cli._validate_remote([sample], False, "APP-BASE-1")
+    assert e.value.path == "v1/dataflow-apps/APP-BASE-1/actions/copy"

@@ -75,7 +75,7 @@ Cada fase deja pruebas en `tests/` y actualiza `docs/banco-de-pruebas/`.
 
 ## 8. Lo que queda al constructor y preguntas abiertas
 
-- Cómo subir grafos con subflows sin dañar el clon (probar un campo `subflows` en el `PUT`).
+- Cómo subir grafos con subflows sin dañar el clon: **resuelto** (2026-11-23), reemplazando el `dataflowId` de cada nodo por el del subflow propio del clon; ver apartado 5 bis del documento de hallazgos.
 - Cómo cambiar el destino de un flujo clonado de forma robusta antes de ejecutarlo.
 - Si una credencial OAuth habilita import/export de `.dfw`.
 - Límite de velocidad de la API para la batería de mutaciones.

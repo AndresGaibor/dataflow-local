@@ -11,7 +11,7 @@ import uuid
 from . import calibrate, compare, coverage, dfw, oracle, tasks
 from . import script as qvs
 from .bridge import SANDBOX_SPACE_ID, Bridge, BridgeError, DryRun, SafetyError
-from .remote import Remote, UnsupportedGraph
+from .remote import BASE_APP_ID, Remote, UnsupportedGraph
 
 
 def make_bridge(apply: bool) -> Bridge:
@@ -37,12 +37,12 @@ def _write_pull(data: dict, out: str) -> str:
     return path
 
 
-def _validate_remote(files, apply: bool) -> int:
+def _validate_remote(files, apply: bool, base_app: str | None = None) -> int:
     remote = Remote(make_bridge(apply))
     bad = 0
     for pat in files:
         for f in sorted(glob.glob(pat)):
-            res = remote.validity_of(dfw.load(f)["dataflow"]["graph"])
+            res = remote.validity_of(dfw.load(f)["dataflow"]["graph"], base_app or BASE_APP_ID)
             status = res.validity["status"]
             print(f"{f}: {status}")
             for m in res.validity.get("nodesConstraintViolations") or []:
@@ -183,7 +183,7 @@ def _compare(a) -> None:
         if a.app:
             script = Remote(bridge).script_of(a.app)  # solo lectura del original
         else:
-            res = Remote(bridge).validity_of(d["dataflow"]["graph"])  # clon descartable
+            res = Remote(bridge).validity_of(d["dataflow"]["graph"], a.base_app or BASE_APP_ID)  # clon descartable
             if res.validity["status"] == "REJECTED" or not res.script:
                 sys.exit(f"error: el servidor no generó script: {res.validity.get('label', '')}")
             script = res.script
@@ -253,6 +253,7 @@ def main(argv=None):
     v.add_argument("files", nargs="+")
     v.add_argument("--remote", action="store_true", help="sube el grafo a un clon en el tenant y lee su validez")
     v.add_argument("--apply", action="store_true", help="ejecutar la subida (sin esto solo simula)")
+    v.add_argument("--base-app", help="flujo a clonar (por omision DFEMU_BASE_APP); para grafos con subflows, el flujo del que vienen")
     c = sub.add_parser("calibrate", help="compara el validador local con el servidor sobre mutaciones")
     c.add_argument("--base", default="samples/fundamentos.dfw")
     c.add_argument("--apply", action="store_true", help="consultar al tenant (sin esto solo simula)")
@@ -274,6 +275,7 @@ def main(argv=None):
     origen.add_argument("--push", action="store_true", help="sube el grafo a un clon descartable")
     cp.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
     cp.add_argument("--out", default="out")
+    cp.add_argument("--base-app", help="con --push: flujo a clonar (por omision DFEMU_BASE_APP)")
     cp.add_argument("--apply", action="store_true", help="ejecutar en el tenant (sin esto solo simula)")
     tk = sub.add_parser("task", help="programa, encadena, arranca y borra tareas de recarga de apps emu_")
     ap_apply = argparse.ArgumentParser(add_help=False)
@@ -322,7 +324,7 @@ def main(argv=None):
     if a.cmd == "validate":
         if a.remote:
             try:
-                sys.exit(1 if _validate_remote(a.files, a.apply) else 0)
+                sys.exit(1 if _validate_remote(a.files, a.apply, a.base_app) else 0)
             except DryRun as e:
                 print(f"[simulación] {e.method} {e.path}")
                 sys.exit(0)
