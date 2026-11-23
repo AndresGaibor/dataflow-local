@@ -447,3 +447,12 @@ def test_start_rejects_store_paths_built_with_variables(tmp_path, target):
     with pytest.raises(SafetyError, match="STORE"):
         b.post("scheduling/tasks/T1/actions/start", None)
     assert not writes(runner)
+
+
+def test_context_env_is_not_added_to_context_commands(monkeypatch):
+    seen = []
+    monkeypatch.setattr(B.subprocess, "run", lambda cmd, **kw: seen.append(cmd) or SimpleNamespace(returncode=0, stdout="{}", stderr=""))
+    monkeypatch.setattr(B, "_qlik_exe", lambda: "qlik")
+    monkeypatch.setenv("DFEMU_QLIK_CONTEXT", "otro")
+    B.qlik_runner(["context", "create", "nuevo", "--server", "https://x"])
+    assert seen[-1][:3] == ["qlik", "context", "create"]  # `setup` gestiona contextos: el prefijo los desviaria

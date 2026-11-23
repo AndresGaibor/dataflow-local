@@ -150,3 +150,11 @@ def test_ensure_workspace_uses_arguments_without_asking(tools, monkeypatch):
 def test_ensure_workspace_invalid_choice(tools, monkeypatch):
     with pytest.raises(S.SetupError, match="invalida"):
         S.ensure_workspace(FakeBridge(), ask=lambda p: "9")
+
+
+def test_ensure_workspace_ignores_a_stored_base_app_from_another_space(tools, monkeypatch):
+    monkeypatch.setenv("DFEMU_SPACE_ID", "S0")
+    monkeypatch.setenv("DFEMU_BASE_APP", "A-DE-S0")
+    answers = iter(["1"])
+    S.ensure_workspace(FakeBridge(), ask=lambda p: next(answers), space="S1")
+    assert json.load(open(S.LOCAL_CONFIG)) == {"DFEMU_SPACE_ID": "S1", "DFEMU_BASE_APP": "A1"}  # no arrastra el de S0

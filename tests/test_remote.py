@@ -412,3 +412,13 @@ def test_validate_remote_clones_the_base_app_given(tmp_path, monkeypatch):
     with pytest.raises(DryRun) as e:
         cli._validate_remote([sample], False, "APP-BASE-1")
     assert e.value.path == "v1/dataflow-apps/APP-BASE-1/actions/copy"
+
+
+def test_validity_of_rejects_a_clone_subflow_without_dataflow_id(tmp_path):
+    rt = write_routes()
+    rt[("GET", f"v1/dataflows/{CLONE_DF}")] = {
+        "id": CLONE_DF, "name": "emu_v_x", "graph": {"nodes": [{"id": "n1", "component": {"type": "subflow"}}]},
+        "checksum": "c", "context": {"dataAppId": CLONE_APP}, "validity": {"status": "UNCHANGED"}}
+    b, _ = apply_bridge(rt, tmp_path)
+    with pytest.raises(UnsupportedGraph):
+        Remote(b).validity_of({"nodes": [_subflow_node("SUB_ORIGINAL")]}, base_app_id=APP)

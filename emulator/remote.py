@@ -169,10 +169,10 @@ class Remote:
         nodes = [n for n in graph.get("nodes", []) if isinstance(n, dict) and _is_subflow(n)]
         if not nodes:
             return graph
-        own = {n["id"]: n["component"]["properties"]["configuration"]["dataflowId"]
+        own = {n["id"]: ((n["component"].get("properties") or {}).get("configuration") or {}).get("dataflowId")
                for n in self._get(f"v1/dataflows/{_check(clone.dataflow_id)}")["graph"]["nodes"] if _is_subflow(n)}
         for n in nodes:
-            if n.get("id") not in own:
+            if not own.get(n.get("id")):  # el base no lo tiene, o su subflow no trae dataflowId
                 raise UnsupportedGraph(f"el flujo base no tiene el subflow del nodo {n.get('id')}; "
                                        "use --base-app con el flujo del que viene el grafo")
         graph = copy.deepcopy(graph)

@@ -153,7 +153,8 @@ def _pick(label: str, options: list[tuple[str, str]], ask) -> str:
 def ensure_workspace(b, ask=input, space: str | None = None, base_app: str | None = None) -> str:
     """Fija DFEMU_SPACE_ID y DFEMU_BASE_APP (de los argumentos, del entorno o preguntando)."""
     from .remote import Remote
-    space = space or os.environ.get("DFEMU_SPACE_ID")
+    stored_space = os.environ.get("DFEMU_SPACE_ID")
+    space = space or stored_space
     if not space:
         spaces = b.get("v1/spaces", {"limit": 100}) or []
         spaces = spaces.get("data", []) if isinstance(spaces, dict) else spaces
@@ -161,7 +162,8 @@ def ensure_workspace(b, ask=input, space: str | None = None, base_app: str | Non
             raise SetupError("el tenant no devolvio espacios")
         print("Espacio donde el banco de pruebas puede escribir (solo objetos emu_):")
         space = _pick("Espacio", [(s["name"], s["id"]) for s in spaces], ask)
-    base_app = base_app or os.environ.get("DFEMU_BASE_APP")
+    # un flujo base guardado solo vale para el espacio con el que se guardo
+    base_app = base_app or (os.environ.get("DFEMU_BASE_APP") if space == stored_space else None)
     if not base_app:
         flows = Remote(b).list_dataflows(space)
         if not flows:

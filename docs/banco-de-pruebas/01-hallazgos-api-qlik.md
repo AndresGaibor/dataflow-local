@@ -217,7 +217,7 @@ Verificado el 2026-11-23 con la API `scheduling` (la API `reload-tasks` está ob
 3. Borrar una tarea: solo si su app es `emu_`.
 4. Habilitar o deshabilitar (`PATCH`): solo si su app es `emu_` y el cuerpo es exactamente un `replace` de `/enabled` con un booleano; cualquier otro campo, operación o forma se rechaza.
 
-Límites de la regla 2: una ruta de `STORE` con una variable de Qlik (`$(...)`) se rechaza, porque se expande al ejecutar y podría apuntar fuera de un archivo `emu_`; y la guarda no ve escrituras hechas por otros medios (`EXECUTE`, `Include` de otro archivo, SQL contra una base). Protege contra el caso real (clonar un flujo y ejecutarlo sin cambiar el destino), no contra un script hecho para evadirla.
+Límites de la regla 2: una ruta de `STORE` con una variable de Qlik (`$(...)`) se rechaza, porque se expande al ejecutar y podría apuntar fuera de un archivo `emu_`; y la guarda no ve escrituras hechas por otros medios (`EXECUTE`, `Include` de otro archivo, SQL contra una base). Protege contra el caso real (clonar un flujo y ejecutarlo sin cambiar el destino), no contra un script hecho para evadirla. Dos límites conocidos que se dejaron así: la guarda no comprueba que la biblioteca (`lib://...`) sea la del espacio de pruebas, solo que el archivo se llame `emu_*`; y cualquier aparición de la palabra `STORE` (un campo llamado `[Store]`, un comentario) bloquea el arranque aunque el script sea legítimo, porque falla del lado seguro.
 
 La regla 2 es necesaria: **un clon de un flujo conserva el destino del original**. El primer intento de arrancar una tarea sobre un clon sin cambios lo rechazó el puente ("el script tiene un STORE que no escribe en un archivo emu_"); sin la guarda habría sobrescrito la salida real.
 

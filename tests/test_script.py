@@ -277,3 +277,24 @@ def test_cli_translate_compare_requires_store(tmp_path, capsys):
     with pytest.raises(SystemExit) as e:
         cli.main(["translate", str(p), "--data", str(tmp_path), "--compare", "--out", str(tmp_path / "o")])
     assert e.value.code == 1 and "no tiene STORE" in capsys.readouterr().out
+
+
+# --- hallazgos de la revision de codigo -------------------------------------
+
+def test_join_with_a_missing_column_is_reported_not_raised(tmp_path):
+    _csv(tmp_path, "a.csv", "id,v\n1,a\n")
+    _csv(tmp_path, "b.csv", "id,w\n1,x\n")
+    sql, reasons = script.translate(
+        "[T]:\nLOAD [id], [v] FROM [lib://c/a.csv] (txt);\n"
+        "LEFT JOIN([T]) LOAD [id], [no_existe] FROM [lib://c/b.csv] (txt);", str(tmp_path))
+    assert sql is None and any("join" in r for r in reasons)
+
+
+def test_without_store_the_result_is_the_last_table_touched_even_after_a_join(tmp_path):
+    _csv(tmp_path, "a.csv", "id,v\n1,a\n")
+    _csv(tmp_path, "b.csv", "id,w\n1,x\n")
+    _csv(tmp_path, "c.csv", "k\n9\n")
+    rows, cols = _go(tmp_path, "[A]:\nLOAD [id], [v] FROM [lib://c/a.csv] (txt);\n"
+                               "[C]:\nLOAD [k] FROM [lib://c/c.csv] (txt);\n"
+                               "LEFT JOIN([A]) LOAD [id], [w] FROM [lib://c/b.csv] (txt);")
+    assert cols == ["id", "v", "w"]  # la ultima sentencia toco A (el join), no C

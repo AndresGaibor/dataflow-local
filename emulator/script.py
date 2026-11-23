@@ -264,6 +264,7 @@ def translate(text: str, data_dir: str) -> tuple[str | None, list[str]]:
     cur: dict[str, str] = {}  # nombre de tabla -> id del CTE vigente
     stored: list[str] = []
     reasons: list[str] = []
+    last = ""
     for st in split_statements(text):
         st = re.sub(r"(?m)^\s*//.*$", "", st).strip()
         mh = re.match(r"[A-Za-z_]+", st)
@@ -288,8 +289,12 @@ def translate(text: str, data_dir: str) -> tuple[str | None, list[str]]:
             if t not in cur:
                 reasons.append(f"JOIN sobre una tabla desconocida: {t}")
                 continue
-            right = _columns(ctes, sel)
-            common = [c for c in _columns(ctes, f"SELECT * FROM {_ident(cur[t])}") if c in right]
+            try:
+                right = _columns(ctes, sel)
+                common = [c for c in _columns(ctes, f"SELECT * FROM {_ident(cur[t])}") if c in right]
+            except duckdb.Error as e:  # campo inexistente, tipo incompatible, CSV ilegible
+                reasons.append(f"no se pudo resolver los campos del join sobre {t}: {str(e).splitlines()[0][:80]}")
+                continue
             if not common:
                 reasons.append(f"join sin campos en comun: {t}")
                 continue
@@ -301,11 +306,12 @@ def translate(text: str, data_dir: str) -> tuple[str | None, list[str]]:
         cte = f"{name}~{len(ctes)}"
         ctes.append((cte, sel))
         cur[name] = cte
+        last = name  # el orden del diccionario no sirve: un JOIN reasigna una clave existente
     if reasons:
         return None, reasons
     if not ctes:
         return None, ["el script no carga ninguna tabla"]
-    dests = set(stored) or {list(cur)[-1]}
+    dests = set(stored) or {last}
     if len(dests) != 1 or next(iter(dests)) not in cur:
         return None, [f"el traductor produce un solo SQL; destinos: {', '.join(sorted(dests))}"]
     return f"{_with(ctes)}SELECT * FROM {_ident(cur[next(iter(dests))])}", []
