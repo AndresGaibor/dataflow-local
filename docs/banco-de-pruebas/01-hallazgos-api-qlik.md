@@ -359,6 +359,23 @@ Verificado el 2026-11-23, con la API key y con un cliente OAuth M2M (rol `Tenant
 
 **Por qué quedó abierto:** `qlik raw` solo imprime el cuerpo de la respuesta. La cabecera `Location` solo se ve con `--verbose`, que también imprime el token de autorización, así que no se usó. Opciones para seguir: (a) un cliente HTTP propio que pida el token con el flujo OAuth M2M y lea la cabecera sin imprimirla (más código y manejo de credenciales), (b) la subida con el protocolo tus (`POST v1/temp-contents/files`), que también devuelve `Location`, o (c) seguir con la vía de clonar y reemplazar el grafo, que ya cubre lo que el banco de pruebas necesita.
 
+## 10 sexies. Qlik MCP Server: evaluado, no se usa
+
+Evaluado el 2026-11-23 a partir de las páginas de ayuda de Qlik ("Administering Qlik MCP", "Qlik MCP tools" y "Connecting to the Qlik MCP server"); **no se probó en vivo**. La página de herramientas se leyó incompleta y la clasificación de lectura o escritura de cada herramienta es una inferencia por nombre y descripción.
+
+**Qué es:** un servidor al que se conectan clientes MCP (Claude, ChatGPT u otros) en `https://<tenant>/api/ai/mcp`. Autenticación **solo OAuth**, como el usuario que conecta (no admite API key). Lo activa un administrador del tenant (permiso "Qlik MCP" en Funciones y acciones, más un cliente OAuth con los scopes `user_default` y `mcp:execute`) y un administrador debe ser el primero en conectar cada cliente. Cuenta como consumo: cada 5 llamadas facturables restan una "pregunta" del cupo mensual, con un máximo de 300 llamadas por usuario por minuto.
+
+**Qué ofrece (unas 106 herramientas):** descubrimiento y metadatos de apps, scripts de carga y recargas de **apps** (`qlik_get_script`, `qlik_update_script`, `qlik_start_app_reload`, `qlik_get_reload_status`, `qlik_get_reload_log`, `qlik_create_app`), automatizaciones, datasets y calidad de datos, productos de datos, glosario, linaje, elementos maestros, marcadores, selecciones, hojas y gráficos, y Qlik Predict.
+
+**Por qué no sirve para este proyecto**
+- **No tiene ninguna herramienta de Data Flows** (flujos `dataflow-prep`), que es todo lo que hace este proyecto. Tampoco de tareas programadas (`scheduling`), ni de `dataflow-apps/actions/copy`, ni de `PUT` de grafos.
+- Lo único que se solapa (crear una app, poner su script, recargar y leer el modelo) ya lo hace la CLI y la API REST con más control, y pasa por `Bridge`, que solo permite escribir objetos `emu_*`. El MCP actúa con todos los permisos del usuario y **sin esa guarda**.
+- Exige OAuth y administración del tenant, y gasta cupo de preguntas. Para automatizar y verificar, la API key de la CLI basta.
+
+**Dónde sí tendría sentido (fuera de este proyecto):** que una persona consulte con un asistente apps, datasets, glosario y linaje del tenant en lenguaje natural. Para eso no hace falta nada de este repositorio.
+
+**Si algún día hiciera falta probarlo:** activar el permiso, crear el cliente OAuth con la URL de redirección del cliente MCP, conectar primero con la cuenta de administrador y comprobar con la lista de herramientas si aparece alguna de Data Flows (la página lo desmiente hoy).
+
 ## 11. Comandos del banco de pruebas
 
 Todos los comandos son simulación por defecto; las escrituras en el tenant requieren `--apply`.
