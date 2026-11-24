@@ -33,3 +33,17 @@ def test_normalizacion_matches_what_the_tenant_wrote(tmp_path):
     assert col("fecha_d") == "9/9/2026|9/9/2026||||2/28/2026||||||||7/15/2026||9/9/2026||9/9/2026|12/31/2026|".split("|")
     assert col("numero_raw") == "1200.50|1.200,50|1200.50|150|0|-45.75|99.90|10,5|1 234,56|2.345.678,90|2,345,678.90|$1,234.56|USD 450.00||NaN|1.234|1,234|000123.40|-1.200,00|+250.5".split("|")
     assert col("numero") == "1200.5||1200.5|150|0|-45.75|99.9||||2345678.9|||||1.234|1234|123.4||250.5".split("|")
+
+
+def test_calidad_matches_what_the_tenant_wrote(tmp_path):
+    # medido en el tenant el 2026-11-24: partes de fecha sobre una fecha convertida, +7 dias, ISO, CUT, filtro con REJECT y UNION
+    (t,) = runner.run(e2e_ventas.build_calidad().dump(), os.path.join(ROOT, "data", "practica"), str(tmp_path))
+    cur = duckdb.connect().execute(f"SELECT * FROM read_csv('{t['dest']}', header=true, all_varchar=true)")
+    cols, rows = [d[0] for d in cur.description], cur.fetchall()
+    col = lambda c: ["" if r[cols.index(c)] is None else r[cols.index(c)] for r in rows]  # noqa: E731
+    assert col("fecha_d_year")[:8] == "2026|2026||||2026||".split("|")
+    assert col("fecha_d_day")[:8] == "9|9||||28||".split("|")
+    assert col("vence_iso")[:8] == "2026-09-16|2026-09-16||||2026-03-07||".split("|")
+    assert col("fecha_cut")[:2] == ["20260909", "09/09/2026"]  # la expresion ve el texto de cada fila; la recarga es la que unifica
+    assert col("numero_aj")[:8] == "1201||1201|150|0|46|100|".split("|")  # 45.75 sale 46: el formato de ROUND alcanza a la otra rama del UNION
+    assert sum(float(x) for x in col("numero_aj") if x) == 2349986.0

@@ -81,7 +81,7 @@ def _source(ctx, node, sources):
         # medido en el tenant); DuckDB no recorta y la lee como NULL. Las columnas numericas con vacios siguen con NULL.
         types = {r[0]: r[1].split("(")[0] for r in ctx.con.execute(f"DESCRIBE SELECT * FROM {raw}").fetchall()}
         trimmed = [f"coalesce(trim({q(f)}), '') AS {q(f)}" if types.get(f) == "VARCHAR" else q(f) for f in fields]
-        return _qlik_symbols(ctx, ctx.view(f"SELECT {', '.join(trimmed)} FROM {raw}"), [f for f in fields if types.get(f) == "VARCHAR"], fields)
+        return ctx.view(f"SELECT {', '.join(trimmed)} FROM {raw}")
     conn = t["dataconnectorName"]
     cfg = ctx.connections.get(conn)
     if not cfg:
@@ -191,7 +191,7 @@ def _jfmt(p):  # patron Java/Qlik -> strptime
     for a, b in (("yyyy", "%Y"), ("YYYY", "%Y"), ("MM", "%m"), ("dd", "%d"), ("DD", "%d"), ("HH", "%H"), ("hh", "%H"),
                  ("mm", "%M"), ("ss", "%S"), ("fff", "%g")):
         p = p.replace(a, b)
-    return p
+    return re.sub(r"(?<!%)d", "%-d", re.sub(r"(?<!%)M", "%-m", p))  # M y d sueltos: sin cero a la izquierda (medido: 'M/d/yyyy' lee 9/9/2026)
 
 
 _DATE_TOKENS = {"year": "year", "month": "month", "day": "day", "quarter": "quarter", "hour24": "hour", "minute": "minute",
@@ -408,11 +408,12 @@ def _typed(ctx, t, cfg, v):
                     return f"{fn}({x})"
                 # medido con saldos de .x5: Qlik divide por el paso (ROUND([c], 0.1)), round(x, 1) daria otro resultado
                 return f"{fn}({x} / {10.0 ** -p}) * {10.0 ** -p}"
-            if p > 0:  # medido: con precision > 0 Qlik escribe siempre `p` decimales (-35.00, -35.0); sigue siendo un numero
-                tg = c["columnsToProcess"]
-                for t in tg:
-                    name = (c.get("newColumnName") if len(tg) == 1 and c.get("newColumnName") else t + "_new") if c.get("shouldCreateNewColumn") else t
-                    ctx.fixed_decimals[name] = p
+            # medido: con precision > 0 Qlik escribe siempre `p` decimales (-35.00, -35.0); sigue siendo un numero. Con 0 el formato
+            # tambien alcanza a las filas de otra rama con el mismo nombre de columna tras un UNION (45.75 sale como 46)
+            tg = c["columnsToProcess"]
+            for t in tg:
+                name = (c.get("newColumnName") if len(tg) == 1 and c.get("newColumnName") else t + "_new") if c.get("shouldCreateNewColumn") else t
+                ctx.fixed_decimals[name] = p
             return D(_per_col(ctx, v, c, rnd))
         if k == "ROUND_DOWN":  # IF([c] > 0, Floor([c]), CEIL([c])): igual que ROUND_DOWN_REAL
             return D(_per_col(ctx, v, cfg["removeFractionalPartConfiguration"], lambda x: f"trunc(TRY_CAST({x} AS DOUBLE))"))
@@ -502,7 +503,10 @@ def _date(ctx, v, k, c):
         ctx.converted_dates[f"{col}_truncated"] = kind
         return _derived(v, c, "truncated", lambda x: f"CAST(date_trunc('{unit}', TRY_CAST(CAST({x} AS VARCHAR) AS TIMESTAMP)) AS {kind.upper()})")
     if k == "EXTRACT_DATE_PARTS":
-        ts = f"try_strptime({S}, {lit(_jfmt(c['datePattern']))})"
+        src = S
+        if ctx.locale.lower().startswith("en") and ctx.converted_dates.get(col) in ("date", "timestamp"):  # medido: el patron se aplica al texto M/D/YYYY de la fecha
+            src = f"strftime({q(col)}, '%-m/%-d/%Y')" if ctx.converted_dates[col] == "date" else f"strftime({q(col)}, '%-m/%-d/%Y %-I:%M:%S %p')"
+        ts = f"try_strptime({src}, {lit(_jfmt(c['datePattern']))})"
         prefix = c.get("newColumnRename") or col  # medido: con rename "fecha_" Qlik genera [fecha__day]
         parts = [f"{_DATE_TOKENS[t]}({ts}) AS {q(f'{prefix}_{t}')}" for t in _DATE_TOKENS if c.get(t)]
         for t in c:
@@ -601,6 +605,11 @@ def _write(ctx, n, view):
         os.makedirs(os.path.dirname(dest), exist_ok=True)
     opts = "FORMAT parquet" if fmt == "parquet" else "FORMAT csv, HEADER"
     if fmt == "csv":
+        # lo que mide el oraculo es la recarga del CSV: ahi Qlik unifica los textos que son el mismo numero o fecha. Las expresiones
+        # del flujo ven el texto de cada fila (medido: CUT sobre '09/09/2026' conserva '09/09/2026'), por eso se unifica al escribir.
+        cols = ctx.cols(view)
+        types = {r[0]: r[1].split("(")[0] for r in ctx.con.execute(f"DESCRIBE SELECT * FROM {view}").fetchall()}
+        view = _qlik_symbols(ctx, view, [c for c in cols if types.get(c) == "VARCHAR"], cols)
         view = _qlik_text_format(ctx, view)
     ctx.con.execute(f"COPY (SELECT * FROM {view}) TO {lit(dest)} ({opts})")
     rows = ctx.con.execute(f"SELECT count(*) FROM {view}").fetchone()[0]
