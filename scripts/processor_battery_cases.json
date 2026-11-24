@@ -3509,5 +3509,176 @@
     "constantValue": 3
    }
   }
+ ],
+ "cadena_agregar_ventana": [
+  "chain",
+  [
+   [
+    "aggregate",
+    {
+     "groupBy": [
+      {
+       "fieldPath": "segmento"
+      },
+      {
+       "fieldPath": "ciudad"
+      }
+     ],
+     "operations": [
+      {
+       "operation": "COUNT",
+       "fieldPaths": [
+        "cliente_id"
+       ],
+       "delimiter": ",",
+       "outputFieldPath": "n"
+      }
+     ]
+    }
+   ],
+   [
+    "window",
+    {
+     "operationConfiguration": {
+      "operationType": "RANK",
+      "operationFields": [],
+      "outputFieldName": "rk",
+      "delimiter": ","
+     },
+     "partitionByConfiguration": {
+      "partitionByFieldList": [
+       "segmento"
+      ]
+     },
+     "sortingConfiguration": {
+      "sortBy": "n",
+      "sortOrder": "DESCENDING"
+     },
+     "rangeConfiguration": {
+      "windowStartType": "UNLIMITED",
+      "windowEndType": "UNLIMITED",
+      "windowStartValue": 1,
+      "windowEndValue": 1
+     }
+    }
+   ]
+  ]
+ ],
+ "rank_ordena_decimal": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "DIVIDE",
+     "divideConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "constantValue": 7,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel7",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "window",
+    {
+     "operationConfiguration": {
+      "operationType": "RANK",
+      "operationFields": [],
+      "outputFieldName": "rk",
+      "delimiter": ","
+     },
+     "partitionByConfiguration": {
+      "partitionByFieldList": [
+       "segmento"
+      ]
+     },
+     "sortingConfiguration": {
+      "sortBy": "rel7",
+      "sortOrder": "DESCENDING"
+     },
+     "rangeConfiguration": {
+      "windowStartType": "UNLIMITED",
+      "windowEndType": "UNLIMITED",
+      "windowStartValue": 1,
+      "windowEndValue": 1
+     }
+    }
+   ]
+  ]
+ ],
+ "agregar_ventana_particion_2o": [
+  "chain",
+  [
+   [
+    "aggregate",
+    {
+     "groupBy": [
+      {
+       "fieldPath": "segmento"
+      },
+      {
+       "fieldPath": "ciudad"
+      }
+     ],
+     "operations": [
+      {
+       "operation": "COUNT",
+       "fieldPaths": [
+        "cliente_id"
+       ],
+       "delimiter": ",",
+       "outputFieldPath": "n"
+      }
+     ]
+    }
+   ],
+   [
+    "window",
+    {
+     "operationConfiguration": {
+      "operationType": "RANK",
+      "operationFields": [],
+      "outputFieldName": "rk",
+      "delimiter": ","
+     },
+     "partitionByConfiguration": {
+      "partitionByFieldList": [
+       "ciudad"
+      ]
+     },
+     "sortingConfiguration": {
+      "sortBy": "n",
+      "sortOrder": "DESCENDING"
+     },
+     "rangeConfiguration": {
+      "windowStartType": "UNLIMITED",
+      "windowEndType": "UNLIMITED",
+      "windowStartValue": 1,
+      "windowEndValue": 1
+     }
+    }
+   ]
+  ]
  ]
 }

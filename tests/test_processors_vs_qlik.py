@@ -495,3 +495,9 @@ def test_format_dates_and_modify_dates(tmp_path):
     cfg = {"type": "MODIFY_DATES", "modifyDateConfiguration": {**base, "datePattern": "dd/MM/yyyy", "timeUnit": "DAY", "useWith": "VALUE", "column": "", "constantValue": 3}}
     cols, out = run_one(tmp_path, "id,d\n1,1998-09-13\n", ["id", "d"], "date", cfg)
     assert out[0][cols.index("m")] == "9/16/1998"
+
+
+def test_round_with_a_step_divides_by_the_step_like_qlik(tmp_path):
+    # medido con saldos de .x5 en el tenant: ROUND([c], 0.1) da 2934.3 para 2934.35 (round(x, 1) daria 2934.4)
+    cols, out = run_one(tmp_path, "id,n\n1,2934.35\n", ["id", "n"], "numbers", num_cfg("ROUND", "roundHalfUpConfiguration", precision=1))
+    assert out[0][cols.index("m")] == "2934.3"

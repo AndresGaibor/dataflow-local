@@ -21,6 +21,7 @@ class Ctx:
         self.data_dir, self.out_dir, self.connections, self.s3 = data_dir, out_dir, {} if connections is None else connections, s3
         self.n, self.attached, self.report = 0, set(), []
         self.locale = ""  # collationLocale del flujo; de el salen los SET de formato de fecha del script de Qlik
+        self.fixed_decimals = {}  # columna -> decimales fijos al escribir (salida de ROUND/CEIL/FLOOR con precision > 0)
         self.converted_dates = {}  # columna -> 'date' | 'timestamp' (salida de CONVERT_TO_DATE / CONVERT_TO_TIMESTAMP)
         if s3:  # {"endpoint","key","secret"} -> MinIO/S3 real
             self.con.execute("INSTALL httpfs; LOAD httpfs")
@@ -379,9 +380,15 @@ def _typed(ctx, t, cfg, v):
 
             def rnd(x):
                 x = f"TRY_CAST({x} AS DOUBLE)"
-                e = f"round({x}, {p})" if fn == "round" else f"{fn}({x} * {10 ** p}) / {10 ** p}"
-                # medido: con precision > 0 Qlik escribe siempre `p` decimales (-35.00, -35.0)
-                return f"format('{{:.{p}f}}', {e})" if p > 0 else e
+                if p == 0:
+                    return f"{fn}({x})"
+                # medido con saldos de .x5: Qlik divide por el paso (ROUND([c], 0.1)), round(x, 1) daria otro resultado
+                return f"{fn}({x} / {10.0 ** -p}) * {10.0 ** -p}"
+            if p > 0:  # medido: con precision > 0 Qlik escribe siempre `p` decimales (-35.00, -35.0); sigue siendo un numero
+                tg = c["columnsToProcess"]
+                for t in tg:
+                    name = (c.get("newColumnName") if len(tg) == 1 and c.get("newColumnName") else t + "_new") if c.get("shouldCreateNewColumn") else t
+                    ctx.fixed_decimals[name] = p
             return D(_per_col(ctx, v, c, rnd))
         if k == "ROUND_DOWN":  # IF([c] > 0, Floor([c]), CEIL([c])): igual que ROUND_DOWN_REAL
             return D(_per_col(ctx, v, cfg["removeFractionalPartConfiguration"], lambda x: f"trunc(TRY_CAST({x} AS DOUBLE))"))
@@ -528,7 +535,9 @@ def _qlik_text_format(ctx, view):
     en = ctx.locale.lower().startswith("en")
     for name, typ in ((r[0], r[1].split("(")[0]) for r in ctx.con.execute(f"DESCRIBE SELECT * FROM {view}").fetchall()):
         c = q(name)
-        if typ in ("DOUBLE", "FLOAT"):
+        if typ in ("DOUBLE", "FLOAT") and name in ctx.fixed_decimals:
+            swaps.append(f"format('{{:.{ctx.fixed_decimals[name]}f}}', {c}) AS {c}")
+        elif typ in ("DOUBLE", "FLOAT"):
             # Qlik escribe los numeros con 14 cifras significativas (medido: sqrt(2) -> 1.4142135623731) y sin `.0`;
             # shortcut: a partir de 1e14 se conserva el texto de DuckDB (no se midio como escribe Qlik esos valores)
             swaps.append(f"CASE WHEN abs({c}) < 1e14 THEN printf('%.14g', {c}) "

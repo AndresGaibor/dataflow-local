@@ -86,7 +86,7 @@ _JS = {
   const n = await nodeLoc(A.node);  // menu del nodo > Eliminar; la tecla Suprimir no siempre borra
   await n.locator('button').last().evaluate(e => e.click()); await page.waitForTimeout(600); await clickText('Eliminar'); await page.waitForTimeout(1500); return 'ok';""",
     "add": r"""
-  await tab('Procesadores');
+  await tab(A.tab || 'Procesadores');
   await page.evaluate(n => {
     document.querySelectorAll('[data-probe]').forEach(x => x.removeAttribute('data-probe'));
     const e = [...document.querySelectorAll('[role=tabpanel] *')].find(x => x.children.length === 0 && x.offsetParent !== null && (x.textContent || '').replace(/[​\s]/g, '') === n.replace(/\s/g, ''));  // el texto lleva espacios de ancho cero
@@ -174,7 +174,7 @@ def run(a) -> str:
     if act == "move":
         return run_js("move", node=a.node, dx=a.dx, dy=a.dy)
     if act == "add":
-        return run_js("add", palette=a.palette, edge=a.on, x=a.x, y=a.y)
+        return run_js("add", palette=a.palette, edge=a.on, x=a.x, y=a.y, tab=a.tab)
     if act in ("undo", "redo"):
         return run_js("tool", name="Deshacer" if act == "undo" else "Rehacer")  # botones de la barra; Ctrl+Y no rehace
     if act == "layout":
@@ -214,6 +214,7 @@ def main(argv=None) -> int:
     s = sub.add_parser("add", help="arrastra un procesador de la paleta a una arista (--on ORIGEN) o a un punto (--x --y)")
     s.add_argument("palette", help="nombre en la paleta, p. ej. Ordenar"), s.add_argument("--on", help="prefijo del id del nodo origen de la arista")
     s.add_argument("--x", type=int, default=700), s.add_argument("--y", type=int, default=420)
+    s.add_argument("--tab", default="Procesadores", help="pestana de la paleta: Fuentes, Procesadores o Destinos")
     for n, h in (("undo", "boton Deshacer"), ("redo", "boton Rehacer"), ("layout", "Organizar el flujo"), ("fit", "Ajuste de zoom")):
         sub.add_parser(n, help=h)
     s = sub.add_parser("script", help="script de Qlik que genera el flujo hasta un nodo (vista previa del script)")
