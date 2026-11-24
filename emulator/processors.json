@@ -1,0 +1,914 @@
+{
+ "filter": {
+  "palette": "Filtro",
+  "label": "Filtro",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT",
+   "REJECT"
+  ],
+  "cfg": {
+   "logicalOpType": "ALL",
+   "filters": [
+    {
+     "columnName": "",
+     "function": "EMPTY",
+     "operator": "EQUAL",
+     "compareWith": "VALUE",
+     "value": "",
+     "columnToCompareWith": ""
+    }
+   ],
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "field-selector": {
+  "palette": "Seleccionar campos",
+  "label": "Seleccionar campos",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "selectors": [],
+   "distinct": false,
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "join": {
+  "palette": "Unir",
+  "label": "Unir",
+  "in": [
+   "DEFAULT",
+   "LOOKUP"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "joinFunction": "LEFT_OUTER_JOIN",
+   "conditions": [
+    {
+     "leftKey": "",
+     "rightKey": "",
+     "keepBothKeysInOutput": false
+    }
+   ],
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "map-fields": {
+  "palette": "Asignar campos",
+  "label": "Asignar campos",
+  "in": [
+   "DEFAULT",
+   "LOOKUP"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "columnsToProcess": [],
+   "shouldCreateNewColumn": false,
+   "newColumnName": "",
+   "mapFrom": "",
+   "mapTo": "",
+   "defaultValue": "",
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "union": {
+  "palette": "Unión",
+  "label": "Unión",
+  "in": [
+   "DEFAULT",
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "unionAll": true,
+   "$state": "CONFIGURED"
+  }
+ },
+ "fork": {
+  "palette": "Bifurcación",
+  "label": "Bifurcación",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT",
+   "OPTIONAL_1",
+   "OPTIONAL_2",
+   "OPTIONAL_3",
+   "OPTIONAL_4",
+   "OPTIONAL_5",
+   "OPTIONAL_6",
+   "OPTIONAL_7",
+   "OPTIONAL_8",
+   "OPTIONAL_9"
+  ],
+  "cfg": {}
+ },
+ "aggregate": {
+  "palette": "Agregar",
+  "label": "Agregar",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "groupBy": [
+    {
+     "fieldPath": ""
+    }
+   ],
+   "operations": [
+    {
+     "operation": "SUM",
+     "fieldPaths": [],
+     "outputFieldPath": ""
+    }
+   ],
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "sort": {
+  "palette": "Ordenar",
+  "label": "Ordenar",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "sortFields": [
+    {
+     "fieldPath": "",
+     "sortOrder": "ASCENDING"
+    }
+   ],
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "field-remover": {
+  "palette": "Eliminar campos",
+  "label": "Eliminar campos",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "selectors": [],
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "strings": {
+  "palette": "Cadenas de texto",
+  "label": "Cadenas de texto",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "type": "UPPERCASE",
+   "computeLengthConfiguration": {
+    "columnsToProcess": []
+   },
+   "containsConfiguration": {
+    "columnsToProcess": [],
+    "type": "VALUE",
+    "constantValue": ""
+   },
+   "lowercaseConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "propercaseConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "uppercaseConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "fuzzyMatchingConfiguration": {
+    "columnsToProcess": [],
+    "type": "VALUE",
+    "sensitivity": 1,
+    "referenceValue": ""
+   },
+   "removeNonNumCharsConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "removeNonAlphaNumCharsConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "paddingConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "size": 5,
+    "paddingCharacter": "0",
+    "paddingPosition": "LEFT"
+   },
+   "matchesPatternConfiguration": {
+    "columnsToProcess": [],
+    "manualPattern": {
+     "value": "",
+     "operator": "EQUALS"
+    },
+    "proposedPattern": "ANY_WORD_CASE_INSENSITIVE"
+   },
+   "trimConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "type": "WHITESPACE",
+    "customPaddingCharacter": ""
+   },
+   "replaceOnValueConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "replaceValue": "",
+    "replaceMethod": "REPLACE_MATCHING_WITH_VALUE",
+    "cellValue": {
+     "value": "",
+     "operator": "EQUALS"
+    }
+   },
+   "cutConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "pattern": {
+     "value": "",
+     "operator": "EQUALS"
+    }
+   },
+   "substringConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": true,
+    "newColumnName": "",
+    "fromType": "FROM_BEGINNING",
+    "fromIndex": 0,
+    "fromNBeforeEnd": 5,
+    "toType": "TO_INDEX",
+    "toIndex": 5,
+    "toIndex0": 5,
+    "toNBeforeEnd": 1,
+    "toNBeforeEnd0": 1,
+    "toNBeforeEnd1": 1,
+    "toTypeWithIndex": "TO_INDEX",
+    "toTypeWithoutIndex": "TO_END"
+   },
+   "convertToStringConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "filterConfiguration": {
+    "logicalOpType": "ALL",
+    "filters": []
+   },
+   "removeConsecutiveCharactersConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "type": "WHITESPACE",
+    "characterSequence": ""
+   },
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "date": {
+  "palette": "Fechas",
+  "label": "Fechas",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "type": "CONVERT_TO_TIMESTAMP",
+   "convertToTimestampConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnRename": "",
+    "datePattern": "YYYY-MM-DD hh:mm:ss.fff",
+    "format": "auto"
+   },
+   "convertToTimeConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnRename": "",
+    "format": "auto",
+    "datePattern": "hh:mm:ss.fff"
+   },
+   "convertToDateConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnRename": "",
+    "datePattern": "",
+    "format": "auto"
+   },
+   "computeTimeSinceConfiguration": {
+    "until": "NOW",
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": true,
+    "newColumnRename": "",
+    "timeUnit": "YEAR",
+    "specificDate": "",
+    "otherColumn": "",
+    "datePattern": "YYYY-MM-DD hh:mm"
+   },
+   "compareDatesConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": true,
+    "newColumnRename": "",
+    "datePattern": "YYYY-MM-DD hh:mm",
+    "mode": "EQUALS",
+    "with": "VALUE",
+    "value": "",
+    "column": ""
+   },
+   "extractDateTokensConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": true,
+    "newColumnRename": "",
+    "datePattern": "",
+    "amPm": false,
+    "day": false,
+    "dayLabel": false,
+    "dayOfWeek": false,
+    "dayOfYear": false,
+    "hour12": false,
+    "hour24": false,
+    "minute": false,
+    "month": false,
+    "monthLabel": false,
+    "quarter": false,
+    "quarterNumber": false,
+    "second": false,
+    "weekOfYear": false,
+    "year": false,
+    "yearAndWeek": false,
+    "yearAndMonth": false,
+    "yearAndQuarter": false,
+    "prefix": ""
+   },
+   "modifyDateConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnRename": "",
+    "datePattern": "",
+    "timeUnit": "YEAR",
+    "useWith": "VALUE",
+    "column": ""
+   },
+   "truncateDateConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnRename": "",
+    "datePattern": "dd/MM/yyyy",
+    "timeUnit": "YEAR"
+   },
+   "dateFromPartsConfiguration": {
+    "newColumnRename": "",
+    "yearMode": "FIELD",
+    "year": "",
+    "yearValue": 0,
+    "monthMode": "VALUE",
+    "month": "",
+    "monthValue": 1,
+    "dayMode": "VALUE",
+    "day": "",
+    "dayValue": 1
+   },
+   "timeFromPartsConfiguration": {
+    "newColumnRename": "",
+    "hourMode": "FIELD",
+    "hour": "",
+    "hourValue": 0,
+    "minuteMode": "VALUE",
+    "minute": "",
+    "minuteValue": 0,
+    "secondMode": "VALUE",
+    "second": "",
+    "secondValue": 0,
+    "millisecondMode": "VALUE",
+    "millisecond": "",
+    "millisecondValue": 0.0
+   },
+   "timestampFromPartsConfiguration": {
+    "newColumnRename": "",
+    "yearMode": "FIELD",
+    "year": "",
+    "yearValue": 0,
+    "monthMode": "VALUE",
+    "month": "",
+    "monthValue": 1,
+    "dayMode": "VALUE",
+    "day": "",
+    "dayValue": 1,
+    "hourMode": "VALUE",
+    "hour": "",
+    "hourValue": 0,
+    "minuteMode": "VALUE",
+    "minute": "",
+    "minuteValue": 0,
+    "secondMode": "VALUE",
+    "second": "",
+    "secondValue": 0,
+    "millisecondMode": "VALUE",
+    "millisecond": "",
+    "millisecondValue": 0.0
+   },
+   "formatDatesConfiguration": {
+    "columnsToProcess": [],
+    "format": "YYYYMMDD_DASH",
+    "datePattern": "",
+    "shouldCreateNewColumn": false,
+    "newColumnRename": ""
+   },
+   "filterConfiguration": {
+    "logicalOpType": "ALL",
+    "filters": []
+   },
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "numbers": {
+  "palette": "Números",
+  "label": "Números",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "type": "ROUND",
+   "removeFractionalPartConfiguration": {
+    "shouldCreateNewColumn": false,
+    "columnsToProcess": [],
+    "newColumnName": ""
+   },
+   "roundCeilConfiguration": {
+    "shouldCreateNewColumn": false,
+    "columnsToProcess": [],
+    "newColumnName": "",
+    "precision": 0
+   },
+   "roundFloorConfiguration": {
+    "shouldCreateNewColumn": false,
+    "columnsToProcess": [],
+    "newColumnName": "",
+    "precision": 0
+   },
+   "roundHalfUpConfiguration": {
+    "shouldCreateNewColumn": false,
+    "columnsToProcess": [],
+    "newColumnName": "",
+    "precision": 0
+   },
+   "removeNegativeValuesConfiguration": {
+    "columnsToProcess": []
+   },
+   "compareNumbersConfiguration": {
+    "shouldCreateNewColumn": true,
+    "columnsToProcess": [],
+    "newColumnName": "",
+    "comparisonOperator": "EQUALS",
+    "comparisonType": "VALUE",
+    "constantValue": 0
+   },
+   "roundDownRealConfiguration": {
+    "shouldCreateNewColumn": false,
+    "columnsToProcess": [],
+    "newColumnName": "",
+    "precision": 0
+   },
+   "convertToNumberConfiguration": {
+    "shouldCreateNewColumn": false,
+    "columnsToProcess": [],
+    "newColumnName": "",
+    "decimalSeparator": "",
+    "thousandSeparator": ""
+   },
+   "filterConfiguration": {
+    "logicalOpType": "ALL",
+    "filters": []
+   },
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "math": {
+  "palette": "Matemáticas",
+  "label": "Matemáticas",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "type": "MULTIPLY",
+   "absoluteConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "cosNumbersConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "sinNumbersConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "tanNumbersConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "negateNumbersConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "logarithmNumbersConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "squareRootNumbersConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "exponentialNumbersConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "naturalLogarithmNumbersConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "addConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "mode": "WITH_VALUE",
+    "constantValue": 0
+   },
+   "multiplyConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "mode": "WITH_VALUE",
+    "constantValue": 0
+   },
+   "subtractConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "mode": "WITH_VALUE",
+    "constantValue": 0
+   },
+   "divideConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "mode": "WITH_VALUE",
+    "constantValue": 0
+   },
+   "moduloConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "mode": "WITH_VALUE",
+    "constantValue": 0
+   },
+   "maxNumbersConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "mode": "WITH_VALUE",
+    "constantValue": 0
+   },
+   "minNumbersConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "mode": "WITH_VALUE",
+    "constantValue": 0
+   },
+   "powNumbersConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "mode": "WITH_VALUE",
+    "constantValue": 0
+   },
+   "filterConfiguration": {
+    "logicalOpType": "ALL",
+    "filters": []
+   },
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "field-concatenator": {
+  "palette": "Concatenar campos",
+  "label": "Concatenar campos",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "concatConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "prefix": "",
+    "mode": "WITH_FIELD",
+    "separator": "",
+    "separatorCondition": "BOTH_VALUES_NOT_EMPTY",
+    "suffix": ""
+   },
+   "type": "CONCAT",
+   "filterConfiguration": {
+    "logicalOpType": "ALL",
+    "filters": []
+   },
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "split-field": {
+  "palette": "Dividir campos",
+  "label": "Dividir campos",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "type": "SPLIT_TEXT_IN_PARTS",
+   "splitTextInPartsConfiguration": {
+    "columnsToProcess": [],
+    "parts": 2,
+    "separator": "COMMA",
+    "customSeparatorValue": "",
+    "$columnsToProcess_name": ""
+   },
+   "extractValuesByRegexConfiguration": {
+    "columnsToProcess": [],
+    "regexPattern": "(\\w+)",
+    "parts": 2
+   },
+   "filterConfiguration": {
+    "logicalOpType": "ALL",
+    "filters": []
+   },
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "data-cleansing": {
+  "palette": "Limpiar",
+  "label": "Limpiar",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "type": "FILL_WITH_VALUE",
+   "fillWithValueConfiguration": {
+    "columnsToProcess": [],
+    "mode": "WITH_VALUE",
+    "defaultValue": ""
+   },
+   "filterConfiguration": {
+    "logicalOpType": "ALL",
+    "filters": []
+   },
+   "fillEmptyWithDefaultConfiguration": {
+    "mode": "WITH_VALUE",
+    "columnsToProcess": [],
+    "defaultValue": ""
+   },
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "masking": {
+  "palette": "Hash",
+  "label": "Hash",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "type": "HASH_DATA",
+   "hashDataConfiguration": {
+    "columnsToProcess": [],
+    "shouldCreateNewColumn": false,
+    "newColumnName": ""
+   },
+   "filterConfiguration": {
+    "logicalOpType": "ALL",
+    "filters": []
+   },
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "sample": {
+  "palette": "Muestra",
+  "label": "Muestra",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "type": "SAMPLE_RANDOM_ROWS",
+   "sampleRandomRowsConfiguration": {
+    "rowShare": 50.0
+   },
+   "sampleFirstRowsConfiguration": {
+    "rowCount": 100
+   },
+   "$state": "CONFIGURED"
+  }
+ },
+ "pivot": {
+  "palette": "Pivotar",
+  "label": "Pivotar",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "fieldToPivot": "",
+   "valueField": "",
+   "aggregation": "ONLY",
+   "delimiter": ",",
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "unpivot": {
+  "palette": "Despivotar",
+  "label": "Despivotar",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "unpivotColumns": [],
+   "attributeColumn": "",
+   "valueColumn": "",
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "window": {
+  "palette": "Ventana",
+  "label": "Ventana",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "operationConfiguration": {
+    "operationType": "SUM",
+    "operationFields": [],
+    "outputFieldName": "",
+    "delimiter": ","
+   },
+   "partitionByConfiguration": {
+    "partitionByFieldList": []
+   },
+   "sortingConfiguration": {
+    "sortBy": "",
+    "sortOrder": "ASCENDING"
+   },
+   "rangeConfiguration": {
+    "windowStartType": "UNLIMITED",
+    "windowEndType": "UNLIMITED",
+    "windowStartValue": 1,
+    "windowEndValue": 1
+   },
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "subflow": {
+  "palette": "Receta de tabla",
+  "label": "Receta de tabla",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {}
+ },
+ "calculate-fields": {
+  "palette": "Calcular campos",
+  "label": "Calcular campos",
+  "in": [
+   "DEFAULT"
+  ],
+  "out": [
+   "DEFAULT"
+  ],
+  "cfg": {
+   "calculateFields": [
+    {
+     "newColumnName": "",
+     "expressionStatement": "",
+     "anchorColumn": "",
+     "rightOfAnchor": true,
+     "fieldReferences": []
+    }
+   ],
+   "$state": "UNCONFIGURED"
+  }
+ },
+ "script": {
+  "palette": "Script de Qlik",
+  "label": "Script de Qlik",
+  "in": [
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL",
+   "OPTIONAL"
+  ],
+  "out": [
+   "DEFAULT",
+   "OPTIONAL_1",
+   "OPTIONAL_2",
+   "OPTIONAL_3",
+   "OPTIONAL_4",
+   "OPTIONAL_5",
+   "OPTIONAL_6",
+   "OPTIONAL_7",
+   "OPTIONAL_8",
+   "OPTIONAL_9"
+  ],
+  "cfg": {
+   "script": "[MyOutputTable]:\nNoConcatenate Load *\nResident [name of input table];\nDrop Table [name of input table];\n\n",
+   "$state": "UNCONFIGURED"
+  }
+ }
+}

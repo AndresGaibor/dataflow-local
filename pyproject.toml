@@ -19,5 +19,8 @@ dfemu = "emulator.cli:main"
 [tool.setuptools]
 packages = ["emulator"]
 
+[tool.setuptools.package-data]
+emulator = ["processors.json"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

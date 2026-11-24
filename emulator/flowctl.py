@@ -21,7 +21,9 @@ from .bridge import PREFIX, ROOT, SANDBOX_SPACE_ID, valid_id
 SESSION = os.environ.get("DFEMU_BROWSER_SESSION", "chrome")
 BACKUPS = os.path.join(ROOT, "out", "backups")
 MAX_STALE_PUTS = 6  # igual que Remote.push_graph: un PUT mas por cada nivel de calculate-fields encadenado
-EXTRA_OUT = {"filter": ["REJECT"]}  # puertos de salida ademas de DEFAULT; el servidor avisa si falta alguno
+# Catalogo de los 24 procesadores de la paleta: tipo -> {palette, label, in, out, cfg inicial}, medido con scripts/ui_probe.py
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "processors.json"), encoding="utf-8") as _f:
+    PROCESSORS = json.load(_f)
 UUID = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
 
 
@@ -106,15 +108,18 @@ def add_node(g: dict, ctype: str, after: str, label: str, cfg: dict) -> dict:
     out = _handle(a, "outgoing")
     if not out:
         raise FlowError(f"'{a['label']}' no tiene salida")
+    spec = PROCESSORS.get(ctype, {"in": ["DEFAULT"], "out": ["DEFAULT"], "cfg": {}})  # tipo desconocido: un puerto de cada
     new_id = str(uuid.uuid4())
-    h_in, h_out = str(uuid.uuid4()), str(uuid.uuid4())
-    cfg = {**cfg, "$state": cfg.get("$state", "CONFIGURED")} if cfg else {}
+    ins = [{"id": str(uuid.uuid4()), "type": t} for t in spec["in"]]
+    outs = [{"id": str(uuid.uuid4()), "type": t} for t in spec["out"]]
+    h_in, h_out = next((h["id"] for h in ins if h["type"] == "DEFAULT"), ins[0]["id"]), outs[0]["id"]  # `script` solo tiene entradas OPTIONAL
+    base = copy.deepcopy(spec["cfg"])
+    cfg = merge(base, {**cfg, "$state": cfg.get("$state", "CONFIGURED")}) if cfg else base  # con configuracion propia pasa a CONFIGURED
     pos = a["graphical"]["position"]
     g["nodes"].append({
         "type": "processor", "id": new_id, "label": label,
         "graphical": {"position": {"x": pos["x"] + 160, "y": pos["y"] + 140}},
-        "handles": {"incoming": [{"id": h_in, "type": "DEFAULT"}],
-                    "outgoing": [{"id": h_out, "type": "DEFAULT"}] + [{"id": str(uuid.uuid4()), "type": t} for t in EXTRA_OUT.get(ctype, [])]},
+        "handles": {"incoming": ins, "outgoing": outs},
         "component": {"type": ctype, "properties": {"configuration": cfg}}})
     for e in g["edges"]:
         if e["sourceHandle"] == out["id"]:
@@ -228,6 +233,8 @@ def run(a) -> str:
         items = call("GET", "v1/items?resourceType=app&limit=100") or {}
         return "\n".join(f"{(i.get('resourceAttributes') or {}).get('id') or i['resourceId']}  {i['name']}"
                          for i in items.get("data", []) if i.get("resourceSubType") == "dataflow-prep")
+    if a.action == "types":
+        return "\n".join(f"{t:17} {s['palette']:18} in={','.join(s['in'])} out={','.join(s['out'])}" for t, s in PROCESSORS.items())
     df = resolve(a.flow)
     if a.action == "show":
         return render(df, a.full)
@@ -236,7 +243,8 @@ def run(a) -> str:
     if a.action == "backup":
         return backup(df)
     if a.action == "add":
-        g = add_node(df["graph"], a.type, a.after, a.label or a.type, _json(a.cfg))
+        t = next((k for k, s in PROCESSORS.items() if a.type in (k, s["palette"])), a.type)  # acepta el tipo o el nombre de la paleta
+        g = add_node(df["graph"], t, a.after, a.label or PROCESSORS.get(t, {}).get("label", t), _json(a.cfg))
     elif a.action == "set":
         g = set_node(df["graph"], a.node, _json(a.cfg), a.label)
     elif a.action == "rm":
@@ -254,6 +262,7 @@ def main(argv=None) -> int:
     w = argparse.ArgumentParser(add_help=False)
     w.add_argument("--apply", action="store_true", help="escribir en el tenant (sin esto solo simula)")
     sub.add_parser("ls", help="flujos: id y nombre")
+    sub.add_parser("types", help="los 24 procesadores de la paleta: tipo, nombre en la interfaz y puertos")
     for name, hlp in (("show", "nodos y aristas en pocas lineas"), ("node", "JSON completo de un nodo"), ("backup", "guarda el flujo en out/backups")):
         s = sub.add_parser(name, help=hlp)
         s.add_argument("flow", help="id (app o dataflow) o nombre exacto")

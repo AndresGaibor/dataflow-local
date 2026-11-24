@@ -54,3 +54,18 @@ def test_simulacion_no_escribe(monkeypatch, tmp_path):
     monkeypatch.setattr(flowctl, "ROOT", str(tmp_path))
     df = {"id": "d", "name": "n", "graph": _graph()}
     assert "simulacion" in flowctl.push(df, _graph(), apply=False)
+
+
+def test_catalogo_de_procesadores_y_puertos():
+    assert len(flowctl.PROCESSORS) == 24
+    assert flowctl.PROCESSORS["join"]["in"] == ["DEFAULT", "LOOKUP"]
+    g = flowctl.add_node(_graph(), "script", "src", "s", {})  # script: entradas OPTIONAL, sin DEFAULT
+    n = g["nodes"][-1]
+    assert [h["type"] for h in n["handles"]["incoming"]] == ["OPTIONAL"] * 10
+    assert _links(g) == {("src", "s"), ("s", "dst")}
+    assert n["component"]["properties"]["configuration"]["$state"] == "UNCONFIGURED"  # sin --cfg conserva el estado inicial
+
+
+def test_add_sin_cfg_usa_la_configuracion_inicial():
+    cfg = flowctl.add_node(_graph(), "sort", "src", "o", {})["nodes"][-1]["component"]["properties"]["configuration"]
+    assert cfg["sortFields"] == [{"fieldPath": "", "sortOrder": "ASCENDING"}]
