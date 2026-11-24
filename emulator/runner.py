@@ -252,7 +252,10 @@ def _typed(ctx, t, cfg, v):
     k, D = cfg.get("type"), (lambda sql: {"DEFAULT": ctx.view(sql)})
     if t == "math":
         c = cfg[dfw.TYPED["math"][k]]
-        unary = {"ABSOLUTE": "abs({x})", "NEGATE_NUMBERS": "(-{x})", "SQUARE_ROOT_NUMBERS": "sqrt({x})"}
+        # Qlik: Sin, Cos, Tan, Log10, Log; el logaritmo de un no positivo es NULL (DuckDB daria error)
+        unary = {"ABSOLUTE": "abs({x})", "NEGATE_NUMBERS": "(-{x})", "SQUARE_ROOT_NUMBERS": "sqrt({x})", "SIN_NUMBERS": "sin({x})",
+                 "COS_NUMBERS": "cos({x})", "TAN_NUMBERS": "tan({x})",
+                 "LOGARITHM_NUMBERS": "CASE WHEN {x} > 0 THEN log10({x}) END", "NATURAL_LOGARITHM_NUMBERS": "CASE WHEN {x} > 0 THEN ln({x}) END"}
         if k in unary:
             return D(_per_col(ctx, v, c, lambda x: unary[k].format(x=x)))
         # operaciones con otro campo (mode WITH_FIELD) o con un valor fijo; hipotesis contrastada con el tenant en la bateria
@@ -292,6 +295,10 @@ def _typed(ctx, t, cfg, v):
             return D(_per_col(ctx, v, c, lambda x: S(x)))
         if k == "REMOVE_NON_ALPHA_NUM_CHARS":  # KeepChar([c], ALPHA_NUM_CHARS); shortcut: solo letras ASCII y digitos
             return D(_per_col(ctx, v, c, lambda x: f"regexp_replace({S(x)}, '[^A-Za-z0-9]', '', 'g')"))
+        if k == "MATCHES_PATTERN":  # IF(CountRegEx([c], '^[a-zA-Z]+$'), TRUE, FALSE) AS [c_matching]; shortcut: solo el patron por defecto
+            return D(_derived(v, c, "matching", lambda x: f"CASE WHEN regexp_matches({S(x)}, '^[a-zA-Z]+$') THEN 'TRUE' ELSE 'FALSE' END"))
+        if k == "REMOVE_CONSECUTIVE_CHARACTERS":  # ReplaceRegEx([c], '(\Q\\s\E){2,}', ' '): con el patron por defecto no cambia nada util
+            return D(_per_col(ctx, v, c, lambda x: S(x)))
         if k == "REPLACE_ON_VALUE":
             op, val, rep = c["cellValue"]["operator"], lit(c["cellValue"]["value"]), lit(c["replaceValue"])
             # matriz operador x metodo medida en el tenant (scripts de Qlik: Match, Left/Right con Len, Index)
@@ -311,6 +318,10 @@ def _typed(ctx, t, cfg, v):
             c = cfg["removeNegativeValuesConfiguration"]
             return D(_per_col(ctx, v, {**c, "shouldCreateNewColumn": False},
                               lambda x: f"CASE WHEN TRY_CAST({x} AS DOUBLE) < 0 THEN NULL ELSE {x} END"))
+        if k == "COMPARE_NUMBERS":  # IF([c] = 0, TRUE, FALSE) AS [salida]; shortcut: solo la comparacion por defecto
+            return D(_per_col(ctx, v, cfg["compareNumbersConfiguration"], lambda x: f"CASE WHEN TRY_CAST({x} AS DOUBLE) = 0 THEN 'TRUE' ELSE 'FALSE' END"))
+        if k == "ROUND_DOWN_REAL":  # IF([c] > 0, Floor([c]), Ceil([c])): hacia cero
+            return D(_per_col(ctx, v, cfg["roundDownRealConfiguration"], lambda x: f"trunc(TRY_CAST({x} AS DOUBLE))"))
         c = cfg["convertToNumberConfiguration"]
         return D(_per_col(ctx, v, c, lambda x: f"TRY_CAST(replace(replace(CAST({x} AS VARCHAR), {lit(c['thousandSeparator'])}, ''), {lit(c['decimalSeparator'])}, '.') AS DOUBLE)"))
     if t == "masking":

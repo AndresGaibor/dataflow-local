@@ -2594,5 +2594,285 @@
     "windowEndValue": 1
    }
   }
+ ],
+ "math_sin": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "SIN_NUMBERS",
+     "sinNumbersConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ]
+  ]
+ ],
+ "math_cos": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "COS_NUMBERS",
+     "cosNumbersConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ]
+  ]
+ ],
+ "math_tan": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "TAN_NUMBERS",
+     "tanNumbersConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ]
+  ]
+ ],
+ "math_log10": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "LOGARITHM_NUMBERS",
+     "logarithmNumbersConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ]
+  ]
+ ],
+ "math_ln": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "NATURAL_LOGARITHM_NUMBERS",
+     "naturalLogarithmNumbersConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ]
+  ]
+ ],
+ "num_comparar": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "numbers",
+    {
+     "type": "COMPARE_NUMBERS",
+     "compareNumbersConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ]
+  ]
+ ],
+ "num_redondeo_cero": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "DIVIDE",
+     "divideConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "constantValue": 7,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel7",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "numbers",
+    {
+     "type": "ROUND_DOWN_REAL",
+     "roundDownRealConfiguration": {
+      "columnsToProcess": [
+       "rel7"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ]
+  ]
+ ],
+ "str_patron": [
+  "strings",
+  {
+   "type": "MATCHES_PATTERN",
+   "matchesPatternConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true
+   }
+  }
+ ],
+ "str_consecutivos": [
+  "strings",
+  {
+   "type": "REMOVE_CONSECUTIVE_CHARACTERS",
+   "removeConsecutiveCharactersConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true
+   }
+  }
  ]
 }

@@ -382,3 +382,36 @@ def test_window_avg_keeps_8_significant_digits_like_qlik(tmp_path):
     rows = "id,g,o,v\n1,A,1,1\n2,A,2,1\n3,A,3,2\n"
     cols, out = run_one(tmp_path, rows, ["id", "g", "o", "v"], "window", wcfg("AVG", "v"))
     assert [r[cols.index("w")] for r in out] == ["1.3333333"] * 3
+
+
+# --- trigonometria, logaritmos y comparaciones: expresion leida en el script de Qlik (2026-11-23) --------------------
+
+@pytest.mark.parametrize("subtype,key,n,expected", [
+    ("SIN_NUMBERS", "sinNumbersConfiguration", "0", "0"),
+    ("COS_NUMBERS", "cosNumbersConfiguration", "0", "1"),
+    ("TAN_NUMBERS", "tanNumbersConfiguration", "0", "0"),
+    ("LOGARITHM_NUMBERS", "logarithmNumbersConfiguration", "1000", "3"),            # Log10
+    ("NATURAL_LOGARITHM_NUMBERS", "naturalLogarithmNumbersConfiguration", "1", "0"),  # Log
+])
+def test_trigonometry_and_logarithms(tmp_path, subtype, key, n, expected):
+    cols, out = run_one(tmp_path, f"id,n\n1,{n}\n", ["id", "n"], "math", vcfg(subtype, key))
+    assert out[0][cols.index("m")] == expected
+
+
+def test_logarithm_of_zero_or_negative_is_null_not_an_error(tmp_path):
+    cols, out = run_one(tmp_path, "id,n\n1,0\n2,-4\n", ["id", "n"], "math", vcfg("NATURAL_LOGARITHM_NUMBERS", "naturalLogarithmNumbersConfiguration"))
+    assert [r[cols.index("m")] for r in out] == [None, None]
+
+
+def test_compare_numbers_and_round_down_real_defaults(tmp_path):
+    cols, out = run_one(tmp_path, "id,n\n1,0\n2,5\n", ["id", "n"], "numbers", vcfg("COMPARE_NUMBERS", "compareNumbersConfiguration"))
+    assert [r[cols.index("m")] for r in out] == ["TRUE", "FALSE"]  # IF([c] = 0, TRUE, FALSE)
+    cols, out = run_one(tmp_path, "id,n\n1,2.7\n2,-2.7\n", ["id", "n"], "numbers", vcfg("ROUND_DOWN_REAL", "roundDownRealConfiguration"))
+    assert [r[cols.index("m")] for r in out] == ["2", "-2"]  # hacia cero
+
+
+def test_matches_pattern_default_and_remove_consecutive_default(tmp_path):
+    cols, out = run_one(tmp_path, "id,n\n1,Quito\n2,Santo Domingo\n", ["id", "n"], "strings", vcfg("MATCHES_PATTERN", "matchesPatternConfiguration"))
+    assert [r[cols.index("n_matching")] for r in out] == ["TRUE", "FALSE"]  # CountRegEx([c], '^[a-zA-Z]+$')
+    cols, out = run_one(tmp_path, "id,n\n1,a  b\n", ["id", "n"], "strings", vcfg("REMOVE_CONSECUTIVE_CHARACTERS", "removeConsecutiveCharactersConfiguration"))
+    assert out[0][cols.index("m")] == "a  b"  # el patron por defecto de Qlik es un literal que casi nunca aparece
