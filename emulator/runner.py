@@ -297,7 +297,7 @@ def _typed(ctx, t, cfg, v):
         c = cfg[dfw.TYPED["math"][k]]
         # Qlik: Sin, Cos, Tan, Log10, Log; el logaritmo de un no positivo es NULL (DuckDB daria error)
         unary = {"ABSOLUTE": "abs({x})", "NEGATE_NUMBERS": "(-{x})", "SQUARE_ROOT_NUMBERS": "sqrt({x})", "SIN_NUMBERS": "sin({x})",
-                 "COS_NUMBERS": "cos({x})", "TAN_NUMBERS": "tan({x})",
+                 "COS_NUMBERS": "cos({x})", "TAN_NUMBERS": "tan({x})", "EXPONENTIEL_NUMBERS": "exp({x})",
                  "LOGARITHM_NUMBERS": "CASE WHEN {x} > 0 THEN log10({x}) END", "NATURAL_LOGARITHM_NUMBERS": "CASE WHEN {x} > 0 THEN ln({x}) END"}
         if k in unary:
             return D(_per_col(ctx, v, c, lambda x: unary[k].format(x=x)))
@@ -342,6 +342,14 @@ def _typed(ctx, t, cfg, v):
             return D(_derived(v, c, "matching", lambda x: f"CASE WHEN regexp_matches({S(x)}, '^[a-zA-Z]+$') THEN 'TRUE' ELSE 'FALSE' END"))
         if k == "REMOVE_CONSECUTIVE_CHARACTERS":  # ReplaceRegEx([c], '(\Q\\s\E){2,}', ' '): con el patron por defecto no cambia nada util
             return D(_per_col(ctx, v, c, lambda x: S(x)))
+        if k == "CUT":  # EQUALS: IF(Match([c], 'a'), '', [c]); CONTAINS: Replace([c], 'a', ''); shortcut: sin STARTS_WITH/ENDS_WITH/regex
+            c = cfg["cutConfiguration"]
+            op, val = c["pattern"]["operator"], lit(c["pattern"]["value"])
+            if op == "EQUALS":
+                return D(_per_col(ctx, v, c, lambda x: f"CASE WHEN {S(x)} = {val} THEN '' ELSE {S(x)} END"))
+            if op == "CONTAINS":
+                return D(_per_col(ctx, v, c, lambda x: f"replace({S(x)}, {val}, '')"))
+            raise Unsupported(f"strings CUT {op}")
         if k == "REPLACE_ON_VALUE":
             op, val, rep = c["cellValue"]["operator"], lit(c["cellValue"]["value"]), lit(c["replaceValue"])
             # matriz operador x metodo medida en el tenant (scripts de Qlik: Match, Left/Right con Len, Index)
@@ -365,6 +373,21 @@ def _typed(ctx, t, cfg, v):
             return D(_per_col(ctx, v, cfg["compareNumbersConfiguration"], lambda x: f"CASE WHEN TRY_CAST({x} AS DOUBLE) = 0 THEN 'TRUE' ELSE 'FALSE' END"))
         if k == "ROUND_DOWN_REAL":  # IF([c] > 0, Floor([c]), Ceil([c])): hacia cero
             return D(_per_col(ctx, v, cfg["roundDownRealConfiguration"], lambda x: f"trunc(TRY_CAST({x} AS DOUBLE))"))
+        if k in _ROUND:  # ROUND([c], 0.01) / CEIL([c], 0.1) / FLOOR([c], 0.1): paso 10^-precision (ROUND(x) si es 0)
+            c, fn = cfg[dfw.TYPED["numbers"][k]], _ROUND[k]
+            p = int(c.get("precision") or 0)
+
+            def rnd(x):
+                x = f"TRY_CAST({x} AS DOUBLE)"
+                e = f"round({x}, {p})" if fn == "round" else f"{fn}({x} * {10 ** p}) / {10 ** p}"
+                # medido: con precision > 0 Qlik escribe siempre `p` decimales (-35.00, -35.0)
+                return f"format('{{:.{p}f}}', {e})" if p > 0 else e
+            return D(_per_col(ctx, v, c, rnd))
+        if k == "ROUND_DOWN":  # IF([c] > 0, Floor([c]), CEIL([c])): igual que ROUND_DOWN_REAL
+            return D(_per_col(ctx, v, cfg["removeFractionalPartConfiguration"], lambda x: f"trunc(TRY_CAST({x} AS DOUBLE))"))
+        if k == "FORMAT_NUMBER":
+            c = cfg["formatNumberConfiguration"]
+            return D(_per_col(ctx, v, c, lambda x: _format_number(c, f"TRY_CAST({x} AS DOUBLE)")))
         c = cfg["convertToNumberConfiguration"]
         return D(_per_col(ctx, v, c, lambda x: f"TRY_CAST(replace(replace(CAST({x} AS VARCHAR), {lit(c['thousandSeparator'])}, ''), {lit(c['decimalSeparator'])}, '.') AS DOUBLE)"))
     if t == "masking":
@@ -404,6 +427,22 @@ def _typed(ctx, t, cfg, v):
     raise Unsupported(f"processor {t}")
 
 
+_ROUND = {"ROUND": "round", "CEIL": "ceil", "FLOOR": "floor"}
+_FMT = {"THOUSAND_WITHOUT_DECIMAL": (0, False), "THOUSAND_WITH_1_DECIMAL": (1, False), "THOUSAND_WITH_2_DECIMAL": (2, False),
+        "PERCENTAGE_WITHOUT_DECIMAL": (0, True), "PERCENTAGE_WITH_1_DECIMAL": (1, True), "PERCENTAGE_WITH_2_DECIMAL": (2, True)}
+
+
+def _format_number(c, x):
+    """num([c], '#,##0.00', dec, mil) / num([c], '0.0%', ...); shortcut: sin formato personalizado (CUSTOM)"""
+    if c["outputFormat"] not in _FMT:
+        raise Unsupported(f"FORMAT_NUMBER {c['outputFormat']}")
+    d, pct = _FMT[c["outputFormat"]]
+    if pct:  # el porcentaje no lleva separador de miles
+        return f"replace(format('{{:.{d}f}}', round({x} * 100, {d})), '.', {lit(c['decimalSeparator'])}) || '%'"
+    body = f"format('{{:,.{d}f}}', round({x}, {d}))"
+    return f"replace(replace(replace({body}, ',', chr(1)), '.', {lit(c['decimalSeparator'])}), chr(1), {lit(c['thousandSeparator'])})"
+
+
 _TRUNC = {"YEAR": ("year", "date"), "MONTH": ("month", "date"), "DAY": ("day", "date"),
           "HOUR": ("hour", "timestamp"), "MINUTE": ("minute", "timestamp"), "SECOND": ("second", "timestamp")}
 
@@ -430,6 +469,19 @@ def _date(ctx, v, k, c):
             if c[t] is True and t not in _DATE_TOKENS and t not in ("shouldCreateNewColumn", "amPm"):
                 raise Unsupported(f"date token {t}")
         return f"SELECT *, {', '.join(parts)} FROM {v}"
+    if k in ("FORMAT_DATES", "MODIFY_DATES"):
+        name = c.get("newColumnRename") or col
+        d = f"TRY_CAST({S} AS DATE)"
+        if k == "FORMAT_DATES":  # Date([c], 'YYYY-MM-DD'); shortcut: solo el formato YYYYMMDD_DASH
+            if c["format"] != "YYYYMMDD_DASH":
+                raise Unsupported(f"FORMAT_DATES {c['format']}")
+            e = f"strftime({d}, '%Y-%m-%d')"
+        else:  # Date([c] + n); shortcut: solo dias y valor fijo; la fecha sale con el formato del SET (ver _qlik_text_format)
+            if c["timeUnit"] != "DAY" or c["useWith"] != "VALUE":
+                raise Unsupported(f"MODIFY_DATES {c['timeUnit']} {c['useWith']}")
+            e = f"CAST({d} + {int(c['constantValue'])} * INTERVAL 1 DAY AS DATE)"
+            ctx.converted_dates[name] = "date"
+        return f"SELECT *, {e} AS {q(name)} FROM {v}" if c["shouldCreateNewColumn"] and name != col else f"SELECT * REPLACE ({e} AS {q(col)}) FROM {v}"
     cast = "DATE" if k == "CONVERT_TO_DATE" else "TIMESTAMP"
     e = f"TRY_CAST({S} AS {cast})" if c["format"] == "auto" else f"CAST(try_strptime({S}, {lit(_jfmt(c['datePattern']))}) AS {cast})"
     name = c["newColumnRename"] or col

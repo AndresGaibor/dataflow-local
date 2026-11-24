@@ -60,6 +60,13 @@ _JS = {
     await press(b.x + b.width / 2, b.y + b.height / 2); await page.keyboard.press('Control+A'); await page.keyboard.type(A.value); await page.keyboard.press('Tab');
   }
   await page.waitForTimeout(500); return 'ok';""",
+    "options": r"""
+  await page.evaluate(() => document.querySelectorAll('[data-ui]').forEach(e => e.removeAttribute('data-ui')));
+  const ok = await page.evaluate(l => { const e = [...document.querySelectorAll('[role=combobox]')].find(x => x.getBoundingClientRect().x > 1230 && [x.getAttribute('aria-label'), x.labels && x.labels[0] && x.labels[0].innerText].some(t => (t || '').trim().startsWith(l))); if (e) e.setAttribute('data-ui', '1'); return !!e; }, A.label);
+  if (!ok) throw new Error('no hay lista "' + A.label + '" en el panel (ver `dfemu ui panel`)');
+  const b = await page.locator('[data-ui="1"]').boundingBox(); await press(b.x + b.width / 2, b.y + b.height / 2); await page.waitForTimeout(600);
+  const o = await page.evaluate(() => [...document.querySelectorAll('[role=option]')].map(e => e.textContent.trim()));
+  await page.keyboard.press('Escape'); return o.join(' | ');""",
     "button": r"""
   const l = page.getByRole('button', {name: A.name, exact: true}).last(); const b = await l.boundingBox(); await press(b.x + b.width / 2, b.y + b.height / 2); await page.waitForTimeout(1500); return 'ok';""",
     "rename": r"""
@@ -158,6 +165,8 @@ def run(a) -> str:
         return run_js("preview", node=a.node, n=a.rows)
     if act == "fill":
         return run_js("fill", label=a.label, value=a.value)
+    if act == "options":
+        return run_js("options", label=a.label)
     if act in ("apply", "cancel"):
         return run_js("button", name="Aplicar" if act == "apply" else "Cancelar")
     if act == "rename":
@@ -189,6 +198,8 @@ def main(argv=None) -> int:
             s.add_argument("--rows", type=int, default=5)
     s = sub.add_parser("fill", help="rellena un control del panel por su etiqueta; en listas desplegables varios valores con |")
     s.add_argument("label"), s.add_argument("value")
+    s = sub.add_parser("options", help="opciones de una lista desplegable del panel")
+    s.add_argument("label")
     sub.add_parser("apply", help="pulsa Aplicar en el panel"), sub.add_parser("cancel", help="pulsa Cancelar")
     s = sub.add_parser("rename", help="cambia el titulo de un nodo")
     s.add_argument("node"), s.add_argument("text")

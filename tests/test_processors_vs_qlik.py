@@ -441,3 +441,57 @@ def test_window_count_distinct_respects_the_range(tmp_path):
     rows = "id,g,o,v\n1,A,1,x\n2,A,2,y\n3,A,3,x\n"
     cols, out = run_one(tmp_path, rows, ["id", "g", "o", "v"], "window", wcfg("COUNT_DISTINCT", "v", end="CURRENT"))
     assert [r[cols.index("w")] for r in out] == ["1", "2", "2"]
+
+
+# --- variantes descubiertas creando el nodo en la interfaz y leyendo su JSON (2026-11-24); todas medidas en el tenant -----
+def num_cfg(subtype, key, **kw):
+    return {"type": subtype, key: {"columnsToProcess": ["n"], "newColumnName": "m", "shouldCreateNewColumn": True, **kw}}
+
+
+@pytest.mark.parametrize("subtype,key,prec,n,expected", [
+    ("ROUND", "roundHalfUpConfiguration", 0, "-2.5", "-3"),
+    ("ROUND", "roundHalfUpConfiguration", 2, "-35", "-35.00"),  # con precision > 0 Qlik escribe siempre esos decimales
+    ("CEIL", "roundCeilConfiguration", 1, "-35.57", "-35.5"),
+    ("FLOOR", "roundFloorConfiguration", 1, "-35.57", "-35.6"),
+    ("FLOOR", "roundFloorConfiguration", 0, "-35.2", "-36"),
+])
+def test_round_ceil_floor_with_precision(tmp_path, subtype, key, prec, n, expected):
+    cols, out = run_one(tmp_path, f"id,n\n1,{n}\n", ["id", "n"], "numbers", num_cfg(subtype, key, precision=prec))
+    assert out[0][cols.index("m")] == expected
+
+
+def test_round_down_truncates_toward_zero(tmp_path):
+    cols, out = run_one(tmp_path, "id,n\n1,-35.9\n2,35.9\n", ["id", "n"], "numbers", num_cfg("ROUND_DOWN", "removeFractionalPartConfiguration"))
+    assert [r[cols.index("m")] for r in out] == ["-35", "35"]
+
+
+@pytest.mark.parametrize("fmt,expected", [("THOUSAND_WITHOUT_DECIMAL", "1,235"), ("THOUSAND_WITH_2_DECIMAL", "1,234.57"),
+                                          ("PERCENTAGE_WITH_1_DECIMAL", "123456.8%")])
+def test_format_number(tmp_path, fmt, expected):
+    cfg = num_cfg("FORMAT_NUMBER", "formatNumberConfiguration", outputFormat=fmt, customFormat="", decimalSeparator=".", thousandSeparator=",")
+    cols, out = run_one(tmp_path, "id,n\n1,1234.5678\n", ["id", "n"], "numbers", cfg)
+    assert out[0][cols.index("m")] == expected
+
+
+def test_exponential(tmp_path):
+    cols, out = run_one(tmp_path, "id,n\n1,0\n", ["id", "n"], "math",
+                        {"type": "EXPONENTIEL_NUMBERS", "exponentialNumbersConfiguration": {"columnsToProcess": ["n"], "newColumnName": "m", "shouldCreateNewColumn": True}})
+    assert out[0][cols.index("m")] == "1"
+
+
+@pytest.mark.parametrize("op,expected", [("EQUALS", "Cuenca"), ("CONTAINS", "Cuenc")])
+def test_cut(tmp_path, op, expected):
+    cfg = {"type": "CUT", "cutConfiguration": {"columnsToProcess": ["c"], "newColumnName": "m", "shouldCreateNewColumn": True,
+                                               "pattern": {"value": "a", "operator": op}}}
+    cols, out = run_one(tmp_path, "id,c\n1,Cuenca\n2,a\n", ["id", "c"], "strings", cfg)
+    assert [r[cols.index("m")] for r in out] == [expected, None]  # celda vacia en el CSV
+
+
+def test_format_dates_and_modify_dates(tmp_path):
+    base = {"columnsToProcess": ["d"], "newColumnRename": "m", "shouldCreateNewColumn": True}
+    cfg = {"type": "FORMAT_DATES", "formatDatesConfiguration": {**base, "format": "YYYYMMDD_DASH", "datePattern": "YYYY-MM-DD hh:mm:ss.fff"}}
+    cols, out = run_one(tmp_path, "id,d\n1,1998-09-13\n", ["id", "d"], "date", cfg)
+    assert out[0][cols.index("m")] == "1998-09-13"
+    cfg = {"type": "MODIFY_DATES", "modifyDateConfiguration": {**base, "datePattern": "dd/MM/yyyy", "timeUnit": "DAY", "useWith": "VALUE", "column": "", "constantValue": 3}}
+    cols, out = run_one(tmp_path, "id,d\n1,1998-09-13\n", ["id", "d"], "date", cfg)
+    assert out[0][cols.index("m")] == "9/16/1998"

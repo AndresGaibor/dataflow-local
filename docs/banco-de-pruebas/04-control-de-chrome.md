@@ -128,6 +128,7 @@ Observaciones:
 |---|---|---|
 | `ui state` | validez, nodos con posición `@x,y` y aristas | sí |
 | `ui select N` / `ui panel` | selecciona el nodo y lista los controles del panel de propiedades (`rol \| etiqueta \| valor`) | sí |
+| `ui options ETIQUETA` | lista las opciones de un desplegable del panel (separadas por `\|`) | sí |
 | `ui fill ETIQUETA VALOR` | rellena un control del panel; en listas desplegables varios valores separados por `\|` | sí (input y listas) |
 | `ui apply` / `ui cancel` | pulsa Aplicar / Cancelar | sí |
 | `ui rename N TEXTO` | cambia el título con el lápiz del nodo (falla si no queda) | sí, guardado en el servidor |

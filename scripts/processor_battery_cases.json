@@ -2874,5 +2874,640 @@
     "shouldCreateNewColumn": true
    }
   }
+ ],
+ "num_round_0": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "newColumnName": "rel",
+      "shouldCreateNewColumn": true,
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "DIVIDE",
+     "divideConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "rel7",
+      "shouldCreateNewColumn": true,
+      "constantValue": 7,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "numbers",
+    {
+     "type": "ROUND",
+     "roundHalfUpConfiguration": {
+      "columnsToProcess": [
+       "rel7"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true,
+      "precision": 0
+     }
+    }
+   ]
+  ]
+ ],
+ "num_round_2": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "newColumnName": "rel",
+      "shouldCreateNewColumn": true,
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "DIVIDE",
+     "divideConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "rel7",
+      "shouldCreateNewColumn": true,
+      "constantValue": 7,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "numbers",
+    {
+     "type": "ROUND",
+     "roundHalfUpConfiguration": {
+      "columnsToProcess": [
+       "rel7"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true,
+      "precision": 2
+     }
+    }
+   ]
+  ]
+ ],
+ "num_ceil_0": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "newColumnName": "rel",
+      "shouldCreateNewColumn": true,
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "DIVIDE",
+     "divideConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "rel7",
+      "shouldCreateNewColumn": true,
+      "constantValue": 7,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "numbers",
+    {
+     "type": "CEIL",
+     "roundCeilConfiguration": {
+      "columnsToProcess": [
+       "rel7"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true,
+      "precision": 0
+     }
+    }
+   ]
+  ]
+ ],
+ "num_ceil_1": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "newColumnName": "rel",
+      "shouldCreateNewColumn": true,
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "DIVIDE",
+     "divideConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "rel7",
+      "shouldCreateNewColumn": true,
+      "constantValue": 7,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "numbers",
+    {
+     "type": "CEIL",
+     "roundCeilConfiguration": {
+      "columnsToProcess": [
+       "rel7"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true,
+      "precision": 1
+     }
+    }
+   ]
+  ]
+ ],
+ "num_floor_0": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "newColumnName": "rel",
+      "shouldCreateNewColumn": true,
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "DIVIDE",
+     "divideConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "rel7",
+      "shouldCreateNewColumn": true,
+      "constantValue": 7,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "numbers",
+    {
+     "type": "FLOOR",
+     "roundFloorConfiguration": {
+      "columnsToProcess": [
+       "rel7"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true,
+      "precision": 0
+     }
+    }
+   ]
+  ]
+ ],
+ "num_floor_1": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "newColumnName": "rel",
+      "shouldCreateNewColumn": true,
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "DIVIDE",
+     "divideConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "rel7",
+      "shouldCreateNewColumn": true,
+      "constantValue": 7,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "numbers",
+    {
+     "type": "FLOOR",
+     "roundFloorConfiguration": {
+      "columnsToProcess": [
+       "rel7"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true,
+      "precision": 1
+     }
+    }
+   ]
+  ]
+ ],
+ "num_round_down": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "newColumnName": "rel",
+      "shouldCreateNewColumn": true,
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "DIVIDE",
+     "divideConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "rel7",
+      "shouldCreateNewColumn": true,
+      "constantValue": 7,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "numbers",
+    {
+     "type": "ROUND_DOWN",
+     "removeFractionalPartConfiguration": {
+      "columnsToProcess": [
+       "rel7"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ]
+  ]
+ ],
+ "num_fmt_miles": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "newColumnName": "rel",
+      "shouldCreateNewColumn": true,
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "DIVIDE",
+     "divideConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "rel7",
+      "shouldCreateNewColumn": true,
+      "constantValue": 7,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "numbers",
+    {
+     "type": "FORMAT_NUMBER",
+     "formatNumberConfiguration": {
+      "columnsToProcess": [
+       "rel7"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true,
+      "outputFormat": "THOUSAND_WITHOUT_DECIMAL",
+      "customFormat": "",
+      "decimalSeparator": ".",
+      "thousandSeparator": ","
+     }
+    }
+   ]
+  ]
+ ],
+ "num_fmt_miles2": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "newColumnName": "rel",
+      "shouldCreateNewColumn": true,
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "DIVIDE",
+     "divideConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "rel7",
+      "shouldCreateNewColumn": true,
+      "constantValue": 7,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "numbers",
+    {
+     "type": "FORMAT_NUMBER",
+     "formatNumberConfiguration": {
+      "columnsToProcess": [
+       "rel7"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true,
+      "outputFormat": "THOUSAND_WITH_2_DECIMAL",
+      "customFormat": "",
+      "decimalSeparator": ".",
+      "thousandSeparator": ","
+     }
+    }
+   ]
+  ]
+ ],
+ "num_fmt_pct1": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "newColumnName": "rel",
+      "shouldCreateNewColumn": true,
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "DIVIDE",
+     "divideConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "rel7",
+      "shouldCreateNewColumn": true,
+      "constantValue": 7,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "numbers",
+    {
+     "type": "FORMAT_NUMBER",
+     "formatNumberConfiguration": {
+      "columnsToProcess": [
+       "rel7"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true,
+      "outputFormat": "PERCENTAGE_WITH_1_DECIMAL",
+      "customFormat": "",
+      "decimalSeparator": ".",
+      "thousandSeparator": ","
+     }
+    }
+   ]
+  ]
+ ],
+ "math_exp": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "newColumnName": "rel",
+      "shouldCreateNewColumn": true,
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "DIVIDE",
+     "divideConfiguration": {
+      "columnsToProcess": [
+       "rel"
+      ],
+      "newColumnName": "rel7",
+      "shouldCreateNewColumn": true,
+      "constantValue": 1000000,
+      "mode": "WITH_VALUE",
+      "selectedColumn": ""
+     }
+    }
+   ],
+   [
+    "math",
+    {
+     "type": "EXPONENTIEL_NUMBERS",
+     "exponentialNumbersConfiguration": {
+      "columnsToProcess": [
+       "rel7"
+      ],
+      "newColumnName": "salida",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ]
+  ]
+ ],
+ "str_cut": [
+  "strings",
+  {
+   "type": "CUT",
+   "cutConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "pattern": {
+     "value": "a",
+     "operator": "EQUALS"
+    }
+   }
+  }
+ ],
+ "str_cut_contiene": [
+  "strings",
+  {
+   "type": "CUT",
+   "cutConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "pattern": {
+     "value": "a",
+     "operator": "CONTAINS"
+    }
+   }
+  }
+ ],
+ "fecha_formato": [
+  "date",
+  {
+   "type": "FORMAT_DATES",
+   "formatDatesConfiguration": {
+    "columnsToProcess": [
+     "fecha_nacimiento"
+    ],
+    "newColumnRename": "salida",
+    "shouldCreateNewColumn": true,
+    "format": "YYYYMMDD_DASH",
+    "datePattern": "YYYY-MM-DD hh:mm:ss.fff"
+   }
+  }
+ ],
+ "fecha_sumar_dias": [
+  "date",
+  {
+   "type": "MODIFY_DATES",
+   "modifyDateConfiguration": {
+    "columnsToProcess": [
+     "fecha_nacimiento"
+    ],
+    "newColumnRename": "salida",
+    "shouldCreateNewColumn": true,
+    "datePattern": "dd/MM/yyyy",
+    "timeUnit": "DAY",
+    "useWith": "VALUE",
+    "column": "",
+    "constantValue": 3
+   }
+  }
  ]
 }
