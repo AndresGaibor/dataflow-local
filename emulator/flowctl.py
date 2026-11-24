@@ -1,0 +1,278 @@
+"""`dfemu flow`: control de flujos del tenant pensado para agentes.
+
+Salida compacta (una linea por nodo) para no llenar el contexto, copia de seguridad antes de cada
+escritura y sin API key: usa la sesion de Chrome ya iniciada en Qlik Cloud, a traves de
+`playwright-cli` (docs/banco-de-pruebas/03-control-de-flujos.md). Las escrituras exigen --apply.
+"""
+import argparse
+import copy
+import json
+import os
+import re
+import subprocess
+import sys
+import tempfile
+import time
+import urllib.parse
+import uuid
+
+from .bridge import PREFIX, ROOT, SANDBOX_SPACE_ID, valid_id
+
+SESSION = os.environ.get("DFEMU_BROWSER_SESSION", "chrome")
+BACKUPS = os.path.join(ROOT, "out", "backups")
+MAX_STALE_PUTS = 6  # igual que Remote.push_graph: un PUT mas por cada nivel de calculate-fields encadenado
+EXTRA_OUT = {"filter": ["REJECT"]}  # puertos de salida ademas de DEFAULT; el servidor avisa si falta alguno
+UUID = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+
+
+class FlowError(Exception):
+    pass
+
+
+# --- transporte: fetch desde la pestana de Qlik Cloud de tu Chrome -----------------------------
+_JS = r"""async page => {
+  const p = page.context().pages().find(x => /qlikcloud\.com/.test(x.url()));
+  if (!p) return JSON.stringify({status: 0, body: 'no hay pestana de Qlik Cloud abierta'});
+  return JSON.stringify(await p.evaluate(async ([m, path, body]) => {
+    const h = {'content-type': 'application/json'};
+    if (m !== 'GET') h['qlik-csrf-token'] = (await fetch('/api/v1/csrf-token')).headers.get('qlik-csrf-token');
+    const r = await fetch('/api/' + path, {method: m, headers: h, body: body === null ? undefined : JSON.stringify(body)});
+    return {status: r.status, body: await r.text()};
+  }, ARGS));
+}"""
+
+
+def call(method: str, path: str, body=None):
+    fd, tmp = tempfile.mkstemp(suffix=".js")
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        f.write(_JS.replace("ARGS", json.dumps([method, path, body])))
+    try:
+        p = subprocess.run(["playwright-cli", f"-s={SESSION}", "--raw", "run-code", f"--filename={tmp}"],
+                           capture_output=True, text=True, encoding="utf-8", stdin=subprocess.DEVNULL, timeout=90, shell=os.name == "nt")
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise FlowError(f"playwright-cli no responde: {e}") from e
+    finally:
+        os.remove(tmp)
+    try:
+        r = json.loads(json.loads(p.stdout))
+    except ValueError as e:
+        raise FlowError(f"sesion '{SESSION}' no disponible (attach: playwright-cli attach --cdp=chrome): {(p.stdout + p.stderr)[:200]}") from e
+    if r["status"] == 0 or r["status"] >= 400:
+        raise FlowError(f"{method} {path} -> {r['status']}: {r['body'][:300]}")
+    return json.loads(r["body"]) if r["body"].strip() else None
+
+
+# --- politica de escritura ------------------------------------------------------------------
+def _allowed_names() -> set:
+    """Nombres extra autorizados por el usuario en dfemu.local.json (ignorado por git): `allow_flows`."""
+    try:
+        with open(os.path.join(ROOT, "dfemu.local.json"), encoding="utf-8") as f:
+            return set(json.load(f).get("allow_flows", []))
+    except (OSError, ValueError):
+        return set()
+
+
+def check_writable(df: dict) -> None:
+    name = df.get("name", "")
+    if name in _allowed_names():
+        return
+    app = valid_id(aid := (df.get("context") or {}).get("dataAppId", "")) and call("GET", f"v1/apps/{aid}") or {}
+    attrs = app.get("attributes") or {}
+    if not (str(attrs.get("name", "")).startswith(PREFIX) and attrs.get("spaceId") == SANDBOX_SPACE_ID):
+        raise FlowError(f"'{name}' no se puede escribir: no es emu_* del espacio de pruebas ni esta en allow_flows de dfemu.local.json")
+
+
+# --- operaciones sobre el grafo (puras) -------------------------------------------------------
+def find_node(g: dict, ref: str) -> dict:
+    hits = [n for n in g["nodes"] if n["id"].startswith(ref) or n["label"].lower() == ref.lower()]
+    if len(hits) != 1:
+        raise FlowError(f"nodo '{ref}': {len(hits)} coincidencias entre {[n['id'][:8] + ' ' + n['label'] for n in g['nodes']]}")
+    return hits[0]
+
+
+def _handle(n: dict, side: str, kind: str = "DEFAULT"):
+    return next((h for h in (n.get("handles") or {}).get(side, []) if h["type"] == kind), None)
+
+
+def _edge(g: dict, sh: str, th: str) -> dict:
+    owner = {h["id"]: n["id"] for n in g["nodes"] for s in (n.get("handles") or {}).values() for h in s}
+    return {"id": f"reactflow__edge-{owner[sh]}{sh}-{owner[th]}{th}", "sourceHandle": sh, "targetHandle": th}
+
+
+def add_node(g: dict, ctype: str, after: str, label: str, cfg: dict) -> dict:
+    """Inserta un procesador tras `after`: todo lo que colgaba de su salida DEFAULT pasa a colgar del nuevo."""
+    g = copy.deepcopy(g)
+    a = find_node(g, after)
+    out = _handle(a, "outgoing")
+    if not out:
+        raise FlowError(f"'{a['label']}' no tiene salida")
+    new_id = str(uuid.uuid4())
+    h_in, h_out = str(uuid.uuid4()), str(uuid.uuid4())
+    cfg = {**cfg, "$state": cfg.get("$state", "CONFIGURED")} if cfg else {}
+    pos = a["graphical"]["position"]
+    g["nodes"].append({
+        "type": "processor", "id": new_id, "label": label,
+        "graphical": {"position": {"x": pos["x"] + 160, "y": pos["y"] + 140}},
+        "handles": {"incoming": [{"id": h_in, "type": "DEFAULT"}],
+                    "outgoing": [{"id": h_out, "type": "DEFAULT"}] + [{"id": str(uuid.uuid4()), "type": t} for t in EXTRA_OUT.get(ctype, [])]},
+        "component": {"type": ctype, "properties": {"configuration": cfg}}})
+    for e in g["edges"]:
+        if e["sourceHandle"] == out["id"]:
+            e["sourceHandle"] = h_out
+    for e in g["edges"]:
+        e.update(_edge(g, e["sourceHandle"], e["targetHandle"]))
+    g["edges"].append(_edge(g, out["id"], h_in))
+    return g
+
+
+def merge(dst: dict, patch: dict) -> dict:
+    for k, v in patch.items():
+        dst[k] = merge(dst[k], v) if isinstance(dst.get(k), dict) and isinstance(v, dict) else v
+    return dst
+
+
+def set_node(g: dict, ref: str, cfg: dict, label: str | None) -> dict:
+    g = copy.deepcopy(g)
+    n = find_node(g, ref)
+    if cfg:
+        merge(n["component"].setdefault("properties", {}).setdefault("configuration", {}), cfg)
+    if label:
+        n["label"] = label
+    return g
+
+
+def remove_node(g: dict, ref: str) -> dict:
+    """Quita el nodo y reconecta lo que llegaba con lo que salia por DEFAULT; lo de REJECT se descarta."""
+    g = copy.deepcopy(g)
+    n = find_node(g, ref)
+    hs = {h["id"]: h["type"] for s in (n.get("handles") or {}).values() for h in s}
+    ins = [e for e in g["edges"] if e["targetHandle"] in hs]
+    outs = [e for e in g["edges"] if e["sourceHandle"] in hs and hs[e["sourceHandle"]] == "DEFAULT"]
+    g["edges"] = [e for e in g["edges"] if e not in ins and e["sourceHandle"] not in hs]
+    g["nodes"] = [x for x in g["nodes"] if x["id"] != n["id"]]
+    g["edges"] += [_edge(g, i["sourceHandle"], o["targetHandle"]) for i in ins for o in outs]
+    return g
+
+
+# --- lectura compacta -------------------------------------------------------------------------
+def _cfg(n: dict, full: bool) -> str:
+    c = {k: v for k, v in ((n["component"].get("properties") or {}).get("configuration") or {}).items() if k != "$state"}
+    s = json.dumps(c, ensure_ascii=False, separators=(",", ":"))
+    return s if full or len(s) <= 90 else s[:87] + "..."
+
+
+def render(df: dict, full: bool = False) -> str:
+    g = df["graph"]
+    v = df["validity"]
+    lines = [f"{df['name']}  {v['status']}  df={df['id'][:8]}  {len(g['nodes'])} nodos"]
+    lines += [f"{n['id'][:8]} {n['type']}/{n['component']['type']}  {n['label']}  {_cfg(n, full)}" for n in g["nodes"]]
+    own = {h["id"]: (n["id"][:8], h["type"]) for n in g["nodes"] for s in (n.get("handles") or {}).values() for h in s}
+    lines.append("aristas: " + " ".join(f"{own[e['sourceHandle']][0]}{'~>' if own[e['sourceHandle']][1] == 'REJECT' else '>'}{own[e['targetHandle']][0]}" for e in g["edges"]))
+    lines += [f"! {x.get('nodeId', '')[:8]} {x.get('code')}" for x in v.get("nodesConstraintViolations") or []]
+    return "\n".join(lines)
+
+
+# --- flujos -----------------------------------------------------------------------------------
+def resolve(ref: str) -> dict:
+    if UUID.fullmatch(ref):
+        try:
+            return call("GET", f"v1/dataflows/{call('GET', f'v1/dataflow-apps/{ref}')['dataflowId']}")
+        except FlowError:
+            return call("GET", f"v1/dataflows/{ref}")
+    items = call("GET", "v1/items?resourceType=app&limit=100&name=" + urllib.parse.quote(ref)) or {}
+    hits = [i for i in (items.get("data") or []) if i.get("name") == ref and i.get("resourceSubType") == "dataflow-prep"]
+    if len(hits) != 1:
+        raise FlowError(f"flujo '{ref}': {len(hits)} coincidencias; use el id")
+    return resolve((hits[0].get("resourceAttributes") or {}).get("id") or hits[0]["resourceId"])
+
+
+def backup(df: dict) -> str:
+    os.makedirs(BACKUPS, exist_ok=True)
+    path = os.path.join(BACKUPS, f"{re.sub(r'[^A-Za-z0-9_-]+', '_', df['name'])}-{time.strftime('%Y%m%d-%H%M%S')}.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(df, f, ensure_ascii=False, indent=1)
+    return path
+
+
+def push(df: dict, graph: dict, apply: bool) -> str:
+    check_writable(df)
+    os.makedirs(os.path.join(ROOT, "out"), exist_ok=True)
+    with open(os.path.join(ROOT, "out", "audit.jsonl"), "a", encoding="utf-8") as f:
+        f.write(json.dumps({"ts": time.strftime("%FT%T"), "method": "PUT", "path": f"v1/dataflows/{df['id']}", "applied": apply, "via": "browser"}) + "\n")
+    if not apply:
+        return f"[simulacion] {len(df['graph']['nodes'])} -> {len(graph['nodes'])} nodos; use --apply"
+    saved = backup(df)
+    cur = df
+    for _ in range(MAX_STALE_PUTS):
+        body = {k: v for k, v in cur.items() if k != "validity"}
+        body["graph"] = graph
+        cur = call("PUT", f"v1/dataflows/{df['id']}", body)
+        codes = {x.get("code") for x in cur["validity"].get("nodesConstraintViolations") or []}
+        if codes != {"POTENTIAL_STALE_EXPRESSION"}:  # un PUT identico lo limpia (receta de CLAUDE.md)
+            break
+    return f"{render(cur)}\ncopia: {os.path.relpath(saved, ROOT)}"
+
+
+def _json(s: str) -> dict:
+    try:
+        v = json.loads(s or "{}")
+    except ValueError as e:
+        raise FlowError(f"--cfg no es JSON: {e}") from e
+    if not isinstance(v, dict):
+        raise FlowError("--cfg debe ser un objeto JSON")
+    return v
+
+
+def run(a) -> str:
+    if a.action == "ls":
+        items = call("GET", "v1/items?resourceType=app&limit=100") or {}
+        return "\n".join(f"{(i.get('resourceAttributes') or {}).get('id') or i['resourceId']}  {i['name']}"
+                         for i in items.get("data", []) if i.get("resourceSubType") == "dataflow-prep")
+    df = resolve(a.flow)
+    if a.action == "show":
+        return render(df, a.full)
+    if a.action == "node":
+        return json.dumps(find_node(df["graph"], a.node), ensure_ascii=False, indent=1)
+    if a.action == "backup":
+        return backup(df)
+    if a.action == "add":
+        g = add_node(df["graph"], a.type, a.after, a.label or a.type, _json(a.cfg))
+    elif a.action == "set":
+        g = set_node(df["graph"], a.node, _json(a.cfg), a.label)
+    elif a.action == "rm":
+        g = remove_node(df["graph"], a.node)
+    elif a.action == "restore":
+        with open(a.file, encoding="utf-8") as f:
+            data = json.load(f)
+        g = data.get("d", data)["graph"]  # acepta tanto `flow backup` como el volcado {a, d} de la primera copia
+    return push(df, g, a.apply)
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(prog="dfemu flow", description="Control compacto de flujos (sesion de Chrome via playwright-cli)")
+    sub = ap.add_subparsers(dest="action", required=True)
+    w = argparse.ArgumentParser(add_help=False)
+    w.add_argument("--apply", action="store_true", help="escribir en el tenant (sin esto solo simula)")
+    sub.add_parser("ls", help="flujos: id y nombre")
+    for name, hlp in (("show", "nodos y aristas en pocas lineas"), ("node", "JSON completo de un nodo"), ("backup", "guarda el flujo en out/backups")):
+        s = sub.add_parser(name, help=hlp)
+        s.add_argument("flow", help="id (app o dataflow) o nombre exacto")
+        if name == "show":
+            s.add_argument("--full", action="store_true", help="configuracion completa de cada nodo")
+        if name == "node":
+            s.add_argument("node", help="prefijo del id o etiqueta")
+    s = sub.add_parser("add", help="inserta un procesador tras un nodo", parents=[w])
+    s.add_argument("flow"), s.add_argument("type", help="p. ej. filter, field-selector")
+    s.add_argument("--after", required=True), s.add_argument("--label"), s.add_argument("--cfg", help="JSON de la configuracion")
+    s = sub.add_parser("set", help="mezcla configuracion en un nodo", parents=[w])
+    s.add_argument("flow"), s.add_argument("node"), s.add_argument("--cfg", default="{}"), s.add_argument("--label")
+    s = sub.add_parser("rm", help="quita un nodo y reconecta", parents=[w])
+    s.add_argument("flow"), s.add_argument("node")
+    s = sub.add_parser("restore", help="vuelve a un backup", parents=[w])
+    s.add_argument("flow"), s.add_argument("file")
+    sys.stdout.reconfigure(encoding="utf-8")  # las etiquetas llevan tildes; la consola de Windows no es UTF-8
+    try:
+        print(run(ap.parse_args(argv)))
+    except FlowError as e:
+        sys.exit(f"error: {e}")
+    return 0

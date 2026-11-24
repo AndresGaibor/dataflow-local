@@ -278,7 +278,10 @@ def _task(a) -> int:
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(prog="dfemu")
+    if (argv if argv is not None else sys.argv[1:])[:1] == ["flow"]:  # control compacto para agentes; ver flowctl
+        from . import flowctl
+        return flowctl.main((argv if argv is not None else sys.argv[1:])[1:])
+    ap = argparse.ArgumentParser(prog="dfemu", epilog="flow: control compacto de flujos para agentes (dfemu flow -h)")
     sub = ap.add_subparsers(dest="cmd", required=True)
     v = sub.add_parser("validate")
     v.add_argument("files", nargs="+")
