@@ -94,14 +94,52 @@ _FUNCS = {"SubField": "split_part", "Upper": "upper", "Lower": "lower", "Trim": 
           "Right": "right", "If": "if", "Floor": "floor", "Ceil": "ceil", "Round": "round", "Abs": "abs"}
 
 
+_TEXT_FUNCS = ("SubField", "Upper", "Lower", "Trim", "Len", "Left", "Right")
+
+
+def _first_arg_end(s, i):
+    """posicion del fin del primer argumento de la llamada que abre en s[i-1] == '(' (respeta comillas y parentesis anidados)"""
+    depth, quote = 0, None
+    for j in range(i, len(s)):
+        ch = s[j]
+        if quote:
+            quote = None if ch == quote else quote
+        elif ch in "'\"":
+            quote = ch
+        elif ch == "(":
+            depth += 1
+        elif ch == ")":
+            if depth == 0:
+                return j
+            depth -= 1
+        elif ch == "," and depth == 0:
+            return j
+    return len(s)
+
+
+def _cast_text_args(s):
+    """Qlik acepta numeros en sus funciones de texto; DuckDB exige VARCHAR: envuelve el primer argumento en CAST"""
+    for f in _TEXT_FUNCS:
+        pos = 0
+        while True:
+            m = re.compile(rf"\b{f}\s*\(").search(s, pos)
+            if not m:
+                break
+            end = _first_arg_end(s, m.end())
+            s = f"{s[:m.end()]}CAST({s[m.end():end]} AS VARCHAR){s[end:]}"
+            pos = m.end()
+    return s
+
+
 def qexpr(s):
     """expresion Qlik -> SQL DuckDB (subconjunto)"""
     s = re.sub(r"\[([^\]]+)\]", lambda m: q(m.group(1)), s)
+    s = _cast_text_args(s)
     s = re.sub(r"IsNull\(([^()]*)\)", r"(\1 IS NULL)", s)
     for f in set(re.findall(r"([A-Za-z_]\w*)\s*\(", s)):
         if f in _FUNCS:
             s = re.sub(rf"\b{f}\s*\(", _FUNCS[f] + "(", s)
-        elif f.lower() not in _FUNCS.values() and f != "split_part":
+        elif f.lower() not in _FUNCS.values() and f not in ("split_part", "CAST"):
             raise Unsupported(f"funcion Qlik '{f}' no soportada en calculate-fields")
     return s.replace("&", "||")
 
@@ -204,7 +242,7 @@ def run_processor(ctx, t, cfg, ins, node):
             num = f"TRY_CAST({f} AS DOUBLE)"
             fns = {"SUM": f"sum({num})", "AVG": f"avg({num})", "MIN": f"min({num})", "MAX": f"max({num})",
                    "COUNT": f"count({f})", "FIRST": f"first_value({f})", "LAST": f"last_value({f})",
-                   "COUNT_DISTINCT": f"count(DISTINCT {f})", "CONCATENATE": f"string_agg(CAST({f} AS VARCHAR), {lit(op.get('delimiter', ','))} ORDER BY CAST({f} AS VARCHAR))"}  # Concat ordena por el texto, no por el orden de la ventana (medido)
+                   "COUNT_DISTINCT": f"list({f})", "CONCATENATE": f"string_agg(CAST({f} AS VARCHAR), {lit(op.get('delimiter', ','))} ORDER BY CAST({f} AS VARCHAR))"}  # Concat ordena por el texto, no por el orden de la ventana (medido)
             if kind not in fns:
                 raise Unsupported(f"window {kind}")
             r = cfg["rangeConfiguration"]
@@ -212,10 +250,10 @@ def run_processor(ctx, t, cfg, ins, node):
             frame = (f"ROWS BETWEEN {bound(r['windowStartType'], r['windowStartValue'], 'UNBOUNDED PRECEDING')} AND "
                      f"{bound(r['windowEndType'], r['windowEndValue'], 'UNBOUNDED FOLLOWING')}")
             fn, over = fns[kind], f"{over} {frame}"
-            if kind == "COUNT_DISTINCT":  # DuckDB no admite DISTINCT con orden ni marco: se calcula sobre la particion entera
-                over = f"{'PARTITION BY ' + part if part else ''}"
         # Qlik devuelve las filas en el orden de origen con la columna de la ventana (medido); no las reordena por ella
         expr = f"{fn} OVER ({over})"
+        if kind == "COUNT_DISTINCT":  # DuckDB no admite DISTINCT con orden ni marco: se cuentan los distintos de la lista del marco
+            expr = f"len(list_distinct({expr}))"
         if kind == "AVG":
             expr = f"CAST(printf('%.8g', {expr}) AS DOUBLE)"  # medido: Window(Avg()) llega con 8 cifras significativas
         return D(f"SELECT * EXCLUDE (__rn) FROM (SELECT *, {expr} AS {q(op['outputFieldName'])} "

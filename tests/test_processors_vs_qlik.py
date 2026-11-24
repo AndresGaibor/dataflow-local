@@ -415,3 +415,29 @@ def test_matches_pattern_default_and_remove_consecutive_default(tmp_path):
     assert [r[cols.index("n_matching")] for r in out] == ["TRUE", "FALSE"]  # CountRegEx([c], '^[a-zA-Z]+$')
     cols, out = run_one(tmp_path, "id,n\n1,a  b\n", ["id", "n"], "strings", vcfg("REMOVE_CONSECUTIVE_CHARACTERS", "removeConsecutiveCharactersConfiguration"))
     assert out[0][cols.index("m")] == "a  b"  # el patron por defecto de Qlik es un literal que casi nunca aparece
+
+
+# --- calculate-fields: las funciones de texto de Qlik aceptan numeros; DuckDB exige VARCHAR ------------------------------
+
+def calc(tmp_path, csv, expr):
+    cfg = {"calculateFields": [{"expressionStatement": expr, "newColumnName": "r"}]}
+    cols, out = run_one(tmp_path, csv, ["id", "n"], "calculate-fields", cfg)
+    return [r[cols.index("r")] for r in out]
+
+
+def test_text_functions_accept_numeric_columns_like_qlik(tmp_path):
+    assert calc(tmp_path, "id,n\n1,12345\n", "SubField([n], '3', 1)") == ["12"]
+    assert calc(tmp_path, "id,n\n1,12345\n", "Len([n])") == ["5"]
+    assert calc(tmp_path, "id,n\n1,12345\n", "Left([n], 2)") == ["12"]
+    assert calc(tmp_path, "id,n\n1,abc\n", "Upper([n])") == ["ABC"]
+
+
+def test_text_function_cast_handles_nested_calls_and_other_arguments(tmp_path):
+    assert calc(tmp_path, "id,n\n1,  12345 \n", "Left(Trim([n]), 3)") == ["123"]
+    assert calc(tmp_path, "id,n\n1,12345\n", "SubField([n], '3', 2) & '-' & Len([n])") == ["45-5"]
+
+
+def test_window_count_distinct_respects_the_range(tmp_path):
+    rows = "id,g,o,v\n1,A,1,x\n2,A,2,y\n3,A,3,x\n"
+    cols, out = run_one(tmp_path, rows, ["id", "g", "o", "v"], "window", wcfg("COUNT_DISTINCT", "v", end="CURRENT"))
+    assert [r[cols.index("w")] for r in out] == ["1", "2", "2"]
