@@ -6,7 +6,7 @@ editor: por API no se puede, ver 9 ter), y se comparan las huellas.
 
 Requisitos: `out/e2e_clone.json` con {"app", "df"} del clon (lo crea `scripts/e2e_ventas.py --init`) y las fuentes
 `clientes` y `cuentas` ya registradas en el flujo.
-Uso: python scripts/e2e_ventas.py [--init] [--local]      (--local: solo emulador, sin tocar el tenant; --sin-ventana: omite el RANK; --sin-formato: omite FORMAT_NUMBER)
+Uso: python scripts/e2e_ventas.py [--escenario ventas|calidad|normalizacion] [--init] [--local]      (--local: solo emulador, sin tocar el tenant; --sin-ventana: omite el RANK; --sin-formato: omite FORMAT_NUMBER)
 """
 import copy
 import json
@@ -69,6 +69,56 @@ def build(window=True, formato=True):
     return f
 
 
+def build_calidad():
+    """transacciones_enero -> partes y aritmetica de fechas, CUT -> filtro con REJECT -> dos ramas -> union -> orden."""
+    f = Flow("emu_e2e_calidad")
+    tx = f.dataset("transacciones_enero", "transacciones_enero.csv", ["transaccion_id", "fecha", "monto"])
+    parts = f.proc("date", "Partes de fecha", {"type": "EXTRACT_DATE_PARTS", "extractDateTokensConfiguration": {
+        "columnsToProcess": ["fecha"], "shouldCreateNewColumn": True, "newColumnRename": "", "datePattern": "yyyy-MM-dd HH:mm:ss",
+        "year": True, "month": True, "day": True}}, x=200)
+    mod = f.proc("date", "Vence en 7 dias", {"type": "MODIFY_DATES", "modifyDateConfiguration": {
+        "columnsToProcess": ["fecha"], "newColumnRename": "vence", "shouldCreateNewColumn": True, "datePattern": "dd/MM/yyyy",
+        "timeUnit": "DAY", "useWith": "VALUE", "column": "", "constantValue": 7}}, x=320)
+    iso = f.proc("date", "Vence ISO", {"type": "FORMAT_DATES", "formatDatesConfiguration": {
+        "columnsToProcess": ["vence"], "newColumnRename": "vence_iso", "shouldCreateNewColumn": True, "format": "YYYYMMDD_DASH",
+        "datePattern": "YYYY-MM-DD hh:mm:ss.fff"}}, x=440)
+    cut = f.proc("strings", "Sin prefijo T", {"type": "CUT", "cutConfiguration": {
+        "columnsToProcess": ["transaccion_id"], "newColumnName": "id_num", "shouldCreateNewColumn": True,
+        "pattern": {"value": "T", "operator": "CONTAINS"}}}, x=560)
+    pos = f.proc("filter", "Ingresos", flt(("monto", "GREATER_OR_EQUAL", "0")), x=680)
+    rnd = f.proc("numbers", "Ingreso redondeado", {"type": "ROUND", "roundHalfUpConfiguration": {
+        "columnsToProcess": ["monto"], "shouldCreateNewColumn": True, "newColumnName": "monto_aj", "precision": 0}}, x=800)
+    ab = f.proc("math", "Egreso en positivo", {"type": "ABSOLUTE", "absoluteConfiguration": {
+        "columnsToProcess": ["monto"], "shouldCreateNewColumn": True, "newColumnName": "monto_aj"}}, x=800)
+    un = f.proc("union", "Unir ramas", {"unionAll": True}, x=940)
+    srt = f.proc("sort", "Orden", {"sortFields": [{"fieldPath": "transaccion_id", "sortOrder": "ASCENDING"}]}, x=1060)
+    tgt = f.target("Destino", "emu_e2e_calidad", x=1180)
+    f.chain(tx, parts, mod, iso, cut, pos, rnd, un)
+    f.link(pos, ab, out="REJECT")
+    f.link(ab, un)
+    f.chain(un, srt, tgt)
+    return f
+
+
+def build_normalizacion():
+    """fechas_sucias + numeros_sucios (20 filas cada una, formatos mezclados) -> conversiones -> union por id -> orden."""
+    f = Flow("emu_e2e_normalizacion")
+    fe = f.dataset("fechas_sucias", "fechas_sucias.csv", ["id", "fecha_raw"])
+    nu = f.dataset("numeros_sucios", "numeros_sucios.csv", ["id", "numero_raw"])
+    fd = f.proc("date", "Fecha a date", {"type": "CONVERT_TO_DATE", "convertToDateConfiguration": {
+        "columnsToProcess": ["fecha_raw"], "datePattern": "YYYY-MM-DD", "format": "auto", "newColumnRename": "fecha_d", "shouldCreateNewColumn": True}}, x=240)
+    nn = f.proc("numbers", "Numero a number", {"type": "CONVERT_TO_NUMBER", "convertToNumberConfiguration": {
+        "columnsToProcess": ["numero_raw"], "decimalSeparator": ".", "newColumnName": "numero", "shouldCreateNewColumn": True, "thousandSeparator": ","}}, x=240)
+    jn = f.proc("join", "Fecha + numero", join("INNER_JOIN", ("id", "id")), x=480)
+    srt = f.proc("sort", "Orden", {"sortFields": [{"fieldPath": "id", "sortOrder": "ASCENDING"}]}, x=620)
+    tgt = f.target("Destino", "emu_e2e_normalizacion", x=760)
+    f.chain(fe, fd, jn)
+    f.chain(nu, nn)
+    f.link(nn, jn)
+    f.chain(jn, srt, tgt)
+    return f
+
+
 def graph_for(flow, entities):
     """grafo del flujo con los entityId de las fuentes registradas en el clon (por etiqueta del nodo)."""
     g = copy.deepcopy(flow.dump()["dataflow"]["graph"])
@@ -79,7 +129,9 @@ def graph_for(flow, entities):
 
 
 def main(argv):
-    flow = build(window="--sin-ventana" not in argv, formato="--sin-formato" not in argv)
+    name = argv[argv.index("--escenario") + 1] if "--escenario" in argv else "ventas"
+    flow = {"calidad": build_calidad, "normalizacion": build_normalizacion}.get(name, lambda: None)() or build(window="--sin-ventana" not in argv, formato="--sin-formato" not in argv)
+    clone_file = CLONE if name == "ventas" else os.path.join(ROOT, "out", f"e2e_{name}_clone.json")
     dump = flow.dump()
     data = os.path.join(ROOT, "data", "practica")
     local = compare.local_fingerprints([t["dest"] for t in runner.run(dump, data, os.path.join(ROOT, "out", "e2e"))], head=HEAD)
@@ -89,14 +141,18 @@ def main(argv):
     b = bridge.Bridge(apply=True)
     r = Remote(b)
     if "--init" in argv:
-        c = r.clone(BASE_APP_ID, "emu_e2e_ventas")
-        json.dump({"app": c.app_id, "df": c.dataflow_id}, open(CLONE, "w"))
-        print("clon creado; registre las fuentes clientes y cuentas desde el editor y repita sin --init")
+        base = BASE_APP_ID
+        if name == "normalizacion":  # el flujo `normalizacion` del espacio ya tiene registradas estas fuentes; se copia (solo lectura) a un emu_*
+            items = b.get("v1/items", {"spaceId": json.load(open(os.path.join(ROOT, "dfemu.local.json")))["DFEMU_SPACE_ID"], "limit": 100})
+            base = next(i["resourceId"] for i in (items if isinstance(items, list) else items["data"]) if i.get("name", "").startswith("normaliza"))
+        c = r.clone(base, f"emu_e2e_{name}")
+        json.dump({"app": c.app_id, "df": c.dataflow_id}, open(clone_file, "w"))
+        print("clon creado; registre las fuentes desde el editor y repita sin --init")
         return 0
-    ids = json.load(open(CLONE))
+    ids = json.load(open(clone_file))
     df = r._get(f"v1/dataflows/{ids['df']}")
     ents = {n["label"]: n["component"]["properties"]["dataEntity"]["entityId"] for n in df["graph"]["nodes"] if n["type"] == "source"}
-    clone = type("C", (), {"app_id": ids["app"], "dataflow_id": ids["df"], "name": "emu_e2e_ventas"})()
+    clone = type("C", (), {"app_id": ids["app"], "dataflow_id": ids["df"], "name": f"emu_e2e_{name}"})()
     res = r.push_graph(clone, graph_for(flow, ents))
     if res.validity.get("status") != "VALID" or not res.script:
         print("SERVIDOR", res.validity.get("status"), json.dumps(res.validity.get("nodesConstraintViolations"))[:600])

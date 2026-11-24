@@ -7,6 +7,7 @@ import duckdb
 
 from . import dfw
 
+BS = chr(92)
 q = lambda c: '"' + str(c).replace('"', '""') + '"'
 lit = lambda s: "'" + str(s).replace("'", "''") + "'"
 
@@ -39,6 +40,29 @@ class Ctx:
 
 
 # ---------- origenes ----------
+# numero en-US como lo lee Qlik: miles con coma solo en grupos de 3, punto decimal, signo opcional
+_NUM_RE = r"^[+-]?(DIGITS+|DIGITS{1,3}(,DIGITS{3})+)([.]DIGITS+)?$".replace("DIGITS", BS + "d")
+
+
+def _qlik_symbols(ctx, view, text_cols, fields):
+    """Qlik guarda cada valor distinto de un campo una sola vez: los textos que interpreta como el mismo numero o la misma fecha
+    quedan con el primer texto leido (medido: '1,200.50' sale como '1200.50' si ya habia un '1200.50'; '09/09/2026' como
+    '2026-09-09'). Numeros: `_NUM_RE`; fechas: YYYY-MM-DD, M/D/YYYY, con hora o con T.
+    shortcut: solo configuracion regional en-US; no se unifica un numero con una fecha ni se conocen todos los formatos de fecha."""
+    if not text_cols:
+        return view
+    keys = []
+    for f in text_cols:
+        c = q(f)
+        dt = ", ".join(f"try_strptime({c}, '{fmt}')" for fmt in ("%Y-%m-%d", "%m/%d/%Y", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"))
+        keys.append(f"CASE WHEN regexp_matches({c}, {lit(_NUM_RE)}) THEN 'n' || CAST(CAST(replace({c}, ',', '') AS DOUBLE) AS VARCHAR) "
+                    f"ELSE 'd' || CAST(coalesce({dt}) AS VARCHAR) END AS {q('__k_' + f)}")
+    inner = ctx.view(f"SELECT *, row_number() OVER () AS __rn, {', '.join(keys)} FROM {view}")
+    cols = [f"CASE WHEN {q('__k_' + f)} IS NULL THEN {q(f)} ELSE first_value({q(f)}) OVER (PARTITION BY {q('__k_' + f)} ORDER BY __rn) END AS {q(f)}"
+            if f in text_cols else q(f) for f in fields]
+    return ctx.view(f"SELECT {', '.join(cols)} FROM {inner} ORDER BY __rn")  # la ventana reordena: se conserva el orden del archivo
+
+
 def _source(ctx, node, sources):
     p = node["component"]["properties"]
     meta = next((s for s in sources if s["sourceId"] == (p.get("dataEntity") or {}).get("entityId")), None)
@@ -57,7 +81,7 @@ def _source(ctx, node, sources):
         # medido en el tenant); DuckDB no recorta y la lee como NULL. Las columnas numericas con vacios siguen con NULL.
         types = {r[0]: r[1].split("(")[0] for r in ctx.con.execute(f"DESCRIBE SELECT * FROM {raw}").fetchall()}
         trimmed = [f"coalesce(trim({q(f)}), '') AS {q(f)}" if types.get(f) == "VARCHAR" else q(f) for f in fields]
-        return ctx.view(f"SELECT {', '.join(trimmed)} FROM {raw}")
+        return _qlik_symbols(ctx, ctx.view(f"SELECT {', '.join(trimmed)} FROM {raw}"), [f for f in fields if types.get(f) == "VARCHAR"], fields)
     conn = t["dataconnectorName"]
     cfg = ctx.connections.get(conn)
     if not cfg:
@@ -396,7 +420,13 @@ def _typed(ctx, t, cfg, v):
             c = cfg["formatNumberConfiguration"]
             return D(_per_col(ctx, v, c, lambda x: _format_number(c, f"TRY_CAST({x} AS DOUBLE)")))
         c = cfg["convertToNumberConfiguration"]
-        return D(_per_col(ctx, v, c, lambda x: f"TRY_CAST(replace(replace(CAST({x} AS VARCHAR), {lit(c['thousandSeparator'])}, ''), {lit(c['decimalSeparator'])}, '.') AS DOUBLE)"))
+        # num(num#([c], '#', dec, mil)): solo un numero bien formado (miles en grupos de 3); '10,5', '1.200,50' o 'NaN' dan NULL (medido)
+        dec, mil = c["decimalSeparator"] or ".", c["thousandSeparator"]
+        e = lambda ch: "[" + ch.replace(BS, BS * 2) + "]"
+        whole = f"DIGITS+|DIGITS{{1,3}}({e(mil)}DIGITS{{3}})+" if mil else "DIGITS+"
+        pat = f"^[+-]?({whole})({e(dec)}DIGITS+)?$".replace("DIGITS", BS + "d")
+        return D(_per_col(ctx, v, c, lambda x: f"CASE WHEN regexp_matches(trim(CAST({x} AS VARCHAR)), {lit(pat)}) THEN "
+                                              f"TRY_CAST(replace(replace(trim(CAST({x} AS VARCHAR)), {lit(mil)}, ''), {lit(dec)}, '.') AS DOUBLE) END"))
     if t == "masking":
         return D(_per_col(ctx, v, cfg["hashDataConfiguration"], lambda x: f"md5(CAST({x} AS VARCHAR))"))
     if t == "data-cleansing":
@@ -459,6 +489,9 @@ def _derived(v, c, suffix, fn):
     return f"SELECT *, {', '.join(f'{fn(q(t))} AS {q(t + chr(95) + suffix)}' for t in c['columnsToProcess'])} FROM {v}"
 
 
+_AUTO_DATES = ("%Y-%m-%d", "%m/%d/%Y", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S")
+
+
 def _date(ctx, v, k, c):
     col = c["columnsToProcess"][0]
     S = f"CAST({q(col)} AS VARCHAR)"
@@ -490,7 +523,9 @@ def _date(ctx, v, k, c):
             ctx.converted_dates[name] = "date"
         return f"SELECT *, {e} AS {q(name)} FROM {v}" if c["shouldCreateNewColumn"] and name != col else f"SELECT * REPLACE ({e} AS {q(col)}) FROM {v}"
     cast = "DATE" if k == "CONVERT_TO_DATE" else "TIMESTAMP"
-    e = f"TRY_CAST({S} AS {cast})" if c["format"] == "auto" else f"CAST(try_strptime({S}, {lit(_jfmt(c['datePattern']))}) AS {cast})"
+    # auto: solo los formatos que Qlik reconoce con el SET en-US (medido: '2026/09/09', '09-09-2026' y 'M/D/YYYY hh:mm' dan NULL)
+    auto = ", ".join(f"CAST(try_strptime({S}, '{fmt}') AS {cast})" for fmt in _AUTO_DATES)
+    e = f"coalesce({auto})" if c["format"] == "auto" else f"CAST(try_strptime({S}, {lit(_jfmt(c['datePattern']))}) AS {cast})"
     name = c["newColumnRename"] or col
     ctx.converted_dates[name] = "date" if k == "CONVERT_TO_DATE" else "timestamp"
     return f"SELECT *, {e} AS {q(name)} FROM {v}" if c["shouldCreateNewColumn"] and name != col else f"SELECT * REPLACE ({e} AS {q(col)}) FROM {v}"
