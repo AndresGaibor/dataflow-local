@@ -334,3 +334,51 @@ def test_truncate_date_rejects_the_units_the_server_rejects(tmp_path):
     from emulator import runner as r
     with pytest.raises(r.Unsupported):
         run_one(tmp_path, "id,n\n1,1998-09-13\n", ["id", "n"], "date", vcfg("TRUNCATE_DATE", "truncateDateConfiguration", timeUnit="WEEK"))
+
+
+# --- window de agregacion: Window(agg(c), particion, 'ASC'|'DESC', orden[, 1, inicio, fin]) leido en el script de Qlik ----
+
+def wcfg(op, field, start="UNLIMITED", end="UNLIMITED", sv=1, ev=1, order="ASCENDING"):
+    return {"operationConfiguration": {"operationType": op, "operationFields": [field], "outputFieldName": "w", "delimiter": ","},
+            "partitionByConfiguration": {"partitionByFieldList": ["g"]},
+            "sortingConfiguration": {"sortBy": "o", "sortOrder": order},
+            "rangeConfiguration": {"windowStartType": start, "windowEndType": end, "windowStartValue": sv, "windowEndValue": ev}}
+
+
+def window_run(tmp_path, cfg):
+    rows = "id,g,o,v\n1,A,1,10\n2,A,2,20\n3,A,3,30\n4,B,1,5\n5,B,2,7\n"
+    cols, out = run_one(tmp_path, rows, ["id", "g", "o", "v"], "window", cfg)
+    return [r[cols.index("w")] for r in out]
+
+
+@pytest.mark.parametrize("op,rng,expected", [
+    ("SUM", {}, ["60", "60", "60", "12", "12"]),                                          # sin rango: toda la particion
+    ("SUM", {"end": "CURRENT"}, ["10", "30", "60", "5", "12"]),                           # acumulado
+    ("AVG", {"start": "PRECEDING", "sv": 1, "end": "CURRENT"}, ["10", "15", "25", "5", "6"]),
+    ("MAX", {"start": "PRECEDING", "sv": 1, "end": "FOLLOWING", "ev": 1}, ["20", "30", "30", "7", "7"]),
+    ("MIN", {"start": "CURRENT", "end": "FOLLOWING", "ev": 1}, ["10", "20", "30", "5", "7"]),
+    ("COUNT", {}, ["3", "3", "3", "2", "2"]),
+    ("FIRST", {}, ["10", "10", "10", "5", "5"]),
+    ("LAST", {}, ["30", "30", "30", "7", "7"]),
+])
+def test_window_aggregates_over_the_partition_with_optional_range(tmp_path, op, rng, expected):
+    assert window_run(tmp_path, wcfg(op, "v", **rng)) == expected
+
+
+def test_window_count_distinct_and_concatenate(tmp_path):
+    rows = "id,g,o,v\n1,A,1,x\n2,A,2,y\n3,A,3,x\n"
+    cols, out = run_one(tmp_path, rows, ["id", "g", "o", "v"], "window", wcfg("COUNT_DISTINCT", "v"))
+    assert [r[cols.index("w")] for r in out] == ["2", "2", "2"]
+    cols, out = run_one(tmp_path, rows, ["id", "g", "o", "v"], "window", wcfg("CONCATENATE", "v"))
+    assert [r[cols.index("w")] for r in out] == ["x,x,y"] * 3  # medido: Concat ordena por el texto
+
+
+def test_window_descending_order_changes_the_running_frame(tmp_path):
+    assert window_run(tmp_path, wcfg("SUM", "v", end="CURRENT", order="DESCENDING")) == ["60", "50", "30", "12", "7"]
+
+
+def test_window_avg_keeps_8_significant_digits_like_qlik(tmp_path):
+    # medido en el tenant: Window(Avg(c)...) da -246.66667 donde DuckDB da -246.66666666667 (8 cifras; la suma de 500 filas lo confirma)
+    rows = "id,g,o,v\n1,A,1,1\n2,A,2,1\n3,A,3,2\n"
+    cols, out = run_one(tmp_path, rows, ["id", "g", "o", "v"], "window", wcfg("AVG", "v"))
+    assert [r[cols.index("w")] for r in out] == ["1.3333333"] * 3

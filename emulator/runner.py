@@ -186,14 +186,34 @@ def run_processor(ctx, t, cfg, ins, node):
         return D(f"SELECT *, {', '.join(qexpr(c['expressionStatement']) + ' AS ' + q(c['newColumnName']) for c in cfg['calculateFields'])} FROM {v}")
     if t == "window":
         op = cfg["operationConfiguration"]
-        if op["operationType"] not in ("RANK", "ROW_NUMBER", "DENSE_RANK"):
-            raise Unsupported(f"window {op['operationType']}")
+        kind = op["operationType"]
         part = ", ".join(q(x) for x in cfg["partitionByConfiguration"]["partitionByFieldList"])
         s = cfg["sortingConfiguration"]
-        fn = op["operationType"].lower()
+        order = f"ORDER BY {q(s['sortBy'])} {'DESC' if s['sortOrder'] == 'DESCENDING' else ''}"
+        over = f"{'PARTITION BY ' + part if part else ''} {order}"
+        if kind in ("RANK", "ROW_NUMBER"):
+            fn = f"{kind.lower()}()"
+        else:
+            # Window(agg(c), particion, 'ASC'|'DESC', orden[, 1, inicio, fin]) en el script de Qlik; sin rango, toda la particion
+            f = q(op["operationFields"][0])
+            num = f"TRY_CAST({f} AS DOUBLE)"
+            fns = {"SUM": f"sum({num})", "AVG": f"avg({num})", "MIN": f"min({num})", "MAX": f"max({num})",
+                   "COUNT": f"count({f})", "FIRST": f"first_value({f})", "LAST": f"last_value({f})",
+                   "COUNT_DISTINCT": f"count(DISTINCT {f})", "CONCATENATE": f"string_agg(CAST({f} AS VARCHAR), {lit(op.get('delimiter', ','))} ORDER BY CAST({f} AS VARCHAR))"}  # Concat ordena por el texto, no por el orden de la ventana (medido)
+            if kind not in fns:
+                raise Unsupported(f"window {kind}")
+            r = cfg["rangeConfiguration"]
+            bound = lambda t, n, unl: {"UNLIMITED": unl, "CURRENT": "CURRENT ROW", "PRECEDING": f"{n} PRECEDING", "FOLLOWING": f"{n} FOLLOWING"}[t]
+            frame = (f"ROWS BETWEEN {bound(r['windowStartType'], r['windowStartValue'], 'UNBOUNDED PRECEDING')} AND "
+                     f"{bound(r['windowEndType'], r['windowEndValue'], 'UNBOUNDED FOLLOWING')}")
+            fn, over = fns[kind], f"{over} {frame}"
+            if kind == "COUNT_DISTINCT":  # DuckDB no admite DISTINCT con orden ni marco: se calcula sobre la particion entera
+                over = f"{'PARTITION BY ' + part if part else ''}"
         # Qlik devuelve las filas en el orden de origen con la columna de la ventana (medido); no las reordena por ella
-        return D(f"SELECT * EXCLUDE (__rn) FROM (SELECT *, {fn}() OVER ({'PARTITION BY ' + part if part else ''} "
-                 f"ORDER BY {q(s['sortBy'])} {'DESC' if s['sortOrder'] == 'DESCENDING' else ''}) AS {q(op['outputFieldName'])} "
+        expr = f"{fn} OVER ({over})"
+        if kind == "AVG":
+            expr = f"CAST(printf('%.8g', {expr}) AS DOUBLE)"  # medido: Window(Avg()) llega con 8 cifras significativas
+        return D(f"SELECT * EXCLUDE (__rn) FROM (SELECT *, {expr} AS {q(op['outputFieldName'])} "
                  f"FROM (SELECT *, row_number() OVER () AS __rn FROM {v})) ORDER BY __rn")
     if t == "unpivot":
         # CROSSTABLE(atributo, valor, n) de Qlik: las columnas no seleccionadas quedan como claves (en su orden), cada columna

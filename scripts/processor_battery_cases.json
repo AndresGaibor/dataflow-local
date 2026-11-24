@@ -2097,5 +2097,502 @@
     "timeUnit": "HOUR"
    }
   }
+ ],
+ "win_sum_total": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "window",
+    {
+     "operationConfiguration": {
+      "operationType": "SUM",
+      "operationFields": [
+       "rel"
+      ],
+      "outputFieldName": "w",
+      "delimiter": ","
+     },
+     "partitionByConfiguration": {
+      "partitionByFieldList": [
+       "segmento"
+      ]
+     },
+     "sortingConfiguration": {
+      "sortBy": "cedula",
+      "sortOrder": "ASCENDING"
+     },
+     "rangeConfiguration": {
+      "windowStartType": "UNLIMITED",
+      "windowEndType": "UNLIMITED",
+      "windowStartValue": 1,
+      "windowEndValue": 1
+     }
+    }
+   ]
+  ]
+ ],
+ "win_sum_acum": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "window",
+    {
+     "operationConfiguration": {
+      "operationType": "SUM",
+      "operationFields": [
+       "rel"
+      ],
+      "outputFieldName": "w",
+      "delimiter": ","
+     },
+     "partitionByConfiguration": {
+      "partitionByFieldList": [
+       "segmento"
+      ]
+     },
+     "sortingConfiguration": {
+      "sortBy": "cedula",
+      "sortOrder": "ASCENDING"
+     },
+     "rangeConfiguration": {
+      "windowStartType": "UNLIMITED",
+      "windowEndType": "CURRENT",
+      "windowStartValue": 1,
+      "windowEndValue": 1
+     }
+    }
+   ]
+  ]
+ ],
+ "win_sum_acum_desc": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "window",
+    {
+     "operationConfiguration": {
+      "operationType": "SUM",
+      "operationFields": [
+       "rel"
+      ],
+      "outputFieldName": "w",
+      "delimiter": ","
+     },
+     "partitionByConfiguration": {
+      "partitionByFieldList": [
+       "segmento"
+      ]
+     },
+     "sortingConfiguration": {
+      "sortBy": "cedula",
+      "sortOrder": "DESCENDING"
+     },
+     "rangeConfiguration": {
+      "windowStartType": "UNLIMITED",
+      "windowEndType": "CURRENT",
+      "windowStartValue": 1,
+      "windowEndValue": 1
+     }
+    }
+   ]
+  ]
+ ],
+ "win_avg_prec2": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "window",
+    {
+     "operationConfiguration": {
+      "operationType": "AVG",
+      "operationFields": [
+       "rel"
+      ],
+      "outputFieldName": "w",
+      "delimiter": ","
+     },
+     "partitionByConfiguration": {
+      "partitionByFieldList": [
+       "segmento"
+      ]
+     },
+     "sortingConfiguration": {
+      "sortBy": "cedula",
+      "sortOrder": "ASCENDING"
+     },
+     "rangeConfiguration": {
+      "windowStartType": "PRECEDING",
+      "windowEndType": "CURRENT",
+      "windowStartValue": 2,
+      "windowEndValue": 1
+     }
+    }
+   ]
+  ]
+ ],
+ "win_max_p1f1": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "window",
+    {
+     "operationConfiguration": {
+      "operationType": "MAX",
+      "operationFields": [
+       "rel"
+      ],
+      "outputFieldName": "w",
+      "delimiter": ","
+     },
+     "partitionByConfiguration": {
+      "partitionByFieldList": [
+       "segmento"
+      ]
+     },
+     "sortingConfiguration": {
+      "sortBy": "cedula",
+      "sortOrder": "ASCENDING"
+     },
+     "rangeConfiguration": {
+      "windowStartType": "PRECEDING",
+      "windowEndType": "FOLLOWING",
+      "windowStartValue": 1,
+      "windowEndValue": 1
+     }
+    }
+   ]
+  ]
+ ],
+ "win_min_cf1": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "window",
+    {
+     "operationConfiguration": {
+      "operationType": "MIN",
+      "operationFields": [
+       "rel"
+      ],
+      "outputFieldName": "w",
+      "delimiter": ","
+     },
+     "partitionByConfiguration": {
+      "partitionByFieldList": [
+       "segmento"
+      ]
+     },
+     "sortingConfiguration": {
+      "sortBy": "cedula",
+      "sortOrder": "ASCENDING"
+     },
+     "rangeConfiguration": {
+      "windowStartType": "CURRENT",
+      "windowEndType": "FOLLOWING",
+      "windowStartValue": 1,
+      "windowEndValue": 1
+     }
+    }
+   ]
+  ]
+ ],
+ "win_count": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "window",
+    {
+     "operationConfiguration": {
+      "operationType": "COUNT",
+      "operationFields": [
+       "rel"
+      ],
+      "outputFieldName": "w",
+      "delimiter": ","
+     },
+     "partitionByConfiguration": {
+      "partitionByFieldList": [
+       "segmento"
+      ]
+     },
+     "sortingConfiguration": {
+      "sortBy": "cedula",
+      "sortOrder": "ASCENDING"
+     },
+     "rangeConfiguration": {
+      "windowStartType": "UNLIMITED",
+      "windowEndType": "UNLIMITED",
+      "windowStartValue": 1,
+      "windowEndValue": 1
+     }
+    }
+   ]
+  ]
+ ],
+ "win_first": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "window",
+    {
+     "operationConfiguration": {
+      "operationType": "FIRST",
+      "operationFields": [
+       "rel"
+      ],
+      "outputFieldName": "w",
+      "delimiter": ","
+     },
+     "partitionByConfiguration": {
+      "partitionByFieldList": [
+       "segmento"
+      ]
+     },
+     "sortingConfiguration": {
+      "sortBy": "cedula",
+      "sortOrder": "ASCENDING"
+     },
+     "rangeConfiguration": {
+      "windowStartType": "UNLIMITED",
+      "windowEndType": "UNLIMITED",
+      "windowStartValue": 1,
+      "windowEndValue": 1
+     }
+    }
+   ]
+  ]
+ ],
+ "win_last": [
+  "chain",
+  [
+   [
+    "math",
+    {
+     "type": "SUBTRACT",
+     "subtractConfiguration": {
+      "columnsToProcess": [
+       "cedula"
+      ],
+      "constantValue": 1700000250,
+      "mode": "WITH_VALUE",
+      "newColumnName": "rel",
+      "selectedColumn": "",
+      "shouldCreateNewColumn": true
+     }
+    }
+   ],
+   [
+    "window",
+    {
+     "operationConfiguration": {
+      "operationType": "LAST",
+      "operationFields": [
+       "rel"
+      ],
+      "outputFieldName": "w",
+      "delimiter": ","
+     },
+     "partitionByConfiguration": {
+      "partitionByFieldList": [
+       "segmento"
+      ]
+     },
+     "sortingConfiguration": {
+      "sortBy": "cedula",
+      "sortOrder": "ASCENDING"
+     },
+     "rangeConfiguration": {
+      "windowStartType": "UNLIMITED",
+      "windowEndType": "UNLIMITED",
+      "windowStartValue": 1,
+      "windowEndValue": 1
+     }
+    }
+   ]
+  ]
+ ],
+ "win_count_distinct": [
+  "window",
+  {
+   "operationConfiguration": {
+    "operationType": "COUNT_DISTINCT",
+    "operationFields": [
+     "ciudad"
+    ],
+    "outputFieldName": "w",
+    "delimiter": ","
+   },
+   "partitionByConfiguration": {
+    "partitionByFieldList": [
+     "segmento"
+    ]
+   },
+   "sortingConfiguration": {
+    "sortBy": "cedula",
+    "sortOrder": "ASCENDING"
+   },
+   "rangeConfiguration": {
+    "windowStartType": "UNLIMITED",
+    "windowEndType": "UNLIMITED",
+    "windowStartValue": 1,
+    "windowEndValue": 1
+   }
+  }
+ ],
+ "win_concat": [
+  "window",
+  {
+   "operationConfiguration": {
+    "operationType": "CONCATENATE",
+    "operationFields": [
+     "ciudad"
+    ],
+    "outputFieldName": "w",
+    "delimiter": ","
+   },
+   "partitionByConfiguration": {
+    "partitionByFieldList": [
+     "segmento"
+    ]
+   },
+   "sortingConfiguration": {
+    "sortBy": "cedula",
+    "sortOrder": "ASCENDING"
+   },
+   "rangeConfiguration": {
+    "windowStartType": "UNLIMITED",
+    "windowEndType": "UNLIMITED",
+    "windowStartValue": 1,
+    "windowEndValue": 1
+   }
+  }
  ]
 }

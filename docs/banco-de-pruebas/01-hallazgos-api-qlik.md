@@ -157,7 +157,7 @@ Medición el 2026-11-23 sobre los 18 scripts distintos de `out/corpus*/`: 3 se t
 
 ## 9 quater. Processors: emulador frente al tenant
 
-Verificado el 2026-11-23 con `scripts/processor_battery.py`: **91 casos**: 80 individuales (`clientes` → un processor → destino; los joins usan un `fork` con una rama filtrada) y 11 cadenas de 3 o 4 pasos (ver más abajo), ejecutados en el emulador y, con el mismo grafo, en el tenant (clon `emu_v_*` del flujo base, script generado por Qlik, app `emu_oracle_*`), comparando huellas. Los casos están en `scripts/processor_battery_cases.json`. **Resultado final: los 91 coinciden** (contenido, y orden y formato de las 8 primeras filas, salvo lo indicado en "Orden y formato"). La primera pasada (15 casos) dio diferencias en todos; las 11 cadenas coincidieron a la primera una vez corregidos los processors sueltos.
+Verificado el 2026-11-23 con `scripts/processor_battery.py`: **102 casos**: 91 individuales (`clientes` → un processor → destino; los joins usan un `fork` con una rama filtrada) y 11 cadenas de 3 o 4 pasos (ver más abajo), ejecutados en el emulador y, con el mismo grafo, en el tenant (clon `emu_v_*` del flujo base, script generado por Qlik, app `emu_oracle_*`), comparando huellas. Los casos están en `scripts/processor_battery_cases.json`. **Resultado final: los 102 coinciden** (contenido, y orden y formato de las 8 primeras filas, salvo lo indicado en "Orden y formato"). La primera pasada (15 casos) dio diferencias en todos; las 11 cadenas coincidieron a la primera una vez corregidos los processors sueltos.
 
 ### Cómo mide el tenant (importante)
 El oráculo no mide el resultado en memoria: **vuelve a cargar el CSV que escribió el flujo** (`oracle._READBACK`) y mide la tabla cargada. En Qlik un archivo no tiene `NULL`: toda celda vacía es el texto vacío, que cuenta como valor y es distinto. Por eso `compare.fingerprint_of` cuenta `count(*)` para todas las columnas y suma 1 al número de distintos si hay algún `NULL`. Esto cubre de una vez los `NULL` que produce el emulador (join sin pareja, conversión de texto no numérico, celda vacía de la fuente). La suma sigue ignorando los vacíos. Una versión intermedia calculaba la huella en memoria; era una aproximación equivocada y se descartó.
@@ -246,7 +246,7 @@ El servidor lista todas las variantes de un processor si se le manda un `type` i
 | `numbers` | `CONVERT_TO_NUMBER`, `REMOVE_NEGATIVE_VALUES` | | `ROUND`, `FLOOR`, `CEIL`, `ROUND_DOWN`, `ROUND_DOWN_REAL`, `FORMAT_NUMBER`, `FORMAT_MONEY`, `COMPARE_NUMBERS` |
 | `date` | `EXTRACT_DATE_PARTS`, `CONVERT_TO_DATE`, `CONVERT_TO_TIMESTAMP`, `TRUNCATE_DATE` (`YEAR`, `MONTH`, `DAY`, `HOUR`) | | `MODIFY_DATES`, `FORMAT_DATES`, `CONVERT_TO_TIME`, `TIME_SINCE`, `COMPARE_DATES`, `DATE_FROM_PARTS`, `TIME_FROM_PARTS`, `TIMESTAMP_FROM_PARTS` |
 | `split-field` | `SPLIT_TEXT_IN_PARTS` | | `EXTRACT_VALUES_BY_REGEX` |
-| `window` | `RANK`, `ROW_NUMBER` | | `FIRST`, `LAST`, `AVG`, `MAX`, `MIN`, `SUM`, `COUNT`, `COUNT_DISTINCT`, `CONCATENATE` |
+| `window` | `RANK`, `ROW_NUMBER`, `SUM`, `AVG`, `MIN`, `MAX`, `COUNT`, `COUNT_DISTINCT`, `FIRST`, `LAST`, `CONCATENATE` (con rango) | | |
 | `unpivot` | todas | | |
 | `pivot` | | claves conocidas | no se puede crear por API (ver arriba) |
 
@@ -280,7 +280,7 @@ Solo se midió la configuración regional en-US: otras conservan el formato ISO 
 - Un `scripts/processor_battery.py` interrumpido a mitad (p. ej. por falta de memoria del equipo) puede dejar una app `emu_oracle_*` y un archivo `emu_*.csv`: `dfemu cleanup --apply` los borra. Con poca memoria libre conviene lanzar los casos por tandas de 6 a 12.
 
 ### Lo que el servidor dijo sobre sus propios tipos
-- **Ventanas (`window`)**: los tipos válidos son `FIRST`, `AVG`, `MAX`, `CONCATENATE`, `LAST`, `SUM`, `COUNT_DISTINCT`, `ROW_NUMBER`, `COUNT`, `MIN` y `RANK`. **`DENSE_RANK` no existe** (el servidor responde `BAD_REQUEST ... not one of the values accepted for Enum class`). El emulador cubre `RANK` y `ROW_NUMBER`; las ventanas de agregación (`SUM`, `AVG`...) con rango no están emuladas.
+- **Ventanas (`window`)**: los tipos válidos son `FIRST`, `AVG`, `MAX`, `CONCATENATE`, `LAST`, `SUM`, `COUNT_DISTINCT`, `ROW_NUMBER`, `COUNT`, `MIN` y `RANK`. **`DENSE_RANK` no existe** (el servidor responde `BAD_REQUEST ... not one of the values accepted for Enum class`). Todas están emuladas y verificadas. Qlik las genera como `Window(agg(c), partición, 'ASC'|'DESC', orden[, 1, inicio, fin])`: `PRECEDING n` es `-n`, `CURRENT` es `0`, `FOLLOWING n` es `n`, `UNLIMITED` es `Unbounded()`, y sin rango la agregación abarca toda la partición. Dos rarezas medidas: `Window(Avg())` devuelve **8 cifras significativas** (`-246.66667`; lo confirmó la suma de 500 filas, no 5 decimales), y `Concat` junta los valores **ordenados por su texto**, no por el orden de la ventana. Las filas salen en el orden de origen.
 - **Agregaciones** reales en los flujos: `SUM`, `AVG`, `COUNT`, `MEDIAN`, `MAX`, `MIN`, `COUNT_DISTINCT`. **Filtros**: `EQUAL`, `NOT_EQUAL`, `GREATER`, `GREATER_OR_EQUAL`, `LOWER`, `LOWER_OR_EQUAL`, `IS_NOT_NULL`, `MATCH_REGEX`, con `logicalOpType` `ALL` o `ANY`. **Joins**: `INNER_JOIN`, `LEFT_OUTER_JOIN`, `FULL_OUTER_JOIN`.
 
 ### Límites que quedan
@@ -435,7 +435,7 @@ Todos los comandos son simulación por defecto; las escrituras en el tenant requ
 | `dfemu compare archivo.dfw (--app APP\|--push [--base-app APP]) --apply` | compara resultados del emulador con el tenant |
 | `dfemu cleanup [--apply]` | lista o borra apps y archivos `emu_*` |
 | `dfemu coverage [archivos...]` | mide qué processors usa el corpus y si cada flujo se puede ejecutar |
-| `python scripts/processor_battery.py [caso ...]` | batería de 91 casos (80 processors y 11 cadenas), emulador frente al tenant (escribe en el tenant; limpia lo que crea) |
+| `python scripts/processor_battery.py [caso ...]` | batería de 102 casos (91 processors y 11 cadenas), emulador frente al tenant (escribe en el tenant; limpia lo que crea) |
 | `dfemu translate script.qvs\|.pull.json [--run] [--compare [--apply]]` | traduce el script de Qlik a SQL de DuckDB; con `--run` lo ejecuta y con `--compare --apply` lo compara con la ejecución real en el tenant |
 
 El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DFEMU_BASE_APP` la CLI con `DFEMU_QLIK` (ver 10 bis) y, para usar otro contexto de la CLI sin activarlo, `DFEMU_QLIK_CONTEXT` (ver `02-guia-oauth.md`).
