@@ -444,6 +444,12 @@ El espacio de escritura se configura con `DFEMU_SPACE_ID`, el flujo base con `DF
 
 ## 12. Pendiente
 
+**Estado (2026-11-23).** Lo verificado contra el tenant está en 9 quater (111 casos de batería, todos coincidentes). Para usar el emulador con flujos reales faltan, por orden de impacto:
+- **Fuentes de base de datos.** El `.dfw` desidentificado no trae tipos ni datos: `dfemu coverage --stub` comprueba la forma del flujo con 20 filas enteras, pero con datos reales hay que dar una conexión `duckdb`/`sqlite`/`postgres` (`--connections`). Con `--stub`, 8 de los 11 flujos con conexión dan `no concluyente` por tipos y 3 no se pueden ni intentar (la fuente no trae tablas).
+- **Variantes sin descubrir** (500 sin detalle): `CUT`, `ROUND`, `FLOOR`, `CEIL`, `ROUND_DOWN`, `FORMAT_NUMBER`, `FORMAT_MONEY`, `EXPONENTIEL_NUMBERS`, `NUMERIC_OPS`, `TIME_SINCE`, `MODIFY_DATES`, `FORMAT_DATES`, `EXTRACT_VALUES_BY_REGEX`. Hace falta un ejemplo creado en la interfaz.
+- **`pivot`** y el **nodo `script`** (el emulador solo lo traduce).
+- **Atajos con límite** (marcados `shortcut:` en el código): formato de fecha solo en-US, números de 1e14 o más, parámetros de `PADDING`/`SUBSTRING`/`MATCHES_PATTERN`/`COMPARE_NUMBERS` solo por defecto, `COUNT_DISTINCT` en ventana sin rango, orden de empates en ventanas.
+
 - Modificar la receta dentro de un subflow (`PUT v1/dataflows/{id del subflow}`): no se probó; hoy el subflow se toma del flujo base (ver 5 bis).
 - Import y export de `.dfw` con archivo: ver 10 quinquies. OAuth no era necesario (la API key sirve); falta obtener el id de la subida a `temp-contents` (viene en la cabecera `Location`, que la CLI no muestra) y la descarga del archivo exportado.
 - Cliente OAuth `dfemu-prueba`: ya borrado en el tenant y el contexto `dfemu-oauth` ya no está en la CLI (2026-11-23). Si hace falta otro, la guía es `02-guia-oauth.md`.

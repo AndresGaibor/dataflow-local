@@ -124,7 +124,7 @@ def _compare_translation(a, sql: str) -> int:
 
 def _coverage(a) -> int:
     paths = a.files or coverage.default_paths()
-    rows = coverage.report(paths, a.data)
+    rows = coverage.report(paths, a.data, a.stub)
     counts = collections.Counter()
     for path in paths:
         try:
@@ -352,6 +352,7 @@ def main(argv=None):
     cl.add_argument("--apply", action="store_true", help="borrar de verdad (sin esto solo lista)")
     co = sub.add_parser("coverage", help="mide que processors usa el corpus y que se puede ejecutar")
     co.add_argument("files", nargs="*", help="archivos .dfw (por omision, samples/**/*.dfw)")
+    co.add_argument("--stub", action="store_true", help="sirve las fuentes de base de datos con 20 filas de relleno para ver si el resto del flujo ejecuta")
     co.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
     tr = sub.add_parser("translate", help="traduce un script de Qlik (qvs o .pull.json) a SQL de DuckDB")
     tr.add_argument("file")

@@ -53,3 +53,35 @@ def test_cli_coverage_exit_0_with_runnable_sample(capsys):
     assert e.value.code == 0
     out = capsys.readouterr().out
     assert "ejecuta" in out and "resumen: ejecuta=1" in out
+
+
+def stub_flow(tmp_path):
+    from emulator.builder import Flow
+    f = Flow("stub")
+    src = f.db("origen", "gbq", "BQ_demo", "proyecto.tabla", ["a", "b"])
+    f.chain(src, f.proc("math", "p", {"type": "MULTIPLY", "multiplyConfiguration": {
+        "columnsToProcess": ["a"], "constantValue": 2, "mode": "WITH_VALUE", "newColumnName": "", "selectedColumn": "",
+        "shouldCreateNewColumn": False}}), f.target("Destino", "salida"))
+    return f.dump()
+
+
+def test_stub_connection_gives_a_few_numeric_rows_from_the_source_metadata(tmp_path):
+    import duckdb
+    (t,) = runner.run(stub_flow(tmp_path), str(tmp_path), str(tmp_path / "out"), {"BQ_demo": {"type": "stub", "rows": 5}})
+    rows = duckdb.connect().execute(f"SELECT a, b FROM read_csv('{t['dest']}', header=true)").fetchall()
+    assert len(rows) == 5 and all(isinstance(x, int) for r in rows for x in r)
+
+
+def test_a_connection_flow_without_config_still_requires_connection_but_runs_with_stub(tmp_path):
+    p = tmp_path / "flujo.dfw"
+    p.write_text(json.dumps(stub_flow(tmp_path)), encoding="utf-8")
+    assert coverage.run_file(str(p), str(tmp_path))[0] == coverage.REQUIERE_CONEXION
+    assert coverage.run_file(str(p), str(tmp_path), stub=True)[0] == coverage.EJECUTA
+
+
+def test_stub_type_errors_are_inconclusive_not_failures():
+    import duckdb
+    assert coverage.classify(duckdb.ConversionException("x"), stub=True)[0] == coverage.NO_CONCLUYENTE
+    assert coverage.classify(duckdb.BinderException("x"), stub=True)[0] == coverage.NO_CONCLUYENTE
+    assert coverage.classify(duckdb.ConversionException("x"))[0] == coverage.FALLA  # con datos reales sigue siendo un fallo
+    assert coverage.classify(runner.Unsupported("processor raro"), stub=True)[0] == coverage.FALLA

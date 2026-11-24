@@ -6,3 +6,4 @@ __pycache__/
 connections.local.json
 dfemu.local.json
 .tools/
+*.egg-info/

@@ -4,12 +4,14 @@ Banco de pruebas local para los Data Flows de Qlik Cloud: valida, emula y compar
 
 ## Primeros pasos
 
-Requisitos: Python 3.12 y acceso a un tenant de Qlik Cloud con una API key.
+Requisitos: Python 3.10 o superior (se prueba con 3.12). Para solo emular y traducir en local no hace falta tenant; para comparar contra Qlik Cloud hace falta una API key.
 
 ```
-pip install -r requirements.txt
-python -m emulator.cli setup
+pip install -e .          # instala el comando `dfemu` (o: pip install -r requirements.txt y usar python -m emulator.cli)
+dfemu setup
 ```
+
+Todo lo que aparece abajo como `python -m emulator.cli X` también se puede escribir `dfemu X`. El proyecto se instala en modo editable: las rutas (`data/`, `samples/`, `dfemu.local.json`) son las de este repositorio.
 
 `setup` deja todo listo y pide solo lo que falta:
 
@@ -36,11 +38,17 @@ python -m emulator.cli task enable ID_TAREA --apply   # una tarea deshabilitada 
 
 Sin `--apply` solo simula. Detalles y trampas (tareas deshabilitadas, destinos de Google Drive) en el apartado 10 ter del documento de hallazgos.
 
+## Qué cubre y qué no
+
+`dfemu coverage` mide, sobre los `.dfw` de `samples/`, qué processors se usan y qué flujos puede ejecutar el emulador. Con `--stub` las fuentes de base de datos (BigQuery, PostgreSQL...) se sirven con 20 filas enteras de relleno para ver si el resto del flujo ejecuta; como el `.dfw` desidentificado no trae tipos, un error de tipos se marca `no concluyente` y no como fallo. Los límites conocidos están en el apartado 12 del documento de hallazgos: variantes de processors que el servidor no deja descubrir, `pivot` (no se puede crear por API), el nodo `script` (solo se traduce) y la comparación de orden en joins.
+
+**Coste:** cada ejecución en el tenant cuesta. No hace falta repetir la batería contra Qlik Cloud para usar el emulador: lo verificado está en el apartado 9 quater, y las pruebas locales (`python -m pytest`) no tocan la red. Si se añade un caso nuevo, se mide solo ese, con pocas filas.
+
 ## Desarrollo
 
 - `python -m pytest` corre todo sin tenant ni red. `tests/conftest.py` fija ids de relleno aunque exista `dfemu.local.json`; con `DFEMU_TENANT=1` usa los ids reales y activa las pruebas contra el tenant.
 - Los `.dfw` de `samples/` tienen ids desidentificados: sirven para validar y emular en local, no se pueden subir al tenant. Para eso se usan los grafos descargados con `dfemu pull` en `out/` (ignorado por git).
 - `dfemu script-node` crea un nodo `script` por API (reutilizando el de una copia de un flujo que ya los tiene) y guarda el script que genera Qlik, para verificarlo con `dfemu translate --compare`. Las reglas de trabajo del proyecto están en `CLAUDE.md`.
 - `dfemu translate SCRIPT --compare --apply` ejecuta un script de Qlik en el tenant y lo compara con su traducción local a SQL.
-- `python scripts/processor_battery.py` ejecuta 111 casos (100 processors y 11 cadenas) en el emulador y en el tenant y compara los resultados (escribe en el tenant y limpia lo que crea). Es la prueba que más ha corregido al emulador: ver el apartado 9 quater del documento de hallazgos.
+- `python scripts/processor_battery.py [CASO ...]` ejecuta los casos indicados (o los 111, con 100 processors y 11 cadenas) en el emulador y en el tenant y compara los resultados (escribe en el tenant, cuesta, y limpia lo que crea; lanzar solo los casos nuevos). Es la prueba que más ha corregido al emulador: ver el apartado 9 quater del documento de hallazgos.
 - Los objetos creados en el tenant llevan el prefijo `emu_`; `dfemu cleanup --apply` borra apps y archivos `emu_` de `DataFiles`. Los archivos escritos en carpetas de Google Drive no los ve.

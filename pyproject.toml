@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dfemu"
+version = "0.1.0"
+description = "Banco de pruebas para los Data Flows de Qlik Cloud: emulador (DuckDB), traductor de scripts y comparador contra el tenant"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["duckdb"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.scripts]
+dfemu = "emulator.cli:main"
+
+[tool.setuptools]
+packages = ["emulator"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

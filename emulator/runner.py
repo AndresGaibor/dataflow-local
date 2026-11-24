@@ -18,7 +18,7 @@ class Unsupported(Exception):
 class Ctx:
     def __init__(self, data_dir, out_dir, connections=None, s3=None):
         self.con = duckdb.connect()
-        self.data_dir, self.out_dir, self.connections, self.s3 = data_dir, out_dir, connections or {}, s3
+        self.data_dir, self.out_dir, self.connections, self.s3 = data_dir, out_dir, {} if connections is None else connections, s3
         self.n, self.attached, self.report = 0, set(), []
         self.locale = ""  # collationLocale del flujo; de el salen los SET de formato de fecha del script de Qlik
         self.converted_dates = {}  # columna -> 'date' | 'timestamp' (salida de CONVERT_TO_DATE / CONVERT_TO_TIMESTAMP)
@@ -61,6 +61,11 @@ def _source(ctx, node, sources):
     cfg = ctx.connections.get(conn)
     if not cfg:
         raise Unsupported(f"conexion '{conn}' sin configurar en connections.json")
+    if cfg["type"] == "stub":
+        # relleno para probar la forma de un flujo sin su base de datos: pocas filas enteras; el .dfw desidentificado no trae tipos,
+        # asi que los textos, fechas y decimales no se ejercitan (shortcut: usar un duckdb/sqlite real si importan)
+        cols = [f"((i * {n + 3}) % 97 + 1) AS {q(f)}" for n, f in enumerate(fields)]
+        return ctx.view(f"SELECT {', '.join(cols)} FROM range({int(cfg.get('rows', 20))}) t(i)")
     if conn not in ctx.attached:
         kind = cfg["type"]  # duckdb | sqlite | postgres
         ctx.con.execute(f"INSTALL {kind}; LOAD {kind}") if kind != "duckdb" else None
