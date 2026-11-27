@@ -3890,5 +3890,123 @@
     "constantValue": 100
    }
   }
+ ],
+ "pad_size8": [
+  "strings",
+  {
+   "type": "PADDING",
+   "paddingConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "size": 8
+   }
+  }
+ ],
+ "pad_right": [
+  "strings",
+  {
+   "type": "PADDING",
+   "paddingConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "size": 8,
+    "paddingCharacter": "*",
+    "paddingPosition": "RIGHT"
+   }
+  }
+ ],
+ "pad_short": [
+  "strings",
+  {
+   "type": "PADDING",
+   "paddingConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "size": 3,
+    "paddingCharacter": "*",
+    "paddingPosition": "RIGHT"
+   }
+  }
+ ],
+ "pad_left_x": [
+  "strings",
+  {
+   "type": "PADDING",
+   "paddingConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "size": 7,
+    "paddingCharacter": "X",
+    "paddingPosition": "LEFT"
+   }
+  }
+ ],
+ "pat_alnum": [
+  "strings",
+  {
+   "type": "MATCHES_PATTERN",
+   "matchesPatternConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "proposedPattern": "ANY_LITERAL_WITH_ALPHA_NUMERIC_CHARACTERS"
+   }
+  }
+ ],
+ "pat_numero": [
+  "strings",
+  {
+   "type": "MATCHES_PATTERN",
+   "matchesPatternConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "proposedPattern": "NUMBER"
+   }
+  }
+ ],
+ "pat_mayus": [
+  "strings",
+  {
+   "type": "MATCHES_PATTERN",
+   "matchesPatternConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "proposedPattern": "A_WORD_IN_UPPERCASE"
+   }
+  }
+ ],
+ "pat_minus": [
+  "strings",
+  {
+   "type": "MATCHES_PATTERN",
+   "matchesPatternConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "newColumnName": "salida",
+    "shouldCreateNewColumn": true,
+    "proposedPattern": "A_WORD_IN_LOWERCASE"
+   }
+  }
  ]
 }

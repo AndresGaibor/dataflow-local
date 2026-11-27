@@ -355,8 +355,13 @@ def _typed(ctx, t, cfg, v):
             val = lit(c["constantValue"])
             return D(_derived(v, c, f"contains_{c['constantValue']}",
                               lambda x: f"CASE WHEN strpos({S(x)}, {val}) > 0 THEN 'TRUE' ELSE 'FALSE' END"))
-        if k == "PADDING":  # Repeat('0', 5 - Len([c])) & [c]; nunca trunca
-            return D(_per_col(ctx, v, c, lambda x: f"repeat('0', greatest(5 - length({S(x)}), 0)) || {S(x)}"))
+        if k == "PADDING":  # Repeat('0', 5 - Len([c])) & [c] | [c] & Repeat(...) segun paddingPosition (medido 2026-11-27)
+            size = int(c.get("size", 5) or 5)
+            ch = str(c.get("paddingCharacter", "0") or "0").replace("'", "''")
+            rep = f"repeat('{ch}', greatest({size} - length({S('%s')}), 0))"
+            if str(c.get("paddingPosition", "LEFT")).upper() == "RIGHT":
+                return D(_per_col(ctx, v, c, lambda x: f"{S(x)} || " + rep % x))
+            return D(_per_col(ctx, v, c, lambda x: rep % x + f" || {S(x)}"))
         if k == "SUBSTRING":  # Mid([c], desde[, largo]) con los argumentos que genera Qlik (medido 2026-11-27)
             cfg_sub = c
 
@@ -391,8 +396,13 @@ def _typed(ctx, t, cfg, v):
             return D(_per_col(ctx, v, c, lambda x: S(x)))
         if k == "REMOVE_NON_ALPHA_NUM_CHARS":  # KeepChar([c], ALPHA_NUM_CHARS); shortcut: solo letras ASCII y digitos
             return D(_per_col(ctx, v, c, lambda x: f"regexp_replace({S(x)}, '[^A-Za-z0-9]', '', 'g')"))
-        if k == "MATCHES_PATTERN":  # IF(CountRegEx([c], '^[a-zA-Z]+$'), TRUE, FALSE) AS [c_matching]; shortcut: solo el patron por defecto
-            return D(_derived(v, c, "matching", lambda x: f"CASE WHEN regexp_matches({S(x)}, '^[a-zA-Z]+$') THEN 'TRUE' ELSE 'FALSE' END"))
+        if k == "MATCHES_PATTERN":  # IF(CountRegEx([c], regex), Dual('TRUE',-1), Dual('FALSE',0)) AS [c_matching] (medido 2026-11-27)
+            pats = {"ANY_WORD_CASE_INSENSITIVE": "^[a-zA-Z]+$", "ANY_LITERAL_WITH_ALPHA_NUMERIC_CHARACTERS": "^[a-zA-Z0-9]+$",
+                    "NUMBER": "^[0-9]+$", "A_WORD_IN_LOWERCASE": "^[a-z]+$", "A_WORD_IN_UPPERCASE": "^[A-Z]+$"}
+            pat = pats.get(str(c.get("proposedPattern", "ANY_WORD_CASE_INSENSITIVE")))
+            if pat is None:  # OTHER: el servidor responde 500 y no hay regex que copiar
+                raise Unsupported(f"matches pattern {c.get('proposedPattern')}")
+            return D(_derived(v, c, "matching", lambda x: f"CASE WHEN regexp_matches({S(x)}, '{pat}') THEN 'TRUE' ELSE 'FALSE' END"))
         if k == "REMOVE_CONSECUTIVE_CHARACTERS":  # ReplaceRegEx([c], '(\Q\\s\E){2,}', ' '): con el patron por defecto no cambia nada util
             return D(_per_col(ctx, v, c, lambda x: S(x)))
         if k == "CUT":  # EQUALS: IF(Match([c], 'a'), '', [c]); CONTAINS: Replace([c], 'a', ''); STARTS_WITH/ENDS_WITH: corta el borde; shortcut: sin regex
