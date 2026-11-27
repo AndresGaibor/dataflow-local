@@ -1,2 +1,4 @@
 duckdb==2.0.0
 pytest==9.2.0
+beautifulsoup4==4.15.0
+markdownify==1.2.3

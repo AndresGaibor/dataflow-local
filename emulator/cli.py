@@ -1,6 +1,7 @@
 import argparse
 import collections
 import glob
+import io
 import json
 import os
 import re
@@ -8,6 +9,7 @@ import sys
 import unicodedata
 import uuid
 
+from . import __version__
 from . import calibrate, compare, coverage, dfw, oracle, scriptnode, tasks
 from . import script as qvs
 from .bridge import SANDBOX_SPACE_ID, Bridge, BridgeError, DryRun, SafetyError
@@ -277,7 +279,22 @@ def _task(a) -> int:
     return 0
 
 
+def utf8_stdout() -> None:
+    """Fuerza UTF-8 en stdout/stderr.
+
+    En Windows la consola y las redirecciones usan cp1252 y los nombres de la
+    paleta ("Union", "Fechas" con acento) salian como `Uni�b`. Se llama al
+    entrar en el CLI; es inocuo donde ya es UTF-8.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, io.UnsupportedOperation, ValueError):
+            pass
+
+
 def main(argv=None):
+    utf8_stdout()
     args = argv if argv is not None else sys.argv[1:]
     if args[:1] == ["flow"]:  # control compacto para agentes; ver flowctl y uictl
         from . import flowctl
@@ -286,6 +303,7 @@ def main(argv=None):
         from . import uictl
         return uictl.main(args[1:])
     ap = argparse.ArgumentParser(prog="dfemu", epilog="flow: control compacto de flujos para agentes (dfemu flow -h)")
+    ap.add_argument("--version", action="version", version=f"dfemu {__version__}")
     sub = ap.add_subparsers(dest="cmd", required=True)
     v = sub.add_parser("validate")
     v.add_argument("files", nargs="+")

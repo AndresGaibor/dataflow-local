@@ -14,6 +14,7 @@ dependencies = ["duckdb>=2.0,<3"]
 
 [project.optional-dependencies]
 test = ["pytest>=9,<10"]
+docs = ["beautifulsoup4>=4.15,<5", "markdownify>=1.2,<2"]
 
 [project.scripts]
 dfemu = "emulator.cli:main"

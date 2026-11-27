@@ -7,13 +7,22 @@ on:
 
 jobs:
   pytest:
-    runs-on: ubuntu-latest
+    name: py${{ matrix.python-version }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11", "3.12"]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
+          cache: pip
       - name: Instalar dependencias
         run: pip install -r requirements.txt
       - name: Pruebas locales (sin tenant)
         run: python -m pytest -q
+      - name: Emular los samples (sin tenant ni red)
+        run: python -m emulator.cli coverage

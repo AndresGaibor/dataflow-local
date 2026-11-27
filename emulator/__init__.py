@@ -9,3 +9,10 @@ try:
             os.environ.setdefault(_k, str(_v))
 except (OSError, ValueError):
     pass
+
+try:  # version del paquete instalado; en modo editable o sin instalar vale la declarada
+    from importlib.metadata import PackageNotFoundError, version as _version
+
+    __version__ = _version("dfemu")
+except Exception:  # noqa: BLE001 - sin metadatos (repo sin instalar)
+    __version__ = "0.1.0"

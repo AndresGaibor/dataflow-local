@@ -10,3 +10,4 @@ dfemu.local.json
 .playwright-cli/
 build/
 dist/
+docs/_images/
