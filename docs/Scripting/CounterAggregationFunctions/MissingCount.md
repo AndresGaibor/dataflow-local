@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions", "Counter aggregation functions"]
 ---
+
 # MissingCount Script function
 
 MissingCount() returns the number of missing values aggregated in the expression, as defined by a group by clause.
@@ -37,5 +38,5 @@ Scripting examples
 
 | Example | Result |
 | --- | --- |
-| Temp:  LOAD \* inline [  Customer|Product|OrderNumber|UnitSales|UnitPrice  Astrida|AA|1|4|16  Astrida|AA|7|10|15  Astrida|BB|4|9|9  Betacab|CC|6|5|10  Betacab|AA|5|2|20  Betacab|BB||| 25  Canutility|AA|||15  Canutility|CC| ||19  Divadip|CC|2|4|16  Divadip|DD|3|1|25  ] (delimiter is '|');  MissCount1:  LOAD Customer,MissingCount(OrderNumber) as MissingOrdersByCustomer Resident Temp Group By Customer;    `Load MissingCount(OrderNumber) as TotalMissingCount Resident Temp;` | Customer MissingOrdersByCustomer  Astrida 0  Betacab 1  Canutility 2  Divadip 0    The second statement gives:  TotalMissingCount  3  in a table with that [dimension](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/CounterAggregationFunctions/MissingCount.htm#glossary-0 "Glossary term"). |
+| Temp:  LOAD \* inline [  Customer|Product|OrderNumber|UnitSales|UnitPrice  Astrida|AA|1|4|16  Astrida|AA|7|10|15  Astrida|BB|4|9|9  Betacab|CC|6|5|10  Betacab|AA|5|2|20  Betacab|BB||| 25  Canutility|AA|||15  Canutility|CC| ||19  Divadip|CC|2|4|16  Divadip|DD|3|1|25  ] (delimiter is '|');  MissCount1:  LOAD Customer,MissingCount(OrderNumber) as MissingOrdersByCustomer Resident Temp Group By Customer;    Load MissingCount(OrderNumber) as TotalMissingCount Resident Temp; | Customer MissingOrdersByCustomer  Astrida 0  Betacab 1  Canutility 2  Divadip 0    The second statement gives:  TotalMissingCount  3  in a table with that [dimension](#glossary-0 "Glossary term"). |
 | Given that the Temp table is loaded as in the previous example:  LOAD MissingCount(distinct OrderNumber) as TotalMissingCountDistinct Resident Temp; | TotalMissingCountDistinct  1  Because there is only oneOrderNumber one missing value. |

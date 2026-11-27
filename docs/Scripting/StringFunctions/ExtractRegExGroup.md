@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# ExtractRegExGroup Script and chart function
+
 Expand/Collapse all
 
 # ExtractRegExGroup Script and chart function
@@ -30,17 +33,17 @@ Arguments
 | --- | --- |
 | text | String expression containing the text to be extracted in the return value. |
 | regex | The regular expression to use for extracting text. |
-| group | The number of the group, in the case of a composite regular expression.  If the regular expression only contains one group, use the ExtractRegEx() function instead. Alternatively, use ExtractRegExGroup() with a group value of `0`.  You can specify a negative group value to search for matches from right to left. |
-| field\_no | The number of the match to extract. This is useful when multiple matches for the regular expression might be found in the text. For example, specify a value of `4` to extract the fourth match.  This is an optional argument. Default is 1 if not specified. |
+| group | The number of the group, in the case of a composite regular expression.  If the regular expression only contains one group, use the ExtractRegEx() function instead. Alternatively, use ExtractRegExGroup() with a group value of 0.  You can specify a negative group value to search for matches from right to left. |
+| field\_no | The number of the match to extract. This is useful when multiple matches for the regular expression might be found in the text. For example, specify a value of 4 to extract the fourth match.  This is an optional argument. Default is 1 if not specified. |
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `ExtractRegExGroup('abc123 def456','([a-z]+)([0-9]+)',1)` | Returns `abc` (first group of first match). |
-| `ExtractRegExGroup('abc123 def456','([a-z]+)([0-9]+)',1,2)` | Returns `def` (first group of second match). |
-| `ExtractRegExGroup('abc123 def456','([a-z]+)([0-9]+)',2)` | Returns `123` (second group of first match). |
-| `ExtractRegExGroup('abc123 def456','([a-z]+)([0-9]+)',2,2)` | Returns `456` (second group of second match). |
+| ExtractRegExGroup('abc123 def456','([a-z]+)([0-9]+)',1) | Returns abc (first group of first match). |
+| ExtractRegExGroup('abc123 def456','([a-z]+)([0-9]+)',1,2) | Returns def (first group of second match). |
+| ExtractRegExGroup('abc123 def456','([a-z]+)([0-9]+)',2) | Returns 123 (second group of first match). |
+| ExtractRegExGroup('abc123 def456','([a-z]+)([0-9]+)',2,2) | Returns 456 (second group of second match). |
 
 ## When to use ExtractRegExGroup
 
@@ -60,7 +63,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table named `Transactions`, which contains information about transactions. Certain details are captured with transaction codes using the following syntax:
+- A table named Transactions, which contains information about transactions. Certain details are captured with transaction codes using the following syntax:
 
   Transaction year-Transaction source (that is, online or in-store purchase)-Associated distribution center
 - The creation of several new fields to extract each detail, each reusing the same composite regular expression.
@@ -76,7 +79,7 @@ Load script
 ```
 Transactions:
 
-Load 
+Load
 	recno() as RecordID,
 	ExtractRegExGroup(TransactionCode,'([0-9]{4})-(ONLINE|INSTORE)-([0-9]{5})',0) as TransactionCode_Unparsed,
 	ExtractRegExGroup(TransactionCode,'([0-9]{4})-(ONLINE|INSTORE)-([0-9]{5})',1) as TransactionYear,
@@ -97,12 +100,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `RecordID`
-- `TransactionCode`
-- `TransactionCode_Unparsed`
-- `TransactionYear`
-- `TransactionSource`
-- `TransactionDC`
+- RecordID
+- TransactionCode
+- TransactionCode\_Unparsed
+- TransactionYear
+- TransactionSource
+- TransactionDC
 
 Results table
 
@@ -115,7 +118,7 @@ Results table
 | 5 | 2025-INSTORE-60019 | 2025-INSTORE-60019 | 2025 | INSTORE | 60019 |
 | 6 | 2025-ONLINE-60017 | 2025-ONLINE-60017 | 2025 | ONLINE | 60017 |
 
-These results highlight how the group argument allows you to reuse a single regex for multiple operations. The `TransactionCode_Unparsed` field, which uses a group value of 0, does not provide any additional value in this case, but is shown here for the purpose of demonstrating the function.
+These results highlight how the group argument allows you to reuse a single regex for multiple operations. The TransactionCode\_Unparsed field, which uses a group value of 0, does not provide any additional value in this case, but is shown here for the purpose of demonstrating the function.
 
 ## Example 2 – load script to extract business contact information
 
@@ -127,8 +130,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table named `BusinessContactInfo`, which contains information about companies that was found on each company's website.
-- `ContactInfo` is a field that contains free text, including company email addresses and phone numbers.
+- A table named BusinessContactInfo, which contains information about companies that was found on each company's website.
+- ContactInfo is a field that contains free text, including company email addresses and phone numbers.
 - The creation of several new fields to extract each detail, each reusing the same composite regular expression.
 
 Our requirements:
@@ -157,9 +160,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `CompanyName`
-- `CompanyEmail`
-- `CompanyPhoneNum`
+- CompanyName
+- CompanyEmail
+- CompanyPhoneNum
 
 Results table
 
@@ -183,7 +186,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- The creation of a [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/ExtractRegExGroup.htm#glossary-0 "Glossary term"), `ISBN_RegEx`, to store the regular expression we want to use for all extractions.
+- The creation of a [variable](#glossary-0 "Glossary term"), ISBN\_RegEx, to store the regular expression we want to use for all extractions.
 - A set of ISBN codes for books that a book store wants to order from several suppliers.
 
 We need to extract the following from each ISBN code:
@@ -220,12 +223,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Supplier`
-- `EAN`
-- `Group`
-- `Registrant`
-- `Publication`
-- `Checksum`
+- Supplier
+- EAN
+- Group
+- Registrant
+- Publication
+- Checksum
 
 Results table
 
@@ -254,8 +257,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table named `BusinessContactInfo`, which contains information about companies that was found on each company's website.
-- `ContactInfo` is a field that contains free text, including company email addresses and phone numbers. We want to extract each email address and phone number with chart expressions.
+- A table named BusinessContactInfo, which contains information about companies that was found on each company's website.
+- ContactInfo is a field that contains free text, including company email addresses and phone numbers. We want to extract each email address and phone number with chart expressions.
 
 Our requirements:
 
@@ -280,7 +283,7 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `CompanyName`
+- CompanyName
 
 Add the following calculated dimensions to the table:
 
@@ -313,7 +316,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table named `Correspondence`, which contains email message text in a field named `EmailBody`.
+- A table named Correspondence, which contains email message text in a field named EmailBody.
 - Email message content that contains web URLs.
 
 We want to extract the second URL, if present, into the following components:
@@ -343,7 +346,7 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `ID`
+- ID
 
 Add these calculated dimensions:
 
@@ -376,7 +379,7 @@ Results table
 | 2 | - | - | - | - |
 | 3 | https://www.examplestore2.com/products | https | www.examplestore2.com | /products |
 
-ExtractRegEx() returns the entire URL, while ExtractRegExGroup() returns individual parts of the URL, corresponding to the group value we used. The record with an `ID` value of 2 only contains one URL, so no data is returned for it.
+ExtractRegEx() returns the entire URL, while ExtractRegExGroup() returns individual parts of the URL, corresponding to the group value we used. The record with an ID value of 2 only contains one URL, so no data is returned for it.
 
 The same regular expression is used across all chart expressions to return different pieces of information. A breakdown of the groups defined in the regular expression is as follows.
 
@@ -397,4 +400,4 @@ Groups in regular expression
 
 ## Learn more
 
-- [*Working with regular expressions in load scripts and chart expressions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/regular-expressions-qlik-analytics.htm)
+- [*Working with regular expressions in load scripts and chart expressions*](../regular-expressions-qlik-analytics.htm)

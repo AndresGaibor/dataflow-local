@@ -4,17 +4,18 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Conditional functions"]
 ---
+
+# pick Script and chart function
+
 Expand/Collapse all
 
 # pick Script and chart function
 
 The pick function returns the n:th expression
 in the list.
-
-[Video: https://share.vidyard.com/watch/i2VAER2iYbPyuC46aLGxG3]
 
 Syntax:
 
@@ -32,7 +33,7 @@ Example: Chart expression
 
 | Example | Result |
 | --- | --- |
-| `pick( N, 'A','B',4, 6 )` | returns `B` if `N` = `2` returns `4` if `N` = `3` |
+| pick( N, 'A','B',4, 6 ) | returns B if N = 2 returns 4 if N = 3 |
 
 ## Example - Assign labels to products using pick
 
@@ -46,12 +47,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `ProductID`
-  - `ProductName`
-  - `CategoryCode`
+  - ProductID
+  - ProductName
+  - CategoryCode
 
 Load script
 
@@ -71,13 +72,13 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ProductID`
-- `ProductName`
-- `CategoryCode`
+- ProductID
+- ProductName
+- CategoryCode
 
 Create the following measure:
 
-- `=Pick(CategoryCode, 'Electronics', 'Accessories', 'Office Equipment')`, to return a valid expression from the list.
+- =Pick(CategoryCode, 'Electronics', 'Accessories', 'Office Equipment'), to return a valid expression from the list.
 
 Results table
 
@@ -89,7 +90,7 @@ Results table
 | 4 | Smartphone | 1 | Electronics |
 | 5 | Tablet | 1 | Electronics |
 
-The `pick` function returns a list of values associated with the corresponding index from the `CategoryCode` numeric field. For example, the label `Electronics` is the first parameter in the function and is returned for all products with the `CategoryCode` of `1`.
+The pick function returns a list of values associated with the corresponding index from the CategoryCode numeric field. For example, the label Electronics is the first parameter in the function and is returned for all products with the CategoryCode of 1.
 
 ## Example - Assign region labels using pick
 
@@ -103,11 +104,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `Country`
-  - `RegionCode`
+  - Country
+  - RegionCode
 
 Load script
 
@@ -127,12 +128,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Country`
-- `RegionCode`
+- Country
+- RegionCode
 
 Create the following measure:
 
-- `=Pick(RegionCode, 'North America', 'Europe', 'Asia', 'Australia')`, to return a valid item from the list.
+- =Pick(RegionCode, 'North America', 'Europe', 'Asia', 'Australia'), to return a valid item from the list.
 
 Results table
 
@@ -144,7 +145,7 @@ Results table
 | Japan | 3 | Asia |
 | USA | 1 | North America |
 
-The `pick` function returns a list of values associated with the corresponding index from the `RegionCode` numeric field. For example, the label `North America` is the first parameter in the function and is returned for all countries with the `RegionCode` of `1`.
+The pick function returns a list of values associated with the corresponding index from the RegionCode numeric field. For example, the label North America is the first parameter in the function and is returned for all countries with the RegionCode of 1.
 
 ## Example - Combining pick and match to translate lists of alternative text matches
 
@@ -152,15 +153,15 @@ Chart expression
 
 Overview
 
-This advanced scenario describes how to effectively use a combination of the `pick` and `match` functions to map text matches in-line. In programming terms, this serves a similar purpose to a `Case` statement. The scenario explores this functionality by mapping country names to region-equivalent names, while also providing a default `Region` value for any previously unmapped `Country` names.
+This advanced scenario describes how to effectively use a combination of the pick and match functions to map text matches in-line. In programming terms, this serves a similar purpose to a Case statement. The scenario explores this functionality by mapping country names to region-equivalent names, while also providing a default Region value for any previously unmapped Country names.
 
 Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Countries`.
+- A dataset which is loaded into a data table called Countries.
 
-  - The data table has one field called `Country`.
+  - The data table has one field called Country.
 
 Load script
 
@@ -181,16 +182,16 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Country`
-- `RegionCode`
+- Country
+- RegionCode
 
 Create the following measure:
 
-- `=Pick(1+match(Country,'USA','Canada','Germany','Japan','Australia'), 'Unmapped', 'North America', 'North America', 'Europe', 'Asia', 'Australia')`
+- =Pick(1+match(Country,'USA','Canada','Germany','Japan','Australia'), 'Unmapped', 'North America', 'North America', 'Europe', 'Asia', 'Australia')
 
-The `match` function will return the index match of the comma-separated alternatives supplied, starting from `1 = ‘USA’`, `2 = ‘Canada’` and so on. If no match is found, zero is returned. This result is then incremented by `1` and fed into the `pick` function, such that `1 = default value` if no match is found, `2 = ‘USA’`, `3 = ‘Canada’` and so on.
+The match function will return the index match of the comma-separated alternatives supplied, starting from 1 = ‘USA’, 2 = ‘Canada’ and so on. If no match is found, zero is returned. This result is then incremented by 1 and fed into the pick function, such that 1 = default value if no match is found, 2 = ‘USA’, 3 = ‘Canada’ and so on.
 
-This combination of `Match` and `Pick` function calls will then decode the matching `Country` names into an equivalent `Region` name. Any unmapped `Country` values will return the default `Region` value, `Unmapped`.
+This combination of Match and Pick function calls will then decode the matching Country names into an equivalent Region name. Any unmapped Country values will return the default Region value, Unmapped.
 
 Results table
 

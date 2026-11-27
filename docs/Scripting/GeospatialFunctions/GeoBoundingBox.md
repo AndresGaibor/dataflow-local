@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Geospatial functions"]
 ---
+
 # GeoBoundingBox Script and chart function
 
 GeoBoundingBox() is used to aggregate a geometry into an area and calculate the smallest bounding box that contains all coordinates.
@@ -29,6 +30,6 @@ Arguments
 
 GeoBoundingBox() aggregates a set of geometries and returns four coordinates for the smallest rectangle that contains all the coordinates of that aggregated geometry.
 
-To visualize the result on a map, transfer the resulting string of four coordinates into a polygon format, tag the transferred [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/GeoBoundingBox.htm#glossary-0 "Glossary term") with a geopolygon format, and drag and drop that field into the map object. The rectangular boxes .will then be displayed in the map [visualization](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/GeoBoundingBox.htm#glossary-1 "Glossary term").
+To visualize the result on a map, transfer the resulting string of four coordinates into a polygon format, tag the transferred [field](#glossary-0 "Glossary term") with a geopolygon format, and drag and drop that field into the map object. The rectangular boxes .will then be displayed in the map [visualization](#glossary-1 "Glossary term").
 
-[*Loading your own map data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Visualizations/Map/load-map-data.htm)
+[*Loading your own map data*](../../Visualizations/Map/load-map-data.htm)

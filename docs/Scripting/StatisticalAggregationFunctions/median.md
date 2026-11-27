@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions", "Statistical aggregation functions"]
 ---
+
 # Median Script function
 
 Median() returns
@@ -46,23 +47,23 @@ A,9
 B,2
 B,8
 B,9];
-					
+
 Median:
 LOAD Letter,
 Median(Number) as MyMedian
 Resident Table1 Group By Letter;
-										
+
 ```
 
-For more information about using inline loads, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+For more information about using inline loads, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 ### Create a visualization
 
-Create a table [visualization](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StatisticalAggregationFunctions/median.htm#glossary-0 "Glossary term") in a Qlik Sense [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StatisticalAggregationFunctions/median.htm#glossary-1 "Glossary term") with Letter and MyMedian as [dimensions](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StatisticalAggregationFunctions/median.htm#glossary-2 "Glossary term").
+Create a table [visualization](#glossary-0 "Glossary term") in a Qlik Sense [sheet](#glossary-1 "Glossary term") with Letter and MyMedian as [dimensions](#glossary-2 "Glossary term").
 
 ### Result
 
-![](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Median_script.png)
+![](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Median_script.png)
 
 ### Explanation
 

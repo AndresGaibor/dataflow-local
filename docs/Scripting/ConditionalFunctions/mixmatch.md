@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Conditional functions"]
 ---
+
+# mixmatch Script and chart function
+
 Expand/Collapse all
 
 # mixmatch Script and chart function
@@ -35,10 +38,10 @@ Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `mixmatch( ColorCode,'black','Blue' )` | This expression returns `1` if the value of `ColorCode` is `Black` or `2` if the value of `ColorCode` is `Blue`. |
-| `mixmatch( Cities,'toronto','Boston','Beijing','Zurich' )` | This expression returns the index of the item that matches the value in the `Cities` field. |
+| mixmatch( ColorCode,'black','Blue' ) | This expression returns 1 if the value of ColorCode is Black or 2 if the value of ColorCode is Blue. |
+| mixmatch( Cities,'toronto','Boston','Beijing','Zurich' ) | This expression returns the index of the item that matches the value in the Cities field. |
 
-Some of the examples in this topic use inline loads. For more information, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+Some of the examples in this topic use inline loads. For more information, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 ## Example - Categorize products using mixmatch
 
@@ -52,12 +55,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `ProductID`
-  - `ProductName`
-  - `ProductCategory`
+  - ProductID
+  - ProductName
+  - ProductCategory
 
 Load script
 
@@ -77,16 +80,16 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ProductID`
-- `ProductName`
-- `ProductCategory`
+- ProductID
+- ProductName
+- ProductCategory
 
 Create the following measures:
 
-- `=mixmatch(ProductCategory,'Toiletries', 'Fruits')`, to return the index where `ProductCategory` has the value `Toiletries` or `Fruits`.
-- `=If(mixmatch(ProductCategory, 'Toiletries', 'Fruits'), 'Consumable', 'Other')`, to translate a `ProductCategory` match against either `Toiletries` or `Fruits` as `Consumable`. If no match is found, then `Other` is returned.
+- =mixmatch(ProductCategory,'Toiletries', 'Fruits'), to return the index where ProductCategory has the value Toiletries or Fruits.
+- =If(mixmatch(ProductCategory, 'Toiletries', 'Fruits'), 'Consumable', 'Other'), to translate a ProductCategory match against either Toiletries or Fruits as Consumable. If no match is found, then Other is returned.
 
-> **Note:** The `mixmatch` function returns a non-zero positive value if a match is found, else zero if no match is found. The `if` statement in turn interprets non-zero results as `true` and zero results as `false`. By combining an `if` statement with `mixmatch`, `wildmatch` or `match` functions, it is possible to easily decode matches and mismatches.
+Information noteThe mixmatch function returns a non-zero positive value if a match is found, else zero if no match is found. The if statement in turn interprets non-zero results as true and zero results as false. By combining an if statement with mixmatch, wildmatch or match functions, it is possible to easily decode matches and mismatches.
 
 Results table
 
@@ -98,7 +101,7 @@ Results table
 | 4 | TV | Electronics | 0 | Other |
 | 5 | Apple | fruits | 2 | Consumable |
 
-The `mixmatch` function returns the index of the search string in the first measure. In the second measure, this result is then used in an `If` function to provide custom results. Note that the `mixmatch` function is case insensitive.
+The mixmatch function returns the index of the search string in the first measure. In the second measure, this result is then used in an If function to provide custom results. Note that the mixmatch function is case insensitive.
 
 ## Example - Evaluate and classify client data using mixmatch
 
@@ -112,13 +115,13 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `ClientID`
-  - `ClientName`
-  - `Region`
-  - `Industry`
+  - ClientID
+  - ClientName
+  - Region
+  - Industry
 
 Load script
 
@@ -138,14 +141,14 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ClientID`
-- `ClientName`
-- `Region`
-- `Industry`
+- ClientID
+- ClientName
+- Region
+- Industry
 
 Create the following measure:
 
-`=If(mixmatch(Region, 'North', 'East') AND mixmatch(Industry, 'Technology', 'Manufacturing'), 'Target Segment', 'Secondary Segment')`, to return the index of the search string. If found, then `Target Segment` is returned. If not found, then `Secondary Segment` is returned.
+=If(mixmatch(Region, 'North', 'East') AND mixmatch(Industry, 'Technology', 'Manufacturing'), 'Target Segment', 'Secondary Segment'), to return the index of the search string. If found, then Target Segment is returned. If not found, then Secondary Segment is returned.
 
 Results table
 
@@ -157,7 +160,7 @@ Results table
 | 4 | Delta LLC | North | Technology | Target Segment |
 | 5 | Epsilon GmbH | South | healthcare | Secondary Segment |
 
-The `mixmatch` function searches for text and returns an index that can then be used to perform additional analysis and data classification. For example, `Acme Corp` is classified as a `Target Segment` because it meets the search requirements of the `mixmatch` function for both the `Region` and `Industry` fields. Note that the `mixmatch` function is case insensitive.
+The mixmatch function searches for text and returns an index that can then be used to perform additional analysis and data classification. For example, Acme Corp is classified as a Target Segment because it meets the search requirements of the mixmatch function for both the Region and Industry fields. Note that the mixmatch function is case insensitive.
 
 ## Example - Load script using mixmatch
 
@@ -165,7 +168,7 @@ Load script
 
 Overview
 
-You can use mixmatch to load a subset of data. For example, you can return a numeric value for an expression in the function. You can then limit the data that is loaded based on the numeric value. Mixmatch returns 0 if there is no match. All expressions that are not matched in this example will therefore return 0 and will be excluded from the data load by the `WHERE` statement.
+You can use mixmatch to load a subset of data. For example, you can return a numeric value for an expression in the function. You can then limit the data that is loaded based on the numeric value. Mixmatch returns 0 if there is no match. All expressions that are not matched in this example will therefore return 0 and will be excluded from the data load by the WHERE statement.
 
 Open the Data load editor and add the load script below to a new section.
 
@@ -173,8 +176,8 @@ The load script contains:
 
 - A dataset which is loaded into two data tables called:
 
-  - `Transactions`: Includes transaction fields
-  - `Transaction_Buckets`: Creates two new fields `Customer` and `Color Code - Black, Blue, blue`. The `where` statement loads the results from the `mixmatch` function.
+  - Transactions: Includes transaction fields
+  - Transaction\_Buckets: Creates two new fields Customer and Color Code - Black, Blue, blue. The where statement loads the results from the mixmatch function.
 
 Load script
 
@@ -195,15 +198,15 @@ transaction_id, transaction_date, transaction_amount, transaction_quantity, cust
 Create new table called Transaction_Buckets
 Create new fields called Customer, and Color code - Black, Blue, blue
 Load Transactions table.
-Mixmatch returns 1 for 'Black', 2 for 'Blue'. 
+Mixmatch returns 1 for 'Black', 2 for 'Blue'.
 Also returns 3 for 'blue' because mixmatch is not case sensitive.
-Only values that returned numeric value greater than 0 
+Only values that returned numeric value greater than 0
 are loaded by WHERE statement into Transactions_Buckets table.
 */
 
 Transaction_Buckets:
 Load
-   customer_id, 
+   customer_id,
    customer_id as [Customer],
    color_code as [Color Code - Black, Blue, blue]
 Resident Transactions
@@ -214,8 +217,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `[Color Code - Black, Blue, blue]`
-- `Customer`
+- [Color Code - Black, Blue, blue]
+- Customer
 
 Results table showing the output from using the mixmatch function in the load script.
 
@@ -236,11 +239,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `Cities`
-  - `Count`
+  - Cities
+  - Count
 
 Load script
 
@@ -268,15 +271,15 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `Cities`
+- Cities
 
 Create the following measures:
 
-- `=mixmatch( Cities,'Toronto','Boston','Beijing','Zurich')`, to return the index of the search string.
-- `=mixmatch( Cities,'Toronto','Boston','Beijing','Stockholm','Zurich')`, to return the index of the search string.
-- `=Cities & ' - ' & mixmatch ( Cities, 'Toronto','Boston', 'Beijing','Stockholm','Zurich')`, to return the `Cities` field and the index of the search string.
+- =mixmatch( Cities,'Toronto','Boston','Beijing','Zurich'), to return the index of the search string.
+- =mixmatch( Cities,'Toronto','Boston','Beijing','Stockholm','Zurich'), to return the index of the search string.
+- =Cities & ' - ' & mixmatch ( Cities, 'Toronto','Boston', 'Beijing','Stockholm','Zurich'), to return the Cities field and the index of the search string.
 
-The first measure in the table below returns `0` for `Stockholm` because `Stockholm` is not included in the list of expressions in the `mixmatch` function. It also returns `4` for `Zurich` because the `mixmatch` comparison is not case sensitive.
+The first measure in the table below returns 0 for Stockholm because Stockholm is not included in the list of expressions in the mixmatch function. It also returns 4 for Zurich because the mixmatch comparison is not case sensitive.
 
 Results table
 
@@ -294,7 +297,7 @@ Chart expression
 
 Overview
 
-You can use `mixmatch` to perform a custom sort for an expression. This example uses the same dataset as the previous example.
+You can use mixmatch to perform a custom sort for an expression. This example uses the same dataset as the previous example.
 
 By default, columns sort numerically or alphabetically depending on the data.
 
@@ -302,7 +305,7 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `Cities`
+- Cities
 
 Results table showing the default sort order
 
@@ -316,12 +319,12 @@ Results table showing the default sort order
 
 To change the sort order, do the following:
 
-1. Open the **Sorting** section for your chart in the **Properties** panel.
+1. Open the Sorting section for your chart in the Properties panel.
 2. Turn off auto sorting for the column on which you want to do a custom sort.
-3. Clear the **Sort numerically** and **Sort alphabetically** check boxes.
-4. Select **Sort by expression**, and then enter an expression similar to the following:
+3. Clear the Sort numerically and Sort alphabetically check boxes.
+4. Select Sort by expression, and then enter an expression similar to the following:
 
-   `=mixmatch( Cities, 'Toronto','Boston','Beijing','Stockholm','Zurich')`
+   =mixmatch( Cities, 'Toronto','Boston','Beijing','Stockholm','Zurich')
 
    The sort order on the Cities column changes.
 
@@ -337,5 +340,5 @@ Results table showing the sort order using the mixmatch function
 
 ## Learn more
 
-- [*match Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ConditionalFunctions/match.htm)
-- [*wildmatch Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ConditionalFunctions/wildmatch.htm)
+- [*match Script and chart function*](match.htm)
+- [*wildmatch Script and chart function*](wildmatch.htm)

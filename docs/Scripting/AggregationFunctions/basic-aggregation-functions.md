@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions"]
 ---
+
+# Basic aggregation functions
+
 Expand/Collapse all
 
 # Basic aggregation functions
@@ -22,7 +25,7 @@ FirstSortedValue
 FirstSortedValue() returns the value from the expression specified in value that corresponds to the result of sorting the sort\_weight argument, for example, the name of the product with the lowest unit price. The nth value in the sort order, can be specified in rank. If more than one resulting value shares the same sort\_weight for the specified rank, the function returns NULL. The sorted values are iterated over
 a number of records, as defined by a group by clause, or aggregated across the full data set if no group by clause is defined.
 
-[**firstsorted**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/AggregationFunctions/firstsorted.htm)([
+[**firstsorted**](firstsorted.htm)([
 distinct ] expression, sort\_weight
 [, rank ])
 
@@ -31,14 +34,14 @@ Max
 Max() finds the highest numeric value of the aggregated data in the expression, as defined by a group
 by clause. By specifying a rank n, the nth highest value can be found.
 
-[**max**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/AggregationFunctions/max.htm)( expression[, rank])
+[**max**](max.htm)( expression[, rank])
 
 Min
 
 Min() returns the lowest numeric value of the aggregated data in the expression, as defined by a group
 by clause. By specifying a rank n, the nth lowest value can be found.
 
-[**min**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/AggregationFunctions/min.htm)( expression[, rank])
+[**min**](min.htm)( expression[, rank])
 
 Mode
 
@@ -46,14 +49,14 @@ Mode() returns the most commonly-occurring value, the mode value, of the aggrega
 Mode() function can return numeric values
 as well as text values.
 
-[**mode**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/AggregationFunctions/mode.htm)(expression
+[**mode**](mode.htm)(expression
 )
 
 Only
 
 Only() returns a value if there is one and only one possible result from the aggregated data. If records contain only one value then that value is returned, otherwise NULL is returned. Use the group by clause to evaluate over multiple records. The Only() function can return numeric and text values.
 
-[**only**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/AggregationFunctions/only.htm)(expression
+[**only**](only.htm)(expression
 )
 
 Sum
@@ -61,7 +64,7 @@ Sum
 Sum() calculates the total of the values aggregated in the expression, as defined by a group
 by clause.
 
-[**sum**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/AggregationFunctions/sum.htm)([distinct]expression)
+[**sum**](sum.htm)([distinct]expression)
 
 ## Basic aggregation functions in chart expressions
 
@@ -71,20 +74,20 @@ FirstSortedValue
 
 FirstSortedValue() returns the value from the expression specified in value that corresponds to the result of sorting the sort\_weight argument, for example, the name of the product with the lowest unit price. The nth value in the sort order, can be specified in rank. If more than one resulting value shares the same sort\_weight for the specified rank, the function returns NULL.
 
-[**firstsortedvalue**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/BasicAggregationFunctions/firstsortedvalue.htm)([{SetExpression}] [DISTINCT] [TOTAL [<fld {,fld}>]] value, sort\_weight [,rank])
+[**firstsortedvalue**](../../ChartFunctions/BasicAggregationFunctions/firstsortedvalue.htm)([{SetExpression}] [DISTINCT] [TOTAL [<fld {,fld}>]] value, sort\_weight [,rank])
 
 Max
 
 Max() finds the highest value of the aggregated data. By specifying a rank n, the nth highest value can be found.
 
-[**max**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/BasicAggregationFunctions/max.htm)([{SetExpression}] [DISTINCT] [TOTAL [<fld {,fld}>]] expr [,rank])
+[**max**](../../ChartFunctions/BasicAggregationFunctions/max.htm)([{SetExpression}] [DISTINCT] [TOTAL [<fld {,fld}>]] expr [,rank])
 
 Min
 
 Min()
  finds the lowest value of the aggregated data. By specifying a rank n, the nth lowest value can be found.
 
-[**min**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/BasicAggregationFunctions/min.htm)([{SetExpression}] [DISTINCT] [TOTAL [<fld {,fld}>]] expr [,rank])
+[**min**](../../ChartFunctions/BasicAggregationFunctions/min.htm)([{SetExpression}] [DISTINCT] [TOTAL [<fld {,fld}>]] expr [,rank])
 
 Mode
 
@@ -92,7 +95,7 @@ Mode()
  finds the most commonly occurring value, the mode value, in the aggregated data. The Mode() function
 can process text values as well as numeric values.
 
-[**mode**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/BasicAggregationFunctions/mode.htm)
+[**mode**](../../ChartFunctions/BasicAggregationFunctions/mode.htm)
 ({[SetExpression] [TOTAL [<fld {,fld}>]]} expr)
 
 Only
@@ -100,11 +103,11 @@ Only
 Only()
  returns a value if there is one and only one possible result from the aggregated data. For example, searching for the only product where the unit price =9 will return NULL if more than one product has a unit price of 9.
 
-[**only**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/BasicAggregationFunctions/only.htm)([{SetExpression}] [DISTINCT] [TOTAL [<fld {,fld}>]] expr)
+[**only**](../../ChartFunctions/BasicAggregationFunctions/only.htm)([{SetExpression}] [DISTINCT] [TOTAL [<fld {,fld}>]] expr)
 
 Sum
 
 Sum()
  calculates the total of the values given by the expression or field across the aggregated data.
 
-[**sum**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/BasicAggregationFunctions/sum.htm)([{SetExpression}] [DISTINCT] [TOTAL [<fld {,fld}>]] expr])
+[**sum**](../../ChartFunctions/BasicAggregationFunctions/sum.htm)([{SetExpression}] [DISTINCT] [TOTAL [<fld {,fld}>]] expr])

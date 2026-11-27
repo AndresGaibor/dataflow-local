@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
 # setdateyearmonth Script and chart function
 
 This function takes as input a timestamp, a month and a year and updates the timestamp with the year and the month specified in input. .
@@ -36,8 +37,8 @@ Scripting examples
 
 | Example | Result |
 | --- | --- |
-| `setdateyearmonth ('29/10/2005', 2013, 3)` | Returns '29/03/2013 |
-| `setdateyearmonth ('29/10/2005 04:26:14', 2013, 3)` | Returns '29/03/2013 04:26:14'   To see the time part of the timestamp in a visualization, you must set the number formatting to Date and choose a value for Formatting that displays time values. |
+| setdateyearmonth ('29/10/2005', 2013, 3) | Returns '29/03/2013 |
+| setdateyearmonth ('29/10/2005 04:26:14', 2013, 3) | Returns '29/03/2013 04:26:14'   To see the time part of the timestamp in a visualization, you must set the number formatting to Date and choose a value for Formatting that displays time values. |
 
 Example:
 

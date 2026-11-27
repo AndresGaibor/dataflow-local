@@ -4,22 +4,23 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading data from files"]
 ---
+
 # Working with JSON files
 
 Load data from JSON files in Qlik Cloud.
 
-You can load data from JSON files just like any other data file supported by Qlik Cloud. For more information, see [*Loading data from files*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/DataSource/load-data-from-files.htm).
+You can load data from JSON files just like any other data file supported by Qlik Cloud. For more information, see [*Loading data from files*](../DataSource/load-data-from-files.htm).
 
-You can load data from a JSON file in the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/working-with-JSON.htm#glossary-0 "Glossary term") with the LOAD command. For example:
+You can load data from a JSON file in the [load script](#glossary-0 "Glossary term") with the LOAD command. For example:
 
 LOAD \* from [lib://DataFiles/xyz.json] (json);
 
-For more information, see [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm).
+For more information, see [*Load*](ScriptRegularStatements/Load.htm).
 
-Load statements can filter or reorder the fields by listing the desired in the field list instead of using the wild card. For example: `LOAD a.b, b.c FROM […] (json);`. Nonexisting fields will not trigger an error.
+Load statements can filter or reorder the fields by listing the desired in the field list instead of using the wild card. For example: LOAD a.b, b.c FROM […] (json);. Nonexisting fields will not trigger an error.
 
 ## Loading nested objects from JSON
 
@@ -33,7 +34,7 @@ If a value is an object, then the members of that object are used to extend the 
 ]
 ```
 
-When loaded with `LOAD * FROM [lib://DataFiles/example.json] (json);`, it results in the following table of data:
+When loaded with LOAD \* FROM [lib://DataFiles/example.json] (json);, it results in the following table of data:
 
 Example nested data table
 
@@ -62,7 +63,7 @@ LOAD \* FROM [...] (json);
 LOAD \* FROM [...] (json, table is [/\*/a]);
 LOAD \* FROM [...] (json, table is [/\*/b]);
 
-The **table is** specifier is the path to the iterator for the subtable. This results in the following tables of data:
+The table is specifier is the path to the iterator for the subtable. This results in the following tables of data:
 
 Table 1
 
@@ -89,7 +90,7 @@ Table 3
 | <hash of [4,5]> | 4 |
 | <hash of [4,5]> | 5 |
 
-> **Note:** If your data contains multiple arrays with identical content, use the keyword **DISTINCT** in the subtable load statements. For example: `LOAD DISTINCT * FROM [lib://DataFiles/Sales.json] (json, all tables);`
+Information noteIf your data contains multiple arrays with identical content, use the keyword DISTINCT in the subtable load statements. For example: LOAD DISTINCT \* FROM [lib://DataFiles/Sales.json] (json, all tables);
 
 ### Peeking into arrays
 
@@ -104,7 +105,7 @@ The field list can be used when loading data to peek into arrays that otherwise 
 
 This can be loaded with the following load statement:
 
-`LOAD pos.0 AS x, pos.1 AS y, pos.2 AS z FROM […] (json);`.
+LOAD pos.0 AS x, pos.1 AS y, pos.2 AS z FROM […] (json);.
 
 This results in the following table.
 
@@ -115,7 +116,7 @@ This results in the following table.
 
 ### Loading all tables
 
-You can make a load of all tables by specifying **all tables** instead of **Table is**. For example:
+You can make a load of all tables by specifying all tables instead of Table is. For example:
 
 LOAD \* FROM [lib://DataFiles/Sales.json] (json, all tables);
 
@@ -123,7 +124,7 @@ LOAD \* FROM [lib://DataFiles/Sales.json] (json, all tables);
 
 JSON files have the following limitations:
 
-- A single **LOAD** statement from a JSON can load a maximum of the following:
+- A single LOAD statement from a JSON can load a maximum of the following:
 
   - 5,000 fields
   - 1,000 tables

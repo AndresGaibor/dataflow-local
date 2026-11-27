@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions", "String aggregation functions"]
 ---
+
 # Concat Script function
 
 Concat() is used to combine string values. The script function returns the
@@ -43,5 +44,5 @@ Examples and results
 | --- | --- | --- |
 | TeamData:  LOAD \* inline [  SalesGroup|Team|Date|Amount  East|Gamma|01/05/2013|20000  East|Gamma|02/05/2013|20000  West|Zeta|01/06/2013|19000  East|Alpha|01/07/2013|25000  East|Delta|01/08/2013|14000  West|Epsilon|01/09/2013|17000  West|Eta|01/10/2013|14000  East|Beta|01/11/2013|20000  West|Theta|01/12/2013|23000  ] (delimiter is '|');    Concat1:  LOAD SalesGroup,Concat(Team) as TeamConcat1 Resident TeamData Group By SalesGroup; | SalesGroup  East  West | TeamConcat1  AlphaBetaDeltaGammaGamma  EpsilonEtaThetaZeta |
 | Given that the TeamData table is loaded as in the previous example:  LOAD SalesGroup,Concat(distinct Team,'-') as TeamConcat2 Resident TeamData Group By SalesGroup; | SalesGroup  East  West | TeamConcat2  Alpha-Beta-Delta-Gamma  Epsilon-Eta-Theta-Zeta |
-| Given that the TeamData table is loaded as in the previous example. Because the argument for sort\_weight is added, the results are ordered by the value of the [dimension](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringAggregationFunctions/concat.htm#glossary-0 "Glossary term") Amount:  LOAD SalesGroup,Concat(distinct Team,'-',Amount) as TeamConcat2 Resident TeamData Group By SalesGroup; | SalesGroup  East  West | TeamConcat3  Delta-Beta-Gamma-Alpha  Eta-Epsilon-Zeta-Theta |
+| Given that the TeamData table is loaded as in the previous example. Because the argument for sort\_weight is added, the results are ordered by the value of the [dimension](#glossary-0 "Glossary term") Amount:  LOAD SalesGroup,Concat(distinct Team,'-',Amount) as TeamConcat2 Resident TeamData Group By SalesGroup; | SalesGroup  East  West | TeamConcat3  Delta-Beta-Gamma-Alpha  Eta-Epsilon-Zeta-Theta |
 | Given that the TeamData table is loaded as in the previous example. Because the argument for sort\_weight is 0, the results are not sorted:  ConcatNoSort:  LOAD SalesGroup,Concat(Team,'-',0) as TeamConcat4 Resident TeamData Group By SalesGroup; | SalesGroup  East  West | TeamConcat4  Gamma-Gamma-Alpha-Delta-Beta  Zeta-Epsilon-Eta-Theta |

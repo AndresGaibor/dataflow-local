@@ -4,14 +4,17 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions"]
 ---
+
+# Financial aggregation functions
+
 Expand/Collapse all
 
 # Financial aggregation functions
 
-This section describes [aggregation](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FinancialAggregationFunctions/financial-aggregation-functions-script.htm#glossary-0 "Glossary term") functions for financial operations regarding payments and cash flow.
+This section describes [aggregation](#glossary-0 "Glossary term") functions for financial operations regarding payments and cash flow.
 
 Use the drop-down on each function to see a brief description and the syntax of each function. Click the function name in the syntax description for further details.
 
@@ -24,7 +27,7 @@ rate of return for a series of cash flows represented by the numbers in the
 expression iterated over a number of records as defined by a group by
 clause.
 
-[**IRR**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FinancialAggregationFunctions/IRR.htm)(expression)
+[**IRR**](IRR.htm)(expression)
 
 XIRR
 
@@ -33,14 +36,14 @@ rate of return (yearly) for a schedule of cash flows (that is not necessarily pe
 represented by paired numbers in pmt and date iterated
 over a number of records as defined by a group by clause. All payments are discounted based on a 365-day year.
 
-[**XIRR**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FinancialAggregationFunctions/XIRR.htm)(valueexpression,
+[**XIRR**](XIRR.htm)(valueexpression,
 dateexpression )
 
 NPV
 
 The NPV() script function takes a discount rate and multiple values ordered by period. Inflows (incomes) are positive, and outflows (future payments) are assumed to be negative values for these calculations. These occur at the end of each period.
 
-[**NPV**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FinancialAggregationFunctions/NPV.htm)(rate, expression)
+[**NPV**](NPV.htm)(rate, expression)
 
 XNPV
 
@@ -48,26 +51,26 @@ XNPV() returns the aggregated net present
 value for a schedule of cashflows (not necessarily periodic) represented
 by paired numbers in pmt and date. All payments are discounted based on a 365-day year.
 
-[**XNPV**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FinancialAggregationFunctions/XNPV.htm)(rate, valueexpression,
+[**XNPV**](XNPV.htm)(rate, valueexpression,
 dateexpression)
 
 ## Financial aggregation functions in chart expressions
 
-These financial aggregation functions can be used in [charts](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FinancialAggregationFunctions/financial-aggregation-functions-script.htm#glossary-1 "Glossary term")
+These financial aggregation functions can be used in [charts](#glossary-1 "Glossary term")
 
 IRR
 
 IRR() returns the aggregated internal
 rate of return for a series of cash flows represented by the numbers in the expression given by value iterated over the chart dimensions.
 
-[**irr**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/FinancialAggregationFunctionsInCharts/irr.htm)[TOTAL [<fld {,fld}>]] value)
+[**irr**](../../ChartFunctions/FinancialAggregationFunctionsInCharts/irr.htm)[TOTAL [<fld {,fld}>]] value)
 
 NPV
 
 NPV() returns the aggregated net present value of an investment based on a discount\_rate per period and a series of future
 payments (negative values) and incomes (positive values,) represented by the numbers in value, iterated over the chart dimensions. The payments and incomes are assumed to occur at the end of each period.
 
-[**npv**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/FinancialAggregationFunctionsInCharts/npv.htm)([TOTAL [<fld {,fld}>]] discount\_rate, value)
+[**npv**](../../ChartFunctions/FinancialAggregationFunctionsInCharts/npv.htm)([TOTAL [<fld {,fld}>]] discount\_rate, value)
 
 XIRR
 
@@ -75,7 +78,7 @@ XIRR() returns the aggregated internal
 rate of return (yearly) for a schedule of cash flows (that is not necessarily periodic) represented by paired numbers in the expressions given by pmt and date iterated
 over the chart dimensions. All payments are discounted based on a 365-day year.
 
-[**xirr**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/FinancialAggregationFunctionsInCharts/xirr.htm)([TOTAL [<fld {,fld}>]] pmt, date)
+[**xirr**](../../ChartFunctions/FinancialAggregationFunctionsInCharts/xirr.htm)([TOTAL [<fld {,fld}>]] pmt, date)
 
 XNPV
 
@@ -85,4 +88,4 @@ by paired numbers in the expressions given by pmt
 and date, iterated over
 the chart dimensions. All payments are discounted based on a 365-day year.
 
-[**xnpv**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/FinancialAggregationFunctionsInCharts/xnpv.htm)([TOTAL [<fld{,fld}>]] discount\_rate, pmt, date)
+[**xnpv**](../../ChartFunctions/FinancialAggregationFunctionsInCharts/xnpv.htm)([TOTAL [<fld{,fld}>]] discount\_rate, pmt, date)

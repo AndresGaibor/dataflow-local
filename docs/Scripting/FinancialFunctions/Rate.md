@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Financial functions"]
 ---
+
 # Rate Script and chart function
 
 This function returns the interest rate per period on annuity. The result has a default
@@ -42,4 +43,4 @@ Scripting example
 
 | Example | Result |
 | --- | --- |
-| What is the interest rate of a five-year $10,000 annuity loan with monthly payments of $300?  `Rate(60,-300,10000)` | Returns 2.00% |
+| What is the interest rate of a five-year $10,000 annuity loan with monthly payments of $300?  Rate(60,-300,10000) | Returns 2.00% |

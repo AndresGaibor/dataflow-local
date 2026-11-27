@@ -4,16 +4,19 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "System functions"]
 ---
+
+# CalcDim - chart function
+
 Expand/Collapse all
 
 # CalcDim - chart function
 
-When used in a [dimension](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/calcdim.htm#glossary-0 "Glossary term") expression, CalcDim() overrides the engine's automatic interpretation of how to internally handle the expression. Specifically, the function prevents a new internal field from being created in the data model. Instead, [selections](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/calcdim.htm#glossary-1 "Glossary term") made in the application are treated as selections in applicable fields from the original data model.
+When used in a [dimension](#glossary-0 "Glossary term") expression, CalcDim() overrides the engine's automatic interpretation of how to internally handle the expression. Specifically, the function prevents a new internal field from being created in the data model. Instead, [selections](#glossary-1 "Glossary term") made in the application are treated as selections in applicable fields from the original data model.
 
-This function cannot be used in the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/calcdim.htm#glossary-3 "Glossary term"). Additionally, a best practice for system performance is to load the fields that are used in the calculated dimension as logical fields via the load script when possible. CalcDim() offers a way to control engine behavior in scenarios where loading the calculated field from the script is not possible.
+This function cannot be used in the [load script](#glossary-3 "Glossary term"). Additionally, a best practice for system performance is to load the fields that are used in the calculated dimension as logical fields via the load script when possible. CalcDim() offers a way to control engine behavior in scenarios where loading the calculated field from the script is not possible.
 
 In Qlik Sense, the dimension expression is by default realized as a field-on-the-fly—that is, as an actual field, apparent in the current selection bar, built on demand. Selections are applied and inferred to this field, similar to any logical field from the script.
 
@@ -52,7 +55,7 @@ Function examples
 
 | Example | Result |
 | --- | --- |
-| `=CalcDim(if(Year < 2023, 'Older', Year))` | Making a selection in a [visualization](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/calcdim.htm#glossary-4 "Glossary term") that uses this dimension will be processed and displayed as a selection in the associated Year field value from the data model.  Conversely, let's say you do not wrap the expression in CalcDim(). In this case, it would look like this:  `=if(Year < 2023, 'Older', Year)`  Making a selection in the above expression would be processed and displayed as a selection in the internal field =if(Year < 2023, 'Older', Year), which is not in the data model. |
+| =CalcDim(if(Year < 2023, 'Older', Year)) | Making a selection in a [visualization](#glossary-4 "Glossary term") that uses this dimension will be processed and displayed as a selection in the associated Year field value from the data model.  Conversely, let's say you do not wrap the expression in CalcDim(). In this case, it would look like this:  =if(Year < 2023, 'Older', Year)  Making a selection in the above expression would be processed and displayed as a selection in the internal field =if(Year < 2023, 'Older', Year), which is not in the data model. |
 
 ## Example 1 – Simple comparison
 
@@ -140,7 +143,7 @@ Load script
 
 ```
 SET DateFormat='MM/DD/YYYY';
-						
+
 Transactions:
 
 Load *,
@@ -178,7 +181,7 @@ date,amount
 
 Variable creation
 
-Load the data and open a sheet. Create a variable named vCutoffYear, and give it the following **Definition**: 2023
+Load the data and open a sheet. Create a variable named vCutoffYear, and give it the following Definition: 2023
 
 Table creation
 
@@ -227,7 +230,7 @@ In the above table, there is no difference between the two calculated dimension 
 
 In the  if(Year < $(vCutoffYear), 'Older', Year) column of the table, select the value 2023. Notice that in the selection toolbar, the value is selected as a value from a field named =if(Year<2023,'Older',Year).
 
-Next, change the **Definition** of the vCutoffYear variable to 2024. Notice that while the selection field =if(Year<2023,'Older',Year) is the same and retains the selected value 2023, the data in the table has changed. The value 2023 has changed to the value Older. If you select Older in the  if(Year < $(vCutoffYear), 'Older', Year) column, the selection Older is made in a new field: =if(Year<2024,'Older',Year).
+Next, change the Definition of the vCutoffYear variable to 2024. Notice that while the selection field =if(Year<2023,'Older',Year) is the same and retains the selected value 2023, the data in the table has changed. The value 2023 has changed to the value Older. If you select Older in the  if(Year < $(vCutoffYear), 'Older', Year) column, the selection Older is made in a new field: =if(Year<2024,'Older',Year).
 
 In essence, a new field is internally created for each value of the vCutoffYear variable. When working with concurrent and changing selections, this behavior might not be desirable and can add complexity to data interpretation.
 
@@ -237,11 +240,11 @@ Now that you have seen the behavior of the expression when not wrapped in CalcDi
 
 In the =CalcDim(if(Year < $(vCutoffYear), 'Older', Year)) column of the table, select the value 2023. Notice that in the selection toolbar, the value is selected as a value from the underlying field, Year.
 
-Next, change the **Definition** of the vCutoffYear variable to 2024. The selection field Year is the same, it retains the selected value 2023, and the data in the table has changed, as seen without CalcDim(). However, if you now select Older in the =CalcDim(if(Year < $(vCutoffYear), 'Older', Year)) column, the value 2024 is selected in Year.
+Next, change the Definition of the vCutoffYear variable to 2024. The selection field Year is the same, it retains the selected value 2023, and the data in the table has changed, as seen without CalcDim(). However, if you now select Older in the =CalcDim(if(Year < $(vCutoffYear), 'Older', Year)) column, the value 2024 is selected in Year.
 
 All selections you make in a calculated dimension wrapped with CalcDim() will be reflected as selections in the underlying fields referenced from the original data model. This can simplify data interpretation and prevents cluttered, complex expressions from appearing in the selection toolbar when users consume the analytics content.
 
 ## Learn more
 
 - [Calculated Fields](https://community.qlik.com/t5/Design/Calculated-Fields/ba-p/1694383)
-- [*Calculated dimensions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Dimensions/calculated-dimensions.htm)
+- [*Calculated dimensions*](../../Dimensions/calculated-dimensions.htm)

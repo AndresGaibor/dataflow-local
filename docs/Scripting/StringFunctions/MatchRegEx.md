@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# MatchRegEx Script and chart function
+
 Expand/Collapse all
 
 # MatchRegEx Script and chart function
@@ -33,10 +36,10 @@ Function examples
 
 | Example | Result |
 | --- | --- |
-| `MatchRegEx('testSample','test')` | Returns `0` . The function only returns a match response when there is an exact match between text and the regex pattern. Even though `testSample` contains `test`, it contains other text (`Sample`), preventing an exact match. |
-| `MatchRegEx('abc123','[a-z]','[0-9]','[a-z]+[0-9]+','.+')` | Returns `3` .The third regex pattern is the first to match the data. |
-| `MatchRegEx('ABC','[abc]+','[123]')` | Returns `0`, because MatchRegEx() is case-sensitive. |
-| `MatchRegExI('ABC','[abc]+','[123]')` | Returns `1` .The case-insensitive variant of the function, MatchRegExI(), is used. |
+| MatchRegEx('testSample','test') | Returns 0 . The function only returns a match response when there is an exact match between text and the regex pattern. Even though testSample contains test, it contains other text (Sample), preventing an exact match. |
+| MatchRegEx('abc123','[a-z]','[0-9]','[a-z]+[0-9]+','.+') | Returns 3 .The third regex pattern is the first to match the data. |
+| MatchRegEx('ABC','[abc]+','[123]') | Returns 0, because MatchRegEx() is case-sensitive. |
+| MatchRegExI('ABC','[abc]+','[123]') | Returns 1 .The case-insensitive variant of the function, MatchRegExI(), is used. |
 
 ## When to use MatchRegEx
 
@@ -55,8 +58,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table `BusinessContactInfo` containing contact phone numbers for various businesses. The phone numbers are 10-digit NANP phone numbers.
-- A calculated field, `PhoneNumberFormat`, to assess whether each phone number matches one of a specific set of phone number formats.
+- A table BusinessContactInfo containing contact phone numbers for various businesses. The phone numbers are 10-digit NANP phone numbers.
+- A calculated field, PhoneNumberFormat, to assess whether each phone number matches one of a specific set of phone number formats.
 
 There are three different formats that we want to check for: (###) ###-####, ###-###-####, and ##########.
 
@@ -85,9 +88,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `CompanyName`
-- `ContactInfo`
-- `PhoneNumberFormat`
+- CompanyName
+- ContactInfo
+- PhoneNumberFormat
 
 Results table
 
@@ -125,7 +128,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table `Books` listing ISBN codes for various books.
+- A table Books listing ISBN codes for various books.
 
 From this data, we want to identify whether each ISBN code is a valid 10-digit or 13-digit code, based on syntax specified in a regex pattern.
 
@@ -155,12 +158,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `Book`
+- Book
 
 Add this calculated dimension, and give it the label ISBN Format:
 
 ```
-=if(MatchRegEx(Book, 'ISBN[ ]*([0-9]{3})-([0-9]{1})-([0-9]{4})-([0-9]{4})-([0-9]{1})', 'ISBN[ ]*([0-9]{1})-([0-9]{3})-([0-9]{5})-([0-9]{1})')=1, '13-digit', 
+=if(MatchRegEx(Book, 'ISBN[ ]*([0-9]{3})-([0-9]{1})-([0-9]{4})-([0-9]{4})-([0-9]{1})', 'ISBN[ ]*([0-9]{1})-([0-9]{3})-([0-9]{5})-([0-9]{1})')=1, '13-digit',
 	if(MatchRegEx(Book, 'ISBN[ ]*([0-9]{3})-([0-9]{1})-([0-9]{4})-([0-9]{4})-([0-9]{1})', 'ISBN[ ]*([0-9]{1})-([0-9]{3})-([0-9]{5})-([0-9]{1})')=2, '10-digit',
 		'Invalid ISBN'))
 ```
@@ -184,4 +187,4 @@ Results table
 
 ## Learn more
 
-- [*Working with regular expressions in load scripts and chart expressions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/regular-expressions-qlik-analytics.htm)
+- [*Working with regular expressions in load scripts and chart expressions*](../regular-expressions-qlik-analytics.htm)

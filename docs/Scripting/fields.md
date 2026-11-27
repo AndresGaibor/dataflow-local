@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Understanding script syntax and data structures"]
 ---
+
 # Fields
 
 Fields are the primary data-carrying entities in Qlik Sense. A
@@ -30,6 +31,6 @@ and calculations.
 
 Field values consist of numeric or alphanumeric (text) data. Numeric
 values actually have dual values, the numeric value and its current, formatted
-text representation. Only the latter is displayed in [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/fields.htm#glossary-0 "Glossary term") objects etc.
+text representation. Only the latter is displayed in [sheet](#glossary-0 "Glossary term") objects etc.
 
 The content of a field can be represented in a filter pane.

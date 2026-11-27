@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# TextBetween Script and chart function
+
 Expand/Collapse all
 
 # TextBetween Script and chart function
@@ -33,12 +36,12 @@ Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `TextBetween( '<abc>', '<', '>' )` | Returns `abc` |
-| `TextBetween( '<abc><de>', '<', '>',2 )` | Returns `de` |
-| `TextBetween( 'abc', '<', '>' )` | Returns `NULL`  If any of the delimiter is not found in the string, `NULL` is returned. |
-| `TextBetween( '<a<b', '<', '>' )` | Returns `NULL`  If any of the delimiters are not found in the string, `NULL` is returned. |
-| `TextBetween( '<>', '<', '>' )` | Returns a zero-length string. |
-| `TextBetween( '<abc>', '<', '>', 2 )` | Returns `NULL`, as n is greater than the number of occurrences of the delimiters. |
+| TextBetween( '<abc>', '<', '>' ) | Returns abc |
+| TextBetween( '<abc><de>', '<', '>',2 ) | Returns de |
+| TextBetween( 'abc', '<', '>' ) | Returns NULL  If any of the delimiter is not found in the string, NULL is returned. |
+| TextBetween( '<a<b', '<', '>' ) | Returns NULL  If any of the delimiters are not found in the string, NULL is returned. |
+| TextBetween( '<>', '<', '>' ) | Returns a zero-length string. |
+| TextBetween( '<abc>', '<', '>', 2 ) | Returns NULL, as n is greater than the number of occurrences of the delimiters. |
 
 ## Example - TextBetween fundamentals
 
@@ -50,8 +53,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `InputText`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called InputText.
 
 Load script
 
@@ -68,12 +71,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `InputText`
+- InputText
 
 Create the following calculated dimensions:
 
-- `=TextBetween(InputText,'<','>')`, to calculate the first instance of the characters that appear between the delimiters `'<'` and `'>'` in the `InputText` field.
-- `=TextBetween(InputText,'<','>',2)`, to calculate the second instance of the characters that appear between the delimiters `'<'` and `'>'` in the `InputText` field.
+- =TextBetween(InputText,'<','>'), to calculate the first instance of the characters that appear between the delimiters '<' and '>' in the InputText field.
+- =TextBetween(InputText,'<','>',2), to calculate the second instance of the characters that appear between the delimiters '<' and '>' in the InputText field.
 
 Results table
 
@@ -82,7 +85,7 @@ Results table
 | <abc><de> | abc | de |
 | <def><ghi><jkl> | def | ghi |
 
-In the first calculated dimension, the output of the `TextBetween` function returns the first instance of the characters that appear between the delimiters `'<'` and `'>'`. For example, row 1 returns `abc`. The second calculated dimension has an `n` argument of `2`, so the output returns the second instance of the characters that appear between the delimiters `'<'` and `'>'`. For example, row 1 returns `de`.
+In the first calculated dimension, the output of the TextBetween function returns the first instance of the characters that appear between the delimiters '<' and '>'. For example, row 1 returns abc. The second calculated dimension has an n argument of 2, so the output returns the second instance of the characters that appear between the delimiters '<' and '>'. For example, row 1 returns de.
 
 Load script
 
@@ -111,17 +114,17 @@ Chart expression
 
 Overview
 
-A dataset contains a data table with email addresses. This example uses the `TextBetween` function to extract the second-level domain from the address.
+A dataset contains a data table with email addresses. This example uses the TextBetween function to extract the second-level domain from the address.
 
 Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `UserID`
-  - `EmailAddress`
+  - UserID
+  - EmailAddress
 
 Load script
 
@@ -139,12 +142,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `UserID`
-- `EmailAddress`
+- UserID
+- EmailAddress
 
 Create the following calculated dimension:
 
-- `=TextBetween(EmailAddress,'@', '.')`, to return the text between the characters `'@'` and `'.'` within the `EmailAddress` field.
+- =TextBetween(EmailAddress,'@', '.'), to return the text between the characters '@' and '.' within the EmailAddress field.
 
 Results table
 
@@ -154,4 +157,4 @@ Results table
 | 2 | bob@sample.org | sample |
 | 3 | charlie@domain.net | domain |
 
-The output of the `TextBetween` function returns the second-level domain for each user ID by searching for content between the specified delimiters: `'@'` and `'.'`.
+The output of the TextBetween function returns the second-level domain for each user ID by searching for content between the specified delimiters: '@' and '.'.

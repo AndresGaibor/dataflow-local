@@ -4,14 +4,17 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Understanding script syntax and data structures", "Dollar-sign expansions"]
 ---
+
+# Dollar-sign expansion using a variable
+
 Expand/Collapse all
 
 # Dollar-sign expansion using a variable
 
-In the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/dollar-sign-expansion-using-variable.htm#glossary-0 "Glossary term") or a chart expression, use a [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/dollar-sign-expansion-using-variable.htm#glossary-1 "Glossary term") in a dollar-sign expansion to:
+In the [load script](#glossary-0 "Glossary term") or a chart expression, use a [variable](#glossary-1 "Glossary term") in a dollar-sign expansion to:
 
 - Reference text
 - Reference a numeric value
@@ -50,7 +53,7 @@ MyTable:
 Load '$(x)' as X, '$(y)' as Y, '$(z)' as Z, '$(MyString)' as NewString autogenerate 1;
 ```
 
-For more information about using inline loads, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+For more information about using inline loads, see [*Using inline loads to load data*](inline-loads-qs.htm).
 
 Explanation
 
@@ -97,7 +100,7 @@ ID, String
 
 Explanation
 
-The `Set` and `Let`statements are used to assign values to variables in the load script. The difference between the two is that the `Set`statement assigns a string to the variable, while the `Let`statement evaluates the content of the string before assigning the resultant value to the variable. The load inline table in this example is supplemented with two [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/dollar-sign-expansion-using-variable.htm#glossary-2 "Glossary term") statements that are used to visualize different evaluations of the variable `vEvaluate` both as a text string and as the corresponding expression.
+The Set and Letstatements are used to assign values to variables in the load script. The difference between the two is that the Setstatement assigns a string to the variable, while the Letstatement evaluates the content of the string before assigning the resultant value to the variable. The load inline table in this example is supplemented with two [preceding load](#glossary-2 "Glossary term") statements that are used to visualize different evaluations of the variable vEvaluate both as a text string and as the corresponding expression.
 
 Output
 
@@ -148,11 +151,11 @@ Germany, 2015, 77185.68
 
 Variables
 
-In a [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/dollar-sign-expansion-using-variable.htm#glossary-3 "Glossary term") in edit mode, open the **Variables** dialog from the **Assets** panel.
+In a [sheet](#glossary-3 "Glossary term") in edit mode, open the Variables dialog from the Assets panel.
 
 Open variables dialog
 
-![KPIs using set modifiers.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_gen_dollar_open_variable_dialog.png)
+![KPIs using set modifiers.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_gen_dollar_open_variable_dialog.png "Click to view full size")
 
 Create the following variables:
 
@@ -168,13 +171,13 @@ Variable to create
 
 Variables
 
-![KPIs using set modifiers.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_gen_dollar_variables_window_new.png)
+![KPIs using set modifiers.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_gen_dollar_variables_window_new.png "Click to view full size")
 
 Create KPI charts to see the expansions.
 
 KPIs using dollar sign expansions
 
-![KPIs using dollar sign expansions.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_gen_dollar_kpis.png)
+![KPIs using dollar sign expansions.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_gen_dollar_kpis.png "Click to view full size")
 
 ## Numeric variable expansion
 
@@ -182,7 +185,7 @@ For numeric variable expansions, the following syntax is used:
 
 (#variablename)
 
-The expansion always yields a valid decimal-point representation of the numeric value of the variable, possibly with exponential notation (for very large or small numbers). If `variablename` does not exist or does not contain a numeric value, it will be expanded to 0 instead of NULL.
+The expansion always yields a valid decimal-point representation of the numeric value of the variable, possibly with exponential notation (for very large or small numbers). If variablename does not exist or does not contain a numeric value, it will be expanded to 0 instead of NULL.
 
 ## Examples: Numeric variable load scripts
 
@@ -197,17 +200,17 @@ Set DecimalSep = ',';  // Set decimal comma as separator for this example.
 Let X = 7/2;           // Assign the expression 7/2 to variable X.
 
 MyTable:   // Create an inline table labeled “MyTable”
-Load 1 as ID, * inline [  
+Load 1 as ID, * inline [
 DecimalComma	DecimalPoint
-$(X)	$(#X) ] 
+$(X)	$(#X) ]
 (delimiter is '\t');
 ```
 
 Explanation
 
-The `#vVariable` expansion always yields a valid decimal-point representation of the numeric value of the variable. This is useful when comma, rather than point is used as decimal separator and there is a risk of a conflict with comma separated lists.
+The #vVariable expansion always yields a valid decimal-point representation of the numeric value of the variable. This is useful when comma, rather than point is used as decimal separator and there is a risk of a conflict with comma separated lists.
 
-The main reason for expanding these variables in a load-inline table is that no additional quoting of `$(X)` is required.
+The main reason for expanding these variables in a load-inline table is that no additional quoting of $(X) is required.
 
 Output
 
@@ -236,7 +239,7 @@ Let vRaw = today()-1/1440;  		 // Timestamp minus one minute
 Let vFormat = timestamp($(#vRaw));	 // Formatted as timestamp
 
 // Create MyTable as an inline table to expand variables as field values
-						
+
 MyTable:
 Load * inline [
 DecimalComma	DecimalPoint	FormattedNumber
@@ -245,9 +248,9 @@ $(vRaw)	$(#vRaw)	$(vFormat) ] (delimiter is '\t');
 
 Explanation
 
-The `#vVariable` expansion always yields a valid decimal-point representation of the numeric value of the variable. This is useful when comma, rather than point is used as decimal separator and there is a risk of a conflict with comma separated lists. It is also important to note that the numerical precision will be affected due to the decimal part being truncated when variables are expanded without correct decimal separator.
+The #vVariable expansion always yields a valid decimal-point representation of the numeric value of the variable. This is useful when comma, rather than point is used as decimal separator and there is a risk of a conflict with comma separated lists. It is also important to note that the numerical precision will be affected due to the decimal part being truncated when variables are expanded without correct decimal separator.
 
-The main reason for expanding these variables in a load-inline table is that no additional quoting of `$(X)` is required.
+The main reason for expanding these variables in a load-inline table is that no additional quoting of $(X) is required.
 
 Output
 
@@ -294,9 +297,9 @@ $(vStart)	$(vStop) ] (delimiter is '\t');
 
 Explanation
 
-The `#vVariable` expansion always yields a valid decimal-point representation of the numeric value of the variable. This is useful when comma, rather than point is used as decimal separator and there is a risk of a conflict with comma separated lists. It is also important to note that the numerical precision will be affected due to the decimal part being truncated when variables are expanded without correct decimal separator.
+The #vVariable expansion always yields a valid decimal-point representation of the numeric value of the variable. This is useful when comma, rather than point is used as decimal separator and there is a risk of a conflict with comma separated lists. It is also important to note that the numerical precision will be affected due to the decimal part being truncated when variables are expanded without correct decimal separator.
 
-The main reason for expanding these variables in a load-inline table is that no additional quoting of `$(X)` is required.
+The main reason for expanding these variables in a load-inline table is that no additional quoting of $(X) is required.
 
 Output
 
@@ -314,7 +317,7 @@ The variable has only one value, and this is used in all alternate states. When 
 
 If the variable is a calculated variable, that is, the definition starts with an equals sign, the calculation is made in the default state, unless you specify an alternate state in the variable definition.
 
-For example, if you have a state named `MyState`, and a variable named `vMyVar`:
+For example, if you have a state named MyState, and a variable named vMyVar:
 
 ```
 vMyvar: =only({MyState}MyField)
@@ -324,10 +327,10 @@ The variable definition content, with an explicit reference to the alternate sta
 
 ## Interaction between variables and outer set expressions
 
-When you reference a variable in a dollar-sign expansion that also contains an outer set expression, a specific order of evaluation applies. For details, see [*Variable lookup*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/SetAnalysis/outer-set-expression-dollar-sign-expansion.htm#Variable).
+When you reference a variable in a dollar-sign expansion that also contains an outer set expression, a specific order of evaluation applies. For details, see [*Variable lookup*](../ChartFunctions/SetAnalysis/outer-set-expression-dollar-sign-expansion.htm#Variable).
 
 ## Learn more
 
-- [*Let*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Let.htm)
-- [*Set*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Set.htm)
-- [*Working with variables in the data load editor*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/work-with-variables-in-data-load-editor.htm)
+- [*Let*](ScriptRegularStatements/Let.htm)
+- [*Set*](ScriptRegularStatements/Set.htm)
+- [*Working with variables in the data load editor*](work-with-variables-in-data-load-editor.htm)

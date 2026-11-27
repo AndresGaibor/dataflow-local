@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script control statements"]
 ---
+
 # For..next
 
 The for..next control statement
@@ -31,7 +32,7 @@ Next [counter]
 
 The expressions expr1, expr2 and expr3
 are only evaluated the first time the loop is entered. The value of the
-counter [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptControlStatements/For.htm#glossary-0 "Glossary term") may be changed by statements inside the loop, but this
+counter [variable](#glossary-0 "Glossary term") may be changed by statements inside the loop, but this
 is not good programming practice.
 
 If an exit for clause is encountered
@@ -41,11 +42,11 @@ clause denoting the end of the loop. An exit
 for clause can be made conditional by the optional use of a when or unless
 suffix.
 
-> **Note:** Since the for..next statement
-> is a control statement and as such is ended with either a semicolon or
-> end-of-line, each of its three possible clauses (for..to..step,
-> exit for and next)
-> must not cross a line boundary.
+Information noteSince the for..next statement
+is a control statement and as such is ended with either a semicolon or
+end-of-line, each of its three possible clauses (for..to..step,
+exit for and next)
+must not cross a line boundary.
 
 Arguments:
 
@@ -75,8 +76,8 @@ next
 
 Example 2: Loading a random number of files
 
-In this example, we assume there are data files x1.csv, x3.csv, x5.csv, x7.csv and x9.csv. Loading is stopped at a random point using the `if rand(
-)<0.5 then` condition.
+In this example, we assume there are data files x1.csv, x3.csv, x5.csv, x7.csv and x9.csv. Loading is stopped at a random point using the if rand(
+)<0.5 then condition.
 
 for counter=1
 to 9 step 2
@@ -98,7 +99,7 @@ next
 
 ## Learn more
 
-- [*For each..next*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptControlStatements/For%20Each.htm)
-- [*Next*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptControlStatements/Next.htm)
-- [*To*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptControlStatements/To.htm)
-- [*Exit*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptControlStatements/Exit.htm)
+- [*For each..next*](For%20Each.htm)
+- [*Next*](Next.htm)
+- [*To*](To.htm)
+- [*Exit*](Exit.htm)

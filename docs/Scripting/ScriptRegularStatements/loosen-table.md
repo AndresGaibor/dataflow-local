@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
 # Loosen Table
 
 One or more Qlik Sense internal data tables can be explicitly declared loosely
@@ -25,10 +26,10 @@ Loosen Tablestablename [
 Either syntax: Loosen Table
 or Loosen Tables can be used.
 
-> **Note:** Should Qlik Sense find circular references in the data structure which cannot
-> be broken by tables declared loosely coupled interactively or explicitly
-> in the script, one or more additional tables will be forced loosely coupled
-> until no circular references remain. When this happens, the **Loop Warning** dialog, gives a warning.
+Information noteShould Qlik Sense find circular references in the data structure which cannot
+be broken by tables declared loosely coupled interactively or explicitly
+in the script, one or more additional tables will be forced loosely coupled
+until no circular references remain. When this happens, the Loop Warning dialog, gives a warning.
 
 Example:
 

@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
+# year Script and chart function
+
 Expand/Collapse all
 
 # year Script and chart function
@@ -21,28 +24,28 @@ year(expression)
 
 Return data type:  integer
 
-The `year()` function is available as both a script and [chart](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/year.htm#glossary-0 "Glossary term") function. The function returns the year for a particular date. It is commonly used to create a year [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/year.htm#glossary-1 "Glossary term") as a [dimension](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/year.htm#glossary-2 "Glossary term") in a Master Calendar.
+The year() function is available as both a script and [chart](#glossary-0 "Glossary term") function. The function returns the year for a particular date. It is commonly used to create a year [field](#glossary-1 "Glossary term") as a [dimension](#glossary-2 "Glossary term") in a Master Calendar.
 
 ## When to use year
 
-The `year()` function is useful when you would like to compare aggregations by year. For example, the function could be used if you would like to see the total sales of products by year.
+The year() function is useful when you would like to compare aggregations by year. For example, the function could be used if you would like to see the total sales of products by year.
 
-These dimensions can be created either in the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/year.htm#glossary-3 "Glossary term") by using the function to create a field in a Master Calendar table. Alternatively, it could be used directly in a chart as a calculated dimension.
+These dimensions can be created either in the [load script](#glossary-3 "Glossary term") by using the function to create a field in a Master Calendar table. Alternatively, it could be used directly in a chart as a calculated dimension.
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `year( '2012-10-12' )` | returns 2012 |
-| `year( '35648' )` | returns 1997, because 35648 = 1997-08-06 |
+| year( '2012-10-12' ) | returns 2012 |
+| year( '35648' ) | returns 1997, because 35648 = 1997-08-06 |
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 ## Example 1 – DateFormat dataset (script)
 
@@ -54,9 +57,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/year.htm#glossary-4 "Glossary term") of dates, which is loaded into a table named `Master Calendar`.
-- The default `DateFormat` system [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/year.htm#glossary-5 "Glossary term") (MM/DD/YYYY) is used.
-- A [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/year.htm#glossary-6 "Glossary term") which is used to create an additional field, `year`, using the `year()` function.
+- A [dataset](#glossary-4 "Glossary term") of dates, which is loaded into a table named Master Calendar.
+- The default DateFormat system [variable](#glossary-5 "Glossary term") (MM/DD/YYYY) is used.
+- A [preceding load](#glossary-6 "Glossary term") which is used to create an additional field, year, using the year() function.
 
 Load script
 
@@ -71,7 +74,7 @@ Master_Calendar:
         ;
 Load
 date
-Inline 
+Inline
 [
 date
 12/28/2020
@@ -92,8 +95,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `year`
+- date
+- year
 
 Results table
 
@@ -121,9 +124,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset of dates, which is loaded into a table named `Master Calendar`.
-- The default `DateFormat` system variable (MM/DD/YYYY) is used. However, the dates included in the dataset are in ANSI standard date format.
-- A preceding load, which is used to create an additional field, named `year`, using the `year()` function.
+- A dataset of dates, which is loaded into a table named Master Calendar.
+- The default DateFormat system variable (MM/DD/YYYY) is used. However, the dates included in the dataset are in ANSI standard date format.
+- A preceding load, which is used to create an additional field, named year, using the year() function.
 
 Load script
 
@@ -137,7 +140,7 @@ Master_Calendar:
         ;
 Load
 date
-Inline 
+Inline
 [
 date
 2020-12-28
@@ -158,8 +161,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `year`
+- date
+- year
 
 Results table
 
@@ -187,11 +190,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset of dates in numerical format, which is loaded into a table named `Master Calendar`.
-- The default `DateFormat` system variable (MM/DD/YYYY) is used.
-- A preceding load, which is used to create an additional field, `year`, using the `year()` function.
+- A dataset of dates in numerical format, which is loaded into a table named Master Calendar.
+- The default DateFormat system variable (MM/DD/YYYY) is used.
+- A preceding load, which is used to create an additional field, year, using the year() function.
 
-The original unformatted date is loaded, named `unformatted_date`, and to provide clarity, a further additional field, named `long_date`, is used to convert the numerical date into a formatted date field using the `date()` function.
+The original unformatted date is loaded, named unformatted\_date, and to provide clarity, a further additional field, named long\_date, is used to convert the numerical date into a formatted date field using the date() function.
 
 Load script
 
@@ -206,7 +209,7 @@ Master_Calendar:
         ;
 Load
 unformatted_date
-Inline 
+Inline
 [
 unformatted_date
 44868
@@ -227,9 +230,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `unformatted_date`
-- `long_date`
-- `year`
+- unformatted\_date
+- long\_date
+- year
 
 Results table
 
@@ -253,15 +256,15 @@ Load script and chart expression
 
 Overview
 
-Open the [Data load editor](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/year.htm#glossary-7 "Glossary term") and add the load script below to a new tab.
+Open the [Data load editor](#glossary-7 "Glossary term") and add the load script below to a new tab.
 
 In this example, a dataset of orders placed is loaded into a table named Sales. The table contains three fields:
 
-- `id`
-- `sales_date`
-- `amount`
+- id
+- sales\_date
+- amount
 
-Warranties on product sales last two years from the date of sale. The task is to create a [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/year.htm#glossary-8 "Glossary term") in a chart to determine the year in which each warranty will expire.
+Warranties on product sales last two years from the date of sale. The task is to create a [measure](#glossary-8 "Glossary term") in a chart to determine the year in which each warranty will expire.
 
 Load script
 
@@ -271,7 +274,7 @@ Load
 id,
 sales_date,
 amount
-Inline 
+Inline
 [
 id,sales_date,amount
 1,12/28/2020,231.24,
@@ -290,11 +293,11 @@ id,sales_date,amount
 
 Results
 
-Load the data and open a sheet. Create a new table and add this field as a dimension: `sales_date`.
+Load the data and open a sheet. Create a new table and add this field as a dimension: sales\_date.
 
 Create the following measure:
 
-`=year(sales_date+365*2)`
+=year(sales\_date+365\*2)
 
 Results table
 

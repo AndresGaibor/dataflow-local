@@ -4,14 +4,17 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Range functions"]
 ---
+
+# RangeXNPV Script and chart function
+
 Expand/Collapse all
 
 # RangeXNPV Script and chart function
 
-**RangeXNPV()** returns the net present value for a schedule of cash flows (not necessarily periodic) represented by paired numbers in the expressions given by **pmt** and **date**. All payments are discounted based on a 365-day year.
+RangeXNPV() returns the net present value for a schedule of cash flows (not necessarily periodic) represented by paired numbers in the expressions given by pmt and date. All payments are discounted based on a 365-day year.
 
 Syntax:
 
@@ -24,7 +27,7 @@ Arguments
 
 | Argument | Description |
 | --- | --- |
-| discount\_rate | **discount\_rate** is the yearly rate that the payments should be discounted by. |
+| discount\_rate | discount\_rate is the yearly rate that the payments should be discounted by. |
 | value | A cash flow or a series of cash flows that corresponds to a schedule of payments in dates. Each value may be a single value or a range of values as returned by an inter-record function with a third optional parameter. The series of values must contain at least one positive and one negative value. |
 | date | A payment date or a schedule of payment dates that corresponds to the cash flow payments. |
 
@@ -43,7 +46,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- Financial data contained in a table called `RangeTab3`.
+- Financial data contained in a table called RangeTab3.
 - The use of the RangeXNPV() function to compute net present value.
 
 Load script
@@ -65,8 +68,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `RangeID`
-- `RangeXNPV`
+- RangeID
+- RangeXNPV
 
 Results table
 
@@ -86,7 +89,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- Financial data contained in a table called `RangeTab3`.
+- Financial data contained in a table called RangeTab3.
 - The use of the RangeXNPV() function to compute net present value.
 
 Load script
@@ -108,9 +111,9 @@ Results
 
 Do the following:
 
-Load the data and open a [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/RangeFunctions/RangeXNPV.htm#glossary-0 "Glossary term"). Create a new table and add the following calculation as a [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/RangeFunctions/RangeXNPV.htm#glossary-1 "Glossary term").
+Load the data and open a [sheet](#glossary-0 "Glossary term"). Create a new table and add the following calculation as a [measure](#glossary-1 "Glossary term").
 
-`=RangeXNPV(0.1, -2500,'2008-01-01',2750,'2008-09-01')`
+=RangeXNPV(0.1, -2500,'2008-01-01',2750,'2008-09-01')
 
 Results table
 
@@ -120,4 +123,4 @@ Results table
 
 ## Learn more
 
-- [*XNPV Script function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FinancialAggregationFunctions/XNPV.htm)
+- [*XNPV Script function*](../FinancialAggregationFunctions/XNPV.htm)

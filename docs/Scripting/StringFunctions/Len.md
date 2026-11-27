@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# Len Script and chart function
+
 Expand/Collapse all
 
 # Len Script and chart function
@@ -29,7 +32,7 @@ Example: Chart expression
 
 | Example | Result |
 | --- | --- |
-| `Len('Peter')` | Returns `5` |
+| Len('Peter') | Returns 5 |
 
 ## Example - Len fundamentals
 
@@ -41,8 +44,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `CustomerComment`. The field contains the original text string to evaluate.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called CustomerComment. The field contains the original text string to evaluate.
 
 Load script
 
@@ -60,11 +63,11 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `CustomerComment`
+- CustomerComment
 
 Create the following measure:
 
-- `=Len(CustomerComment)`
+- =Len(CustomerComment)
 
 Results table
 
@@ -74,7 +77,7 @@ Results table
 | Please deliver after 5 PM. | 26 |
 | Thank you for the quick service! | 32 |
 
-The output of the measure `Len(CustomerComment)` returns the length of the `CustomerComment` input string.
+The output of the measure Len(CustomerComment) returns the length of the CustomerComment input string.
 
 ## Example - Len scenario
 
@@ -88,11 +91,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `TicketID`
-  - `Description`
+  - TicketID
+  - Description
 
 Load script
 
@@ -113,12 +116,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `TicketID`
-- `Description`
+- TicketID
+- Description
 
 Create the following calculated dimension:
 
-- `=If(Len(Description) < 30, 'Short',If(Len(Description) <= 50, 'Medium', 'Long'))`, to calculate and assign a category (Short, Medium, Long) to the ticket based on the length of the description.
+- =If(Len(Description) < 30, 'Short',If(Len(Description) <= 50, 'Medium', 'Long')), to calculate and assign a category (Short, Medium, Long) to the ticket based on the length of the description.
 
 Results table
 
@@ -131,7 +134,7 @@ Results table
 | 1005 | My order status shows 'Delivered' but I have not received my package yet. | Long |
 | 1006 | I need help with an exchange for a faulty product, and I've attached photos. | Long |
 
-The output of the calculated dimension shows how you can use the `Len` function to categorize data by interpreting the length of text strings.
+The output of the calculated dimension shows how you can use the Len function to categorize data by interpreting the length of text strings.
 
 ## Example - Len scenario using string manipulation
 
@@ -143,8 +146,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `InputText`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called InputText.
 
 Load script
 
@@ -161,13 +164,13 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `InputText`
+- InputText
 
 Create the following calculated dimensions:
 
-- `=Upper(Left(InputText,1))` , to convert the first letter of the text string to uppercase.
-- `=Mid(InputText,Len(upper(Left(InputText,1)))+1)`, to remove the first letter from the text string.
-- `=Upper(left(InputText,1)) & Mid(InputText,len(upper(left(InputText,1)))+1)`, to combine the output from the first calculated dimension with the output from the second calculated dimension.
+- =Upper(Left(InputText,1)) , to convert the first letter of the text string to uppercase.
+- =Mid(InputText,Len(upper(Left(InputText,1)))+1), to remove the first letter from the text string.
+- =Upper(left(InputText,1)) & Mid(InputText,len(upper(left(InputText,1)))+1), to combine the output from the first calculated dimension with the output from the second calculated dimension.
 
 Results table
 
@@ -176,11 +179,11 @@ Results table
 | this is a sample text string | T | his is a sample text string | This is a sample text string |
 | capitalize first letter only | C | apitalize first letter only | Capitalize first letter only |
 
-In the first calculated dimension, the `Upper` and `Left` functions are combined to return the first letter of the `InputText` as uppercase. In the second calculated dimension, the `Mid` function uses the `Len` function to return a text string that removes the first character from `InputText`. The third calculated dimension combines the first and second calculated dimensions and returns the `InputText` string with an uppercase first character.
+In the first calculated dimension, the Upper and Left functions are combined to return the first letter of the InputText as uppercase. In the second calculated dimension, the Mid function uses the Len function to return a text string that removes the first character from InputText. The third calculated dimension combines the first and second calculated dimensions and returns the InputText string with an uppercase first character.
 
 Load script
 
-This example uses the same functions (`Upper`, `Mid`, and `Len`) as the chart expression scenario. The load script creates a new field, `NewInputText`, that returns the `InputText` with an uppercase first character.
+This example uses the same functions (Upper, Mid, and Len) as the chart expression scenario. The load script creates a new field, NewInputText, that returns the InputText with an uppercase first character.
 
 ```
 Example:

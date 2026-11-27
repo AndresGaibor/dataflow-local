@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script prefixes"]
 ---
+
 # Mapping
 
 The mapping prefix is used to create a mapping table that can be used to, for example, replace field values and field names during script execution.
@@ -17,7 +18,7 @@ Mapping(
 loadstatement | selectstatement
 )
 
-The mapping prefix can be put in front of a LOAD or a SELECT statement and will store the result of the loading statement as a mapping table. Mapping provides an efficient way to substitute [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Mapping.htm#glossary-0 "Glossary term") values during script execution, e.g. replacing US, U.S. or America with USA. A mapping table consists of two columns, the first containing comparison values and the second containing the desired mapping values. Mapping tables are stored temporarily in memory and dropped automatically after script execution. Alternatively, you can drop mapping tables earlier in the script execution using the Drop mapping table variant of the [*Drop table*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/drop-table.htm) statement.
+The mapping prefix can be put in front of a LOAD or a SELECT statement and will store the result of the loading statement as a mapping table. Mapping provides an efficient way to substitute [field](#glossary-0 "Glossary term") values during script execution, e.g. replacing US, U.S. or America with USA. A mapping table consists of two columns, the first containing comparison values and the second containing the desired mapping values. Mapping tables are stored temporarily in memory and dropped automatically after script execution. Alternatively, you can drop mapping tables earlier in the script execution using the Drop mapping table variant of the [*Drop table*](../ScriptRegularStatements/drop-table.htm) statement.
 
 The content of the mapping table can be accessed using e.g. the Map … Using statement, the Rename Field statement, the Applymap() function or the Mapsubstring() function.
 
@@ -28,7 +29,7 @@ In this example we load a list of salespersons with a country code representing 
 ```
 // Load mapping table of country codes:
 map1:
-mapping LOAD * 
+mapping LOAD *
 Inline [
 CCode, Country
 Sw, Sweden
@@ -38,16 +39,16 @@ No, Norway
 // Load list of salesmen, mapping country code to country
 // If the country code is not in the mapping table, put Rest of the world
 Salespersons:
-LOAD *, 
-ApplyMap('map1', CCode,'Rest of the world') As Country 
+LOAD *,
+ApplyMap('map1', CCode,'Rest of the world') As Country
 Inline [
-CCode, Salesperson 
+CCode, Salesperson
 Sw, John
 Sw, Mary
-Sw, Per 
+Sw, Per
 Dk, Preben
 Dk, Olle
-No, Ole 
+No, Ole
 Sf, Risttu] ;
 // We don't need the CCode anymore
 Drop Field 'CCode';
@@ -69,11 +70,11 @@ Mapping table
 
 ## Learn more
 
-- [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm)
-- [*Select*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Select.htm)
-- [*Map*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Map.htm)
-- [*Unmap*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Unmap.htm)
-- [*ApplyMap Script function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/MappingFunctions/ApplyMap.htm)
-- [*MapSubstring Script function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/MappingFunctions/MapSubstring.htm)
-- [*Mapping functions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/MappingFunctions/mapping-functions.htm)
-- [*Drop table*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/drop-table.htm)
+- [*Load*](../ScriptRegularStatements/Load.htm)
+- [*Select*](../ScriptRegularStatements/Select.htm)
+- [*Map*](../ScriptRegularStatements/Map.htm)
+- [*Unmap*](../ScriptRegularStatements/Unmap.htm)
+- [*ApplyMap Script function*](../MappingFunctions/ApplyMap.htm)
+- [*MapSubstring Script function*](../MappingFunctions/MapSubstring.htm)
+- [*Mapping functions*](../MappingFunctions/mapping-functions.htm)
+- [*Drop table*](../ScriptRegularStatements/drop-table.htm)

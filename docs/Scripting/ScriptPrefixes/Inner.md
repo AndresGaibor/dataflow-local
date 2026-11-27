@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script prefixes"]
 ---
+
 # Inner
 
 The join and keep prefixes can be preceded by the prefix inner. If used before join it specifies
@@ -52,7 +53,7 @@ A, C
 4, yy ];
 ```
 
-For more information about using inline loads, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+For more information about using inline loads, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 ### Result
 
@@ -69,8 +70,8 @@ This example demonstrates the Inner Join output where only values present in bot
 
 ## Learn more
 
-- [*Join*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Join.htm)
-- [*Keep*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Keep.htm)
-- [*Outer*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Outer.htm)
-- [*Left*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Left.htm)
-- [*Right*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Right.htm)
+- [*Join*](Join.htm)
+- [*Keep*](Keep.htm)
+- [*Outer*](Outer.htm)
+- [*Left*](Left.htm)
+- [*Right*](Right.htm)

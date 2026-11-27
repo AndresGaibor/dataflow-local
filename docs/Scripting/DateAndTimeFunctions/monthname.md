@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
+# monthname Script and chart function
+
 Expand/Collapse all
 
 # monthname Script and chart function
@@ -23,7 +26,7 @@ Return data type:  dual
 
 Diagram of monthname function
 
-![Example diagram of monthname function, showing how the function returns the combined result of a month and year when given a specific input date.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthname-general.png)
+![Example diagram of monthname function, showing how the function returns the combined result of a month and year when given a specific input date.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthname-general.png "Click to view full size")
 
 Arguments
 
@@ -36,16 +39,16 @@ Function examples
 
 | Example | Result |
 | --- | --- |
-| `monthname('10/19/2013')` | Returns Oct 2013 |
-| `monthname('10/19/2013', -1)` | Returns Sep 2013 |
+| monthname('10/19/2013') | Returns Oct 2013 |
+| monthname('10/19/2013', -1) | Returns Sep 2013 |
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 ## Example 1 – Basic example
 
@@ -57,16 +60,16 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthname.htm#glossary-0 "Glossary term") containing a set of transactions for 2022, which is loaded into a table called `Transactions`.
-- The date [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthname.htm#glossary-1 "Glossary term") provided in the `DateFormat` system [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthname.htm#glossary-2 "Glossary term") (MM/DD/YYYY) format.
-- The creation of a field, `transaction_month`, that returns the month in which the transactions took place.
+- A [dataset](#glossary-0 "Glossary term") containing a set of transactions for 2022, which is loaded into a table called Transactions.
+- The date [field](#glossary-1 "Glossary term") provided in the DateFormat system [variable](#glossary-2 "Glossary term") (MM/DD/YYYY) format.
+- The creation of a field, transaction\_month, that returns the month in which the transactions took place.
 
 Load script
 
 ```
 SET DateFormat='MM/DD/YYYY';
 SET MonthNames='Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec';
-						
+
 Transactions:
     Load
         *,
@@ -104,8 +107,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `transaction_month`
+- date
+- transaction\_month
 
 Results table
 
@@ -132,13 +135,13 @@ Results table
 | 10/14/2022 | Oct 2022 |
 | 10/29/2022 | Oct 2022 |
 
-The `transaction_month` field is created in the [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthname.htm#glossary-3 "Glossary term") statement by using the `monthname()` function and passing the `date` field as the function’s argument.
+The transaction\_month field is created in the [preceding load](#glossary-3 "Glossary term") statement by using the monthname() function and passing the date field as the function’s argument.
 
 Diagram of monthname function, basic example
 
-![Diagram showing the results of using the monthname function to determine the month in which a transaction took place. It determines that transaction number 8192 occured in March 2022.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthname-basic-example.png)
+![Diagram showing the results of using the monthname function to determine the month in which a transaction took place. It determines that transaction number 8192 occured in March 2022.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthname-basic-example.png "Click to view full size")
 
-The `monthname()` function identifies that transaction 8192 took place in March 2022, and returns this value using the `MonthNames` system variable.
+The monthname() function identifies that transaction 8192 took place in March 2022, and returns this value using the MonthNames system variable.
 
 ## Example 2 – period\_no
 
@@ -151,7 +154,7 @@ Open the Data load editor and add the load script below to a new section.
 The load script contains:
 
 - The same inline dataset and scenario as the first example.
-- The creation of a field, `transaction_previous_month`, that returns the timestamp for the end of the month before the transaction took place.
+- The creation of a field, transaction\_previous\_month, that returns the timestamp for the end of the month before the transaction took place.
 
 Load script
 
@@ -196,8 +199,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `transaction_previous_month`
+- date
+- transaction\_previous\_month
 
 Results table
 
@@ -224,13 +227,13 @@ Results table
 | 10/14/2022 | Sep 2022 |
 | 10/29/2022 | Sep 2022 |
 
-In this instance, because a `period_no` of -1 was used as the offset argument in the `monthname()` function, the function first identifies the month that the transactions take place in. It then shifts to one month prior and returns the month name and year.
+In this instance, because a period\_no of -1 was used as the offset argument in the monthname() function, the function first identifies the month that the transactions take place in. It then shifts to one month prior and returns the month name and year.
 
 Diagram of monthname function, period\_no example
 
-![Diagram showing the results of using the monthname function to determine the month in which a transaction took place. In this example using a period_no argument of -1, it determines that transaction number 8192 occured on March 16, 2022. Then, shifting back one month, it returns February 2022 as the month before the transaction took place.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthname-period-no.png)
+![Diagram showing the results of using the monthname function to determine the month in which a transaction took place. In this example using a period_no argument of -1, it determines that transaction number 8192 occured on March 16, 2022. Then, shifting back one month, it returns February 2022 as the month before the transaction took place.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthname-period-no.png "Click to view full size")
 
-Transaction 8192 took place on March 16. The `monthname()` function identifies that the month before the transaction took place was February and returns the month, in the `MonthNames` system variable format, along with the year 2022.
+Transaction 8192 took place on March 16. The monthname() function identifies that the month before the transaction took place was February and returns the month, in the MonthNames system variable format, along with the year 2022.
 
 ## Example 3 – Chart object example
 
@@ -238,9 +241,9 @@ Load script and chart expression
 
 Overview
 
-Open the [Data load editor](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthname.htm#glossary-4 "Glossary term") and add the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthname.htm#glossary-5 "Glossary term") below to a new tab.
+Open the [Data load editor](#glossary-4 "Glossary term") and add the [load script](#glossary-5 "Glossary term") below to a new tab.
 
-The load script contains the same inline dataset and scenario as the first example. However, in this example, the unchanged dataset is loaded into the application. The calculation that returns a timestamp for the end of the month when the transactions took place is created as a [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthname.htm#glossary-6 "Glossary term") in a chart object of the application.
+The load script contains the same inline dataset and scenario as the first example. However, in this example, the unchanged dataset is loaded into the application. The calculation that returns a timestamp for the end of the month when the transactions took place is created as a [measure](#glossary-6 "Glossary term") in a chart object of the application.
 
 Load script
 
@@ -272,18 +275,18 @@ id,date,amount
 8203,8/8/2022,25.12
 8204,8/19/2022,46.23
 8205,9/26/2022,84.21
-8206,10/14/2022,96.24 
+8206,10/14/2022,96.24
 8207,10/29/2022,67.67
 ];
 ```
 
 Results
 
-Load the data and open a sheet. Create a new table and add this field as a dimension:`date`.
+Load the data and open a sheet. Create a new table and add this field as a dimension:date.
 
 Create the following measure:
 
-`=monthname(date)`
+=monthname(date)
 
 Results table
 
@@ -310,10 +313,10 @@ Results table
 | 10/14/2022 | Oct 2022 |
 | 10/29/2022 | Oct 2022 |
 
-The `month_name` measure is created in the chart object by using the `monthname()` function and passing the `date` field as the function’s argument.
+The month\_name measure is created in the chart object by using the monthname() function and passing the date field as the function’s argument.
 
 Diagram of monthname function, chart object example
 
-![Diagram showing the results of using the monthname function to determine the month in which a transaction took place. In this example, it determines that transaction number 8192 occured in March 2022.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthname-chart-object.png)
+![Diagram showing the results of using the monthname function to determine the month in which a transaction took place. In this example, it determines that transaction number 8192 occured in March 2022.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthname-chart-object.png "Click to view full size")
 
-The `monthname()` function identifies that transaction 8192 took place in March 2022, and returns this value using the `MonthNames` system variable.
+The monthname() function identifies that transaction 8192 took place in March 2022, and returns this value using the MonthNames system variable.

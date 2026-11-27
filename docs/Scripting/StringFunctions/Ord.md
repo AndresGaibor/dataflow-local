@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# Ord Script and chart function
+
 Expand/Collapse all
 
 # Ord Script and chart function
@@ -29,8 +32,8 @@ Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `Ord( 'A' )` | Returns the integer `65` |
-| `Ord( 'Ab' )` | Returns the integer `65` |
+| Ord( 'A' ) | Returns the integer 65 |
+| Ord( 'Ab' ) | Returns the integer 65 |
 
 ## Example - Ord fundamentals
 
@@ -42,11 +45,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `Chinese`
-  - `Western`
+  - Chinese
+  - Western
 
 Load script
 
@@ -62,19 +65,19 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Chinese`
-- `Western`
+- Chinese
+- Western
 
 Create the following calculated dimensions:
 
-- `=ord(Chinese)`, to return the numeric value of the value in the field named `Chinese`.
-- `=ord(Western)`, to return the numeric value of the value in the filed named `Western`.
+- =ord(Chinese), to return the numeric value of the value in the field named Chinese.
+- =ord(Western), to return the numeric value of the value in the filed named Western.
 
 Results table
 
 | Chinese | Western | ord(Chinese) | ord(Western) |
 | --- | --- | --- | --- |
-| `古琴` | `Guqin` | 21476 | 71 |
+| 古琴 | Guqin | 21476 | 71 |
 
 Load script
 
@@ -102,14 +105,14 @@ Chart expression
 
 Overview
 
-A dataset of product codes includes some codes that are considered invalid because they start with a special character instead of an alpha-numeric one. Using the `Ord` function to identify the invalid product codes, a new measure is created to label the records either Valid or Invalid.
+A dataset of product codes includes some codes that are considered invalid because they start with a special character instead of an alpha-numeric one. Using the Ord function to identify the invalid product codes, a new measure is created to label the records either Valid or Invalid.
 
 Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded in a data table called `Products`.
-- One field in the data table called `ProductCode`.
+- A dataset which is loaded in a data table called Products.
+- One field in the data table called ProductCode.
 
 Load script
 
@@ -130,13 +133,13 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `ProductCode`
+- ProductCode
 
 Create the following calculated dimensions:
 
-- `=Ord(ProductCode)`, to return the numeric value of the first character.
+- =Ord(ProductCode), to return the numeric value of the first character.
 
-- `=If(Ord(ProductCode) < 48 OR (Ord(ProductCode) > 57 AND Ord(ProductCode) < 65) OR Ord(ProductCode) > 122, 'Invalid Product Code', 'Valid Product Code')`, to check if the ordinal value of the code is alphanumeric. If it is not then that record is flagged as `Not Valid`.
+- =If(Ord(ProductCode) < 48 OR (Ord(ProductCode) > 57 AND Ord(ProductCode) < 65) OR Ord(ProductCode) > 122, 'Invalid Product Code', 'Valid Product Code'), to check if the ordinal value of the code is alphanumeric. If it is not then that record is flagged as Not Valid.
 
 Results table
 
@@ -149,4 +152,4 @@ Results table
 | DEF456 | 68 | Valid Product Code |
 | GH789 | 71 | Valid Product Code |
 
-Comparing the output of the `Ord` function to a range of valid alphanumeric values, you can determine which product codes are not valid.
+Comparing the output of the Ord function to a range of valid alphanumeric values, you can determine which product codes are not valid.

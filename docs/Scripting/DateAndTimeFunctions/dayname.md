@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
 # dayname Script and chart function
 
 This function returns
@@ -37,9 +38,9 @@ Scripting examples
 
 | Example | Result |
 | --- | --- |
-| `dayname('25/01/2013 16:45:00')` | Returns 25/01/2013. |
-| `dayname('25/01/2013 16:45:00', -1)` | Returns 24/01/2013. |
-| `dayname('25/01/2013 16:45:00', 0, 0.5 )` | Returns 25/01/2013.  Displaying the full timestamp shows the underlying numeric value corresponds to '25/01/2013 12:00:00.000. |
+| dayname('25/01/2013 16:45:00') | Returns 25/01/2013. |
+| dayname('25/01/2013 16:45:00', -1) | Returns 24/01/2013. |
+| dayname('25/01/2013 16:45:00', 0, 0.5 ) | Returns 25/01/2013.  Displaying the full timestamp shows the underlying numeric value corresponds to '25/01/2013 12:00:00.000. |
 
 Example:
 
@@ -87,9 +88,9 @@ DayName(InvDate, 1) AS DName
 
 Resident TempTable;
 
-`Drop table TempTable;`
+Drop table TempTable;
 
-The resulting table contains the original dates and a column with the return value of the dayname() function. You can display the full timestamp by specifying the formatting in the [properties](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/dayname.htm#glossary-0 "Glossary term")panel.
+The resulting table contains the original dates and a column with the return value of the dayname() function. You can display the full timestamp by specifying the formatting in the [properties](#glossary-0 "Glossary term")panel.
 
 Results table
 

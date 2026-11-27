@@ -4,16 +4,17 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Understanding script syntax and data structures", "Logical tables"]
 ---
+
 # Associations between logical tables
 
 A database can have many tables. Each table can be considered as a list of something; each record in the list represents an instance of an object of some type.
 
 Example:
 
-If two tables are lists of different things, for example if one is a list of customers and the other a list of invoices, and the two tables have a [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/associations-between-logical-tables.htm#glossary-0 "Glossary term") such as the customer number in common, this is usually a sign that there is a relationship between the two tables. In standard SQL query tools the two tables should almost always be joined.
+If two tables are lists of different things, for example if one is a list of customers and the other a list of invoices, and the two tables have a [field](#glossary-0 "Glossary term") such as the customer number in common, this is usually a sign that there is a relationship between the two tables. In standard SQL query tools the two tables should almost always be joined.
 
 The tables defined in the Qlik Sense script are called logical tables. Qlik Sense makes associations between the tables based on the field names, and performs the joins when a selection is made, for example selecting a field value in a filter pane.
 
@@ -21,7 +22,7 @@ This means that an association is almost the same thing as a join. The only diff
 
 Four tables: a list of countries, a list of customers, a list of transactions and a list of memberships, which are associated with each other through the fields Country and CustomerID.
 
-![Four logical tables associated.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ex_gen_Associations.png)
+![Four logical tables associated.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ex_gen_Associations.png "Click to view full size")
 
 ## Qlik Sense association compared to SQL natural outer join
 
@@ -41,4 +42,4 @@ Qlik Sense analyzes the data to see if there is a non-ambiguous way to identify 
 
 #### Workaround
 
-There is a simple way to overcome these limitations. Load the field an extra time under a new name from the table where frequency counts should be made. Then use the new field for a filter pane with frequency, for a statistics box or for calculations in the [charts](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/associations-between-logical-tables.htm#glossary-1 "Glossary term").
+There is a simple way to overcome these limitations. Load the field an extra time under a new name from the table where frequency counts should be made. Then use the new field for a filter pane with frequency, for a statistics box or for calculations in the [charts](#glossary-1 "Glossary term").

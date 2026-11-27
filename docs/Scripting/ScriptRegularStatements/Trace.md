@@ -4,13 +4,14 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
 # Trace
 
-The trace statement writes a string to the **Script
-Execution Progress** window and to the script log file, when used. It is very useful for debugging purposes. Using $-expansions of variables that are calculated prior to the trace statement, you can customize the message.
+The trace statement writes a string to the Script
+Execution Progress window and to the script log file, when used. It is very useful for debugging purposes. Using $-expansions of variables that are calculated prior to the trace statement, you can customize the message.
 
 Syntax:
 

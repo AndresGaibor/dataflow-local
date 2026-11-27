@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Geospatial functions"]
 ---
+
 # GeoAggrGeometry Script and chart function
 
 GeoAggrGeometry() is used to aggregate a number of areas into a larger area, for example aggregating a number of sub-regions to a region.
@@ -33,7 +34,7 @@ If then, the sales territory boundaries are adjusted, when the data is reloaded 
 
 As GeoAggrGeometry() is an aggregating function, if you use it in the script a LOAD statement with a Group by clause is required.
 
-> **Tip:** The boundary lines of maps created using GeoAggrGeometry() are those of the merged areas. If you want to display the individual boundary lines of the pre-aggregated areas, use GeoReduceGeometry().
+Tip noteThe boundary lines of maps created using GeoAggrGeometry() are those of the merged areas. If you want to display the individual boundary lines of the pre-aggregated areas, use GeoReduceGeometry().
 
 Examples:
 
@@ -54,5 +55,5 @@ Drop Table MapSource;
 
 ## Learn more
 
-- [*GeoReduceGeometry Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/GeoReduceGeometry.htm)
-- [*Loading your own map data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Visualizations/Map/load-map-data.htm)
+- [*GeoReduceGeometry Script and chart function*](GeoReduceGeometry.htm)
+- [*Loading your own map data*](../../Visualizations/Map/load-map-data.htm)

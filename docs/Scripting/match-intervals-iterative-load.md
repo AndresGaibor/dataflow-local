@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Tutorial - Next steps in scripting", "Transforming data"]
 ---
+
 # Matching intervals and iterative loading
 
 The Intervalmatch prefix to a LOAD or SELECT statement is used to link discrete numeric values to one or more numeric intervals. This is a very powerful feature that can be used, for example, in production environments.
@@ -17,18 +18,18 @@ The most basic interval match is when you have a list of numbers or dates (event
 
 The simplest way to solve this problem in Qlik Sense is to use the IntervalMatch() prefix in front of either a LOAD or a SELECT statement. The LOAD/SELECT statement
 needs to contain two fields only, the From and To fields defining the intervals. The
-IntervalMatch() prefix will then generate all combinations between the loaded intervals and a previously loaded numeric [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/match-intervals-iterative-load.htm#glossary-0 "Glossary term") specified as parameter to the prefix.
+IntervalMatch() prefix will then generate all combinations between the loaded intervals and a previously loaded numeric [field](#glossary-0 "Glossary term") specified as parameter to the prefix.
 
 Do the following:
 
 1. Create a new application and give it a name.
-2. Add a new script section in the **Data load editor**.
+2. Add a new script section in the Data load editor.
 3. Call the sections Events.
-4. Under **DataFiles** in the right menu, click **Select data**.
+4. Under DataFiles in the right menu, click Select data.
 5. Upload and then select Events.txt.
-6. In the **Select data from** window, click **Add**.
+6. In the Select data from window, click Add.
 7. Upload and then select Intervals.txt.
-8. In the **Select data from** window, click **Add**.
+8. In the Select data from window, click Add.
 9. In the script, name the first table Events, and name the second table Intervals.
 10. At the end of the script add an IntervalMatch to create a third table that bridges the two first
     tables:
@@ -48,7 +49,7 @@ LOAD
     EventID,
     EventDate,
     EventAttribute
-FROM [lib://DataFiles/Events.txt] 
+FROM [lib://DataFiles/Events.txt]
 (txt, utf8, embedded labels, delimiter is '\t', msq);
  
 Intervals:
@@ -57,7 +58,7 @@ LOAD
     IntervalAttribute,
     IntervalBegin,
     IntervalEnd
-FROM [lib://DataFiles/Intervals.txt] 
+FROM [lib://DataFiles/Intervals.txt]
 (txt, utf8, embedded labels, delimiter is '\t', msq);
  
 BridgeTable:
@@ -66,14 +67,14 @@ LOAD distinct IntervalBegin, IntervalEnd
 Resident Intervals;
 ```
 
-12. Click **Load data**.
-13. Open the **Data model viewer**. The data model looks like this:
+12. Click Load data.
+13. Open the Data model viewer. The data model looks like this:
 
 Data model: Events, BridgeTable, Intervals, and $Syn1 tables
 
-![Data model: Events, BridgeTable, Intervals, and $Syn1 tables.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-interval-match-prefix.png)
+![Data model: Events, BridgeTable, Intervals, and $Syn1 tables.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-interval-match-prefix.png "Click to view full size")
 
-The data model contains a composite key (the IntervalBegin and IntervalEnd fields) which will manifest itself as a Qlik Sense [synthetic key](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/match-intervals-iterative-load.htm#glossary-1 "Glossary term").
+The data model contains a composite key (the IntervalBegin and IntervalEnd fields) which will manifest itself as a Qlik Sense [synthetic key](#glossary-1 "Glossary term").
 
 The basic tables are:
 
@@ -85,7 +86,7 @@ Note that an event may belong to several intervals if the intervals are overlapp
 
 This data model is optimal, in the sense that it is normalized and compact. The Events table and the Intervals table are both unchanged and contain the original number of records. All Qlik Sense calculations operating on these tables, for example, Count(EventID), will work and will be evaluated correctly.
 
-> **Note:** To learn more about IntervalMatch(), see this blog post in Qlik Community: [Using IntervalMatch()](https://community.qlik.com/t5/Qlik-Design-Blog/Using-IntervalMatch/ba-p/1475510)
+Information noteTo learn more about IntervalMatch(), see this blog post in Qlik Community: [Using IntervalMatch()](https://community.qlik.com/t5/Qlik-Design-Blog/Using-IntervalMatch/ba-p/1475510)
 
 ## Using a While loop and iterative loading IterNo()
 
@@ -111,12 +112,12 @@ LOAD IntervalBegin + IterNo() - 1 as EventDate, IntervalID
     While IntervalBegin + IterNo() - 1 <= IntervalEnd;
 ```
 
-2. Click **Load data**.
-3. Open the **Data model viewer**. The data model looks like this:
+2. Click Load data.
+3. Open the Data model viewer. The data model looks like this:
 
 Data model: Events, BridgeTable, and Intervals tables
 
-![Data model: Events, BridgeTable, and Intervals tables.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_gen_Intervalmatch2.png)
+![Data model: Events, BridgeTable, and Intervals tables.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_gen_Intervalmatch2.png "Click to view full size")
 
 Generally, the solution with three tables is the best one, because it allows for a many to many relationship between intervals and events. But a common situation is that you know that an event can only belong to one single interval. In this case, the bridge table is really not necessary. The IntervalID can be stored directly in the event table. There are several ways to achieve this, but the most useful is to join Bridgetable with the Events table.
 
@@ -126,16 +127,16 @@ Generally, the solution with three tables is the best one, because it allows for
 Join (Events)
 LOAD EventDate, IntervalID
 Resident BridgeTable;
- 
+
 Drop Table BridgeTable;
 ```
 
-5. Click **Load data**.
-6. Open the **Data model viewer**. The data model looks like this:
+5. Click Load data.
+6. Open the Data model viewer. The data model looks like this:
 
 Data model: Events and Intervals tables
 
-![Data model: Events and Intervals tables.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_gen_Intervalmatch3.png)
+![Data model: Events and Intervals tables.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_gen_Intervalmatch3.png "Click to view full size")
 
 ## Open and closed intervals
 

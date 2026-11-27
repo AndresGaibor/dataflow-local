@@ -4,14 +4,15 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Inter-record functions"]
 ---
+
 # Peek Script function
 
 Peek() returns the value of a field in a table for a row that has already been loaded. The row number can be specified, as can the table. If no row number is specified, the last previously loaded record will be used.
 
-The `Peek()` function is most often used to find the relevant boundaries in a previously loaded table, that is, the first value or last value of a specific [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/InterRecordFunctions/Peek.htm#glossary-0 "Glossary term"). In most cases, this value is stored in a [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/InterRecordFunctions/Peek.htm#glossary-1 "Glossary term") for later use, for example, as a condition in a do-while loop.
+The Peek() function is most often used to find the relevant boundaries in a previously loaded table, that is, the first value or last value of a specific [field](#glossary-0 "Glossary term"). In most cases, this value is stored in a [variable](#glossary-1 "Glossary term") for later use, for example, as a condition in a do-while loop.
 
 Syntax:
 
@@ -35,7 +36,7 @@ Arguments
 
 Limitations:
 
-The function can only return values from already loaded records. This means that in the first record of a table, a call using -1 as `row_no` will return NULL.
+The function can only return values from already loaded records. This means that in the first record of a table, a call using -1 as row\_no will return NULL.
 
 Examples and results:
 
@@ -71,13 +72,13 @@ Resulting table
 | 105 | 01/04/2012 | 31/01/2013 | 101 | 106 |
 | 106 | 02/11/2013 |  | 101 | 106 |
 
-FirstCode = 101 because `Peek('EmployeeCode',0, 'EmployeeDates')` returns the first value of EmployeeCode in the table EmployeeDates.
+FirstCode = 101 because Peek('EmployeeCode',0, 'EmployeeDates') returns the first value of EmployeeCode in the table EmployeeDates.
 
-LastCode = 106 because `Peek('EmployeeCode',-1, 'EmployeeDates')` returns the last value of EmployeeCode in the table EmployeeDates.
+LastCode = 106 because Peek('EmployeeCode',-1, 'EmployeeDates') returns the last value of EmployeeCode in the table EmployeeDates.
 
 Substituting the value of the argument row\_no returns the values of other rows in the table, as follows:
 
-`Peek('EmployeeCode',2, 'EmployeeDates')` returns the third value, 103, in the table as the FirstCode.
+Peek('EmployeeCode',2, 'EmployeeDates') returns the third value, 103, in the table as the FirstCode.
 
 However, note that without specifying the table as the third argument table\_name in these examples, the function references the current (in this case, internal) table.
 
@@ -108,7 +109,7 @@ RESIDENT T1
 ORDER BY ID ASC;
 DROP TABLE T1;
 
-Create a table in a [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/InterRecordFunctions/Peek.htm#glossary-2 "Glossary term") in your application with ID, List, and Value as the [dimensions](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/InterRecordFunctions/Peek.htm#glossary-4 "Glossary term").
+Create a table in a [sheet](#glossary-2 "Glossary term") in your application with ID, List, and Value as the [dimensions](#glossary-4 "Glossary term").
 
 Resulting table
 
@@ -125,16 +126,16 @@ Resulting table
 | 5 | 2,78,13 | 13 |
 | 5 | 2 | 2 |
 
-The IF() statement is built from the temporary table T1.   
-`Peek('ID')` references the field ID in the previous row in the current table T2.  
-`Peek('List')` references the field List in the previous row in the table T2, currently being built as the expression is evaluated.
+The IF() statement is built from the temporary table T1.
+Peek('ID') references the field ID in the previous row in the current table T2.
+Peek('List') references the field List in the previous row in the table T2, currently being built as the expression is evaluated.
 
-The statement is evaluated as follows:  
+The statement is evaluated as follows:
 If the current value of ID is the same as the previous value of ID, then write the value of Peek('List') concatenated with the current value of Value. Otherwise, write the current value of Value only.
 
 If Peek('List') already contains a concatenated result, the new result of Peek('List') will be concatenated to it.
 
-> **Note:** Note the Order by clause. This specifies how the table is ordered (by ID in ascending order). Without this, the Peek() function will use whatever arbitrary ordering the internal table has, which can lead to unpredictable results.
+Information noteNote the Order by clause. This specifies how the table is ordered (by ID in ascending order). Without this, the Peek() function will use whatever arbitrary ordering the internal table has, which can lead to unpredictable results.
 
 ## Example 3
 
@@ -204,14 +205,14 @@ tmp2Amounts:
 Load *,
 If(Product=Peek(Product),Peek(Amount)) as AmountMonthBefore
 Resident tmp1Amounts
-Order By Product, Month Asc; 
+Order By Product, Month Asc;
 Drop Table tmp1Amounts;
 
 Amounts:
 Load *,
 If(Product=Peek(Product),Peek(Amount)) as AmountMonthAfter
 Resident tmp2Amounts
-Order By Product, Month Desc; 
+Order By Product, Month Desc;
 Drop Table tmp2Amounts;
 ```
 
@@ -225,7 +226,7 @@ When the second table is created, the first table tmp1Amounts is dropped using a
 
 Finally, a third pass is made through the data, but now with the months sorted in reverse order. This way, AmountMonthAfter can also be calculated.
 
-> **Note:** Order by clauses specify how the table is ordered; without these, the Peek() function will use whatever arbitrary ordering the internal table has, which can lead to unpredictable results.
+Information noteOrder by clauses specify how the table is ordered; without these, the Peek() function will use whatever arbitrary ordering the internal table has, which can lead to unpredictable results.
 
 Result
 
@@ -298,10 +299,10 @@ Resulting table
 
 Explanation
 
-The load statement 
+The load statement
 Load \*, rangesum(SumVal,peek('AccSumVal')) as AccSumVal includes a recursive call where the previous values are added to the current value. This operation is used to calculate an accumulation of values in the script.
 
 ## Learn more
 
-- [*Table labels*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/table-labels.htm)
-- [*Previous Script function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/InterRecordFunctions/Previous.htm)
+- [*Table labels*](../table-labels.htm)
+- [*Previous Script function*](Previous.htm)

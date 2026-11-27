@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Financial functions"]
 ---
+
 # BlackAndSchole Script and chart function
 
 The Black and Scholes model is a mathematical model for financial market derivative instruments. The formula calculates the theoretical value of an
@@ -48,4 +49,4 @@ Scripting examples
 
 | Example | Result |
 | --- | --- |
-| `BlackAndSchole(130, 4, 68.5, 0.4, 0.04, 'call')`  This calculates the theoretical price of an option to buy a share that is worth 68.5 today, at a value of 130 in 4 years. The formula uses a volatility of 0.4 (40%) per year and a risk-free interest rate of 0.04 ( 4%). | Returns 11.245 |
+| BlackAndSchole(130, 4, 68.5, 0.4, 0.04, 'call')  This calculates the theoretical price of an option to buy a share that is worth 68.5 today, at a value of 130 in 4 years. The formula uses a volatility of 0.4 (40%) per year and a risk-free interest rate of 0.04 ( 4%). | Returns 11.245 |

@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions", "Statistical aggregation functions"]
 ---
+
 # Kurtosis Script function
 
 Kurtosis() returns
@@ -37,4 +38,4 @@ Resulting data
 
 | Example | Result |
 | --- | --- |
-| ``` Table1: Crosstable (Type, Value) Load recno() as ID, * inline [ Observation|Comparison 35|2 40|27 12|38 15|31 21|1 14|19 46|1 10|34 28|3 48|1 16|2 30|3 32|2 48|1 31|2 22|1 12|3 39|29 19|37 25|2 ] (delimiter is '|'); ```  Kurtosis1:  LOAD Type,  Kurtosis(Value) as MyKurtosis1,  Kurtosis(DISTINCT Value) as MyKurtosis2  Resident Table1 Group By Type; | In a table with the [dimensions](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StatisticalAggregationFunctions/kurtosis.htm#glossary-0 "Glossary term") `Type`, `MyKurtosis1`,and `MyKurtosis2`, the results of the Kurtosis() calculations in the [data load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StatisticalAggregationFunctions/kurtosis.htm#glossary-1 "Glossary term") are:  Type MyKurtosis1 MyKurtosis2  Comparison -1.1612957 -1.4982366  Observation -1.1148768 -0.93540144 |
+| ``` Table1: Crosstable (Type, Value) Load recno() as ID, * inline [ Observation|Comparison 35|2 40|27 12|38 15|31 21|1 14|19 46|1 10|34 28|3 48|1 16|2 30|3 32|2 48|1 31|2 22|1 12|3 39|29 19|37 25|2 ] (delimiter is '|'); ```  Kurtosis1:  LOAD Type,  Kurtosis(Value) as MyKurtosis1,  Kurtosis(DISTINCT Value) as MyKurtosis2  Resident Table1 Group By Type; | In a table with the [dimensions](#glossary-0 "Glossary term") Type, MyKurtosis1,and MyKurtosis2, the results of the Kurtosis() calculations in the [data load script](#glossary-1 "Glossary term") are:  Type MyKurtosis1 MyKurtosis2  Comparison -1.1612957 -1.4982366  Observation -1.1148768 -0.93540144 |

@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# FindOneOf Script and chart function
+
 Expand/Collapse all
 
 # FindOneOf Script and chart function
@@ -32,9 +35,9 @@ Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `FindOneOf( 'my example text string', 'et%s' )` | Returns `4` because `e` is the fourth character in the example string. |
-| `FindOneOf( 'my example text string', 'et%s', 3 )` | Returns `12` because the search is for any of the characters `e`, `t`, `%` or `s`, and `t` is the third occurrence in position `12` of the example string. |
-| `FindOneOf( 'my example text string', '¤%&' )` | Returns `0` because none of the characters `¤`, `%`, or `&` are found in the example string. |
+| FindOneOf( 'my example text string', 'et%s' ) | Returns 4 because e is the fourth character in the example string. |
+| FindOneOf( 'my example text string', 'et%s', 3 ) | Returns 12 because the search is for any of the characters e, t, % or s, and t is the third occurrence in position 12 of the example string. |
+| FindOneOf( 'my example text string', '¤%&' ) | Returns 0 because none of the characters ¤, %, or & are found in the example string. |
 
 ## Example - FindOneOf fundamentals
 
@@ -46,8 +49,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `Phrase`, which contains the original text strings to be processed.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called Phrase, which contains the original text strings to be processed.
 
 Load script
 
@@ -66,16 +69,16 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `Phrase`
+- Phrase
 
 Create the following calculated dimensions:
 
-- `=FindOneOf(Phrase, 'e', 1)`
-- `=FindOneOf(Phrase, 'y', 1)`
-- `=FindOneOf(Phrase, 'ey', 1)`
-- `=FindOneOf(Phrase, 'e', 2)`
-- `=FindOneOf(Phrase, 'y', 2)`
-- `=FindOneOf(Phrase, 'ey', 2)`
+- =FindOneOf(Phrase, 'e', 1)
+- =FindOneOf(Phrase, 'y', 1)
+- =FindOneOf(Phrase, 'ey', 1)
+- =FindOneOf(Phrase, 'e', 2)
+- =FindOneOf(Phrase, 'y', 2)
+- =FindOneOf(Phrase, 'ey', 2)
 
 Results table
 
@@ -85,7 +88,7 @@ Results table
 | Has the potential for growth | 7 | 0 | 7 | 12 | 0 | 12 |
 | Many tiny beads | 12 | 4 | 4 | 0 | 9 | 9 |
 
-For each calculated dimension, the output returns the position of the occurrence of the characters from the search set for each phrase. For example, the first occurrence of the letter `e` is found at position `8`, `7`, and `12` for each phrase respectively. The second occurrence of the letter `e` in each phrase is found at position `20`, `12`, and `0` (not found). Similarly, the first occurrence of the letters '`e` or `y`' is found at position `8`, `7`, and `4`, for each phrase respectively. Notice that in the phrase `For a very long time`, the first occurrence of '`e` or `y`' is found at position `8`, an `e`, and the second occurrence at position `10`, a `y`.
+For each calculated dimension, the output returns the position of the occurrence of the characters from the search set for each phrase. For example, the first occurrence of the letter e is found at position 8, 7, and 12 for each phrase respectively. The second occurrence of the letter e in each phrase is found at position 20, 12, and 0 (not found). Similarly, the first occurrence of the letters 'e or y' is found at position 8, 7, and 4, for each phrase respectively. Notice that in the phrase For a very long time, the first occurrence of 'e or y' is found at position 8, an e, and the second occurrence at position 10, a y.
 
 Load script
 
@@ -116,17 +119,17 @@ Chart expression
 
 Overview
 
-This example uses the `FindOneOf` function to analyze customer comments in a dataset of customer orders and identify orders that may require action. Each order has a `CustomerComment` field where customers can leave notes or comments about their orders. By analyzing the comments, you can identify specific keywords or characters, such as '!', '@', '#', that might indicate urgency or special requests.
+This example uses the FindOneOf function to analyze customer comments in a dataset of customer orders and identify orders that may require action. Each order has a CustomerComment field where customers can leave notes or comments about their orders. By analyzing the comments, you can identify specific keywords or characters, such as '!', '@', '#', that might indicate urgency or special requests.
 
 Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `TicketID` the identity number of the ticket
-  - `CustomerComment` the original text string
+  - TicketID the identity number of the ticket
+  - CustomerComment the original text string
 
 Load script
 
@@ -146,13 +149,13 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `TicketID`
-- `CustomerComment`
+- TicketID
+- CustomerComment
 
 Create the following calculated dimensions:
 
-- `=FindOneOf(CustomerComment, '!,@,#')`
-- `=If(FindOneOf(CustomerComment, '!,@,#')>0,'High Priority','Normal Priority')`
+- =FindOneOf(CustomerComment, '!,@,#')
+- =If(FindOneOf(CustomerComment, '!,@,#')>0,'High Priority','Normal Priority')
 
 Results table
 
@@ -164,4 +167,4 @@ Results table
 | 4 | I have a question about #discount. | 25 | High Priority |
 | 5 | Thank you! | 10 | High Priority |
 
-Compare the output of the `FindOneOf` function to the original `CustomerComment` string values that loaded in the script. Using the values `!,@,#`, the function successfully returned the position where those characters occur in the comment string. The final measure uses a conditional `If` statement to identify records that include any of the search characters and assign these as `High Priority`. If none of the search characters `!,@,#` are found, for example row 3, then the ticket is classified as `Normal Priority`.
+Compare the output of the FindOneOf function to the original CustomerComment string values that loaded in the script. Using the values !,@,#, the function successfully returned the position where those characters occur in the comment string. The final measure uses a conditional If statement to identify records that include any of the search characters and assign these as High Priority. If none of the search characters !,@,# are found, for example row 3, then the ticket is classified as Normal Priority.

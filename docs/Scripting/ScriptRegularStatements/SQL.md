@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
 # SQL
 
 The SQL statement allows you to send an arbitrary SQL command through an
@@ -17,7 +18,7 @@ Syntax:
 SQL sql\_command
 
 Sending SQL statements which update the database will return an error
-if Qlik Sense has opened the ODBC [connection](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/SQL.htm#glossary-0 "Glossary term") in read-only mode.
+if Qlik Sense has opened the ODBC [connection](#glossary-0 "Glossary term") in read-only mode.
 
 The syntax:
 
@@ -43,4 +44,4 @@ SQL Execute <storedProc>;
 
 ## Learn more
 
-- [*Select*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Select.htm)
+- [*Select*](Select.htm)

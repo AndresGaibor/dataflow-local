@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Modeling your data", "Best practices for data modeling"]
 ---
+
 # Creating a date interval from a single date
 
 Sometimes time intervals are not stored explicitly with a beginning and an end. Instead they are implied by only one field – the change timestamp.
@@ -29,7 +30,7 @@ The table above defines a set of non-overlapping intervals, where the begin data
 Do the following:
 
 1. Create a new application and give it a name.
-2. Add a new script section in the **Data load editor**.
+2. Add a new script section in the Data load editor.
 3. Add the following inline table. Make sure that the dates in the Change Date column are in the same format as the local date format.
 
 ```
@@ -79,7 +80,7 @@ USD,03/02/2013,6.30
            )) as ToDate
        Resident Tmp_Rates
        Order By Currency, FromDate Desc;
-   					
+
    Drop Table Tmp_Rates;
    ```
 
@@ -102,16 +103,16 @@ USD,03/02/2013,6.30
 ];  
 
 Tmp_Rates:
-LOAD Currency, Rate,	
+LOAD Currency, Rate,
     Date(If(IsNum([Change Date]), [Change Date], $(#vBeginTime))) as FromDate
 Resident In_Rates; 
 
 Rates:
-LOAD Currency, Rate, FromDate,	
+LOAD Currency, Rate, FromDate,
     Date(If( Currency=Peek('Currency'),
         Peek('FromDate') - $(#vEpsilon),
-        $(#vEndTime)		
-        )) as ToDate	
+        $(#vEndTime)
+        )) as ToDate
     Resident Tmp_Rates
 Order By Currency, FromDate Desc; 
 
@@ -148,4 +149,4 @@ This table can subsequently be used in a comparison with an existing date using 
 
 ## Learn more
 
-- [*Matching intervals to discrete data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/LoadData/matching-intervals-to-discrete-data.htm)
+- [*Matching intervals to discrete data*](../LoadData/matching-intervals-to-discrete-data.htm)

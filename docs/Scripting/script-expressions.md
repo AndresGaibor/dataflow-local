@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions"]
 ---
+
 # Script expressions
 
 Expressions can be used in both LOAD
@@ -63,6 +64,6 @@ any error messages.
 
 ## Learn more
 
-- [*NULL value handling*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/null-value-handling.htm)
-- [*Dollar-sign expansions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/dollar-sign-expansions.htm)
-- [*Using quotation marks in the script*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/use-quotes-in-script.htm)
+- [*NULL value handling*](null-value-handling.htm)
+- [*Dollar-sign expansions*](dollar-sign-expansions.htm)
+- [*Using quotation marks in the script*](use-quotes-in-script.htm)

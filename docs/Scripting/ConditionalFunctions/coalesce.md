@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Conditional functions"]
 ---
+
+# coalesce Script and chart function
+
 Expand/Collapse all
 
 # coalesce Script and chart function
@@ -32,8 +35,8 @@ Examples: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| Coalesce(ProductDescription, ProductName, ProductCode, 'no description available') | This expression will select between three different product description fields when some fields do not have values for the product. Following the order listed in the function, the first field with a non-null value is returned. If none of the fields contain a value, the result will be `no description available`. |
-| Coalesce(TextBetween(FileName, '"', '"'), FileName) | This expression will trim potential enclosing quotes from the field `FileName`. If the `FileName` given is quoted, these are removed, and the enclosed, unquoted `FileName` is returned. If the `TextBetween` function doesn't find the delimiters it returns null, which the Coalesce rejects, returning instead the raw `FileName`. |
+| Coalesce(ProductDescription, ProductName, ProductCode, 'no description available') | This expression will select between three different product description fields when some fields do not have values for the product. Following the order listed in the function, the first field with a non-null value is returned. If none of the fields contain a value, the result will be no description available. |
+| Coalesce(TextBetween(FileName, '"', '"'), FileName) | This expression will trim potential enclosing quotes from the field FileName. If the FileName given is quoted, these are removed, and the enclosed, unquoted FileName is returned. If the TextBetween function doesn't find the delimiters it returns null, which the Coalesce rejects, returning instead the raw FileName. |
 
 ## Example - Coalesce fundamentals
 
@@ -47,13 +50,13 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `ProductID`
-  - `ProductName`
-  - `Price`
-- A `NullInterpret` variable statement to ensure that any missing values are treated as NULL.
+  - ProductID
+  - ProductName
+  - Price
+- A NullInterpret variable statement to ensure that any missing values are treated as NULL.
 
 Load script
 
@@ -74,22 +77,22 @@ Results
 
 1. Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-   - `ProductID`
-   - `ProductName`
+   - ProductID
+   - ProductName
 2. Create the following calculated dimension:
 
-   - `=Coalesce(ProductName, 'Unknown Product')`
+   - =Coalesce(ProductName, 'Unknown Product')
 3. Create the following measure:
 
-   - `=Sum(Price)`, to return a valid number representation.
+   - =Sum(Price), to return a valid number representation.
 4. Create a new table and add the following expression as a calculated dimension:
 
-   - `=Coalesce(ProductName, 'Unknown Product')`
+   - =Coalesce(ProductName, 'Unknown Product')
 5. Create the following measure:
 
-   - `=Sum(Price)`, to return a valid number representation.
+   - =Sum(Price), to return a valid number representation.
 
-The results in the following tables show how the `Coalesce` function can replace the null values in the original dataset with the alternative value `Unknown Product`.
+The results in the following tables show how the Coalesce function can replace the null values in the original dataset with the alternative value Unknown Product.
 
 Results table 1
 
@@ -118,20 +121,20 @@ Chart expression
 
 Overview
 
-This example uses the `Coalesce` function to replace missing location data with an alternative value according to the specified priority logic.
+This example uses the Coalesce function to replace missing location data with an alternative value according to the specified priority logic.
 
 Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `LocationID`
-  - `Country`
-  - `State`
-  - `City`
-- A `NullInterpret` variable statement to ensure that any missing values are treated as NULL.
+  - LocationID
+  - Country
+  - State
+  - City
+- A NullInterpret variable statement to ensure that any missing values are treated as NULL.
 
 Load script
 
@@ -153,13 +156,13 @@ Results
 
 1. Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-   - `LocationID`
-   - `Country`
-   - `State`
-   - `City`
+   - LocationID
+   - Country
+   - State
+   - City
 2. Create the following calculated dimension:
 
-   - `=Coalesce(Country, State, City)`, to populate any null values with alternatives.
+   - =Coalesce(Country, State, City), to populate any null values with alternatives.
 
 Results table
 
@@ -172,4 +175,4 @@ Results table
 | L005 | UK | - | London | UK |
 | L006 | - | - | London | London |
 
-The results show that although there are missing values, you can use the `Coalesce` function to provide logic about how to populate these instances with an alternative value to complete the dataset. For example, `L004` is missing a `Country` value. The `Coalesce` function returns `New South Wales` because `State` is the second field listed in the priority logic to use when the value for `Country` is missing.
+The results show that although there are missing values, you can use the Coalesce function to provide logic about how to populate these instances with an alternative value to complete the dataset. For example, L004 is missing a Country value. The Coalesce function returns New South Wales because State is the second field listed in the priority logic to use when the value for Country is missing.

@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
-breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions", "sheet"]
+last_updated: "2026-11-27"
+breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
+# lunarweekend Script and chart function
+
 Expand/Collapse all
 
 # lunarweekend Script and chart function
@@ -19,11 +22,11 @@ LunarweekEnd(date[, period\_no[, first\_week\_day]])
 
 Return data type:  dual
 
-Example diagram of `lunarweekend()` function
+Example diagram of lunarweekend() function
 
-![ADD ALT TEXT HERE.....!!!!!!](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekend-general.png)
+![ADD ALT TEXT HERE.....!!!!!!](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekend-general.png "Click to view full size")
 
-The `lunarweekend()` function determines which lunar week the `date` falls into. It then returns a timestamp, in date format, for the last millisecond of that week.
+The lunarweekend() function determines which lunar week the date falls into. It then returns a timestamp, in date format, for the last millisecond of that week.
 
 Arguments
 
@@ -35,24 +38,24 @@ Arguments
 
 ## When to use lunarweekend
 
-The `lunarweekend()` function is commonly used as part of an expression when the user would like the calculation to use the fraction of the week that has not yet occurred. Unlike the `weekend()` function, the final lunar week of each calendar year will end on December 31.
-For example, the `lunarweekend()` function can be used to calculate interest not yet incurred during the week.
+The lunarweekend() function is commonly used as part of an expression when the user would like the calculation to use the fraction of the week that has not yet occurred. Unlike the weekend() function, the final lunar week of each calendar year will end on December 31.
+For example, the lunarweekend() function can be used to calculate interest not yet incurred during the week.
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `lunarweekend('01/12/2013')` | Returns 01/14/2013 23:59:59. |
-| `lunarweekend('01/12/2013', -1)` | Returns 01/07/2013 23:59:59. |
-| `lunarweekend('01/12/2013', 0, 1)` | Returns 01/15/2013 23:59:59. |
+| lunarweekend('01/12/2013') | Returns 01/14/2013 23:59:59. |
+| lunarweekend('01/12/2013', -1) | Returns 01/07/2013 23:59:59. |
+| lunarweekend('01/12/2013', 0, 1) | Returns 01/15/2013 23:59:59. |
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 ## Example 1 – No additional arguments
 
@@ -64,9 +67,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekend.htm#glossary-0 "Glossary term") containing a set of transactions for 2022, which is loaded into a table called `Transactions`.
-- The date [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekend.htm#glossary-1 "Glossary term") provided in the `DateFormat` system [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekend.htm#glossary-2 "Glossary term") (MM/DD/YYYY) format.
-- The creation of a field, `end_of_week`, that returns a timestamp for the end of the lunar week in which the transactions took place.
+- A [dataset](#glossary-0 "Glossary term") containing a set of transactions for 2022, which is loaded into a table called Transactions.
+- The date [field](#glossary-1 "Glossary term") provided in the DateFormat system [variable](#glossary-2 "Glossary term") (MM/DD/YYYY) format.
+- The creation of a field, end\_of\_week, that returns a timestamp for the end of the lunar week in which the transactions took place.
 
 Load script
 
@@ -81,7 +84,7 @@ Transactions:
         ;
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,1/7/2022,17.17
@@ -111,9 +114,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `end_of_week`
-- `end_of_week_timestamp`
+- date
+- end\_of\_week
+- end\_of\_week\_timestamp
 
 Results table
 
@@ -140,15 +143,15 @@ Results table
 | 10/14/2022 | 10/14/2022 | 10/14/2022 11:59:59 PM |
 | 10/29/2022 | 11/04/2022 | 11/4/2022 11:59:59 PM |
 
-The `end_of_week` field is created in the [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekend.htm#glossary-3 "Glossary term") statement by using the `lunarweekend()` function, and passing the `date` field as the function’s argument.
+The end\_of\_week field is created in the [preceding load](#glossary-3 "Glossary term") statement by using the lunarweekend() function, and passing the date field as the function’s argument.
 
-The `lunarweekend()` function identifies which lunar week the date value falls into, returning a timestamp for the last millisecond of that week.
+The lunarweekend() function identifies which lunar week the date value falls into, returning a timestamp for the last millisecond of that week.
 
-Diagram of `lunarweekend()` function, example with no additional arguments
+Diagram of lunarweekend() function, example with no additional arguments
 
-![Diagram showing how the lunarweekend function converts the input date for each transaction into a timestamp for the last millisecond of the lunar week in which this date occurs.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekend-examples-no-add-arg.png)
+![Diagram showing how the lunarweekend function converts the input date for each transaction into a timestamp for the last millisecond of the lunar week in which this date occurs.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekend-examples-no-add-arg.png "Click to view full size")
 
-Transaction 8189 took place on January 19. The `lunarweekend()` function identifies that the lunar week begins on January 15. Therefore, the `end_of_week` value for that transaction returns the last millisecond of the lunar week, which is January 21 at 11:59:59 PM.
+Transaction 8189 took place on January 19. The lunarweekend() function identifies that the lunar week begins on January 15. Therefore, the end\_of\_week value for that transaction returns the last millisecond of the lunar week, which is January 21 at 11:59:59 PM.
 
 ## Example 2 – period\_no
 
@@ -161,7 +164,7 @@ Open the Data load editor and add the load script below to a new section.
 The load script contains:
 
 - The same dataset and scenario as the first example.
-- The creation of a field, `previous_lunar_week_end`, that returns the timestamp for the end of the lunar week before the transaction took place.
+- The creation of a field, previous\_lunar\_week\_end, that returns the timestamp for the end of the lunar week before the transaction took place.
 
 Load script
 
@@ -176,7 +179,7 @@ Transactions:
         ;
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,1/7/2022,17.17
@@ -206,9 +209,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `previous_lunar_week_end`
-- `previous_lunar_week_end_timestamp`
+- date
+- previous\_lunar\_week\_end
+- previous\_lunar\_week\_end\_timestamp
 
 Results table
 
@@ -235,13 +238,13 @@ Results table
 | 10/14/2022 | 10/07/2022 | 10/7/2022 11:59:59 PM |
 | 10/29/2022 | 10/28/2022 | 10/28/2022 11:59:59 PM |
 
-In this instance, because a `period_no` of -1 was used as the offset argument in the `lunarweekend()` function, the function first identifies the lunar week in which the transactions took place. It then shifts one week prior and identifies the final millisecond of that lunar week.
+In this instance, because a period\_no of -1 was used as the offset argument in the lunarweekend() function, the function first identifies the lunar week in which the transactions took place. It then shifts one week prior and identifies the final millisecond of that lunar week.
 
-Diagram of `lunarweekend()` function, period\_no example
+Diagram of lunarweekend() function, period\_no example
 
-![Diagram showing how the lunarweekend function converts the input date for each transaction into a timestamp for the last millisecond of the lunar week in which this date occurs. Here, a period_no of -1 is passed as an argument in the function.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekend-examples-period-no.png)
+![Diagram showing how the lunarweekend function converts the input date for each transaction into a timestamp for the last millisecond of the lunar week in which this date occurs. Here, a period_no of -1 is passed as an argument in the function.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekend-examples-period-no.png "Click to view full size")
 
-Transaction 8189 took place on January 19. The `lunarweekend()` function identifies that the lunar week begins on January 15. Therefore, the previous lunar week began on the January 8 and ended on January 14 at 11:59:59 PM; this is the value that is returned for the `previous_lunar_week_end` field.
+Transaction 8189 took place on January 19. The lunarweekend() function identifies that the lunar week begins on January 15. Therefore, the previous lunar week began on the January 8 and ended on January 14 at 11:59:59 PM; this is the value that is returned for the previous\_lunar\_week\_end field.
 
 ## Example 3 – first\_week\_day
 
@@ -249,7 +252,7 @@ Load script and results
 
 Overview
 
-Open the [Data load editor](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekend.htm#glossary-4 "Glossary term") and add the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekend.htm#glossary-5 "Glossary term") below to a new tab.
+Open the [Data load editor](#glossary-4 "Glossary term") and add the [load script](#glossary-5 "Glossary term") below to a new tab.
 
 The load script contains the same dataset and scenario as the first example. In this example, we set lunar weeks to begin on January 5.
 
@@ -266,7 +269,7 @@ timestamp(lunarweekend(date,0,4)) as end_of_week_timestamp
 ;
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,1/7/2022,17.17
@@ -296,9 +299,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `end_of_week`
-- `end_of_week_timestamp`
+- date
+- end\_of\_week
+- end\_of\_week\_timestamp
 
 Results table
 
@@ -325,13 +328,13 @@ Results table
 | 10/14/2022 | 10/18/2022 | 10/18/2022 11:59:59 PM |
 | 10/29/2022 | 11/01/2022 | 11/1/2022 11:59:59 PM |
 
-In this instance, because the `first_week_date` argument of 4 is used in the `lunarweekend()` function, it offsets the start of the year from January 1 to January 5.
+In this instance, because the first\_week\_date argument of 4 is used in the lunarweekend() function, it offsets the start of the year from January 1 to January 5.
 
-Diagram of `lunarweekend()` function, first\_week\_day example
+Diagram of lunarweekend() function, first\_week\_day example
 
-![Diagram showing how the lunarweekend function converts the input date for each transaction into a timestamp for the last millisecond of the lunar week in which this date occurs. Here, the first_week_day argument is defined as 4, which shifts the start of lunar weeks by 4 days.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekend-examples-first-week-day.png)
+![Diagram showing how the lunarweekend function converts the input date for each transaction into a timestamp for the last millisecond of the lunar week in which this date occurs. Here, the first_week_day argument is defined as 4, which shifts the start of lunar weeks by 4 days.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekend-examples-first-week-day.png "Click to view full size")
 
-Transaction 8189 took place on January 19. Due to lunar weeks beginning on January 5, the `lunarweekend()` function identifies that the lunar week containing January 19 also begins on January 19. Therefore, the end of that lunar week occurs on January 25 at 11:59:59 PM; this is the value returned for the `end_of_week` field.
+Transaction 8189 took place on January 19. Due to lunar weeks beginning on January 5, the lunarweekend() function identifies that the lunar week containing January 19 also begins on January 19. Therefore, the end of that lunar week occurs on January 25 at 11:59:59 PM; this is the value returned for the end\_of\_week field.
 
 ## Example 4 – Chart object example
 
@@ -343,7 +346,7 @@ Open the Data load editor and add the load script below to a new tab.
 
 The load script contains the same dataset and scenario as the first example.
 
-However, in this example, the unchanged dataset is loaded into the application. The calculation that returns a timestamp for the end of the lunar week in which the transactions took place is created as a [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekend.htm#glossary-6 "Glossary term") in a chart object of the application.
+However, in this example, the unchanged dataset is loaded into the application. The calculation that returns a timestamp for the end of the lunar week in which the transactions took place is created as a [measure](#glossary-6 "Glossary term") in a chart object of the application.
 
 Load script
 
@@ -351,7 +354,7 @@ Load script
 Transactions:
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,1/7/2022,17.17
@@ -379,13 +382,13 @@ id,date,amount
 
 Results
 
-Load the data and open a sheet. Create a new table and add this field as a dimension: `date`.
+Load the data and open a sheet. Create a new table and add this field as a dimension: date.
 
 Add the following measures:
 
-`=lunarweekend(date)`
+=lunarweekend(date)
 
-`=timestamp(lunarweekend(date))`
+=timestamp(lunarweekend(date))
 
 Results table
 
@@ -412,15 +415,15 @@ Results table
 | 10/14/2022 | 10/14/2022 | 10/14/2022 11:59:59 PM |
 | 10/29/2022 | 11/04/2022 | 11/4/2022 11:59:59 PM |
 
-The `end_of_week` measure is created in the chart object by using the `lunarweekend()` function, and passing the `date` field as the function’s argument.
+The end\_of\_week measure is created in the chart object by using the lunarweekend() function, and passing the date field as the function’s argument.
 
-The `lunarweekend()` function identifies which lunar week the date value falls into, returning a timestamp for the last millisecond of that week.
+The lunarweekend() function identifies which lunar week the date value falls into, returning a timestamp for the last millisecond of that week.
 
-Diagram of `lunarweekend()` function, chart object example
+Diagram of lunarweekend() function, chart object example
 
-![Diagram showing how the lunarweekend function converts the input date for each transaction into a timestamp for the last millisecond of the lunar week in which this date occurs. In this case, the calculation shown is completed using a measure in a chart object.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekend-examples-chart-object.png)
+![Diagram showing how the lunarweekend function converts the input date for each transaction into a timestamp for the last millisecond of the lunar week in which this date occurs. In this case, the calculation shown is completed using a measure in a chart object.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekend-examples-chart-object.png "Click to view full size")
 
-Transaction 8189 took place on January 19. The `lunarweekend()` function identifies that the lunar week begins on January 15. Therefore, the `end_of_week` value for that transaction returns the last millisecond of the lunar week, which is January 21 at 11:59:59 PM.
+Transaction 8189 took place on January 19. The lunarweekend() function identifies that the lunar week begins on January 15. Therefore, the end\_of\_week value for that transaction returns the last millisecond of the lunar week, which is January 21 at 11:59:59 PM.
 
 ## Example 5 – Scenario
 
@@ -432,7 +435,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a table called `Employee_Expenses`.
+- A dataset which is loaded into a table called Employee\_Expenses.
 - The employee IDs, employee name and the average daily expense claims of each employee.
 
 The end user would like a chart object that displays, by employee ID and employee name, the estimated expense claims still to be incurred for the remainder of the lunar week.
@@ -443,11 +446,11 @@ Load script
 Employee_Expenses:
 Load
 *
-Inline 
+Inline
 [
 employee_id,employee_name,avg_daily_claim
 182,Mark, $15
-183,Deryck, $12.5 
+183,Deryck, $12.5
 184,Dexter, $12.5
 185,Sydney,$27
 186,Agatha,$18
@@ -458,15 +461,15 @@ Results
 
 Do the following:
 
-1. Load the data and open a [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekend.htm#glossary-7 "Glossary term"). Create a new table.
-2. Add the following fields as [dimensions](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekend.htm#glossary-8 "Glossary term").
+1. Load the data and open a [sheet](#glossary-7 "Glossary term"). Create a new table.
+2. Add the following fields as [dimensions](#glossary-8 "Glossary term").
 
-   - `employee_id`
-   - `employee_name`
+   - employee\_id
+   - employee\_name
 3. Next, create the following measure to calculate the accumulated interest:
 
-   `=(lunarweekend(today(1))-today(1))*avg_daily_claim`
-4. Set the measure's **Number formatting** to **Money**.
+   =(lunarweekend(today(1))-today(1))\*avg\_daily\_claim
+4. Set the measure's Number formatting to Money.
 
 Results table
 
@@ -478,6 +481,6 @@ Results table
 | 185 | Sydney | $135.00 |
 | 186 | Agatha | $90.00 |
 
-The `lunarkweekend()` function, by using today’s date as its only argument, returns the end date of the current lunar week. Then, by subtracting today’s date from the lunar week end date, the expression returns the number of days that remain this week.
+The lunarkweekend() function, by using today’s date as its only argument, returns the end date of the current lunar week. Then, by subtracting today’s date from the lunar week end date, the expression returns the number of days that remain this week.
 
 This value is then multiplied by the average daily expense claim by each employee to calculate the estimated value of claims each employee is expected to make in the remaining lunar week.

@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script control statements"]
 ---
+
 # Sub..end sub
 
 The sub..end sub control statement
@@ -20,7 +21,7 @@ Sub name [
 
 Arguments are copied into the subroutine and, if the corresponding actual parameter
 in the call statement
-is a [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptControlStatements/Sub.htm#glossary-0 "Glossary term") name, copied back out again upon exiting the subroutine.
+is a [variable](#glossary-0 "Glossary term") name, copied back out again upon exiting the subroutine.
 
 If a subroutine has more formal parameters than actual parameters passed
 by a call statement, the extra
@@ -44,7 +45,7 @@ Limitations:
   each of its two clauses (sub and
   end sub) must not cross a line
   boundary.
-- When you define a subroutine with `Sub..end sub` inside a control statement, for example `if..then`, you can only call the subroutine from within the same control statement.
+- When you define a subroutine with Sub..end sub inside a control statement, for example if..then, you can only call the subroutine from within the same control statement.
 
 Example 1:
 
@@ -93,6 +94,6 @@ When exiting the subroutine, the global variable A will get 2 as value (copied b
 
 ## Learn more
 
-- [*Call*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptControlStatements/Call.htm)
-- [*Exit*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptControlStatements/Exit.htm)
-- [*End*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptControlStatements/End.htm)
+- [*Call*](Call.htm)
+- [*Exit*](Exit.htm)
+- [*End*](End.htm)

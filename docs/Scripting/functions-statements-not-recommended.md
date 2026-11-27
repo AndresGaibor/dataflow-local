@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions"]
 ---
+
 # Functions and statements not recommended in Qlik Sense
 
 Most functions and statements that can be used in QlikView load scripts and chart expressions are also supported in Qlik Sense, but some of them are not recommended for use in Qlik Sense. There are also functions and statements available in previous versions of Qlik Sense that have been deprecated.
@@ -41,10 +42,10 @@ Functions that are not recommended
 
 | Function | Recommendation |
 | --- | --- |
-| NumAvg  NumCount  NumMax  NumMin  NumSum | Use Range functions instead.  [*Range functions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/RangeFunctions/RangeFunctionsInCharts.htm) |
-| Color()  QliktechBlue  QliktechGray | Use other color functions instead. QliktechBlue() can be replaced by RGB(8, 18, 90) and QliktechGray can be replaced by RGB(158, 148, 137) to get the same colors.  [*Color functions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/ColorFunctions/color-functions-charts.htm) |
-| QlikViewVersion | Use EngineVersion instead.  [*EngineVersion Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/EngineVersion.htm) |
-| ProductVersion | Use EngineVersion instead.  [*EngineVersion Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/EngineVersion.htm) |
+| NumAvg  NumCount  NumMax  NumMin  NumSum | Use Range functions instead.  [*Range functions*](../ChartFunctions/RangeFunctions/RangeFunctionsInCharts.htm) |
+| Color()  QliktechBlue  QliktechGray | Use other color functions instead. QliktechBlue() can be replaced by RGB(8, 18, 90) and QliktechGray can be replaced by RGB(158, 148, 137) to get the same colors.  [*Color functions*](../ChartFunctions/ColorFunctions/color-functions-charts.htm) |
+| QlikViewVersion | Use EngineVersion instead.  [*EngineVersion Script and chart function*](SystemFunctions/EngineVersion.htm) |
+| ProductVersion | Use EngineVersion instead.  [*EngineVersion Script and chart function*](SystemFunctions/EngineVersion.htm) |
 | QVUser |  |
 | Year2Date | Use YearToDate instead. |
 | Vrank | Use Rank instead. |
@@ -52,4 +53,4 @@ Functions that are not recommended
 
 ### ALL qualifier
 
-In QlikView, the ALL qualifier may occur before an expression. This is equivalent to using {1} TOTAL. In such a case the calculation will be made over all the values of the [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/functions-statements-not-recommended.htm#glossary-0 "Glossary term") in the document, disregarding the chart [dimensions](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/functions-statements-not-recommended.htm#glossary-1 "Glossary term") and current [selections](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/functions-statements-not-recommended.htm#glossary-2 "Glossary term"). The same value is always returned regardless of the logical state in the document. If the ALL qualifier is used, a set expression cannot be used, since the ALL qualifier defines a set by itself. For legacy reasons, the ALL qualifier will still work in this version of Qlik Sense, but may be removed in coming versions.
+In QlikView, the ALL qualifier may occur before an expression. This is equivalent to using {1} TOTAL. In such a case the calculation will be made over all the values of the [field](#glossary-0 "Glossary term") in the document, disregarding the chart [dimensions](#glossary-1 "Glossary term") and current [selections](#glossary-2 "Glossary term"). The same value is always returned regardless of the logical state in the document. If the ALL qualifier is used, a set expression cannot be used, since the ALL qualifier defines a set by itself. For legacy reasons, the ALL qualifier will still work in this version of Qlik Sense, but may be removed in coming versions.

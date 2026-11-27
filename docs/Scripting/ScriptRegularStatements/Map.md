@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
 # Map
 
 The map ... using statement is
@@ -21,7 +22,7 @@ mapname
 
 The automatic mapping is done for fields loaded after the Map … Using statement until the end of the script or until an Unmap statement is encountered.
 
-The mapping is done last in the chain of events leading up to the [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Map.htm#glossary-0 "Glossary term") being stored in the internal table in Qlik Sense. This means that mapping is not done every time a field name is encountered as part of an expression, but rather when the value is stored under the field name in the internal table. If mapping on the expression level is required, the Applymap() function has to be used instead.
+The mapping is done last in the chain of events leading up to the [field](#glossary-0 "Glossary term") being stored in the internal table in Qlik Sense. This means that mapping is not done every time a field name is encountered as part of an expression, but rather when the value is stored under the field name in the internal table. If mapping on the expression level is required, the Applymap() function has to be used instead.
 
 Arguments:
 
@@ -42,6 +43,6 @@ Examples and results:
 
 ## Learn more
 
-- [*Mapping*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Mapping.htm)
-- [*Unmap*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Unmap.htm)
-- [*Mapping functions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/MappingFunctions/mapping-functions.htm)
+- [*Mapping*](../ScriptPrefixes/Mapping.htm)
+- [*Unmap*](Unmap.htm)
+- [*Mapping functions*](../MappingFunctions/mapping-functions.htm)

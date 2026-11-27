@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
 # Force
 
 The force statement forces Qlik Sense
@@ -42,7 +43,7 @@ If nothing is specified, force case mixed is assumed. The force statement
 is valid until a new force statement is made.
 
 The force
-statement has no effect in the access section: all [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Force.htm#glossary-0 "Glossary term") values loaded are case insensitive.
+statement has no effect in the access section: all [field](#glossary-0 "Glossary term") values loaded are case insensitive.
 
 Examples and results
 
@@ -55,5 +56,5 @@ Examples and results
 
 ## Learn more
 
-- [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm)
-- [*Select*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Select.htm)
+- [*Load*](Load.htm)
+- [*Select*](Select.htm)

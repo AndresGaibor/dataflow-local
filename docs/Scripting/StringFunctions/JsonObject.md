@@ -4,14 +4,15 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
 # JsonObject Script and chart function
 
 JsonObject is used to build JSON objects.
 
-> **Note:** You can add any number of name-value pairs with JsonObject.
+Information noteYou can add any number of name-value pairs with JsonObject.
 
 Syntax:
 

@@ -4,12 +4,13 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Statistical distribution functions"]
 ---
+
 # NormDist Script and chart function
 
-`NormDist()` returns the cumulative normal
+NormDist() returns the cumulative normal
 distribution for the specified mean and standard deviation. If mean = 0
 and standard\_dev = 1, the function returns the standard normal distribution.
 
@@ -31,9 +32,9 @@ Arguments
 | cumulative | You can optionally select to use a standard normal distribution or a cumulative distribution.  0 = standard normal distribution  1 = cumulative distribution (default) |
 
 This function is related to the NormInv function in
-the following way:   
-`If prob = NORMDIST(value, m,
-sd), then NORMINV(prob, m, sd) = value`
+the following way:
+If prob = NORMDIST(value, m,
+sd), then NORMINV(prob, m, sd) = value
 
 Limitations:
 
@@ -48,4 +49,4 @@ Examples and results:
 
 ## Learn more
 
-- [*NormInv Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StatisticalDistributionFunctions/NormInv.htm)
+- [*NormInv Script and chart function*](NormInv.htm)

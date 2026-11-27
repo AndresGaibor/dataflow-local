@@ -4,13 +4,14 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Statistical distribution functions"]
 ---
+
 # TDist Script and chart function
 
-`TDist()` returns the probability for the
-student's `t` distribution where a numeric value is a calculated value of `t` for which the probability is to be computed.
+TDist() returns the probability for the
+student's t distribution where a numeric value is a calculated value of t for which the probability is to be computed.
 
 Syntax:
 
@@ -30,9 +31,9 @@ Arguments
 | tails | Must be either 1 (one-tailed distribution) or 2 (two-tailed distribution). |
 
 This function is related to the TInv function
-in the following way:   
-`If prob = TDIST(value, df ,2),
-then TINV(prob, df) = value`
+in the following way:
+If prob = TDIST(value, df ,2),
+then TINV(prob, df) = value
 
 Limitations:
 
@@ -47,4 +48,4 @@ Examples and results:
 
 ## Learn more
 
-- [*TInv Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StatisticalDistributionFunctions/TInv.htm)
+- [*TInv Script and chart function*](TInv.htm)

@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Financial functions"]
 ---
+
 # PV Script and chart function
 
 This function returns the present value of an investment.
@@ -38,4 +39,4 @@ Scripting example
 
 | Example | Result |
 | --- | --- |
-| What is the present value of a debt, when you have to pay $100 at the end of each month during a five-year period, given an interest rate of 7%?  `PV(0.07/12,12*5,-100,0,0)` | Returns $5,050.20 |
+| What is the present value of a debt, when you have to pay $100 at the end of each month during a five-year period, given an interest rate of 7%?  PV(0.07/12,12\*5,-100,0,0) | Returns $5,050.20 |

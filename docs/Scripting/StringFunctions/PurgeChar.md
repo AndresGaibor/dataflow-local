@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# PurgeChar Script and chart function
+
 Expand/Collapse all
 
 # PurgeChar Script and chart function
@@ -30,11 +33,11 @@ Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `PurgeChar( 'a1b2c3','123' )` | Returns `abc` |
-| `PurgeChar( 'a1b2c3','1234' )` | Returns `abc` |
-| `PurgeChar( 'a1b22c3','1234' )` | Returns `abc` |
-| `PurgeChar( 'a1b2c3','312' )` | Returns `abc` |
-| `PurgeChar ( 'a1b2c3','Abc' )` | Returns `a123` |
+| PurgeChar( 'a1b2c3','123' ) | Returns abc |
+| PurgeChar( 'a1b2c3','1234' ) | Returns abc |
+| PurgeChar( 'a1b22c3','1234' ) | Returns abc |
+| PurgeChar( 'a1b2c3','312' ) | Returns abc |
+| PurgeChar ( 'a1b2c3','Abc' ) | Returns a123 |
 
 ## Example - PurgeChar fundamentals
 
@@ -46,11 +49,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `InputText`
-  - `CharsToPurge`
+  - InputText
+  - CharsToPurge
 
 Load script
 
@@ -68,12 +71,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `InputText`
-- `CharsToPurge`
+- InputText
+- CharsToPurge
 
 Create the following calculated dimension:
 
-- `=PurgeChar(InputText,CharsToPurge)`, to calculate the characters in `InputText` that match the characters in `CharsToPurge` and return only those characters that do not match.
+- =PurgeChar(InputText,CharsToPurge), to calculate the characters in InputText that match the characters in CharsToPurge and return only those characters that do not match.
 
 Results table
 
@@ -83,7 +86,7 @@ Results table
 | a^b^c | ^ | abc |
 | a1b2c3 | 123 | abc |
 
-The output of the `PurgeChar` function returns only those characters from `InputText` that do not match the characters in `CharsToPurge`. For example, the first line returns `bc` and removes the other characters.
+The output of the PurgeChar function returns only those characters from InputText that do not match the characters in CharsToPurge. For example, the first line returns bc and removes the other characters.
 
 Load script
 
@@ -92,7 +95,7 @@ The following code shows how to use the function in a load script.
 ```
 Example:
 Load
-*, 
+*,
 purgechar(String1, String2) as PurgeChar;
 Load * inline [
 String1, String2
@@ -118,11 +121,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `CustomerName`
-  - `PhoneNumber`
+  - CustomerName
+  - PhoneNumber
 
 Load script
 
@@ -141,12 +144,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `CustomerName`
-- `PhoneNumber`
+- CustomerName
+- PhoneNumber
 
 Create the following calculated dimension:
 
-- `=PurgeChar(PhoneNumber, '()- .+ ')`, to extract the non-numeric characters from the `PhoneNumber` field and return only numeric characters.
+- =PurgeChar(PhoneNumber, '()- .+ '), to extract the non-numeric characters from the PhoneNumber field and return only numeric characters.
 
 Results table
 
@@ -157,8 +160,8 @@ Results table
 | Jane Smith | 123-456-7890 | 1234567890 |
 | John Doe | (123) 456-7890 | 1234567890 |
 
-The output of the `PurgeChar` function has successfully removed all non-numeric characters from the `PhoneNumber` string and returned only numbers.
+The output of the PurgeChar function has successfully removed all non-numeric characters from the PhoneNumber string and returned only numbers.
 
 ## Learn more
 
-- [*KeepChar Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/KeepChar.htm)
+- [*KeepChar Script and chart function*](KeepChar.htm)

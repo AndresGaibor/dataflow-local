@@ -4,14 +4,15 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script control statements"]
 ---
+
 # If..then..elseif..else..end if
 
 The if..then control statement is a script selection construct forcing the script execution to follow different paths depending on one or several logical conditions.
 
-Control statements are typically used to control the flow of the script execution. In a chart expression, use the if conditional function instead. For more information see [*if Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ConditionalFunctions/if.htm).
+Control statements are typically used to control the flow of the script execution. In a chart expression, use the if conditional function instead. For more information see [*if Script and chart function*](../ConditionalFunctions/if.htm).
 
 Syntax:
 
@@ -86,4 +87,4 @@ if
 
 ## Learn more
 
-- [*End*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptControlStatements/End.htm)
+- [*End*](End.htm)

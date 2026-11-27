@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions", "Basic aggregation functions"]
 ---
+
 # FirstSortedValue Script function
 
 FirstSortedValue() returns the value from the expression specified in value that corresponds to the result of sorting the sort\_weight argument, for example, the name of the product with the lowest unit price. The nth value in the sort order, can be specified in rank. If more than one resulting value shares the same sort\_weight for the specified rank, the function returns NULL. The sorted values are iterated over

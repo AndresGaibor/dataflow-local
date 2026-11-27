@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements", "Rename"]
 ---
+
 # Rename table
 
 This script function renames one or more existing Qlik Sense internal table(s) after they have been loaded.
@@ -57,7 +58,7 @@ Tables using TabMap;
 
 ## Learn more
 
-- [*Rename field*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/rename-field.htm)
-- [*Rename*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Rename.htm)
-- [*To*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptControlStatements/To.htm)
-- [*Table/Tables*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Table.htm)
+- [*Rename field*](rename-field.htm)
+- [*Rename*](Rename.htm)
+- [*To*](../ScriptControlStatements/To.htm)
+- [*Table/Tables*](Table.htm)

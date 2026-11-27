@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script syntax overview"]
 ---
+
 # What is Backus-Naur formalism?
 
 The Qlik Sense command line syntax and script
@@ -40,7 +41,7 @@ alias fieldname as aliasname
 { , fieldname as aliasname}
 
 This should be interpreted as the text string "alias", followed
-by an arbitrary [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/Backus-Naur-formalism.htm#glossary-0 "Glossary term") name, followed by the text string "as",
+by an arbitrary [field](#glossary-0 "Glossary term") name, followed by the text string "as",
 followed by an arbitrary alias name. Any number of additional combinations
 of "fieldname as alias" may be given,
 separated by commas.

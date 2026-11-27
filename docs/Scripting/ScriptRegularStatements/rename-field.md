@@ -4,16 +4,17 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements", "Rename"]
 ---
+
 # Rename field
 
 This script function renames one or more existing Qlik Sense field(s) after they have been loaded.
 
-> **Note:** It is not recommended to name a variable identically to a field or a function in Qlik Sense.
+Information noteIt is not recommended to name a variable identically to a field or a function in Qlik Sense.
 
-Either syntax: rename [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/rename-field.htm#glossary-0 "Glossary term")
+Either syntax: rename [field](#glossary-0 "Glossary term")
 or rename fields can be used.
 
 Syntax:
@@ -53,7 +54,7 @@ using FieldMap;
 
 ## Learn more
 
-- [*Rename table*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/rename-table.htm)
-- [*Rename*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Rename.htm)
-- [*Field/Fields*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Field.htm)
-- [*To*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptControlStatements/To.htm)
+- [*Rename table*](rename-table.htm)
+- [*Rename*](Rename.htm)
+- [*Field/Fields*](Field.htm)
+- [*To*](../ScriptControlStatements/To.htm)

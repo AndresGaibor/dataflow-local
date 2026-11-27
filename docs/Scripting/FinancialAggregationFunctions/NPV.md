@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions", "Financial aggregation functions"]
 ---
+
+# NPV Script function
+
 Expand/Collapse all
 
 # NPV Script function
@@ -24,39 +27,39 @@ Return data type:  numeric. By default, the result will be formatted as currency
 
 The formula to calculate net present value is:
 
-![Formula for calculating NPV.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-npv-formula.png)
+![Formula for calculating NPV.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-npv-formula.png "Click to view full size")
 
 where:
 
-- `R`t= Net cash inflow-outflows during a single period `t`
-- `i` = Discount rate or return that could be earned in alternative investments
-- `t` = Number of timer periods
+- Rt= Net cash inflow-outflows during a single period t
+- i = Discount rate or return that could be earned in alternative investments
+- t = Number of timer periods
 
 Arguments
 
 | Argument | Description |
 | --- | --- |
 | discount\_rate | discount\_rate is the percentage rate of discount applied.  A value of 0.1 would indicate a 10% discount rate. |
-| value | This [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FinancialAggregationFunctions/NPV.htm#glossary-0 "Glossary term") holds values for multiple periods ordered by period. The first value is assumed to be the cashflow at the end of period 1, and so on. |
+| value | This [field](#glossary-0 "Glossary term") holds values for multiple periods ordered by period. The first value is assumed to be the cashflow at the end of period 1, and so on. |
 
 Limitations:
 
-The `NPV()` function has the following limitations:
+The NPV() function has the following limitations:
 
 - Text values, NULL values and missing values are disregarded.
 - Cashflow values must be in order of ascending period.
 
 ## When to use NPV
 
-`NPV()` is a financial function used to check project profitability and to derive other [measures](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FinancialAggregationFunctions/NPV.htm#glossary-1 "Glossary term"). This function is useful when cashflows are available as raw data.
+NPV() is a financial function used to check project profitability and to derive other [measures](#glossary-1 "Glossary term"). This function is useful when cashflows are available as raw data.
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 ## Example 1 – Single payment (script)
 
@@ -68,10 +71,10 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FinancialAggregationFunctions/NPV.htm#glossary-2 "Glossary term") of one project and its cashflow for one period, which is loaded into a table named `CashFlow`.
-- A [resident load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FinancialAggregationFunctions/NPV.htm#glossary-3 "Glossary term") from the `CashFlow` table, which is used to calculate the NPV field for the project in a table named `NPV`.
+- A [dataset](#glossary-2 "Glossary term") of one project and its cashflow for one period, which is loaded into a table named CashFlow.
+- A [resident load](#glossary-3 "Glossary term") from the CashFlow table, which is used to calculate the NPV field for the project in a table named NPV.
 - A hard-coded discount rate of 10% , which is used in the NPV calculation.
-- A `Group By` statement, which is used to group all the payments for the project.
+- A Group By statement, which is used to group all the payments for the project.
 
 Load script
 
@@ -79,14 +82,14 @@ Load script
 CashFlow:
 Load
 *
-Inline 
-[	
+Inline
+[
 PrjId,PeriodId,Values
 1,1,1000
 ];
 
 NPV:
-Load 
+Load
 	PrjId,
 	NPV(0.1,Values) as NPV //Discount Rate of 10%
 Resident CashFlow
@@ -97,8 +100,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `PrjId`
-- `NPV`
+- PrjId
+- NPV
 
 Results table
 
@@ -118,10 +121,10 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset of one project and its cashflow for multiple periods, which is loaded into a table named `CashFlow`.
-- A resident load from the `CashFlow` table, which is used to calculate the NPV field for the project in a table named `NPV`.
+- A dataset of one project and its cashflow for multiple periods, which is loaded into a table named CashFlow.
+- A resident load from the CashFlow table, which is used to calculate the NPV field for the project in a table named NPV.
 - A hard-coded discount rate of 10% (0.1) is used in the NPV calculation.
-- A `Group By` statement, which is used to group all the payments for the project.
+- A Group By statement, which is used to group all the payments for the project.
 
 Load script
 
@@ -129,15 +132,15 @@ Load script
 CashFlow:
 Load
 *
-Inline 
-[	
+Inline
+[
 PrjId,PeriodId,Values
 1,1,1000
 1,2,1000
 ];
 
 NPV:
-Load 
+Load
 	PrjId,
 	NPV(0.1,Values) as NPV //Discount Rate of 10%
 Resident CashFlow
@@ -148,8 +151,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `PrjId`
-- `NPV`
+- PrjId
+- NPV
 
 Results table
 
@@ -169,14 +172,14 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- Discount rates for two projects, which is loaded into a table named `Project`.
+- Discount rates for two projects, which is loaded into a table named Project.
 - Cashflows for multiple periods for each project by project ID and period ID. This period ID could be used to order the records in case the data is not ordered.
-- The combination of `NoConcatenate`, Resident loads, and the `Left Join` function to create a temporary table, `tmpNPV`. The table combines the records of `Project` and `CashFlow` tables into one flat table. This table will have discount rates repeated for each period.
-- A resident load from the `tmpNPV` table, which is used to calculate the NPV field for each project in a table named `NPV`.
-- The single value discount rate associated to each project. This is retrieved using the `only()` function and is used in the NPV calculation for each project.
-- A `Group By` statement, which is used to group all the payments for each project by project ID.
+- The combination of NoConcatenate, Resident loads, and the Left Join function to create a temporary table, tmpNPV. The table combines the records of Project and CashFlow tables into one flat table. This table will have discount rates repeated for each period.
+- A resident load from the tmpNPV table, which is used to calculate the NPV field for each project in a table named NPV.
+- The single value discount rate associated to each project. This is retrieved using the only() function and is used in the NPV calculation for each project.
+- A Group By statement, which is used to group all the payments for each project by project ID.
 
-To avoid any synthetic or redundant data being loaded into the data model, the `tmpNPV` table is dropped at the end of the script.
+To avoid any synthetic or redundant data being loaded into the data model, the tmpNPV table is dropped at the end of the script.
 
 Load script
 
@@ -191,8 +194,8 @@ PrjId,Discount_Rate
 CashFlow:
 Load
 *
-Inline 
-[	
+Inline
+[
 PrjId,PeriodId,Values
 1,1,1000
 1,2,1000
@@ -207,11 +210,11 @@ tmpNPV:
 NoConcatenate Load *
 Resident Project;
 Left Join
-Load * 
+Load *
 Resident CashFlow;
 
 NPV:
-Load 
+Load
 	PrjId,
 	NPV(Only(Discount_Rate),Values) as NPV //Discount Rate will be 10% for Project 1 and 15% for Project 2
 Resident tmpNPV
@@ -224,8 +227,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `PrjId`
-- `NPV`
+- PrjId
+- NPV
 
 Results table
 
@@ -248,15 +251,15 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- Discount rates and initial investments (period 0) for two projects, loaded into a table named `Project`.
+- Discount rates and initial investments (period 0) for two projects, loaded into a table named Project.
 - Cashflows for multiple periods for each project by project ID and period ID. This period ID could be used to order the records in case the data is not ordered.
-- The combination of `NoConcatenate`, Resident loads, and the `Left Join` function to create a temporary table, `tmpNPV`. The table combines the records of `Project` and `CashFlow` tables into one flat table. This table will have discount rates repeated for each period.
-- The single value discount rate associated to each project, which is retrieved using the `only()` function and is used in the NPV calculation for each project.
+- The combination of NoConcatenate, Resident loads, and the Left Join function to create a temporary table, tmpNPV. The table combines the records of Project and CashFlow tables into one flat table. This table will have discount rates repeated for each period.
+- The single value discount rate associated to each project, which is retrieved using the only() function and is used in the NPV calculation for each project.
 - A resident load from the tmpNPV table is used to calculate the NPV field for each project in a table named NPV.
 - An additional field that divides the NPV by the initial investment of each project is created to calculate the project profitability index.
 - A group by statement, grouping by project ID, is used to group all the payments for each project.
 
-To avoid any synthetic or redundant data being loaded into the data model, the `tmpNPV` table is dropped at the end of the script.
+To avoid any synthetic or redundant data being loaded into the data model, the tmpNPV table is dropped at the end of the script.
 
 Load script
 
@@ -271,8 +274,8 @@ PrjId,Discount_Rate, Initial_Investment
 CashFlow:
 Load
 *
-Inline 
-[	
+Inline
+[
 PrjId,PeriodId,Values,
 1,1,35000
 1,2,35000
@@ -287,7 +290,7 @@ tmpNPV:
 NoConcatenate Load *
 Resident Project;
 Left Join
-Load * 
+Load *
 Resident CashFlow;
 
 NPV:
@@ -305,12 +308,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `PrjId`
-- `NPV`
+- PrjId
+- NPV
 
 Create the following measure:
 
-`=only(Profitability_Index)`
+=only(Profitability\_Index)
 
 Results table
 
@@ -325,11 +328,11 @@ Project ID 2 has an effective NPV of $123513.71 and an initial investment of $10
 
 ## Learn more
 
-- [*Drop table*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/drop-table.htm)
-- [*group by*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm#group_by)
-- [*Join*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Join.htm)
-- [*Max Script function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/AggregationFunctions/max.htm)
-- [*NoConcatenate*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/NoConcatenate.htm)
-- [NPV - chart function](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/FinancialAggregationFunctionsInCharts/npv.htm)
-- [*Only Script function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/AggregationFunctions/only.htm)
-- [*Resident LOAD*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/load-data-from-previously-loaded-table.htm#Resident)
+- [*Drop table*](../ScriptRegularStatements/drop-table.htm)
+- [*group by*](../ScriptRegularStatements/Load.htm#group_by)
+- [*Join*](../ScriptPrefixes/Join.htm)
+- [*Max Script function*](../AggregationFunctions/max.htm)
+- [*NoConcatenate*](../ScriptPrefixes/NoConcatenate.htm)
+- [NPV - chart function](../../ChartFunctions/FinancialAggregationFunctionsInCharts/npv.htm)
+- [*Only Script function*](../AggregationFunctions/only.htm)
+- [*Resident LOAD*](../load-data-from-previously-loaded-table.htm#Resident)

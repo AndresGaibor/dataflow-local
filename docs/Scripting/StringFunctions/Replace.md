@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# Replace Script and chart function
+
 Expand/Collapse all
 
 # Replace Script and chart function
@@ -33,7 +36,7 @@ Example: Chart expression
 
 | Example | Result |
 | --- | --- |
-| `Replace( 'abccde','cc','xyz' )` | Returns `abxyzde` |
+| Replace( 'abccde','cc','xyz' ) | Returns abxyzde |
 
 ## Example - Replace fundamentals
 
@@ -41,17 +44,17 @@ Chart expression
 
 Overview
 
-A dataset of customer names contains some misspellings. This example uses the `Replace` function to process and replace any incorrect occurrence of 'Jhon' with 'John'.
+A dataset of customer names contains some misspellings. This example uses the Replace function to process and replace any incorrect occurrence of 'Jhon' with 'John'.
 
 Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `CustomerID`
-  - `CustomerName`
+  - CustomerID
+  - CustomerName
 
 Load script
 
@@ -70,12 +73,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `CustomerID`
-- `CustomerName`
+- CustomerID
+- CustomerName
 
 Create the following calculated dimension:
 
-- `=Replace(CustomerName,'Jhon','John')`, to replace all instances of `Jhon` with `John`.
+- =Replace(CustomerName,'Jhon','John'), to replace all instances of Jhon with John.
 
 Results table
 
@@ -86,7 +89,7 @@ Results table
 | 3 | John Williams | John Williams |
 | 4 | Jhonathan Harris | Johnathan Harris |
 
-The output of the `Repeat` function finds and corrects all instances of `Jhon` with `John`.
+The output of the Repeat function finds and corrects all instances of Jhon with John.
 
 ## Example - Replace scenario
 
@@ -94,17 +97,17 @@ Chart expression
 
 Overview
 
-A dataset of products uses inconsistent labeling for the category codes. For example, electrical products have multiple code variations, such as `ELEC`, `ELC`, and `elc`. To standardize the codes, the `Replace` function is used to correct all inconsistent category codes for both electrical and furniture products.
+A dataset of products uses inconsistent labeling for the category codes. For example, electrical products have multiple code variations, such as ELEC, ELC, and elc. To standardize the codes, the Replace function is used to correct all inconsistent category codes for both electrical and furniture products.
 
 Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `ProductID`
-  - `CategoryCode`
+  - ProductID
+  - CategoryCode
 
 Load script
 
@@ -126,12 +129,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ProductID`
-- `CategoryCode`
+- ProductID
+- CategoryCode
 
 Create the following calculated dimension:
 
-- `=Replace(Replace(Upper(CategoryCode), 'ELC', 'ELEC'),'FRN', 'FURN')`, to replace any instances of `ELC` with `ELEC` and any instance of `FRN` with `FURN`.
+- =Replace(Replace(Upper(CategoryCode), 'ELC', 'ELEC'),'FRN', 'FURN'), to replace any instances of ELC with ELEC and any instance of FRN with FURN.
 
 Results table
 
@@ -145,8 +148,8 @@ Results table
 | 6 | ELC | ELEC |
 | 7 | elc | ELEC |
 
-The output of the `Replace` function has replaced any instances of `ELC` with `ELEC`, and `FRN` with `FURN`. Note that the code `elc` was also replaced. Although the `Replace` function is case-sensitive, the dimension formula uses the `Upper` function to conform the case of all `CategoryCodes` before replacing the string. This effectively renders the string replacement case-insensitive.
+The output of the Replace function has replaced any instances of ELC with ELEC, and FRN with FURN. Note that the code elc was also replaced. Although the Replace function is case-sensitive, the dimension formula uses the Upper function to conform the case of all CategoryCodes before replacing the string. This effectively renders the string replacement case-insensitive.
 
 ## Learn more
 
-- [*Replace*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/Replace.htm)
+- [*Replace*](../Replace.htm)

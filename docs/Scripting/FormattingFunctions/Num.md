@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Formatting functions"]
 ---
+
+# Num Script and chart function
+
 Expand/Collapse all
 
 # Num Script and chart function
@@ -26,21 +29,21 @@ Arguments
 | Argument | Description |
 | --- | --- |
 | number | The text string to be evaluated. |
-| format | String specifying how the resulting string is to be formatted. If omitted, the decimal and thousand separators that are set in the data load script are used. The `Num` function supports many format options for different numeric structures, for example:  `#,##0`: ​Displays a number without decimal places.  `#,##0.00`: ​Displays a number with two decimal places.  `##0.00%`: Displays a number as a percentage with two decimal places.  `​#,##0;(#,##0)`: Formats negative numbers to appear in parentheses.  `$#,##0.00`: Formats numbers as currency with a $ symbol.  `​0.00E+0`: Displays numbers in scientific notation. |
-| dec\_sep | String specifying the decimal number separator. If omitted, the value of the variable DecimalSep that is set in the data load script is used. The `Num` function supports many decimal number separator formats, for example:  Comma ​' `,` ': For example, `$1,000,00` for one thousand dollars.  Period ' `.` ':​ For example, `€ 1,000.00`.  Hyphen ' `-` ': When used instead of the traditional period or comma for the decimal separator, it shows values like `¥1,000-00`.  ​For more information, see [*DecimalSep*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/NumberInterpretationVariables/DecimalSep.htm). |
-| thou\_sep | String specifying the thousands number separator. If omitted, the value of the variable ThousandSep that is set in the data load script is used. The `Num` function supports many options for the thousands number separator:  Period ​' `.` ': Uses a period for the thousands separator (common in some European formats), displaying as `$1.000,00` if combined with a comma decimal separator.  Space ​' ': Uses a space for the thousands separator, which is common in some European countries. Displays as `€ 1 000.00`.  Underscore ​'`_`':​ Uses an underscore for the thousands separator, which is sometimes used in technical or specific regional formats. Displays values like `$1_000.00`.  ​For more information, see [*ThousandSep*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/NumberInterpretationVariables/ThousandSep.htm). |
+| format | String specifying how the resulting string is to be formatted. If omitted, the decimal and thousand separators that are set in the data load script are used. The Num function supports many format options for different numeric structures, for example:  #,##0: ​Displays a number without decimal places.  #,##0.00: ​Displays a number with two decimal places.  ##0.00%: Displays a number as a percentage with two decimal places.  ​#,##0;(#,##0): Formats negative numbers to appear in parentheses.  $#,##0.00: Formats numbers as currency with a $ symbol.  ​0.00E+0: Displays numbers in scientific notation. |
+| dec\_sep | String specifying the decimal number separator. If omitted, the value of the variable DecimalSep that is set in the data load script is used. The Num function supports many decimal number separator formats, for example:  Comma ​' , ': For example, $1,000,00 for one thousand dollars.  Period ' . ':​ For example, € 1,000.00.  Hyphen ' - ': When used instead of the traditional period or comma for the decimal separator, it shows values like ¥1,000-00.  ​For more information, see [*DecimalSep*](../NumberInterpretationVariables/DecimalSep.htm). |
+| thou\_sep | String specifying the thousands number separator. If omitted, the value of the variable ThousandSep that is set in the data load script is used. The Num function supports many options for the thousands number separator:  Period ​' . ': Uses a period for the thousands separator (common in some European formats), displaying as $1.000,00 if combined with a comma decimal separator.  Space ​' ': Uses a space for the thousands separator, which is common in some European countries. Displays as € 1 000.00.  Underscore ​'\_':​ Uses an underscore for the thousands separator, which is sometimes used in technical or specific regional formats. Displays values like $1\_000.00.  ​For more information, see [*ThousandSep*](../NumberInterpretationVariables/ThousandSep.htm). |
 
-For more information on number formatting see [Conventions for number and time formats](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Introduction/conventions-number-time-formats.htm).
+For more information on number formatting see [Conventions for number and time formats](/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Introduction/conventions-number-time-formats.htm).
 
 Example: Chart expressions
 
 | Example | Results (String value returned) |
 | --- | --- |
-| `Num(35648.312)` | Returns `35648.312` (depends on the environment variables in the script) |
-| `Num(35648.312, '0.0', '.')` | Returns `35648.3` |
-| `Num(35648.312, '0,00', ',')` | Returns `3,56,48` |
-| `Num(35648.312, '#,##0.0', '.', ',')` | Returns `35,648.3` |
-| `Num(35648.312, '# ##0', ',', ' ')` | Returns `35 648` |
+| Num(35648.312) | Returns 35648.312 (depends on the environment variables in the script) |
+| Num(35648.312, '0.0', '.') | Returns 35648.3 |
+| Num(35648.312, '0,00', ',') | Returns 3,56,48 |
+| Num(35648.312, '#,##0.0', '.', ',') | Returns 35,648.3 |
+| Num(35648.312, '# ##0', ',', ' ') | Returns 35 648 |
 
 ## Example - Num fundamentals
 
@@ -52,10 +55,10 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following field in a data table:
 
-  - `InputValue`
+  - InputValue
 
 Load script
 
@@ -73,15 +76,15 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `InputValue`
+- InputValue
 
 Create the following measures:
 
-- `=Num(InputDate)`, to view the value as a number that is formatted using the system settings.
-- `=Num(InputValue, '0.0', '.')`, to view the value as a number that is formatted using the format supplied in the function.
-- `=Num(InputValue, '0,00', ',')`, to view the value as a number that is formatted using the format supplied in the function.
-- `=Num(InputValue, '#,##0.0', '.', ',')`, to view the value as a number that is formatted using the format supplied in the function.
-- `=Num(InputValue, '# ##0', ',', ' ')`, to view the value as a number that is formatted using the format supplied in the function.
+- =Num(InputDate), to view the value as a number that is formatted using the system settings.
+- =Num(InputValue, '0.0', '.'), to view the value as a number that is formatted using the format supplied in the function.
+- =Num(InputValue, '0,00', ','), to view the value as a number that is formatted using the format supplied in the function.
+- =Num(InputValue, '#,##0.0', '.', ','), to view the value as a number that is formatted using the format supplied in the function.
+- =Num(InputValue, '# ##0', ',', ' '), to view the value as a number that is formatted using the format supplied in the function.
 
 Results table
 
@@ -91,15 +94,15 @@ Results table
 | 35648 | 35648 | 35648.0 | 3,56,48 | 35,648.0 | 35 648 |
 | 3564800 | 3564800 | 3564800.0 | 3,56,48,00 | 3,564,800.0 | 3 564 800 |
 
-The results show how the `Num` function can display the values for the `InputValue` field based on the format supplied in the function expression.
+The results show how the Num function can display the values for the InputValue field based on the format supplied in the function expression.
 
 Load script
 
-The `Num` function can be used in a load script to format a number, even if the thousand and decimal separators are already set in the script. The load script below includes specific thousand and decimal separators but then uses `Num` to format data in different ways.
+The Num function can be used in a load script to format a number, even if the thousand and decimal separators are already set in the script. The load script below includes specific thousand and decimal separators but then uses Num to format data in different ways.
 
 Load script
 
-In the Data load editor, create a new section, and then add the example script and run it. Then add, at least, the fields listed in the results table to a [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FormattingFunctions/Num.htm#glossary-0 "Glossary term") in your application to see the result.
+In the Data load editor, create a new section, and then add the example script and run it. Then add, at least, the fields listed in the results table to a [sheet](#glossary-0 "Glossary term") in your application to see the result.
 
 ```
 SET ThousandSep=',';
@@ -153,11 +156,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `Customer`
-  - `Sales`
+  - Customer
+  - Sales
 
 Load script
 
@@ -176,11 +179,11 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `Customer`
+- Customer
 
 Create the following measure:
 
-- `=If(Sales > 1000000, Num(Sales/1000000, '#,##0.00M'), If(Sales > 1000, Num(Sales/1000, '#,##0.00K'), Num(Sales, '#,##0.00')))`, to set the numeric representation of the values.
+- =If(Sales > 1000000, Num(Sales/1000000, '#,##0.00M'), If(Sales > 1000, Num(Sales/1000, '#,##0.00K'), Num(Sales, '#,##0.00'))), to set the numeric representation of the values.
 
 Results table
 
@@ -191,11 +194,11 @@ Results table
 | Customer C | 15.00K |
 | Customer D | 250.00 |
 
-The measure expression in column 2 uses the `Num` function to present the data in a simplified numeric format.
+The measure expression in column 2 uses the Num function to present the data in a simplified numeric format.
 
 Load script
 
-The `Num` function can be used in a load script to format a number as a percentage.
+The Num function can be used in a load script to format a number as a percentage.
 
 Load script
 
@@ -219,7 +222,7 @@ transaction\_id, transaction\_date, transaction\_amount, transaction\_quantity, 
 3757, 20180923, 3177.4, 21, .14, 203521, XL, Black
 ];
 
-Qlik Sense table showing the results of the `Num` function being used in the load script to format percentages.
+Qlik Sense table showing the results of the Num function being used in the load script to format percentages.
 
 | Discount | Discount #,##0% |
 | --- | --- |

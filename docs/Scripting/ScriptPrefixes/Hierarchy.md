@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script prefixes"]
 ---
+
 # Hierarchy
 
 The hierarchy
@@ -14,7 +15,7 @@ prefix is used to transform a parent-child hierarchy table to a table that is us
 or a SELECT
 statement and will use the result of the loading statement as input for a table transformation.
 
-The prefix creates an expanded nodes table, which normally has the same number of records as the input table, but in addition each level in the hierarchy is stored in a separate [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Hierarchy.htm#glossary-0 "Glossary term"). The path field can be used in a tree structure.
+The prefix creates an expanded nodes table, which normally has the same number of records as the input table, but in addition each level in the hierarchy is stored in a separate [field](#glossary-0 "Glossary term"). The path field can be used in a tree structure.
 
 Syntax:
 
@@ -78,6 +79,6 @@ NodeID, ParentID, NodeName
 
 ## Learn more
 
-- [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm)
-- [*Select*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Select.htm)
-- [*Loading hierarchy data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/DataSource/hierarchies.htm)
+- [*Load*](../ScriptRegularStatements/Load.htm)
+- [*Select*](../ScriptRegularStatements/Select.htm)
+- [*Loading hierarchy data*](../../DataSource/hierarchies.htm)

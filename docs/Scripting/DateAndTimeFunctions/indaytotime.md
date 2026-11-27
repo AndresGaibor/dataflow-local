@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
+# indaytotime Script and chart function
+
 Expand/Collapse all
 
 # indaytotime Script and chart function
@@ -20,17 +23,17 @@ Syntax:
 
 InDayToTime (timestamp, base\_timestamp, period\_no[, day\_start])
 
-The `indaytotime()` function returns a Boolean result depending on when a timestamp value occurs during the segment of the day. The start boundary of this segment is the start of the day, which is set as midnight by default; the start of the day can be modified by the `day_start` argument of the `indaytotime()` function. The end boundary of the day segment is determined by a `base_timestamp` argument of the function.
+The indaytotime() function returns a Boolean result depending on when a timestamp value occurs during the segment of the day. The start boundary of this segment is the start of the day, which is set as midnight by default; the start of the day can be modified by the day\_start argument of the indaytotime() function. The end boundary of the day segment is determined by a base\_timestamp argument of the function.
 
-Diagram of `indaytotime` function.
+Diagram of indaytotime function.
 
-![Diagram showing the relations between the variables of the indaytotime function.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-indaytotime-diagram-overview.png)
+![Diagram showing the relations between the variables of the indaytotime function. ](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-indaytotime-diagram-overview.png "Click to view full size")
 
 When to use indaytotime
 
-The `indaytotime()` function returns a Boolean result. Typically, this type of function will be used as a condition in an `if expression`. The `indaytotime()` function returns an [aggregation](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/indaytotime.htm#glossary-0 "Glossary term") or calculation depending on if a timestamp occurred in the segment of the day up to and including the time of the base timestamp.
+The indaytotime() function returns a Boolean result. Typically, this type of function will be used as a condition in an if expression. The indaytotime() function returns an [aggregation](#glossary-0 "Glossary term") or calculation depending on if a timestamp occurred in the segment of the day up to and including the time of the base timestamp.
 
-For example, the `indaytotime()` function can be used to show the sum of ticket sales for shows that have taken place so far today.
+For example, the indaytotime() function can be used to show the sum of ticket sales for shows that have taken place so far today.
 
 Return data type: Boolean
 
@@ -40,40 +43,40 @@ Arguments
 
 | Argument | Description |
 | --- | --- |
-| `timestamp` | The date and time that you want to compare with `base_timestamp`. |
-| `base_timestamp` | Date and time that is used to evaluate the timestamp. |
-| `period_no` | The day can be offset by `period_no`. `period_no` is an integer, where the value 0 indicates the day which contains `base_timestamp`. Negative values in `period_no` indicate preceding days and positive values indicate succeeding days. |
-| `day_start` | (optional) If you want to work with days not starting midnight, indicate an offset as a fraction of a day in `day_start`. For example, use 0.125 to denote 3 AM. |
+| timestamp | The date and time that you want to compare with base\_timestamp. |
+| base\_timestamp | Date and time that is used to evaluate the timestamp. |
+| period\_no | The day can be offset by period\_no. period\_no is an integer, where the value 0 indicates the day which contains base\_timestamp. Negative values in period\_no indicate preceding days and positive values indicate succeeding days. |
+| day\_start | (optional) If you want to work with days not starting midnight, indicate an offset as a fraction of a day in day\_start. For example, use 0.125 to denote 3 AM. |
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `indaytotime` ('01/12/2006 12:23:00 PM', '01/12/2006 11:59:00 PM', 0) | Returns True |
-| `indaytotime` ('01/12/2006 12:23:00 PM', '01/12/2006 12:00:00 AM', 0) | Returns False |
-| `indaytotime` '01/11/2006 12:23:00 PM', '01/12/2006 11:59:00 PM', -1) | Returns True |
+| indaytotime ('01/12/2006 12:23:00 PM', '01/12/2006 11:59:00 PM', 0) | Returns True |
+| indaytotime ('01/12/2006 12:23:00 PM', '01/12/2006 12:00:00 AM', 0) | Returns False |
+| indaytotime '01/11/2006 12:23:00 PM', '01/12/2006 11:59:00 PM', -1) | Returns True |
 
 ## Example 1 – no additional arguments
 
-Load script and results 
+Load script and results
 
 Overview
 
-Open the Data load editor and add the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/indaytotime.htm#glossary-1 "Glossary term") below to a new tab.
+Open the Data load editor and add the [load script](#glossary-1 "Glossary term") below to a new tab.
 
 The load script contains:
 
-- A [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/indaytotime.htm#glossary-2 "Glossary term") containing a set of transactions for the period between January 4 and 5 is loaded into a table called 'Transactions'.
-- A date [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/indaytotime.htm#glossary-3 "Glossary term") which is provided in the `TimeStamp` system variable `(M/D/YYYY h:mm:ss[.fff] TT)` format.
-- A [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/indaytotime.htm#glossary-4 "Glossary term") which contains the `indaytotime()` function which is set as the `'in_day_to_time'`, field that determines whether each of the transactions take place before 9:00 AM.
+- A [dataset](#glossary-2 "Glossary term") containing a set of transactions for the period between January 4 and 5 is loaded into a table called 'Transactions'.
+- A date [field](#glossary-3 "Glossary term") which is provided in the TimeStamp system variable (M/D/YYYY h:mm:ss[.fff] TT) format.
+- A [preceding load](#glossary-4 "Glossary term") which contains the indaytotime() function which is set as the 'in\_day\_to\_time', field that determines whether each of the transactions take place before 9:00 AM.
 
 Load script
 
@@ -87,7 +90,7 @@ Transactions:
         ;
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,'01/04/2022 3:41:54 AM',25.66
@@ -112,8 +115,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `in_day_to_time`
+- date
+- in\_day\_to\_time
 
 Results table
 
@@ -135,11 +138,11 @@ Results table
 | 01/05/2022 10:54:10 PM | 0 |
 | 01/05/2022 11:09:09 PM | 0 |
 
-Example 1 diagram of `indaytotime` function with 9:00 AM limit..
+Example 1 diagram of indaytotime function with 9:00 AM limit..
 
-![Diagram showing indaytotime() function with a 9:00 limit.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-indaytotime-example1-diagram.png)
+![Diagram showing indaytotime() function with a 9:00 limit. ](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-indaytotime-example1-diagram.png "Click to view full size")
 
-The `in_day_to_time field` is created in the preceding load statement by using the `indaytotime()` function and passing the date field, a hard-coded timestamp for 9:00 AM January 5 and an offset of 0 as the function’s arguments. Any transactions that occur between midnight and 9:00 AM on January 5 return TRUE.
+The in\_day\_to\_time field is created in the preceding load statement by using the indaytotime() function and passing the date field, a hard-coded timestamp for 9:00 AM January 5 and an offset of 0 as the function’s arguments. Any transactions that occur between midnight and 9:00 AM on January 5 return TRUE.
 
 ## Example 2 – period\_no
 
@@ -163,7 +166,7 @@ Transactions:
         ;
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,'01/04/2022 3:41:54 AM',25.66
@@ -188,8 +191,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `in_day_to_time`
+- date
+- in\_day\_to\_time
 
 Results table
 
@@ -211,15 +214,15 @@ Results table
 | 01/05/2022 10:54:10 PM | 0 |
 | 01/05/2022 11:09:09 PM | 0 |
 
-Example 2 diagram of `indaytotime` function with transactions from January 4.
+Example 2 diagram of indaytotime function with transactions from January 4.
 
-![Diagram showing the indaytotime () function that uses a period_no of -1 to return transactions from January 4.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-indaytotime-example2-diagram.png)
+![Diagram showing the indaytotime () function that uses a period_no of -1 to return transactions from January 4. ](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-indaytotime-example2-diagram.png "Click to view full size")
 
-In this example, because an offset of -1 was used as the offset argument in the `indaytotime()` function, the function determines whether each transaction date took place before 9:00 AM on January 4. This can be verified in the output table where a transaction returns a Boolean result of TRUE.
+In this example, because an offset of -1 was used as the offset argument in the indaytotime() function, the function determines whether each transaction date took place before 9:00 AM on January 4. This can be verified in the output table where a transaction returns a Boolean result of TRUE.
 
 ## Example 3 – day\_start
 
-Load script and results 
+Load script and results
 
 Overview
 
@@ -239,7 +242,7 @@ Transactions:
         ;
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,'01/04/2022 3:41:54 AM',25.66
@@ -264,8 +267,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `in_day_to_time`
+- date
+- in\_day\_to\_time
 
 Results table
 
@@ -287,11 +290,11 @@ Results table
 | 01/05/2022 10:54:10 PM | 0 |
 | 01/05/2022 11:09:09 PM | 0 |
 
-Example 3 diagram of `indaytotime` function with transactions from 8:00 AM to 9:00 AM.,
+Example 3 diagram of indaytotime function with transactions from 8:00 AM to 9:00 AM.,
 
-![Diagram showing the indaytotime() function that shows transactions from 8:00am to 9:00am.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-indaytotime-example3-diagram.png)
+![Diagram showing the indaytotime() function that shows transactions from 8:00am to 9:00am.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-indaytotime-example3-diagram.png "Click to view full size")
 
-Because the `start_day` argument of 8/24, which equates to 8:00 AM, is used in the `indaytotime()` function, each day begins and ends at 8:00 AM. Therefore, the `indaytotime()` function will return a Boolean result of TRUE for any transaction that took place between 8:00 AM and 9:00 AM on January 5.
+Because the start\_day argument of 8/24, which equates to 8:00 AM, is used in the indaytotime() function, each day begins and ends at 8:00 AM. Therefore, the indaytotime() function will return a Boolean result of TRUE for any transaction that took place between 8:00 AM and 9:00 AM on January 5.
 
 ## Example 4 – Chart object
 
@@ -301,7 +304,7 @@ Overview
 
 The same dataset and scenario as the first example are used.
 
-However, in this example, the dataset is unchanged and loaded into the application. You will calculate to determine if a transaction takes place on January 5 before 9:00 AM by creating a [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/indaytotime.htm#glossary-6 "Glossary term") in a chart object.
+However, in this example, the dataset is unchanged and loaded into the application. You will calculate to determine if a transaction takes place on January 5 before 9:00 AM by creating a [measure](#glossary-6 "Glossary term") in a chart object.
 
 Load script
 
@@ -309,7 +312,7 @@ Load script
 Transactions:
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,'01/04/2022 3:41:54 AM',25.66
@@ -334,11 +337,11 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-`date`.
+date.
 
 To determine if a transaction takes place on January 5 before 9:00 AM, create the following measure:
 
-`=indaytotime(date,'01/05/2022 9:00:00 AM',0)`
+=indaytotime(date,'01/05/2022 9:00:00 AM',0)
 
 Results table
 
@@ -360,7 +363,7 @@ Results table
 | 01/05/2022 10:54:10 PM | 0 |
 | 01/05/2022 11:09:09 PM | 0 |
 
-The `in_day_to_time` measure is created in the chart object by using the `indaytotime()` function and passing the date field, a hard-coded timestamp for 9:00 AM on January 5 and an offset of `0` as the function’s arguments. Any transactions that occur between midnight and 9:00 AM on January 5 return TRUE. This is validated in the results table.
+The in\_day\_to\_time measure is created in the chart object by using the indaytotime() function and passing the date field, a hard-coded timestamp for 9:00 AM on January 5 and an offset of 0 as the function’s arguments. Any transactions that occur between midnight and 9:00 AM on January 5 return TRUE. This is validated in the results table.
 
 ## Example 5 – Scenario
 
@@ -380,7 +383,7 @@ SET TimestampFormat='M/D/YYYY h:mm:ss[.fff] TT';
 Ticket_Sales:
 Load
 *
-Inline 
+Inline
 [
 sale ID, show time, ticket price
 1,05/01/2022 09:30:00 AM,10.50
@@ -411,13 +414,13 @@ Results
 Do the following:
 
 1. Create a KPI object.
-2. Create a measure that will show the sum of all ticket sales for shows that have taken place today so far using the `indaytotime()` function:
+2. Create a measure that will show the sum of all ticket sales for shows that have taken place today so far using the indaytotime() function:
 
-`=sum(if(indaytotime([show time],'05/03/2022 11:00:00 AM',0),[ticket price],0))`
+=sum(if(indaytotime([show time],'05/03/2022 11:00:00 AM',0),[ticket price],0))
 
 1. Create a label for the KPI object, ‘Current Revenue’.
-2. Set the measure’s **Number Formatting** to **Money**.
+2. Set the measure’s Number Formatting to Money.
 
 The sum total of ticket sales up to 11:00 AM on May 3, 2022 is $52.50.
 
-The `indaytotime ()` function returns a Boolean value when comparing the show times of each of the ticket sales to the current time ('05/03/2022 11:00:00 AM’). For any show on May 3 before 11:00 AM, the `indaytotime ()` function returns a Boolean value of TRUE and its ticket price will be included in the sum total.
+The indaytotime () function returns a Boolean value when comparing the show times of each of the ticket sales to the current time ('05/03/2022 11:00:00 AM’). For any show on May 3 before 11:00 AM, the indaytotime () function returns a Boolean value of TRUE and its ticket price will be included in the sum total.

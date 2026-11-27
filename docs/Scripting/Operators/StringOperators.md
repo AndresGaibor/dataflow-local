@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Operators"]
 ---
+
 # String operators
 
 There are two string operators.
@@ -20,8 +21,8 @@ a text string, that consists of the two operand strings, one after another.
 
 Example:
 
-`'abc'
-& 'xyz'` returns 'abcxyz'
+'abc'
+& 'xyz' returns 'abcxyz'
 
 ## like
 
@@ -33,12 +34,12 @@ arbitrary characters) or ? (one arbitrary character).
 
 Example:
 
-`'abc'
-like 'a*'` returns True (-1)
+'abc'
+like 'a\*' returns True (-1)
 
-`'abcd'
-like 'a?c*'` returns
+'abcd'
+like 'a?c\*' returns
 True (-1)
 
-`'abc'
-like 'a??bc'` returns False (0)
+'abc'
+like 'a??bc' returns False (0)

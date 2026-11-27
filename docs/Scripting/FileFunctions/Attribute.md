@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "File functions"]
 ---
+
 # Attribute Script function
 
 This script function returns the value of the meta tags of different
@@ -19,7 +20,7 @@ Attribute(filename, attributename)
 
 A large number of meta tags can be read. The examples in this topic show which tags can be read for the respective supported file types.
 
-> **Note:** You can only read meta tags saved in the file according to the relevant specification, for example ID2v3 for MP3 files or EXIF for JPG files, not meta information saved in the **Windows File Explorer**.
+Information noteYou can only read meta tags saved in the file according to the relevant specification, for example ID2v3 for MP3 files or EXIF for JPG files, not meta information saved in the Windows File Explorer.
 
 Arguments:
 
@@ -27,7 +28,7 @@ Arguments
 
 | Argument | Description |
 | --- | --- |
-| filename | The name of a media file including path, if needed, as a folder [data connection](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FileFunctions/Attribute.htm#glossary-0 "Glossary term")  Example: 'lib://Table Files/' |
+| filename | The name of a media file including path, if needed, as a folder [data connection](#glossary-0 "Glossary term")  Example: 'lib://Table Files/' |
 | attributename | The name of a meta tag. |
 
 The examples use the GetFolderPath function to find the paths to media files. As GetFolderPath is only supported in legacy mode, you need to replace the references to GetFolderPath with a lib:// data connection path when you use this function in standard mode or in Qlik Cloud.

@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data"]
 ---
+
 # Loop and reduce in Qlik Cloud
 
 With the loop and reduce functionality in Qlik Cloud, you can use a single master application to manage several related applications. All related applications can have their data updated from the master application.
@@ -21,7 +22,7 @@ The following example shows the master application stored in a shared space. An 
 
 Loop and reduce example with master application connected to applications in managed spaces
 
-![](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/LoopAndReduce1.png)
+![](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/LoopAndReduce1.png)
 
 There are several benefits to this approach:
 
@@ -35,7 +36,7 @@ The script in the QVD generator loops through the selected fields and stores the
 
 The QVD generator transfers the selected data into the applications
 
-![](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/LoopAndReduce2.png)
+![](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/LoopAndReduce2.png)
 
 ### Setup of loop and reduce
 

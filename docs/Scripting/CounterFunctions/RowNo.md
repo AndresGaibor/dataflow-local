@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Counter functions"]
 ---
+
 # RowNo Script function
 
 This function returns an integer for the position of the current row in the resulting
@@ -22,9 +23,9 @@ In contrast to RecNo(
 clauses and is not reset when a raw data table is concatenated
 to another.
 
-> **Note:** If you use [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/CounterFunctions/RowNo.htm#glossary-0 "Glossary term"), that is, a number of stacked LOAD  statements reading from the same table, you can only use RowNo(
-> ) in the top LOAD  statement. If you use RowNo(
-> ) in subsequent LOAD  statements, 0 is returned.
+Information noteIf you use [preceding load](#glossary-0 "Glossary term"), that is, a number of stacked LOAD  statements reading from the same table, you can only use RowNo(
+) in the top LOAD  statement. If you use RowNo(
+) in subsequent LOAD  statements, 0 is returned.
 
 Example: Data load script
 

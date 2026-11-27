@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions", "Counter aggregation functions"]
 ---
+
 # NumericCount Script function
 
 NumericCount() returns the number of numeric values found in the expression,
@@ -38,7 +39,7 @@ Scripting example
 
 | Example | Result |
 | --- | --- |
-| `LOAD NumericCount(OrderNumber) as TotalNumericCount Resident Temp;` | The second statement gives: TotalNumericCount 7 in a table with that [dimension](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/CounterAggregationFunctions/NumericCount.htm#glossary-0 "Glossary term"). |
+| LOAD NumericCount(OrderNumber) as TotalNumericCount Resident Temp; | The second statement gives: TotalNumericCount 7 in a table with that [dimension](#glossary-0 "Glossary term"). |
 | Given that the Temp table is loaded as in the previous example:  LOAD NumericCount(distinct OrderNumber) as TotalNumeriCCountDistinct Resident Temp; | TotalNumericCountDistinct  6 Because there is one OrderNumber that duplicates another, so the result is 6 that are not duplicates.. |
 
 Example:

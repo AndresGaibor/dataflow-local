@@ -4,15 +4,18 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
 # Binary
 
 The binary statement is used
 for loading the data from another Qlik Sense application or QlikView document, including section access data. Other elements of the application are not included, for example, sheets, stories, visualizations, master items or variables.
 
-> **Note:** Loading scripts with binary statements is not supported. As scripts do not store the loaded data in the script, loading data from a script with a binary statement results in empty tables.
+Information note
+
+Loading scripts with binary statements is not supported. As scripts do not store the loaded data in the script, loading data from a script with a binary statement results in empty tables.
 
 Only one binary statement is allowed in the script. The binary statement must be the first
 statement of the script, even before the SET statements usually located at the beginning of the script.
@@ -27,7 +30,7 @@ Arguments
 
 | Argument | Description |
 | --- | --- |
-| path | The path to the file which should be a reference to a [data connection](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Binary.htm#glossary-0 "Glossary term") to a file share. Not required if filename is an application ID in a space. |
+| path | The path to the file which should be a reference to a [data connection](#glossary-0 "Glossary term") to a file share. Not required if filename is an application ID in a space. |
 | filename | The name of the file, including the file extension .qvw or .qvf.  It can also be the ID of an application in a space in your tenant. Open an application to view the application ID in the URL.  If a file name or application ID is not supplied, the statement will load from the application itself. In other words, it will load from the application containing the binary statement. |
 
 Limitations:

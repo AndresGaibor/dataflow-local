@@ -1,17 +1,20 @@
 ---
 title: "Logical functions"
-source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/LogicalFunctions/logical-functions.htm#IsNum?id=1421
+source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/LogicalFunctions/logical-functions.htm
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions"]
 ---
+
+# Logical functions
+
 Expand/Collapse all
 
 # Logical functions
 
-This section describes functions handling logical operations. All functions can be used in both the [data load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/LogicalFunctions/logical-functions.htm#glossary-0 "Glossary term") and in chart expressions.
+This section describes functions handling logical operations. All functions can be used in both the [data load script](#glossary-0 "Glossary term") and in chart expressions.
 
 IsNum
 
@@ -27,7 +30,7 @@ Returns -1 (True) if the expression has a text representation, otherwise
 
 IsText( expr )
 
-> **Note:** Both IsNum and IsText return 0 if the expression is NULL.
+Information noteBoth IsNum and IsText return 0 if the expression is NULL.
 
 Example:
 

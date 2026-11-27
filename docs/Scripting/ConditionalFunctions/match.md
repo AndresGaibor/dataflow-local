@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Conditional functions"]
 ---
+
+# match Script and chart function
+
 Expand/Collapse all
 
 # match Script and chart function
@@ -20,7 +23,7 @@ match( str, expr1
 
 Return data type: integer
 
-> **Tip:** If you want to use case insensitive comparison, use the mixmatch function. If you want to use case insensitive comparison and wildcards, use the wildmatch function.
+Tip noteIf you want to use case insensitive comparison, use the mixmatch function. If you want to use case insensitive comparison and wildcards, use the wildmatch function.
 
 Arguments
 
@@ -35,10 +38,10 @@ Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `match( ColorCode,'Blue','Black' )` | This expression returns the index of the match to the `ColorCode` field. If the value of `ColorCode` is `Blue` then it returns `1`. If the value of `ColorCode` is `Black` then it returns `2`. If no match is found then `0` is returned. |
-| `match( Region, 'North', 'East' )` | This expression returns the index of the match to the `Region` field. If the value of `Region` is `North` then it returns `1`. If the value of `Region` is `East` then it returns `2`. If no match is found then `0` is returned. |
+| match( ColorCode,'Blue','Black' ) | This expression returns the index of the match to the ColorCode field. If the value of ColorCode is Blue then it returns 1. If the value of ColorCode is Black then it returns 2. If no match is found then 0 is returned. |
+| match( Region, 'North', 'East' ) | This expression returns the index of the match to the Region field. If the value of Region is North then it returns 1. If the value of Region is East then it returns 2. If no match is found then 0 is returned. |
 
-Some of the examples in this topic use inline loads. For more information, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+Some of the examples in this topic use inline loads. For more information, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 ## Example - Categorize products using match
 
@@ -52,12 +55,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `ProductID`
-  - `ProductName`
-  - `ProductCategory`
+  - ProductID
+  - ProductName
+  - ProductCategory
 
 Load script
 
@@ -77,14 +80,14 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ProductID`
-- `ProductName`
-- `ProductCategory`
+- ProductID
+- ProductName
+- ProductCategory
 
 Create the following measures:
 
-- `=match(ProductCategory,'Toiletries', 'Fruits')`, to return the index where `ProductCategory` has the value `Toiletries` or `Fruits`.
-- `=If(match(ProductCategory, 'Toiletries', 'Fruits'), 'Consumable', 'Other')`, to return the index where `ProductCategory` has the value `Toiletries` or `Fruits`. If either are found, then `Consumable` is returned. Otherwise, `Other` is returned.
+- =match(ProductCategory,'Toiletries', 'Fruits'), to return the index where ProductCategory has the value Toiletries or Fruits.
+- =If(match(ProductCategory, 'Toiletries', 'Fruits'), 'Consumable', 'Other'), to return the index where ProductCategory has the value Toiletries or Fruits. If either are found, then Consumable is returned. Otherwise, Other is returned.
 
 Results table
 
@@ -96,7 +99,7 @@ Results table
 | 4 | TV | Electronics | 0 | Other |
 | 5 | Apple | Fruits | 2 | Consumable |
 
-The `match` function returns the index of the search string in the first measure. In the second measure, this result is then used in an `If` function to categorize products as `Consumable` or `Other`.
+The match function returns the index of the search string in the first measure. In the second measure, this result is then used in an If function to categorize products as Consumable or Other.
 
 ## Example - Evaluate and classify client data using match
 
@@ -110,13 +113,13 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `ClientID`
-  - `ClientName`
-  - `Region`
-  - `Industry`
+  - ClientID
+  - ClientName
+  - Region
+  - Industry
 
 Load script
 
@@ -136,14 +139,14 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ClientID`
-- `ClientName`
-- `Region`
-- `Industry`
+- ClientID
+- ClientName
+- Region
+- Industry
 
 Create the following measure:
 
-`=IF(match(Region, 'North', 'East') AND match(Industry, 'Technology', 'Manufacturing'), 'Target Segment', 'Secondary Segment')`, to return the index of the search string. If found, then `Target Segment` is returned. If not found, then `Secondary Segment` is returned.
+=IF(match(Region, 'North', 'East') AND match(Industry, 'Technology', 'Manufacturing'), 'Target Segment', 'Secondary Segment'), to return the index of the search string. If found, then Target Segment is returned. If not found, then Secondary Segment is returned.
 
 Results table
 
@@ -155,7 +158,7 @@ Results table
 | 4 | Delta LLC | North | Technology | Target Segment |
 | 5 | Epsilon GmbH | South | Healthcare | Secondary Segment |
 
-The `match` function searches for text and returns an index that can then be used to perform additional analysis and data classification. For example, `Acme Corp` is classified as a `Target Segment` because it meets the search requirements of the `match` function for both the `Region` and `Industry` fields.
+The match function searches for text and returns an index that can then be used to perform additional analysis and data classification. For example, Acme Corp is classified as a Target Segment because it meets the search requirements of the match function for both the Region and Industry fields.
 
 ## Example: Load script using match
 
@@ -163,7 +166,7 @@ Load script
 
 Overview
 
-You can use match to load a subset of data. For example, you can return a numeric value for an expression in the function. You can then limit the data that is loaded based on the numeric value. The Match function returns 0 if there is no match. All expressions that are not matched in this example will therefore return 0 and will be excluded from the data load by the `WHERE` statement.
+You can use match to load a subset of data. For example, you can return a numeric value for an expression in the function. You can then limit the data that is loaded based on the numeric value. The Match function returns 0 if there is no match. All expressions that are not matched in this example will therefore return 0 and will be excluded from the data load by the WHERE statement.
 
 Open the Data load editor and add the load script below to a new section.
 
@@ -171,8 +174,8 @@ The load script contains:
 
 - A dataset which is loaded into two data tables called:
 
-  - `Transactions`: Includes transaction fields
-  - `Transaction_Buckets`: Creates two new fields `Customer` and `Color Code Blue and Black`. The `where` statement loads the results from the `match` function.
+  - Transactions: Includes transaction fields
+  - Transaction\_Buckets: Creates two new fields Customer and Color Code Blue and Black. The where statement loads the results from the match function.
 
 Load script
 
@@ -193,16 +196,16 @@ transaction_id, transaction_date, transaction_amount, transaction_quantity, cust
 Create new table called Transaction_Buckets
 Create new fields called Customer, and Color code Blue and Black
 Load Transactions table.
-Match returns 1 for 'Blue', 2 for 'Black'. 
+Match returns 1 for 'Blue', 2 for 'Black'.
 Does not return a value for 'blue' because match is case sensitive.
-Only values that returned numeric value greater than 0 
+Only values that returned numeric value greater than 0
 are loaded by WHERE statement into Transactions_Buckets table.
 */
  
 Transaction_Buckets:
 Load
  customer_id,
- customer_id as [Customer], 
+ customer_id as [Customer],
  color_code as [Color Code Blue and Black]
 Resident Transactions
 Where match(color_code,'Blue','Black') > 0;
@@ -212,8 +215,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `[Color Code Blue and Black]`
-- `Customer`
+- [Color Code Blue and Black]
+- Customer
 
 Results table showing the output from using the match function in the load script
 
@@ -233,11 +236,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `Cities`
-  - `Count`
+  - Cities
+  - Count
 
 Load script
 
@@ -266,15 +269,15 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `Cities`
+- Cities
 
 Create the following measures:
 
-- `=match( Cities,'Toronto','Boston','Beijing','Zurich')`, to return the index of the search string.
-- `=match( Cities,'Toronto','Boston','Beijing','Stockholm','zurich')`, to return the index of the search string.
-- `=Cities & ' - ' & match ( Cities, 'Toronto','Boston', 'Beijing','Stockholm','zurich')`, to return the `Cities` field and the index of the search string.
+- =match( Cities,'Toronto','Boston','Beijing','Zurich'), to return the index of the search string.
+- =match( Cities,'Toronto','Boston','Beijing','Stockholm','zurich'), to return the index of the search string.
+- =Cities & ' - ' & match ( Cities, 'Toronto','Boston', 'Beijing','Stockholm','zurich'), to return the Cities field and the index of the search string.
 
-The first measure in the table below returns `0` for `Stockholm` because `Stockholm` is not included in the list of expressions in the `match` function. It also returns `0` for `Zurich` because the `match` comparison is case sensitive.
+The first measure in the table below returns 0 for Stockholm because Stockholm is not included in the list of expressions in the match function. It also returns 0 for Zurich because the match comparison is case sensitive.
 
 Results table
 
@@ -292,7 +295,7 @@ Chart expression
 
 Overview
 
-You can use `match` to perform a custom sort for an expression. This example uses the same dataset as the previous example.
+You can use match to perform a custom sort for an expression. This example uses the same dataset as the previous example.
 
 By default, columns sort numerically or alphabetically depending on the data.
 
@@ -308,12 +311,12 @@ Results table showing the default sort order
 
 To change the sort order, do the following:
 
-1. Open the **Sorting** section for your chart in the **Properties** panel.
+1. Open the Sorting section for your chart in the Properties panel.
 2. Turn off auto sorting for the column on which you want to do a custom sort.
-3. Clear the **Sort numerically** and **Sort alphabetically** check boxes.
-4. Select **Sort by expression**, and then enter an expression similar to the following:
+3. Clear the Sort numerically and Sort alphabetically check boxes.
+4. Select Sort by expression, and then enter an expression similar to the following:
 
-   `=match( Cities, 'Toronto','Boston','Beijing','Stockholm','zurich')`
+   =match( Cities, 'Toronto','Boston','Beijing','Stockholm','zurich')
 
    The sort order on the Cities column changes.
 
@@ -329,5 +332,5 @@ Results table showing the sort order using the match function
 
 ## Learn more
 
-- [*mixmatch Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ConditionalFunctions/mixmatch.htm)
-- [*wildmatch Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ConditionalFunctions/wildmatch.htm)
+- [*mixmatch Script and chart function*](mixmatch.htm)
+- [*wildmatch Script and chart function*](wildmatch.htm)

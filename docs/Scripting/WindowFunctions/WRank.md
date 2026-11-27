@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Window functions"]
 ---
+
+# WRank Script function
+
 Expand/Collapse all
 
 # WRank Script function
@@ -16,9 +19,9 @@ the result with the result of the other rows containing the current partition an
 
 Partitions in a table
 
-![A table showing column segments](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/table_column_segments.png)
+![A table showing column segments](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/table_column_segments.png "Click to view full size")
 
-WRank can only be used in a **Window** function. The **Window** function must include a sorting type and sorting expression. The ranking is applied on the sorting expression.
+WRank can only be used in a Window function. The Window function must include a sorting type and sorting expression. The ranking is applied on the sorting expression.
 
 Syntax:
 
@@ -233,4 +236,4 @@ Results for adding a ranked field using fmt for a single digit result
 
 WRank has the following limitations:
 
-- If your fmt value is 0 and you want to use the text part of the dual result for **WRank**, you must use **Text()** with **Window(WRank)**. For example: `Text(Window(WRank(0), Unit, 'DESC', Age)) as UnitWRankedByAgeText`.
+- If your fmt value is 0 and you want to use the text part of the dual result for WRank, you must use Text() with Window(WRank). For example: Text(Window(WRank(0), Unit, 'DESC', Age)) as UnitWRankedByAgeText.

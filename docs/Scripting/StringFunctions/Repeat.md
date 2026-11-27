@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# Repeat Script and chart function
+
 Expand/Collapse all
 
 # Repeat Script and chart function
@@ -31,7 +34,7 @@ Example: Chart expression
 
 | Example | Result |
 | --- | --- |
-| `Repeat( ' * ', 4 )` | Returns `****` |
+| Repeat( ' \* ', 4 ) | Returns \*\*\*\* |
 
 ## Example - Repeat fundamentals
 
@@ -43,8 +46,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `InputText`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called InputText.
 
 Load script
 
@@ -61,20 +64,20 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `InputText`
+- InputText
 
 Create the following calculated dimension:
 
-- `=Repeat(InputText,2)`, to calculate the number of times to repeat the value in `InputText`. In this example, each string will be repeated twice.
+- =Repeat(InputText,2), to calculate the number of times to repeat the value in InputText. In this example, each string will be repeated twice.
 
 Results table
 
 | InputText | Repeat(InputText,2) |
 | --- | --- |
-| hello world! | `hello world!hello world!` |
-| hOw aRe you? | `hOw aRe you?hOw aRe you?` |
+| hello world! | hello world!hello world! |
+| hOw aRe you? | hOw aRe you?hOw aRe you? |
 
-The output of the `Repeat` function includes two instances of the `InputText` string, for example, row 1 returns `hello world!hello world!`.
+The output of the Repeat function includes two instances of the InputText string, for example, row 1 returns hello world!hello world!.
 
 Load script
 
@@ -109,11 +112,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `Customer`
-  - `SatisfactionScore`
+  - Customer
+  - SatisfactionScore
 
 Load script
 
@@ -132,12 +135,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Customer`
-- `SatisfactionScore`
+- Customer
+- SatisfactionScore
 
 Create the following calculated dimension:
 
-- `=Repeat('☺',(SatisfactionScore))`, to calculate and display the score visually with emojis.
+- =Repeat('☺',(SatisfactionScore)), to calculate and display the score visually with emojis.
 
 Results table
 
@@ -148,7 +151,7 @@ Results table
 | Peter | 5 | ☺☺☺☺☺ |
 | Susan | 3 | ☺☺☺ |
 
-The output of the `Repeat` function shows a visual representation of customer satisfaction using smiley face emojis to represent the numerical satisfaction score.
+The output of the Repeat function shows a visual representation of customer satisfaction using smiley face emojis to represent the numerical satisfaction score.
 
 ## Example - Repeat advanced scenario
 
@@ -156,14 +159,14 @@ Chart expression
 
 Overview
 
-A dataset of customer accounts contains account numbers with varying character lengths. This example demonstrates how to use the `Repeat` function to standardize the length of account numbers.
+A dataset of customer accounts contains account numbers with varying character lengths. This example demonstrates how to use the Repeat function to standardize the length of account numbers.
 
 Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `AccountNo`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called AccountNo.
 
 Load script
 
@@ -182,11 +185,11 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `AccountNo`
+- AccountNo
 
 Create the following calculated dimension:
 
-- `=Repeat(0,10 - Len(AccountNo)) & AccountNo`, to pad the account number with zeros to a total length of 10 characters.
+- =Repeat(0,10 - Len(AccountNo)) & AccountNo, to pad the account number with zeros to a total length of 10 characters.
 
 Results table
 
@@ -197,4 +200,4 @@ Results table
 | 489654 | 0000489654 |
 | 45125783 | 0045125783 |
 
-The output of the `Repeat` function shows a standardized length of 10 characters for all account numbers.
+The output of the Repeat function shows a standardized length of 10 characters for all account numbers.

@@ -4,20 +4,21 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script prefixes"]
 ---
+
 # Merge
 
 The Merge prefix can be added to any LOAD or SELECT statement in the script to specify that the loaded table should be merged into another table. It also specifies that this statement should be run in a partial reload.
 
 The typical use case is when you load a change log and want to use this to apply inserts, updates, and deletes to an existing table.
 
-> **Note:** For partial reload to work properly, the application must be opened with data before a partial reload is triggered.
+Information noteFor partial reload to work properly, the application must be opened with data before a partial reload is triggered.
 
-Perform a partial reload using the **Reload** button. For more information, see [*Button*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Visualizations/Button/button.htm). You can also use the Qlik Engine JSON API.
+Perform a partial reload using the Reload button. For more information, see [*Button*](../../Visualizations/Button/button.htm). You can also use the Qlik Engine JSON API.
 
-To perform a partial reload on a schedule, click ![More](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_more.svg) on an application and then choose **Schedule reload**. In the dialog box that opens, turn on **Partial reload**.
+To perform a partial reload on a schedule, click ![More](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_more.svg) on an application and then choose Schedule reload. In the dialog box that opens, turn on Partial reload.
 
 Syntax:
 
@@ -30,8 +31,8 @@ Arguments
 | Argument | Description |
 | --- | --- |
 | only | An optional qualifier denoting that the statement should be executed only during partial reloads. The statement is disregarded during normal (non-partial) reloads. |
-| SequenceNoField | The name of the [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Merge.htm#glossary-0 "Glossary term") containing a timestamp or a sequence number that defines the order of the operations. |
-| SequenceNoVar | The name of the [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Merge.htm#glossary-1 "Glossary term") that gets assigned the maximum value for SequenceNoField of the table being merged. |
+| SequenceNoField | The name of the [field](#glossary-0 "Glossary term") containing a timestamp or a sequence number that defines the order of the operations. |
+| SequenceNoVar | The name of the [variable](#glossary-1 "Glossary term") that gets assigned the maximum value for SequenceNoField of the table being merged. |
 | ListOfKeys | A comma separated list of field names specifying the primary key. |
 | Operation | The first field of the load statement must contain the operation as a text string: 'Insert', 'Update', or 'Delete'. ‘i’, ‘u’ and ‘d’ are also accepted. |
 
@@ -100,12 +101,12 @@ Merge (ChangeDate, LastChangeDate) on Name Concatenate(Persons)
 LOAD * inline [
 Operation, ChangeDate,   Name,     Number
 Insert,    1/1/2021,     Mary,     4
-Delete,    1/1/2021,     Steven, 
+Delete,    1/1/2021,     Steven,
 Update,    2/1/2021,     Jake,     5
 ];
 ```
 
-For more information about using inline loads, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+For more information about using inline loads, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 ### Result
 
@@ -129,11 +130,11 @@ Resulting table
 | - | Jill | 2 |
 | 1/1/2021 | Mary | 4 |
 
-When the data is loaded, the **Data load progress** dialog box shows the operations that are performed:
+When the data is loaded, the Data load progress dialog box shows the operations that are performed:
 
 Data load progress dialog box
 
-![Data load progress dialog box.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_gen_data_load_merge.png)
+![Data load progress dialog box.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_gen_data_load_merge.png)
 
 ## Example 2: Data load script with missing fields
 
@@ -166,7 +167,7 @@ Merge (ChangeDate, LastChangeDate) on PersonID Concatenate(Persons)
 Load * Inline [
 Operation, ChangeDate,   PersonID, Name,     Number
 Insert,    1/1/2021,     4,        Mary,     4
-Delete,    1/1/2021,     3,        Steven, 
+Delete,    1/1/2021,     3,        Steven,
 ];
 
 Merge (ChangeDate, LastChangeDate) on PersonID Concatenate(Persons)
@@ -199,15 +200,15 @@ In the following example, the Only argument specifies that the Merge command is 
 
 ```
 Merge Only (ChangeDate, LastChangeDate) on Name Concatenate(Persons)
-LOAD Operation, ChangeDate,  Name, Number 
+LOAD Operation, ChangeDate,  Name, Number
 from [lib://ChangeFilesFolder/BulkChangesInPersonsTable.csv] (txt)
 where ChangeDate >='$(LastChangeDate)';
 ```
 
 ## Learn more
 
-- [*Partial reload*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/PartialReload.htm)
-- [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm)
-- [*Concatenate*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/concatenate.htm)
-- [*Map*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Map.htm)
-- [*Only*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/Only.htm)
+- [*Partial reload*](PartialReload.htm)
+- [*Load*](../ScriptRegularStatements/Load.htm)
+- [*Concatenate*](concatenate.htm)
+- [*Map*](../ScriptRegularStatements/Map.htm)
+- [*Only*](../Only.htm)

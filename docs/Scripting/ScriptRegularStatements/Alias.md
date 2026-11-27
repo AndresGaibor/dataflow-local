@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
 # Alias
 
 The alias statement is used
@@ -23,7 +24,7 @@ Arguments
 
 | Argument | Description |
 | --- | --- |
-| fieldname | The name of the [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Alias.htm#glossary-0 "Glossary term") in your source data |
+| fieldname | The name of the [field](#glossary-0 "Glossary term") in your source data |
 | aliasname | An alias name you want to use instead |
 
 ## Examples with results
@@ -62,7 +63,7 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `AAA`
+- AAA
 
 Results table
 
@@ -73,5 +74,5 @@ Results table
 
 ## Learn more
 
-- [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm)
-- [*Select*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Select.htm)
+- [*Load*](Load.htm)
+- [*Select*](Select.htm)

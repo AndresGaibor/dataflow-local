@@ -4,14 +4,15 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions"]
 ---
+
 # Working with variables in the data load editor
 
-A variable in Qlik Sense is a container storing a static value or a calculation, for example a numeric or alphanumeric value. When you use the variable in the application, any change made to the variable is applied everywhere the variable is used. You can define variables in the variables overview, or in the script using the [Data load editor](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/work-with-variables-in-data-load-editor.htm#glossary-0 "Glossary term"). You set the value of a variable using Let or Set statements in the data load script.
+A variable in Qlik Sense is a container storing a static value or a calculation, for example a numeric or alphanumeric value. When you use the variable in the application, any change made to the variable is applied everywhere the variable is used. You can define variables in the variables overview, or in the script using the [Data load editor](#glossary-0 "Glossary term"). You set the value of a variable using Let or Set statements in the data load script.
 
-> **Tip:** You can also work with the Qlik Sense variables from the variables overview when editing a sheet. [*Using variables in expressions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Variables/work-with-variables.htm)
+Tip noteYou can also work with the Qlik Sense variables from the variables overview when editing a sheet. [*Using variables in expressions*](../Variables/work-with-variables.htm)
 
 ## Overview
 
@@ -45,17 +46,17 @@ to the variable. The Let statement evaluates an expression to the right of the e
 
 Variables are case sensitive.
 
-> **Note:** It is not recommended to name a variable identically to a field or a function in Qlik Sense.
+Information noteIt is not recommended to name a variable identically to a field or a function in Qlik Sense.
 
 Examples:
 
-`set x = 3 + 4; //` the variable will get the string '3 + 4' as the value.
+set x = 3 + 4; // the variable will get the string '3 + 4' as the value.
 
-`let x = 3 + 4; //` returns 7 as the value.
+let x = 3 + 4; // returns 7 as the value.
 
-`set x = Today(); //` returns 'Today()' as the value.
+set x = Today(); // returns 'Today()' as the value.
 
-`let x = Today(); //` returns today's date as the value, for example, ‘9/27/2021’.
+let x = Today(); // returns today's date as the value, for example, ‘9/27/2021’.
 
 ### Naming your variables
 
@@ -69,33 +70,33 @@ This section lists additional features you can use to enhance the power of varia
 
 You can use Constrain statements to restrict script variables to specific definitions, preventing unwanted values from being loaded. Constrain statements can be used for quality assurance, improved collaboration during script codevelopment, and elevated security for analytics applications. In Qlik Cloud, Constrain statements can also be used in combination with the developer API for dynamic, reload-time variable updates.
 
-For more information, see [*Constrain*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Constrain.htm).
+For more information, see [*Constrain*](ScriptRegularStatements/Constrain.htm).
 
 ### Defining script-only variables
 
 You can use the ScriptOnlyVariables system variable to set script-only variables. A script-only variable is only available in the load script and is not surfaced in, for example, sheet view in the application.
 
-For more information, see [*ScriptOnlyVariables*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemVariables/ScriptOnlyVariables.htm).
+For more information, see [*ScriptOnlyVariables*](SystemVariables/ScriptOnlyVariables.htm).
 
 ### Dropping variables
 
 You can use a Drop variable statement to drop variables in the script. Dropping a variable is useful when you want to use a variable only for performing calculations or defining fields in the context of the data model.
 
-For more information, see [*Drop variable*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Drop-Variable.htm).
+For more information, see [*Drop variable*](ScriptRegularStatements/Drop-Variable.htm).
 
 ## Deleting a variable
 
 If you remove a variable from the script and reload the data, the variable stays in the application. If you want to fully remove the variable from the application, you can do any of the following:
 
 - Delete the variable from the variables dialog.
-- Drop the variable in the script using a [*Drop variable*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Drop-Variable.htm) statement.
-- Set variables that are not needed in the variable dialog as script-only variables by using the [*ScriptOnlyVariables*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemVariables/ScriptOnlyVariables.htm) system variable in the script.
+- Drop the variable in the script using a [*Drop variable*](ScriptRegularStatements/Drop-Variable.htm) statement.
+- Set variables that are not needed in the variable dialog as script-only variables by using the [*ScriptOnlyVariables*](SystemVariables/ScriptOnlyVariables.htm) system variable in the script.
 
-For more information, see [*Deleting a variable*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Variables/delete-variable-using-dialog.htm).
+For more information, see [*Deleting a variable*](../Variables/delete-variable-using-dialog.htm).
 
 ## Loading a variable value as a field value
 
-If you want to load a variable value as a [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/work-with-variables-in-data-load-editor.htm#glossary-1 "Glossary term") value in a LOAD statement and the result of the dollar expansion is text rather than numeric or an expression then you need to enclose the expanded variable in single quotes.
+If you want to load a variable value as a [field](#glossary-1 "Glossary term") value in a LOAD statement and the result of the dollar expansion is text rather than numeric or an expression then you need to enclose the expanded variable in single quotes.
 
 Example:
 
@@ -147,12 +148,12 @@ As you can see, $(vSales) results in the partial sum for a dimension value, whil
 
 The following script variables are available:
 
-- [*Error variables*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ErrorVariables/ErrorVariables.htm)
-- [*Number interpretation variables*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/NumberInterpretationVariables/number-interpretation-variables.htm)
-- [*System variables*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemVariables/system-variables.htm)
-- [*Value handling variables*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ValueHandlingVariables/value-handling-variables.htm)
+- [*Error variables*](ErrorVariables/ErrorVariables.htm)
+- [*Number interpretation variables*](NumberInterpretationVariables/number-interpretation-variables.htm)
+- [*System variables*](SystemVariables/system-variables.htm)
+- [*Value handling variables*](ValueHandlingVariables/value-handling-variables.htm)
 
 ## Learn more
 
-- [*Dollar-sign expansions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/dollar-sign-expansions.htm)
-- [*Using variables in expressions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Variables/work-with-variables.htm)
+- [*Dollar-sign expansions*](dollar-sign-expansions.htm)
+- [*Using variables in expressions*](../Variables/work-with-variables.htm)

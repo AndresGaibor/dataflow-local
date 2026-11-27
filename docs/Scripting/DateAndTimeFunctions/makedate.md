@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
+# makedate Script and chart function
+
 Expand/Collapse all
 
 # makedate Script and chart function
@@ -29,26 +32,26 @@ Arguments
 
 ## When to use makedate
 
-The `makedate()` function would commonly be used in the script for data generation to generate a calendar. This could also be used when the date [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/makedate.htm#glossary-0 "Glossary term") is not directly available as date, but needs some transformations to extract year, month and day components.
+The makedate() function would commonly be used in the script for data generation to generate a calendar. This could also be used when the date [field](#glossary-0 "Glossary term") is not directly available as date, but needs some transformations to extract year, month and day components.
 
-These examples use the date format MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement at the top of your data [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/makedate.htm#glossary-1 "Glossary term") . Change the format in the examples to suit your requirements.
+These examples use the date format MM/DD/YYYY. The date format is specified in the SET DateFormat statement at the top of your data [load script](#glossary-1 "Glossary term") . Change the format in the examples to suit your requirements.
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `makedate(2012)` | Returns 01/01/2012. |
-| `makedate(12)` | Returns 01/01/2012. |
-| `makedate(2012,12)` | Returns 12/01/2012. |
-| `makedate(2012,2,14)` | Returns 02/14/2012. |
+| makedate(2012) | Returns 01/01/2012. |
+| makedate(12) | Returns 01/01/2012. |
+| makedate(2012,12) | Returns 12/01/2012. |
+| makedate(2012,2,14) | Returns 02/14/2012. |
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 ## Example 1 – Basic example
 
@@ -60,9 +63,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/makedate.htm#glossary-2 "Glossary term") containing a set of transactions for 2018, which is loaded into a table called `Transactions`.
-- The date field provided in the `DateFormat` system [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/makedate.htm#glossary-3 "Glossary term") (MM/DD/YYYY) format.
-- The creation of a field, `transaction_date`, that returns a date in the format MM/DD/YYYY.
+- A [dataset](#glossary-2 "Glossary term") containing a set of transactions for 2018, which is loaded into a table called Transactions.
+- The date field provided in the DateFormat system [variable](#glossary-3 "Glossary term") (MM/DD/YYYY) format.
+- The creation of a field, transaction\_date, that returns a date in the format MM/DD/YYYY.
 
 Load script
 
@@ -73,7 +76,7 @@ Transactions:
     Load
         *,
         makedate(transaction_year, transaction_month, transaction_day) as transaction_date
-        ; 
+        ;
 Load * Inline [
 transaction_id, transaction_year, transaction_month, transaction_day, transaction_amount, transaction_quantity, customer_id
 3750, 2018, 08, 30, 12423.56, 23, 2038593
@@ -90,10 +93,10 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `transaction_year`
-- `transaction_month`
-- `transaction_day`
-- `transaction_date`
+- transaction\_year
+- transaction\_month
+- transaction\_day
+- transaction\_date
 
 Results table
 
@@ -105,9 +108,9 @@ Results table
 | 2018 | 09 | 22 | 09/22/2018 |
 | 2018 | 09 | 23 | 09/23/2018 |
 
-The `transaction_date` field is created in the [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/makedate.htm#glossary-4 "Glossary term") statement by using the `makedate()` function and passing the year, month, day fields as function arguments.
+The transaction\_date field is created in the [preceding load](#glossary-4 "Glossary term") statement by using the makedate() function and passing the year, month, day fields as function arguments.
 
-The function then combines and converts these values into a date field, returning the results in the format of the `DateFormat` system variable.
+The function then combines and converts these values into a date field, returning the results in the format of the DateFormat system variable.
 
 ## Example 2 – Modified DateFormat
 
@@ -120,7 +123,7 @@ Open the Data load editor and add the load script below to a new section.
 The load script contains:
 
 - The same dataset and scenario as the first example.
-- The creation of a field, `transaction_date`, in the format DD/MM/YYYY without modifying the `DateFormat` system variable.
+- The creation of a field, transaction\_date, in the format DD/MM/YYYY without modifying the DateFormat system variable.
 
 Load script
 
@@ -131,7 +134,7 @@ Transactions:
     Load
         *,
         date(makedate(transaction_year, transaction_month, transaction_day), ‘DD/MM/YYYY’) as transaction_date
-        ; 
+        ;
 Load * Inline [
 transaction_id, transaction_year, transaction_month, transaction_day, transaction_amount, transaction_quantity, customer_id
 3750, 2018, 08, 30, 12423.56, 23, 2038593
@@ -148,10 +151,10 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `transaction_year`
-- `transaction_month`
-- `transaction_day`
-- `transaction_date`
+- transaction\_year
+- transaction\_month
+- transaction\_day
+- transaction\_date
 
 Results table
 
@@ -163,7 +166,7 @@ Results table
 | 2018 | 09 | 22 | 22/09/2018 |
 | 2018 | 09 | 23 | 23/09/2018 |
 
-In this instance, the `makedate()` function is nested inside the `date()` function. The second argument of the `date()` function sets the format of the `makedate()` function results as the required DD/MM/YYYY.
+In this instance, the makedate() function is nested inside the date() function. The second argument of the date() function sets the format of the makedate() function results as the required DD/MM/YYYY.
 
 ## Example 3 – Chart object example
 
@@ -175,10 +178,10 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset containing a set of transactions for 2018, which is loaded into a table called `Transactions`.
-- The transaction dates provided across two fields: `year` and `month`.
+- A dataset containing a set of transactions for 2018, which is loaded into a table called Transactions.
+- The transaction dates provided across two fields: year and month.
 
-Create a chart object [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/makedate.htm#glossary-5 "Glossary term") `transaction_date`, that returns a date in the format MM/DD/YYYY.
+Create a chart object [measure](#glossary-5 "Glossary term") transaction\_date, that returns a date in the format MM/DD/YYYY.
 
 Load script
 
@@ -202,12 +205,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `year`
-- `month`
+- year
+- month
 
-To determine the `transaction_date`, create this measure:
+To determine the transaction\_date, create this measure:
 
-`=makedate(transaction_year,transaction_month)`
+=makedate(transaction\_year,transaction\_month)
 
 Results table
 
@@ -216,9 +219,9 @@ Results table
 | 2018 | 08 | 08/01/2018 |
 | 2018 | 09 | 09/01/2018 |
 
-The `transaction_date` measure is created in the chart object by using the `makedate()` function, and passing the year and month fields as function arguments.
+The transaction\_date measure is created in the chart object by using the makedate() function, and passing the year and month fields as function arguments.
 
-The function then combines these values, as well as the assumed day value of 01. These values are then converted into a date field, returning the results in the format of the `DateFormat` system variable.
+The function then combines these values, as well as the assumed day value of 01. These values are then converted into a date field, returning the results in the format of the DateFormat system variable.
 
 ## Example 4 – Scenario
 
@@ -234,7 +237,7 @@ Load script
 SET DateFormat='MM/DD/YYYY';
 
 Calendar:
-	load 
+	load
 		*
     where year(date)=2022;
 load
@@ -275,4 +278,4 @@ Results table
 | 01/25/2022 |
 | + 340 more rows |
 
-The `makedate()` function creates a date value for December 31, 2021. The `recno()` function provides the record number of the current record being loaded into the table, starting from 1. Therefore, the first record has the date January 1, 2022. Each successive `recno()` will then increment this date by 1. This expression is wrapped in a `date()` function to convert the value into a date. This process is repeated 400 times by the `autogenerate` function. Finally, by using a preceding load, a `where` condition can be used to only load dates from year 2022. This script generates a calendar containing every date in 2022.
+The makedate() function creates a date value for December 31, 2021. The recno() function provides the record number of the current record being loaded into the table, starting from 1. Therefore, the first record has the date January 1, 2022. Each successive recno() will then increment this date by 1. This expression is wrapped in a date() function to convert the value into a date. This process is repeated 400 times by the autogenerate function. Finally, by using a preceding load, a where condition can be used to only load dates from year 2022. This script generates a calendar containing every date in 2022.

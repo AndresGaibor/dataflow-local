@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Interpretation functions"]
 ---
+
+# Timestamp# Script and chart function
+
 Expand/Collapse all
 
 # Timestamp# Script and chart function
@@ -27,14 +30,14 @@ Arguments
 | Argument | Description |
 | --- | --- |
 | text | The text string to be evaluated. |
-| format | String describing the format that should be used to interpret the text string. If omitted, the short date format, time format, and decimal separator set in the operating system is used. ISO 8601 is supported for timestamps.  The `Timestamp#` function supports many format options for different time structures, for example:  `DD/MM/YYYY`: Focuses on just the date (for example: `15/11/2024`).  ​`YYYY-MM-DD hh:mm:ss`: ​Displays the full timestamp (for example: `2024-11-15 13:30:45`).  `​MMM DD, YYYY`: ​Displays a short version of the month and the full year (for example: `Nov 15, 2024`).  ​`hh:mm:ss TT`: ​Shows only the time in 12-hour format (for example: `01:30:45 PM`)  `​HH:mm:ss`: ​Displays time in 24-hour format (for example: `13:30:45`)  `​wwww, MMM DD YYYY`: ​Shows full day of the week and date (for example: `Friday, Nov 15 2024`)  `​YYYY-MM-DD hh:mm:ss.fff`: ​Includes milliseconds (for example: `2024-11-15 13:30:45.123`​).  [*Descriptions for number and time formats*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Introduction/conventions-number-time-formats.htm) |
+| format | String describing the format that should be used to interpret the text string. If omitted, the short date format, time format, and decimal separator set in the operating system is used. ISO 8601 is supported for timestamps.  The Timestamp# function supports many format options for different time structures, for example:  DD/MM/YYYY: Focuses on just the date (for example: 15/11/2024).  ​YYYY-MM-DD hh:mm:ss: ​Displays the full timestamp (for example: 2024-11-15 13:30:45).  ​MMM DD, YYYY: ​Displays a short version of the month and the full year (for example: Nov 15, 2024).  ​hh:mm:ss TT: ​Shows only the time in 12-hour format (for example: 01:30:45 PM)  ​HH:mm:ss: ​Displays time in 24-hour format (for example: 13:30:45)  ​wwww, MMM DD YYYY: ​Shows full day of the week and date (for example: Friday, Nov 15 2024)  ​YYYY-MM-DD hh:mm:ss.fff: ​Includes milliseconds (for example: 2024-11-15 13:30:45.123​).  [*Descriptions for number and time formats*](../../Introduction/conventions-number-time-formats.htm) |
 
 Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `Timestamp#('12-03-2023 10:25:30', 'DD-MM-YYYY hh:mm:ss')` | Returns `12-03-2023 10:25:30` |
-| `Timestamp#('2023/03/15 13:45', 'YYYY/MM/DD hh:mm')` | Returns `2023/03/15 13:45` |
+| Timestamp#('12-03-2023 10:25:30', 'DD-MM-YYYY hh:mm:ss') | Returns 12-03-2023 10:25:30 |
+| Timestamp#('2023/03/15 13:45', 'YYYY/MM/DD hh:mm') | Returns 2023/03/15 13:45 |
 
 ## Example - Timestamp# fundamentals
 
@@ -46,11 +49,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following field in a data table:
 
-  - `InputString`
-- A preceding load that uses the `Timestamp#` function to treat the expression as a date and time value. When executed, it creates an additional field called `TimeStamp_InputString`.
+  - InputString
+- A preceding load that uses the Timestamp# function to treat the expression as a date and time value. When executed, it creates an additional field called TimeStamp\_InputString.
 
 Load script
 
@@ -71,8 +74,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `InputString`
-- `TimeStamp_InputString`
+- InputString
+- TimeStamp\_InputString
 
 Results table
 
@@ -82,7 +85,7 @@ Results table
 | 1952-10-16T13:14:00+0200 | 10/16/1952 11:14:00 AM |
 | 2015-09-15T12:13:14 | 9/15/2015 12:13:14 PM |
 
-In this example, you can see how string values can be evaluated as a timestamp using the `Timestamp#` function.
+In this example, you can see how string values can be evaluated as a timestamp using the Timestamp# function.
 
 ## Example - Timestamp# scenario
 
@@ -96,12 +99,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `Event`
-  - `EventDateTime`
-- A preceding load that uses the `Timestamp#` function to convert the values in the `EventDateTime` field into a date and time format that the system can understand. When executed, it creates an additional field called `EventTimestamp`.
+  - Event
+  - EventDateTime
+- A preceding load that uses the Timestamp# function to convert the values in the EventDateTime field into a date and time format that the system can understand. When executed, it creates an additional field called EventTimestamp.
 
 Load script
 
@@ -126,13 +129,13 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Event`
-- `EventDateTime`
-- `EventTimestamp`
+- Event
+- EventDateTime
+- EventTimestamp
 
 Create the following measure:
 
-- `=Timestamp(EventTimestamp)`, to view the timestamp formatted using the format supplied in the load script as a default setting.
+- =Timestamp(EventTimestamp), to view the timestamp formatted using the format supplied in the load script as a default setting.
 
 Results table
 
@@ -144,4 +147,4 @@ Results table
 | Logout | 12-03-2023 12:45:10 | 12-03-2023 12:45:10 | 3/12/2023 12:45:10 PM |
 | Logout | 13-03-2023 17:30:20 | 13-03-2023 17:30:20 | 3/13/2023 5:30:20 PM |
 
-In this example, you can see how values can be converted using the `Timestamp#` function.
+In this example, you can see how values can be converted using the Timestamp# function.

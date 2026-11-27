@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
-breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions", "dimensions"]
+last_updated: "2026-11-27"
+breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
+# monthsstart Script and chart function
+
 Expand/Collapse all
 
 # monthsstart Script and chart function
@@ -19,15 +22,15 @@ MonthsStart(n\_months, date[, period\_no [, first\_month\_of\_year]])
 
 Return data type:  dual
 
-Diagram of `monthsstart()` function
+Diagram of monthsstart() function
 
-![Example diagram showing how each of the elements of the function work together to return the timestamp result. The year is broken up into a number of segments and given a date input, the function returns a timestamp value.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthsstart-general.png)
+![Example diagram showing how each of the elements of the function work together to return the timestamp result. The year is broken up into a number of segments and given a date input, the function returns a timestamp value.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthsstart-general.png "Click to view full size")
 
-The `monthsstart()` function divides the year into segments based on the `n_months` argument provided. It then evaluates what segment each date provided falls into and returns the first millisecond of that segment, in date format. The function also provides the ability to return the start timestamp from preceding or following segments, as well as redefining which is the first month of the year.
+The monthsstart() function divides the year into segments based on the n\_months argument provided. It then evaluates what segment each date provided falls into and returns the first millisecond of that segment, in date format. The function also provides the ability to return the start timestamp from preceding or following segments, as well as redefining which is the first month of the year.
 
-The following segments of the year are available in the function as `n_month` arguments:
+The following segments of the year are available in the function as n\_month arguments:
 
-Possible `n_month` arguments
+Possible n\_month arguments
 
 | Periods | Number of months |
 | --- | --- |
@@ -48,23 +51,23 @@ Arguments
 
 ## When to use monthsstart
 
-The `monthsstart()` function is commonly used as part of an expression when the user would like the calculation to use the fraction of a period that has not yet occurred. This could be used, for example, to provide an input [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthsstart.htm#glossary-0 "Glossary term") to let the user calculate the total interest that has been accumulated so far in the month, quarter, or half-year.
+The monthsstart() function is commonly used as part of an expression when the user would like the calculation to use the fraction of a period that has not yet occurred. This could be used, for example, to provide an input [variable](#glossary-0 "Glossary term") to let the user calculate the total interest that has been accumulated so far in the month, quarter, or half-year.
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `monthsstart(4, '10/19/2013')` | Returns 09/01/2013. |
-| `monthsstart(4, '10/19/2013, -1)` | Returns 05/01/2013. |
-| `monthsstart(4, '10/19/2013', 0, 2 )` | Returns 10/01/2013, because the start of the year becomes month 2. |
+| monthsstart(4, '10/19/2013') | Returns 09/01/2013. |
+| monthsstart(4, '10/19/2013, -1) | Returns 05/01/2013. |
+| monthsstart(4, '10/19/2013', 0, 2 ) | Returns 10/01/2013, because the start of the year becomes month 2. |
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 ## Example 1 – No additional arguments
 
@@ -76,9 +79,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthsstart.htm#glossary-1 "Glossary term") containing a set of transactions for 2022, which is loaded into a table called `Transactions`.
-- The date [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthsstart.htm#glossary-2 "Glossary term") provided in the `DateFormat` system variable (MM/DD/YYYY) format.
-- The creation of a field, `bi_monthly_start`, that groups transactions into bi-monthly segments and returns the starting timestamp of the segment for each transaction.
+- A [dataset](#glossary-1 "Glossary term") containing a set of transactions for 2022, which is loaded into a table called Transactions.
+- The date [field](#glossary-2 "Glossary term") provided in the DateFormat system variable (MM/DD/YYYY) format.
+- The creation of a field, bi\_monthly\_start, that groups transactions into bi-monthly segments and returns the starting timestamp of the segment for each transaction.
 
 Load script
 
@@ -123,9 +126,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `bi_monthly_start`
-- `bi_monthly_start_timestamp`
+- date
+- bi\_monthly\_start
+- bi\_monthly\_start\_timestamp
 
 Results table
 
@@ -152,13 +155,13 @@ Results table
 | 10/14/2022 | 09/01/2022 | 9/1/2022 12:00:00 AM |
 | 10/29/2022 | 09/01/2022 | 9/1/2022 12:00:00 AM |
 
-The `bi_monthly_start` field is created in the [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthsstart.htm#glossary-3 "Glossary term") statement by using the `monthsstart()` function. The first argument provided is 2, dividing the year into bi-monthly segments. The second argument identifies which field is being evaluated.
+The bi\_monthly\_start field is created in the [preceding load](#glossary-3 "Glossary term") statement by using the monthsstart() function. The first argument provided is 2, dividing the year into bi-monthly segments. The second argument identifies which field is being evaluated.
 
-Diagram of `monthsstart()` function, example with no additional arguments
+Diagram of monthsstart() function, example with no additional arguments
 
-![Diagram showing the results of using the monthsstart function to determine the segment of the year in which a transaction took place. In this case, the year is broken up into segments and the input date is converted to a timestamp.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthsstart-example-no-add-arg.png)
+![Diagram showing the results of using the monthsstart function to determine the segment of the year in which a transaction took place. In this case, the year is broken up into segments and the input date is converted to a timestamp.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthsstart-example-no-add-arg.png "Click to view full size")
 
-Transaction 8195 takes place on May 22. The `monthsstart()` function initially divides the year into bi-monthly segments. Transaction 8195 falls into the segment between May 1 and June 30. Therefore, the function returns the first millisecond of this segment, May 1, 2022 at 12:00:00 AM.
+Transaction 8195 takes place on May 22. The monthsstart() function initially divides the year into bi-monthly segments. Transaction 8195 falls into the segment between May 1 and June 30. Therefore, the function returns the first millisecond of this segment, May 1, 2022 at 12:00:00 AM.
 
 ## Example 2 – period\_no
 
@@ -171,7 +174,7 @@ Open the Data load editor and add the load script below to a new section.
 The load script contains:
 
 - The same dataset and scenario as the first example.
-- The creation of a field, `prev_bi_monthly_start`, that returns the first millisecond of the bi-monthly segment before the transaction took place.
+- The creation of a field, prev\_bi\_monthly\_start, that returns the first millisecond of the bi-monthly segment before the transaction took place.
 
 Load script
 
@@ -216,9 +219,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `prev_bi_monthly_start`
-- `prev_bi_monthly_start_timestamp`
+- date
+- prev\_bi\_monthly\_start
+- prev\_bi\_monthly\_start\_timestamp
 
 Results table
 
@@ -245,11 +248,11 @@ Results table
 | 10/14/2022 | 07/01/2022 | 7/1/2022 12:00:00 AM |
 | 10/29/2022 | 07/01/2022 | 7/1/2022 12:00:00 AM |
 
-By using -1 as the `period_no` argument in the `monthsstart()` function, after initially dividing a year into bi-monthly segments, the function then returns the first millisecond of the previous bi-monthly segment to when a transaction takes place.
+By using -1 as the period\_no argument in the monthsstart() function, after initially dividing a year into bi-monthly segments, the function then returns the first millisecond of the previous bi-monthly segment to when a transaction takes place.
 
-Diagram of `monthsstart()` function, period\_no example
+Diagram of monthsstart() function, period\_no example
 
-![Diagram showing the results of using the monthsstart function to determine the segment of the year in which a transaction took place. In this case, the year is broken up into segments and the input date is converted to a timestamp.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthsstart-example-period-no.png)
+![Diagram showing the results of using the monthsstart function to determine the segment of the year in which a transaction took place. In this case, the year is broken up into segments and the input date is converted to a timestamp.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthsstart-example-period-no.png "Click to view full size")
 
 Transaction 8195 occurs in the segment between May and June. Therefore, the previous bi-monthly segment was between March 1 and April 30, so the function returns the first millisecond of this segment, March 1, 2022 at 12:00:00 AM.
 
@@ -264,7 +267,7 @@ Open the Data load editor and add the load script below to a new section.
 The load script contains:
 
 - The same dataset and scenario as the first example.
-- The creation of a field, `bi_monthly_start`, that groups transactions into bi-monthly segments and returns the starting timestamp of the set for each transaction.
+- The creation of a field, bi\_monthly\_start, that groups transactions into bi-monthly segments and returns the starting timestamp of the set for each transaction.
 
 However, in this example, we also need to set April as the first month of the financial year.
 
@@ -311,9 +314,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `bi_monthly_start`
-- `bi_monthly_start_timestamp`
+- date
+- bi\_monthly\_start
+- bi\_monthly\_start\_timestamp
 
 Results table
 
@@ -340,11 +343,11 @@ Results table
 | 10/14/2022 | 10/01/2022 | 10/1/2022 12:00:00 AM |
 | 10/29/2022 | 10/01/2022 | 10/1/2022 12:00:00 AM |
 
-By using 4 as the `first_month_of_year` argument in the `monthsstart()` function, the function begins the year on April 1. It then divides the year into bi-monthly segments: Apr-May,Jun-Jul,Aug-Sep,Oct-Nov,Dec-Jan,Feb-Mar.
+By using 4 as the first\_month\_of\_year argument in the monthsstart() function, the function begins the year on April 1. It then divides the year into bi-monthly segments: Apr-May,Jun-Jul,Aug-Sep,Oct-Nov,Dec-Jan,Feb-Mar.
 
-Diagram of `monthsstart()` function, first\_month\_of\_year example
+Diagram of monthsstart() function, first\_month\_of\_year example
 
-![Diagram showing the results of using the monthsstart function to determine the segment of the year in which a transaction took place. In this case, the year is broken up into segments and the input date is converted to a timestamp.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthsstart-example-first-mth-yr.png)
+![Diagram showing the results of using the monthsstart function to determine the segment of the year in which a transaction took place. In this case, the year is broken up into segments and the input date is converted to a timestamp.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthsstart-example-first-mth-yr.png "Click to view full size")
 
 Transaction 8195 took place on May 22 and falls into the segment between April 1 and May 31. Therefore, the function returns the first millisecond of this segment, April 1, 2022 at 12:00:00 AM.
 
@@ -354,11 +357,11 @@ Load script and chart expression
 
 Overview
 
-Open the [Data load editor](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthsstart.htm#glossary-4 "Glossary term") and add the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthsstart.htm#glossary-5 "Glossary term") below to a new tab.
+Open the [Data load editor](#glossary-4 "Glossary term") and add the [load script](#glossary-5 "Glossary term") below to a new tab.
 
 The load script contains the same dataset and scenario as the first example.
 
-However, in this example, the unchanged dataset is loaded into the application. The calculation which groups transactions into bi-monthly segments and returns the starting timestamp of the set for each transaction is created as a [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthsstart.htm#glossary-6 "Glossary term") in a chart object of the application.
+However, in this example, the unchanged dataset is loaded into the application. The calculation which groups transactions into bi-monthly segments and returns the starting timestamp of the set for each transaction is created as a [measure](#glossary-6 "Glossary term") in a chart object of the application.
 
 Load script
 
@@ -396,13 +399,13 @@ id,date,amount
 
 Results
 
-Load the data and open a sheet. Create a new table and add this field as a dimension: `date`.
+Load the data and open a sheet. Create a new table and add this field as a dimension: date.
 
 Create the following measures:
 
-`=monthsstart(2,date)`
+=monthsstart(2,date)
 
-`=timestamp(monthsstart(2,date))`
+=timestamp(monthsstart(2,date))
 
 These calculations will retrieve the starting timestamp of the bi-monthly segment in which each transaction took place.
 
@@ -431,11 +434,11 @@ Results table
 | 4/16/2022 | 03/01/2022 | 3/1/2022 12:00:00 AM |
 | 2/19/2022 | 01/01/2022 | 1/1/2021 12:00:00 AM |
 
-Diagram of `monthsstart()` function, chart object example
+Diagram of monthsstart() function, chart object example
 
-![Diagram showing the results of using the monthsstart function to determine the segment of the year in which a transaction took place. In this case, the year is broken up into segments and the input date is converted to a timestamp.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthsstart-example-chart-object.png)
+![Diagram showing the results of using the monthsstart function to determine the segment of the year in which a transaction took place. In this case, the year is broken up into segments and the input date is converted to a timestamp.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthsstart-example-chart-object.png "Click to view full size")
 
-Transaction 8195 took place on May 22. The `monthsstart()` function initially divides the year into bi-monthly segments. Transaction 8195 falls into the segment between May 1 and June 30. Therefore, the function returns the first millisecond of this segment, 05/01/2022 12:00:00 AM.
+Transaction 8195 took place on May 22. The monthsstart() function initially divides the year into bi-monthly segments. Transaction 8195 falls into the segment between May 1 and June 30. Therefore, the function returns the first millisecond of this segment, 05/01/2022 12:00:00 AM.
 
 ## Example 5 – Scenario
 
@@ -447,7 +450,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset containing a set of loan balances, which is loaded into a table called `Loans`.
+- A dataset containing a set of loan balances, which is loaded into a table called Loans.
 - Data consisting of loan IDs, the balance at the start of the month, and the simple interest rate charged on each loan per annum.
 
 The end user would like a chart object that displays, by loan ID, the current interest that has been accrued on each loan for the period of their choosing. The financial year begins in January.
@@ -473,33 +476,33 @@ loan_id,start_balance,rate
 
 Results
 
-Load the data and open a [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthsstart.htm#glossary-7 "Glossary term").
+Load the data and open a [sheet](#glossary-7 "Glossary term").
 
-At the start of the load script, a variable (`vPeriod`) has been created that will be tied to the variable input control. Next, configure the variable as a [custom object](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthsstart.htm#glossary-8 "Glossary term") in the sheet.
+At the start of the load script, a variable (vPeriod) has been created that will be tied to the variable input control. Next, configure the variable as a [custom object](#glossary-8 "Glossary term") in the sheet.
 
 Do the following:
 
-1. In the assets panel, click **Charts**.
-2. Under **Dashboard objects**, drag a **Variable input** onto the sheet.
+1. In the assets panel, click Charts.
+2. Under Dashboard objects, drag a Variable input onto the sheet.
 3. Enter a title for the chart object.
-4. Under **Variable**, select **vPeriod** as the Name and set the object to show as a **Drop down**.
-5. Under **Values**, configure the object to use dynamic values. Enter the following:  
-   `='1~month|2~bi-month|3~quarter|4~tertial|6~half-year'`
+4. Under Variable, select vPeriod as the Name and set the object to show as a Drop down.
+5. Under Values, configure the object to use dynamic values. Enter the following:
+   ='1~month|2~bi-month|3~quarter|4~tertial|6~half-year'
 
 Next, create the results table.
 
 Do the following:
 
-1. Create a new table. Add the following fields as [dimensions](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthsstart.htm#glossary-9 "Glossary term").
+1. Create a new table. Add the following fields as [dimensions](#glossary-9 "Glossary term").
 
-   - `employee_id`
-   - `employee_name`
+   - employee\_id
+   - employee\_name
 2. Create a measure to calculate the accumulated interest:
 
-   `=start_balance*(rate*(today(1)-monthsstart($(vPeriod),today(1)))/365)`
-3. Set the measure's **Number formatting** to **Money**.Click Edit sheet to finish editing. You can now modify the data shown in the table by adjusting the time segment in the variable object.
+   =start\_balance\*(rate\*(today(1)-monthsstart($(vPeriod),today(1)))/365)
+3. Set the measure's Number formatting to Money.Click Edit sheet to finish editing. You can now modify the data shown in the table by adjusting the time segment in the variable object.
 
-This is what the results table will look like when the `month` period option is selected:
+This is what the results table will look like when the month period option is selected:
 
 Results table
 
@@ -511,6 +514,6 @@ Results table
 | 8191 | $21000.00 | $56.73 |
 | 8192 | $90000.00 | $600.66 |
 
-The `monthsstart()` function, using the user’s input as its first argument and today’s date as its second argument, returns the start date of the period of the user’s choosing. By subtracting that result from the current date, the expression returns the number of days that have elapsed so far in this period.
+The monthsstart() function, using the user’s input as its first argument and today’s date as its second argument, returns the start date of the period of the user’s choosing. By subtracting that result from the current date, the expression returns the number of days that have elapsed so far in this period.
 
 This value is then multiplied by the interest rate and divided by 365 to return the effective interest rate incurred for this period. The result is then multiplied by the starting balance of the loan to return the interest that has been accrued so far this period.

@@ -4,16 +4,17 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Modeling your data", "Best practices for data modeling"]
 ---
+
 # Using mapping as an alternative to joining
 
 The Join prefix in Qlik Sense is a powerful way of combining several data tables in the data model.
 
 One disadvantage is that the combined tables can become large and create performance problems. An alternative to Join in situations where you need to look up a single value from another table is to use mapping instead. This can save you from loading unnecessary data that slows down calculations and potentially can create calculation errors, as joins can change the number of records in the tables.
 
-A mapping table consists of two columns: a comparison [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/use-mapping-as-alternative-join.htm#glossary-0 "Glossary term") (input) and a mapping value field (output).
+A mapping table consists of two columns: a comparison [field](#glossary-0 "Glossary term") (input) and a mapping value field (output).
 
 In this example we have a table of orders (Orders), and need to know the countries of the customers, which are stored in the customer table (Customers).
 
@@ -73,5 +74,5 @@ Result table
 
 ## Learn more
 
-- [*ApplyMap Script function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/MappingFunctions/ApplyMap.htm)
-- [*Mapping*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Mapping.htm)
+- [*ApplyMap Script function*](MappingFunctions/ApplyMap.htm)
+- [*Mapping*](ScriptPrefixes/Mapping.htm)

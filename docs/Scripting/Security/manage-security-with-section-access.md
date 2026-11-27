@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Managing your data"]
 ---
+
 # Managing data security with Section Access
 
 Section Access is used to control the security of an application. It is basically a part of the data load script where you add a security table to define who gets to see what.  Qlik Cloud uses this information to reduce data to the appropriate scope when the user opens the application, that is, some of the data in the application is hidden from the user based on their identity. Section Access is tightly integrated with the data in the application and relies upon it to control access. This form of dynamic data reduction can target table rows, columns, or a combination of both. For more information, see [Trust and Security at Qlik](https://www.qlik.com/us/trust).
@@ -19,9 +20,11 @@ This makes it possible to store these tables in a standard database or in a spre
 statements managing the security tables are given within an authorization section,
 which in the script is initiated by the statement Section Access.
 
-> **Note:** All the field names and field values listed in Section Access are always converted to uppercase. As a result, all fields that are part of a data reduction must be converted to upper case to match what is stated in the Section Access statement, even if they are located outside the Section Access Statement. You can convert any field name containing lowercase letters in the database to uppercase using the Upper function before reading the field by the LOAD or **SELECT** statement.
->
-> For more information, see [*Upper Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/Upper.htm).
+Information note
+
+All the field names and field values listed in Section Access are always converted to uppercase. As a result, all fields that are part of a data reduction must be converted to upper case to match what is stated in the Section Access statement, even if they are located outside the Section Access Statement. You can convert any field name containing lowercase letters in the database to uppercase using the Upper function before reading the field by the LOAD or SELECT statement.
+
+For more information, see [*Upper Script and chart function*](../StringFunctions/Upper.htm).
 
 If an authorization section is defined in the script,
 the part of the script loading the application data must be put in a different
@@ -47,11 +50,11 @@ Chr(RecNo()+ord('A')-1) AS ALPHA,
 RecNo() AS NUM
 AUTOGENERATE 3;
 
-Note that after making changes to the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/Security/manage-security-with-section-access.htm#glossary-1 "Glossary term"), you must always reload the data for the changes to take effect.
+Note that after making changes to the [load script](#glossary-1 "Glossary term"), you must always reload the data for the changes to take effect.
 
 ### Section Access system fields
 
-The access levels are assigned to users in one or more security tables loaded within the Section Access part of the script. These tables must contain, as a minimum, two system fields: ACCESS, which is the [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/Security/manage-security-with-section-access.htm#glossary-2 "Glossary term") defining the access level, and USERID or USER.EMAIL . Other optional system fields can be added depending on the use case. The full set of Section Access system fields is described below.
+The access levels are assigned to users in one or more security tables loaded within the Section Access part of the script. These tables must contain, as a minimum, two system fields: ACCESS, which is the [field](#glossary-2 "Glossary term") defining the access level, and USERID or USER.EMAIL . Other optional system fields can be added depending on the use case. The full set of Section Access system fields is described below.
 
 #### ACCESS
 
@@ -62,7 +65,7 @@ Access to Qlik Sense applications can be authorized for specified users. In the 
 #### USERID
 
 Contains a string corresponding to a Qlik Cloud user name.
-Qlik Cloud will get the login information from the IdP subject and compare it to the value in this field. For an alternate way to verify user identity using email address, see [*USER.EMAIL*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/Security/manage-security-with-section-access.htm#Email). For multi-cloud environments, the IdP subject can be mapped against your internal Windows identity. When using Qlik Account, the subject cannot be mapped against internal Windows identity. User IdP subject can be viewed in the **Manage users** section of the Administration activity center.
+Qlik Cloud will get the login information from the IdP subject and compare it to the value in this field. For an alternate way to verify user identity using email address, see [*USER.EMAIL*](#Email). For multi-cloud environments, the IdP subject can be mapped against your internal Windows identity. When using Qlik Account, the subject cannot be mapped against internal Windows identity. User IdP subject can be viewed in the Manage users section of the Administration activity center.
 
 A wildcard character (\*) is interpreted as all users, subject to further conditions specified in the security table. For example, in the following security table, users who are in the Qlik Sense Tenant Admins can see all listed REDUCTION values.
 
@@ -75,12 +78,12 @@ USER, QLIK-POC\SOMEOTHERUSER2, \*, 2
 ...
 ];
 
-> **Note:** 
-> USERID and the NTNAME both use the same authentication information, so it is not necessary to check both on the same row in the security table. The difference between the two fields is that NTNAME checks groups also.
+Information note
+USERID and the NTNAME both use the same authentication information, so it is not necessary to check both on the same row in the security table. The difference between the two fields is that NTNAME checks groups also.
 
 #### NTNAME
 
-> **Note:** NTNAME is a legacy QlikView field and it is recommended to use USERID if QlikView is not using the same security table.
+Information noteNTNAME is a legacy QlikView field and it is recommended to use USERID if QlikView is not using the same security table.
 
 A field that should contain a string corresponding to the NetBIOS version of a Windows NT Domain user name or group name. If a different authentication system is used, it should contain the name of an authenticated user.
 
@@ -92,15 +95,15 @@ Contains a string corresponding to a user email address. Qlik Cloud will get thi
 
 #### GROUP
 
-Contains a string corresponding to a group in Qlik Cloud. Qlik Cloud will get the information from the “groups” claim of the identity provider or custom groups and compare it to the value in this field. Whether IdP groups, custom groups, or a combination of both are used is controlled by the system variable `QlikCloudGroupMode`. For more information, see [*Defining IdP or custom groups for GROUP*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/Security/manage-security-with-section-access.htm#Selectin).
+Contains a string corresponding to a group in Qlik Cloud. Qlik Cloud will get the information from the “groups” claim of the identity provider or custom groups and compare it to the value in this field. Whether IdP groups, custom groups, or a combination of both are used is controlled by the system variable QlikCloudGroupMode. For more information, see [*Defining IdP or custom groups for GROUP*](#Selectin).
 
-> **Note:** This functionality is not available in Qlik Sense Business, Qlik Cloud Analytics Standard, or when using Qlik Identity Provider (IdP).
+Information noteThis functionality is not available in Qlik Sense Business, Qlik Cloud Analytics Standard, or when using Qlik Identity Provider (IdP).
 
 #### OMIT
 
 Contains the name of the field that is to be omitted for this specific user. Wildcards may be used and the field may be empty.
 
-> **Note:** It is recommended that you do not apply OMIT on key fields. Key fields that are omitted are visible in the data model viewer, but the content is not available, which can be confusing for a user. Additionally, applying OMIT on fields that are used in a [visualization](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/Security/manage-security-with-section-access.htm#glossary-3 "Glossary term") can result in an incomplete visualization for users that do not have access to the omitted fields.
+Information noteIt is recommended that you do not apply OMIT on key fields. Key fields that are omitted are visible in the data model viewer, but the content is not available, which can be confusing for a user. Additionally, applying OMIT on fields that are used in a [visualization](#glossary-3 "Glossary term") can result in an incomplete visualization for users that do not have access to the omitted fields.
 
 ## Managing user access to an application
 
@@ -134,9 +137,11 @@ When Qlik Sense is comparing the reduction field in Section Access to fields in 
 
 Using several reducing fields in Section Access is not recommended, since it will allow other access combinations than the intended ones.
 
-> **Note:** The wildcard character \* in the data reduction column refers only to all values in the security table. If there are values in Section Application that are not available in the reduction column of the security table, they will be reduced.
+Information note
 
-> **Note:** All field names used in the transfer described above and all field values in these fields must be uppercase because all field names and field values are, by default, converted to uppercase in the access section.
+The wildcard character \* in the data reduction column refers only to all values in the security table. If there are values in Section Application that are not available in the reduction column of the security table, they will be reduced.
+
+Information noteAll field names used in the transfer described above and all field values in these fields must be uppercase because all field names and field values are, by default, converted to uppercase in the access section.
 
 Example: Row-level data reduction based on user identity
 
@@ -173,6 +178,7 @@ Restrict access to column-level data by adding the OMIT system field to the secu
 Example: Column data reduction based on user identity
 
 Section Access;
+
 LOAD \* inline [
 ACCESS, USER.EMAIL, REDUCTION, OMIT
 ADMIN, USER1@example.com, \*,
@@ -198,7 +204,7 @@ The result will be:
 - User USER3@example.com can see all fields except NUM, and only those records associated with REDUCTION=2.
 - User USER4@example.com can see all fields except ALPHA, and only those records associated with REDUCTION=3.
 
-> **Note:** Some visualizations have minimum data requirements that must be met in order to render. As a result, "Incomplete visualization" might be displayed when a column-level field is omitted from a user's data view.
+Information noteSome visualizations have minimum data requirements that must be met in order to render. As a result, "Incomplete visualization" might be displayed when a column-level field is omitted from a user's data view.
 
 ### Managing access to user groups
 
@@ -240,22 +246,22 @@ Qlik Cloud compares the user with UserID and resolves the user against groups in
 
 Section Access can use IdP groups, custom groups, or a combination of both groups.
 
-By default, Section Access uses your IdP groups. You can choose which groups to use in your Section Access statement with the variable `QlikCloudGroupMode`. By setting `QlikCloudGroupMode` with the appropriate value before your Section Access statement, you can control what kind of groups are used with GROUP in the Section Access statement.
+By default, Section Access uses your IdP groups. You can choose which groups to use in your Section Access statement with the variable QlikCloudGroupMode. By setting QlikCloudGroupMode with the appropriate value before your Section Access statement, you can control what kind of groups are used with GROUP in the Section Access statement.
 
-`QlikCloudGroupMode` values
+QlikCloudGroupMode values
 
 | Value | Results |
 | --- | --- |
-| `0` | IdP groups |
-| `1` | Custom groups |
-| `2` | Both IdP and custom groups |
+| 0 | IdP groups |
+| 1 | Custom groups |
+| 2 | Both IdP and custom groups |
 
 If you are using a combination of IdP and custom groups, IdP and custom groups that share a name will have the defined policies applied to members of both groups.
 
 Example: Using custom groups
 
 SET QlikCloudGroupMode = 1;
-  
+
 Section Access;
 LOAD \* inline [
 ACCESS, USERID, GROUP, REDUCTION, OMIT
@@ -276,7 +282,7 @@ AUTOGENERATE 3;
 
 ## Reloading data in Qlik Cloud
 
-To reload an application without data reduction in Qlik Cloud, it is recommended to use the USER.EMAIL system field in the security table. The value for the USER.EMAIL field should be the email address of users who are able to edit and load the application. This applies to applications in both [shared](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/Security/manage-security-with-section-access.htm#glossary-4 "Glossary term") and [managed spaces](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/Security/manage-security-with-section-access.htm#glossary-5 "Glossary term"). For example:
+To reload an application without data reduction in Qlik Cloud, it is recommended to use the USER.EMAIL system field in the security table. The value for the USER.EMAIL field should be the email address of users who are able to edit and load the application. This applies to applications in both [shared](#glossary-4 "Glossary term") and [managed spaces](#glossary-5 "Glossary term"). For example:
 
 Section Access;
 LOAD \* inline [
@@ -294,7 +300,7 @@ ACCESS, GROUP, REDUCTION
 ADMIN, DEVELOPERS, \*
 ];
 
-You can also map the USERID in the security table to the subject claim of the Identity Provider, as shown in the following example. This configuration is suggested for migrating from Qlik Sense to Qlik Cloud and for multi-cloud environments. For more information about mapping the USERID to the subject claim, see [*Managing user access in a multi-cloud environment*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/Security/manage-security-with-section-access.htm#user_access)
+You can also map the USERID in the security table to the subject claim of the Identity Provider, as shown in the following example. This configuration is suggested for migrating from Qlik Sense to Qlik Cloud and for multi-cloud environments. For more information about mapping the USERID to the subject claim, see [*Managing user access in a multi-cloud environment*](#user_access)
 
 Section Access;
 LOAD \* inline [
@@ -307,7 +313,7 @@ ADMIN, AD\_DOMAIN\DEV, \*
 A Qlik Sense multi-cloud environment involves a mix of user authentication mechanisms. Typically, with Qlik Sense Enterprise on Windows, the USERID in the Section Access security table is verified by the proxy service. In Qlik Cloud, an Identity Provider assumes that authentication role. Consequently, Section Access that is set up for an on-premises environment such as Qlik Sense Enterprise on Windows will not work in a cloud environment.
 
 When using an OIDC or SAML identity provider (Qlik IdP or custom IdP) with Qlik Cloud, the subject claim is used to identify users when logging in.
-With Section Access, the value of the USERID field in the security table is compared to the value of the subject claim. When you set up your [tenant](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/Security/manage-security-with-section-access.htm#glossary-6 "Glossary term"), make sure that the SAM account name is mapped to the subject claim of your identity provider. So, for example, if your SAM account name is AD\_DOMAIN\Dev, set the subject claim to AD\_DOMAIN\Dev. If you want to see the value of the subject claim of the IdP, append /api/v1/diagnose-claims to the tenant URL in the browser, for example, your-tenant.us.qlikcloud.com/api/v1/diagnose-claims. In the JSON response, the subject claim is called sub.
+With Section Access, the value of the USERID field in the security table is compared to the value of the subject claim. When you set up your [tenant](#glossary-6 "Glossary term"), make sure that the SAM account name is mapped to the subject claim of your identity provider. So, for example, if your SAM account name is AD\_DOMAIN\Dev, set the subject claim to AD\_DOMAIN\Dev. If you want to see the value of the subject claim of the IdP, append /api/v1/diagnose-claims to the tenant URL in the browser, for example, your-tenant.us.qlikcloud.com/api/v1/diagnose-claims. In the JSON response, the subject claim is called sub.
 
 If you are unable to use the SAM account name, there is an alternate way to authenticate a user. Since e-mail addresses tend to remain the same in different environments, you can use the USER.EMAIL field instead of USERID in the security table. Here is an example of what the security table could look like:
 
@@ -385,17 +391,19 @@ For a visual demo of how to use section access and Insight Advisor Chat, see:
 
 [Using Section Access and Insight Advisor Chat](https://share.vidyard.com/watch/8Xg1Eq9SyWYjQeTABijo1M)
 
-> **Warning:** If you have sensitive information in application names, field names, or master item names, these may be exposed by making applications using Section Access available for Insight Advisor Chat. Application suggestions for queries include applications in spaces to which users have access. These may include applications to which users do not have access in an application's Section Access. Selecting these applications will do nothing, however. When clicking **Dimensions** or **Measures** to view the available items from an application using Section Access, users may see items to which they do not have access. Clicking on these items will not provide any data to the users, however.
+Warning note
 
-By default, the application owner is the index user. You can change the index user in **Details**.
+If you have sensitive information in application names, field names, or master item names, these may be exposed by making applications using Section Access available for Insight Advisor Chat. Application suggestions for queries include applications in spaces to which users have access. These may include applications to which users do not have access in an application's Section Access. Selecting these applications will do nothing, however. When clicking Dimensions or Measures to view the available items from an application using Section Access, users may see items to which they do not have access. Clicking on these items will not provide any data to the users, however.
+
+By default, the application owner is the index user. You can change the index user in Details.
 
 Do the following:
 
 1. In Qlik Cloud, navigate to the application.
-2. Click ![More](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_more.svg) on the application and select **Details**.
-3. Under **Index user**, select the index user.
-4. Click **Back**.
-5. Click ![More](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_more.svg) on the application and select **Reload**.
+2. Click ![More](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_more.svg) on the application and select Details.
+3. Under Index user, select the index user.
+4. Click Back.
+5. Click ![More](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_more.svg) on the application and select Reload.
 
 ## Using Section Access and Qlik Answers
 
@@ -411,7 +419,7 @@ If the indexing user has full access, the index captures all application data. S
 
 If the indexing user has restricted access, the index will only contain data within that restriction. Users with broader permissions will still be limited to the data captured in the index, even if their Section Access rules would normally allow them to see more.
 
-> **Note:** Incomplete indexing due to a restricted indexing user does not produce errors. Affected users will receive answers based on the reduced index without any indication that data is missing.
+Information noteIncomplete indexing due to a restricted indexing user does not produce errors. Affected users will receive answers based on the reduced index without any indication that data is missing.
 
 Example:
 
@@ -426,16 +434,16 @@ If the indexing user has full access, the index contains all data. EMEA users qu
 
 ### Setting the index user
 
-By default, the application owner is the index user. In managed spaces, the default index user is the space owner. You can change the index user in **Section access settings**.
+By default, the application owner is the index user. In managed spaces, the default index user is the space owner. You can change the index user in Section access settings.
 
 Do the following:
 
 1. In Qlik Cloud, navigate to the application.
-2. Click ![More](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_more.svg) on the application and select **Manage** > **Section access settings**.
+2. Click ![More](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_more.svg) on the application and select Manage > Section access settings.
 
-   > **Note:** Alternatively, in an open application, open the details area and click ![More](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_more.svg) > **Manage** > **Section access settings**.
-3. Under **Index user**, select the index user.
-4. Click **Save**.
+   Information noteAlternatively, in an open application, open the details area and click ![More](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_more.svg) > Manage > Section access settings.
+3. Under Index user, select the index user.
+4. Click Save.
 
 ## Using QVDs with Section Access
 
@@ -483,9 +491,9 @@ FROM SAccess.qvd (qvd) where 1=1;
 
 Here are some important facts and helpful hints to know about Section Access.
 
-- All the field names and field values listed in Section Access are always converted to uppercase. As a result, all fields that are part of a data reduction must be converted to upper case to match what is stated in the Section Access statement, even if they are located outside the Section Access Statement. You can convert any field name containing lowercase letters in the database to uppercase using the Upper function before reading the field by the LOAD or **SELECT** statement.
+- All the field names and field values listed in Section Access are always converted to uppercase. As a result, all fields that are part of a data reduction must be converted to upper case to match what is stated in the Section Access statement, even if they are located outside the Section Access Statement. You can convert any field name containing lowercase letters in the database to uppercase using the Upper function before reading the field by the LOAD or SELECT statement.
 
-  For more information, see [*Upper Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/Upper.htm).
+  For more information, see [*Upper Script and chart function*](../StringFunctions/Upper.htm).
 - You cannot use the Section Access system field names listed as field names in your data model.
 - If you add, modify, or remove Section Access controls in application, different steps are required in order to apply the changes, depending on the space type of the application:
   - Personal and shared spaces: To apply the changed Section Access controls, reload the application.

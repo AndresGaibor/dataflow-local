@@ -1,12 +1,13 @@
 ---
 title: "Drop table"
-source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/drop-table.htm?id=966
+source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/drop-table.htm
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
-breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
+last_updated: "2026-11-27"
+breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements", "Drop"]
 ---
+
 # Drop table
 
 One or several Qlik Sense internal tables can be dropped from the data model, and thus from memory, at any
@@ -20,7 +21,7 @@ drop [mapping] table  tablename {, tablename2 ...}
 
 drop [mapping] tables tablename {, tablename2 ...}
 
-> **Note:** The forms drop table and drop tables are both accepted.
+Information noteThe forms drop table and drop tables are both accepted.
 
 The following items will be lost as a result of
 this:
@@ -40,8 +41,8 @@ Examples and results:
 
 ## Learn more
 
-- [*Rename table*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/rename-table.htm)
-- [*Drop field*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/drop-field.htm)
-- [*Drop*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Drop.htm)
-- [*Table/Tables*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Table.htm)
-- [*Mapping*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Mapping.htm)
+- [*Rename table*](rename-table.htm)
+- [*Drop field*](drop-field.htm)
+- [*Drop*](Drop.htm)
+- [*Table/Tables*](Table.htm)
+- [*Mapping*](../ScriptPrefixes/Mapping.htm)

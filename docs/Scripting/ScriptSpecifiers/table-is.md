@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
-breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements", "Load"]
+last_updated: "2026-11-27"
+breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements", "Load", "Format specification items"]
 ---
+
 # Table is
 
 For Excel, XML, Parquet, or JSON files, you can specify the table you are loading data from in the table format specifier.
@@ -21,7 +22,7 @@ Arguments
 
 | Argument | Description |
 | --- | --- |
-| table name | Specifies the name of the table. The value depends on the table format:   - Excel: The sheet name. - XML: The path that specifies the part of the XML to be loaded. - Parquet: The path that specifies the table, with the format <node>.<node>.<node>.  Use Table   is when specifying a table within a nested structure.  For example, you have Parquet data in the following schema:  Schema:   Field(name: "Name", datatype: String),   Field(name: "Age", datatype: Float),   Field(name: "Phone", datatype: List(   Field(name: "Item", datatype: Struct[   Field(name: "Number", datatype: String)  You could load Phone and its nested fields as a table with the argument `Table is [Schema:Phone.Item]`. This will generate the key field %Key\_Phone with the table. - JSON: In JSON files with arrays, the path to the iterator for the subtable.  You can make a load of all tables by specifying **all tables** instead of **Table is**. For example:  LOAD \* FROM [lib://DataFiles/Sales.json] (json, all tables);  If your data contains multiple arrays with identical content, use the keyword **DISTINCT** in the subtable load statements. For example:  LOAD DISTINCT \* FROM [lib://DataFiles/Sales.json] (json, all tables); |
+| table name | Specifies the name of the table. The value depends on the table format:   - Excel: The sheet name. - XML: The path that specifies the part of the XML to be loaded. - Parquet: The path that specifies the table, with the format <node>.<node>.<node>.  Use Table   is when specifying a table within a nested structure.  For example, you have Parquet data in the following schema:  Schema:   Field(name: "Name", datatype: String),   Field(name: "Age", datatype: Float),   Field(name: "Phone", datatype: List(   Field(name: "Item", datatype: Struct[   Field(name: "Number", datatype: String)  You could load Phone and its nested fields as a table with the argument Table is [Schema:Phone.Item]. This will generate the key field %Key\_Phone with the table. - JSON: In JSON files with arrays, the path to the iterator for the subtable.  You can make a load of all tables by specifying all tables instead of Table is. For example:  LOAD \* FROM [lib://DataFiles/Sales.json] (json, all tables);  If your data contains multiple arrays with identical content, use the keyword DISTINCT in the subtable load statements. For example:  LOAD DISTINCT \* FROM [lib://DataFiles/Sales.json] (json, all tables); |
 
 Example:  Excel
 

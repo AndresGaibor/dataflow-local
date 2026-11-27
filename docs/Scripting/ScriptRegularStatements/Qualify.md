@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
 # Qualify
 
 The Qualify statement is used for switching on the qualification of field names, i.e. field names will get the table name as a prefix.
@@ -16,7 +17,7 @@ Syntax:
 Qualify \*fieldlist
 
 The automatic join between fields with the same name in different tables can be
-suspended by means of the qualify statement, which qualifies the [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Qualify.htm#glossary-0 "Glossary term") name with
+suspended by means of the qualify statement, which qualifies the [field](#glossary-0 "Glossary term") name with
 its table name. If qualified, the field name(s) will be renamed when found in a
 table. The new name will be in the form of tablename.fieldname. Tablename is
 equivalent to the label of the current table, or, if no label exists, to the
@@ -29,8 +30,8 @@ execution. Qualification of a field name can be activated at any time using a
 qualify statement. Qualification can be turned off at any time using an
 Unqualify statement.
 
-> **Note:** The qualify
-> statement should not be used in conjunction with partial reload.
+Information noteThe qualify
+statement should not be used in conjunction with partial reload.
 
 Arguments:
 
@@ -77,4 +78,4 @@ between the tables tab1, tab2 and tab3.
 
 ## Learn more
 
-- [*Unqualify*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Unqualify.htm)
+- [*Unqualify*](Unqualify.htm)

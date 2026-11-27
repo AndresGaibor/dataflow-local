@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Understanding script syntax and data structures"]
 ---
+
 # Using quotation marks in the script
 
 You can use quotation marks in script statements in a number of different ways.
@@ -33,7 +34,7 @@ String literals
 ## In SELECT statements
 
 For a SELECT
-statement interpreted by an ODBC driver, usage may vary. Usually, you should use the straight double quotation marks (Alt + 0034) for [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/use-quotes-in-script.htm#glossary-0 "Glossary term") and table names, and the straight single
+statement interpreted by an ODBC driver, usage may vary. Usually, you should use the straight double quotation marks (Alt + 0034) for [field](#glossary-0 "Glossary term") and table names, and the straight single
 quotation marks (Alt + 0039) for literals, and avoid using grave accents. However, some ODBC drivers not only
 accept grave accents as quotation marks, but also prefer them. In such a case, the generated SELECT
 statements contain grave accent quotation marks.
@@ -58,7 +59,7 @@ Other databases may have different conventions.
 
 ## Outside LOAD statements
 
-Outside a LOAD statement, in places where Qlik Sense expects an expression, double quotation marks denote a [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/use-quotes-in-script.htm#glossary-1 "Glossary term") reference and not a field reference. If you use double quotation marks, the enclosed string will be interpreted as a variable and the value of the variable will be used.
+Outside a LOAD statement, in places where Qlik Sense expects an expression, double quotation marks denote a [variable](#glossary-1 "Glossary term") reference and not a field reference. If you use double quotation marks, the enclosed string will be interpreted as a variable and the value of the variable will be used.
 
 ## Out-of-context field references and table references
 
@@ -147,7 +148,7 @@ Example:
 
 If you quote the string using the double quotation marks " ", then you must add an extra double quotation mark beside every double quotation mark used inside the string.
 
-This string is loaded as Michael said "It's a beautiful day". By using the escape character `""`, the Qlik Sense [Data load editor](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/use-quotes-in-script.htm#glossary-2 "Glossary term") understands which double quotation marks are part of the string and which quotation mark indicates the end of the string. The single quotation mark ' used in the abbreviation It's does not need to be escaped because it is not the mark used to quote the string.
+This string is loaded as Michael said "It's a beautiful day". By using the escape character "", the Qlik Sense [Data load editor](#glossary-2 "Glossary term") understands which double quotation marks are part of the string and which quotation mark indicates the end of the string. The single quotation mark ' used in the abbreviation It's does not need to be escaped because it is not the mark used to quote the string.
 
 Example:
 
@@ -167,6 +168,6 @@ This string is loaded as Michael said [It's a "beautiful day]. Only the right sq
 
 ## Learn more
 
-- [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm)
-- [*Select*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Select.htm)
-- [*Script statements and keywords*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/script-statements-keywords.htm)
+- [*Load*](ScriptRegularStatements/Load.htm)
+- [*Select*](ScriptRegularStatements/Select.htm)
+- [*Script statements and keywords*](script-statements-keywords.htm)

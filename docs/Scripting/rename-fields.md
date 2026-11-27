@@ -4,12 +4,13 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Understanding script syntax and data structures", "Fields"]
 ---
+
 # Renaming fields
 
-Sometimes it is necessary to rename [fields](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/rename-fields.htm#glossary-0 "Glossary term") in order to obtain the desired associations. The three main reasons for renaming fields are:
+Sometimes it is necessary to rename [fields](#glossary-0 "Glossary term") in order to obtain the desired associations. The three main reasons for renaming fields are:
 
 - Two fields are named differently although they denote the same thing:
   - The field ID in the Customers table
@@ -50,10 +51,10 @@ as CustomerID, Name, Address, Zip, City, State from Customer.csv;
 
 ## Learn more
 
-- [*Alias*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Alias.htm)
-- [*Fields*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/fields.htm)
-- [Associating Tables and Transforming Data](https://help.qlik.com/lnk/Assoc_tables_transform_data_QS)
+- [*Alias*](ScriptRegularStatements/Alias.htm)
+- [*Fields*](fields.htm)
+- [Associating Tables and Transforming Data](/lnk/Assoc_tables_transform_data_QS)
 
 Related learning:
 
-- [Associating Tables and Transforming Data](https://help.qlik.com/lnk/Assoc_tables_transform_data_QS)
+- [Associating Tables and Transforming Data](/lnk/Assoc_tables_transform_data_QS)

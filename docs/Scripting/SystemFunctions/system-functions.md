@@ -1,17 +1,20 @@
 ---
 title: "System functions"
-source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/system-functions.htm?id=1534
+source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/system-functions.htm
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions"]
 ---
+
+# System functions
+
 Expand/Collapse all
 
 # System functions
 
-System functions provide functions for accessing system, device and Qlik Sense application [properties](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/system-functions.htm?id=1534#glossary-1 "Glossary term").
+System functions provide functions for accessing system, device and Qlik Sense application [properties](#glossary-1 "Glossary term").
 
 Use the drop-down on each function to see a brief description and the syntax of each function. For some of the functions, you can get further details about that specific function by clicking the function name in the syntax description.
 
@@ -20,13 +23,13 @@ Author()
 This function returns
 a string containing the author property of the current application. It can be used in both the data load script and in a chart expression.
 
-> **Note:** Author property can not be set in the current version of Qlik Sense. If you migrate a QlikView document, the author property will be retained.
+Information noteAuthor property can not be set in the current version of Qlik Sense. If you migrate a QlikView document, the author property will be retained.
 
 CalcDim()
 
-When used in a [dimension](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/system-functions.htm?id=1534#glossary-2 "Glossary term") expression, CalcDim() overrides the engine's automatic interpretation of how to internally handle the expression. Specifically, the function prevents a new internal field from being created in the data model. Instead, [selections](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/system-functions.htm?id=1534#glossary-3 "Glossary term") made in the application are treated as selections in applicable fields from the original data model.
+When used in a [dimension](#glossary-2 "Glossary term") expression, CalcDim() overrides the engine's automatic interpretation of how to internally handle the expression. Specifically, the function prevents a new internal field from being created in the data model. Instead, [selections](#glossary-3 "Glossary term") made in the application are treated as selections in applicable fields from the original data model.
 
-[**calcdim**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/calcdim.htm)(expr)
+[**calcdim**](calcdim.htm)(expr)
 
 ClientPlatform()
 
@@ -57,7 +60,7 @@ a string containing the full path to the current Qlik Sense application. It can 
 
 DocumentPath( )
 
-> **Note:** This function is not supported in Qlik Cloud.
+Information noteThis function is not supported in Qlik Cloud.
 
 DocumentTitle
 
@@ -71,7 +74,7 @@ EngineVersion
 This function returns
 the full Qlik Sense engine version as a string.
 
-[**EngineVersion**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/EngineVersion.htm)()
+[**EngineVersion**](EngineVersion.htm)()
 
 GetCollationLocale
 
@@ -83,19 +86,19 @@ GetObjectField
 
 GetObjectField() returns the field expression of the dimension. Index is an optional integer denoting the dimension that should be returned.
 
-[**GetObjectField**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/GetObjectField.htm)([index])
+[**GetObjectField**](GetObjectField.htm)([index])
 
 GetSysAttr
 
 The GetSysAttr() function is used to return information about the tenant and space in which an application is located. With the GetSysAttr() function, you can evaluate the tenant ID and name, space ID and name, and other details about the environment where the application resides. This function simplifies space and tenant identification of a Qlik Sense application that might be moved between different environments. The function makes it easy to identify the specific environment you are working in. This is particularly useful during the development, testing, acceptance and production (DTAP) stages of an application's life cycle.
 
-[**GetSysAttr**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/GetSysAttr.htm)(name)
+[**GetSysAttr**](GetSysAttr.htm)(name)
 
 GetUserAttr
 
 The GetUserAttr() function returns information for the user accessing an application. It can be used in both the data load script and in a chart expression.
 
-[**GetUserAttr**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/GetUserAttr.htm)(name)
+[**GetUserAttr**](GetUserAttr.htm)(name)
 
 GroupDimensionIndex
 
@@ -113,19 +116,19 @@ IsPartialReload
 
 This function returns - 1 (True) if the current reload is partial, otherwise 0 (False).
 
-[**IsPartialReload**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/IsPartialReload.htm)()
+[**IsPartialReload**](IsPartialReload.htm)()
 
 InObject
 
 The InObject() chart function evaluates whether or not the current object is contained inside another object with the ID specified in the function argument. The object can be a sheet or a visualization.
 
-[**InObject**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/InObject.htm)(id\_str)
+[**InObject**](InObject.htm)(id\_str)
 
 ObjectId
 
 The ObjectId() chart function returns the ID of the object in which the expression is evaluated. The function takes an optional argument specifying which type of object the function concerns. The object can be a sheet or a visualization. This function is only available in chart expressions.
 
-[**ObjectId**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/ObjectId.htm)([object\_type\_str])
+[**ObjectId**](ObjectId.htm)([object\_type\_str])
 
 OSUser
 
@@ -133,7 +136,7 @@ This function returns a string containing the name of the user that is currently
 
 OSUser( )
 
-> **Note:** In Qlik Sense Desktop and Qlik Sense Client-Managed Mobile, this function always returns 'Personal\Me'.
+Information noteIn Qlik Sense Desktop and Qlik Sense Client-Managed Mobile, this function always returns 'Personal\Me'.
 
 ProductVersion
 
@@ -143,9 +146,9 @@ as a string.
 
 This function is deprecated and replaced by EngineVersion().
 
-[**ProductVersion**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/ProductVersion.htm)()
+[**ProductVersion**](ProductVersion.htm)()
 
-> **Note:** This function is not supported in Qlik Cloud.
+Information noteThis function is not supported in Qlik Cloud.
 
 ReloadTime
 
@@ -157,6 +160,6 @@ StateName
 
 StateName() returns the name of the alternate state of the visualization in which it is used. StateName can be used, for example, to create visualizations with dynamic text and colors to reflect when the state of a visualization is changed. This function can be used in chart expressions, but cannot be used to determine the state that the expression refers to.
 
-[**StateName**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/StateName.htm)()
+[**StateName**](StateName.htm)()
 
-> **Note:** This function is not supported in Qlik Cloud.
+Information noteThis function is not supported in Qlik Cloud.

@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
-breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Scripting to load or export data", "Basic syntax example"]
+last_updated: "2026-11-27"
+breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Scripting to load or export data"]
 ---
+
+# Using inline loads to load data
+
 Expand/Collapse all
 
 # Using inline loads to load data
@@ -19,7 +22,7 @@ A basic inline load creates a table, and inserts the data fields and records.
 
 Inline load in data load editor
 
-![Inline load in data load editor.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_gen_inline_load-qcs-rev.png)
+![Inline load in data load editor.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_gen_inline_load-qcs-rev.png "Click to view full size")
 
 ## Basic syntax example
 
@@ -39,7 +42,7 @@ Austria, 2015, 182739.87
 The following syntax is used for the above inline load:
 
 - Load \* Inline instructs Qlik Sense to load all fields from the inline table that follows.
-- MyTable: defines the name of the table. The list of tables in the application can be accessed from [Data model viewer](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#glossary-1 "Glossary term") and other areas.
+- MyTable: defines the name of the table. The list of tables in the application can be accessed from [Data model viewer](#glossary-1 "Glossary term") and other areas.
 - Square brackets enclose the data.
 - The first line of the load statement defines the data fields.
 - Commas separate data fields and records.
@@ -52,8 +55,8 @@ Do the following:
 1. In an application, open Data load editor.
 2. In a new line, define the table using the required syntax.
 
-   [*Basic syntax example*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#BasicSyntax)
-3. When done, click **Load data**.
+   [*Basic syntax example*](#BasicSyntax)
+3. When done, click Load data.
 
 ## Why use inline loads?
 
@@ -77,21 +80,21 @@ After the name of the table, insert a colon.
 
 An inline table is loaded with the inline clause when you use the LOAD script statement. The inline clause indicates that the subsequent text in the table will contain data that is manually typed into the editor. Unless you indicate otherwise, an inline table uses the txt format, which follows the structure of a delimited text file.
 
-For more information about the LOAD statement, see [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm).
+For more information about the LOAD statement, see [*Load*](ScriptRegularStatements/Load.htm).
 
 ### Enclosures and data entry
 
 Data entered through an inline
 clause must be enclosed by specific characters. The following are accepted character combinations for enclosing the data:
 
-- Square brackets: `[` and `]`
-- Double quotation marks: `"` and `"`
-- Single quotation marks: `'` and `'`
-- Back ticks: `` ` `` and `` ` ``
+- Square brackets: [ and ]
+- Double quotation marks: " and "
+- Single quotation marks: ' and '
+- Back ticks: ` and `
 
 The character you choose as an enclosure can help you load inline data that contains conflicting characters. For example, if your data contains records with square brackets, you can enclose it with quotation marks or back ticks instead.
 
-For an example of alternative enclosures, see [*Example - Alternative data enclosures*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#ExDataEnc).
+For an example of alternative enclosures, see [*Example - Alternative data enclosures*](#ExDataEnc).
 
 Unless you specify an alternative table format (default is txt), text between the enclosures is interpreted in the
 same way as the content of a file. Hence, where you would insert a new
@@ -103,7 +106,7 @@ The end of the inline load statement is denoted with a semi-colon.
 
 ### Data transformations
 
-In a simple inline load with no transformations, the number of columns are defined by the first line. There are three columns in the table loaded by the following example: `Product_ID`, `Supplier_Name`, and `Product_Category`.
+In a simple inline load with no transformations, the number of columns are defined by the first line. There are three columns in the table loaded by the following example: Product\_ID, Supplier\_Name, and Product\_Category.
 
 ```
 Products:
@@ -117,32 +120,32 @@ Product_ID, Supplier_Name, Product_Category
 ];
 ```
 
-You can also perform transformations and create new columns within the same inline table. You can use [preceding loads](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#glossary-3 "Glossary term"), and more than one LOAD statement can be used to load the same table.
+You can also perform transformations and create new columns within the same inline table. You can use [preceding loads](#glossary-3 "Glossary term"), and more than one LOAD statement can be used to load the same table.
 
-For specific examples, see [*Examples - Inline loads with transformations*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#ExTransform).
+For specific examples, see [*Examples - Inline loads with transformations*](#ExTransform).
 
 ### Configuring the format specification in an inline load
 
 Like with other loaded tables, you can modify the format specification of the inline table using format specification items. The format specification is added in brackets. It should be added after the data enclosures, but before the semi-colon ending the LOAD statement. Some of the customizations you can add include:
 
-- Changing the delimiter from a comma to another character. For examples, see [*Examples - Alternative delimiters*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#ExDelimiter).
+- Changing the delimiter from a comma to another character. For examples, see [*Examples - Alternative delimiters*](#ExDelimiter).
 
-  See: [*Delimiter is*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptSpecifiers/delimiter.htm)
-- Omitting table column headers. For an example, see [*Example - Omitting column headers*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#ExOmitLabels).
+  See: [*Delimiter is*](ScriptSpecifiers/delimiter.htm)
+- Omitting table column headers. For an example, see [*Example - Omitting column headers*](#ExOmitLabels).
 
-  See: [*Labels*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptSpecifiers/labels.htm)
-- Using another data format (for example, fixed record format). For an example, see [*Example - Loading another data type*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#ExChangeFormat).
+  See: [*Labels*](ScriptSpecifiers/labels.htm)
+- Using another data format (for example, fixed record format). For an example, see [*Example - Loading another data type*](#ExChangeFormat).
 
-  See: [*Table format*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptSpecifiers/table-format.htm)
+  See: [*Table format*](ScriptSpecifiers/table-format.htm)
 
-  > **Note:** Not all Table format options are supported for inline loads.
-- Allowing multi-line content. For an example, see [*Example - Multi-line content*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#ExMultLine).
+  Information noteNot all Table format options are supported for inline loads.
+- Allowing multi-line content. For an example, see [*Example - Multi-line content*](#ExMultLine).
 
-  See: [*Quotes*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptSpecifiers/quotes.htm)
+  See: [*Quotes*](ScriptSpecifiers/quotes.htm)
 
-To use multiple format specification items in the same table, separate them with commas. For example: `(Delimiter is '|', no labels)`
+To use multiple format specification items in the same table, separate them with commas. For example: (Delimiter is '|', no labels)
 
-For full details about the format specification, see [*Format specification items*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptSpecifiers/format-specification-items.htm).
+For full details about the format specification, see [*Format specification items*](ScriptSpecifiers/format-specification-items.htm).
 
 ### Operators and other clauses
 
@@ -150,11 +153,11 @@ Additionally, since an inline load is a LOAD statement, you can combine other ar
 
 Similarly, you can also use operators outside of the text content itself. With operators, you can customize how you transform the inline data, and also define when to load certain data or not.
 
-For a specific example, see [*Example - Operators for transformations and clauses*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#ExOpsAndClauses).
+For a specific example, see [*Example - Operators for transformations and clauses*](#ExOpsAndClauses).
 
 ## Example - Alternative data enclosures
 
-You can use square brackets, quotation marks, or back ticks to enclose an inline load. This section illustrates this with an example. For more information, see [*Enclosures and data entry*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#Enclosure).
+You can use square brackets, quotation marks, or back ticks to enclose an inline load. This section illustrates this with an example. For more information, see [*Enclosures and data entry*](#Enclosure).
 
 Load script and results
 
@@ -169,7 +172,7 @@ Load script
 ```
 DataTable:
 
-Load * inline 
+Load * inline
 `
 custom_property, date, amount
 [11402], 1/1/2024, 92.99
@@ -184,9 +187,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `custom_property`
-- `date`
-- `amount`
+- custom\_property
+- date
+- amount
 
 Results table
 
@@ -200,7 +203,7 @@ Results table
 
 ## Examples - Alternative delimiters
 
-You can use a character other than a comma to delimit column values in the table. For more information, see [*Configuring the format specification in an inline load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#FormatSpec).
+You can use a character other than a comma to delimit column values in the table. For more information, see [*Configuring the format specification in an inline load*](#FormatSpec).
 
 Load script and results
 
@@ -214,12 +217,12 @@ The load script contains:
 
 - Four tables to be loaded. They are as follows:
 
-  - `Table1`: Delimiter is a vertical bar (pipe). The data in the `Phrase` column contains commas.
-  - `Table2`: Delimiter is a colon.
-  - `Table3`: Delimiter is a back slash.
-  - `Table4`: The table is delimited by pressing the Tab key on the keyboard. This option is useful when you are copying a table from a word processor and pasting it into the script.
+  - Table1: Delimiter is a vertical bar (pipe). The data in the Phrase column contains commas.
+  - Table2: Delimiter is a colon.
+  - Table3: Delimiter is a back slash.
+  - Table4: The table is delimited by pressing the Tab key on the keyboard. This option is useful when you are copying a table from a word processor and pasting it into the script.
 
-  `Table1` shows a practical use case for using an alternative delimiter. The other tables show more delimiter options.
+  Table1 shows a practical use case for using an alternative delimiter. The other tables show more delimiter options.
 
 Load script
 
@@ -254,33 +257,33 @@ Results
 
 Load the data and open a sheet. Create four tables and add the dimensions to them as follows:
 
-- `Table1`: `ID`, `Phrase`
-- `Table2`: `Num1`, `Chr1`
-- `Table3`: `Num2`, `Chr2`
-- `Table4`: `Num3`, `Chr3`
+- Table1: ID, Phrase
+- Table2: Num1, Chr1
+- Table3: Num2, Chr2
+- Table4: Num3, Chr3
 
-Results table: `Table1`
+Results table: Table1
 
 | ID | Phrase |
 | --- | --- |
 | 1 | The transaction was complete, but the order has not yet shipped. |
 | 2 | We need to confirm the following details: sales rep number, order status, and shipping priority. |
 
-Results table: `Table2`
+Results table: Table2
 
 | Num1 | Chr1 |
 | --- | --- |
 | 1 | A |
 | 2 | B |
 
-Results table: `Table3`
+Results table: Table3
 
 | Num2 | Chr2 |
 | --- | --- |
 | 1 | A |
 | 2 | B |
 
-Results table: `Table4`
+Results table: Table4
 
 | Num3 | Chr3 |
 | --- | --- |
@@ -293,9 +296,9 @@ Load script and results
 
 Overview
 
-The following script first loads a series of fields from a connector, then loads an inline table with a common field and an additional field. This new field provides another property about the row item that was not loaded through the data connection. Note that this only works smoothly when there is a single field name in common between the two tables. If there is more than one common field name, a [synthetic key](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#glossary-4 "Glossary term") is produced.
+The following script first loads a series of fields from a connector, then loads an inline table with a common field and an additional field. This new field provides another property about the row item that was not loaded through the data connection. Note that this only works smoothly when there is a single field name in common between the two tables. If there is more than one common field name, a [synthetic key](#glossary-4 "Glossary term") is produced.
 
-In this truncated example, we load a table of order details from a [data connection](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#glossary-5 "Glossary term"). Then, we use an inline table to add an additional field, `Supplemental Info`. This could, for example, contain details about special comments about specific order IDs.
+In this truncated example, we load a table of order details from a [data connection](#glossary-5 "Glossary term"). Then, we use an inline table to add an additional field, Supplemental Info. This could, for example, contain details about special comments about specific order IDs.
 
 Load script
 
@@ -306,9 +309,9 @@ Orders:
 
 LIB CONNECT TO 'My_Generic_Connection';
 
-LOAD PRODUCT_DIVISION_A_ORDER_ID as Order ID, 
-PRODUCT_DIVISION_A_ORDER_DATE as ISSUE_KEY as Order Date, 
-PRODUCT_DIVISION_A_TYPE as Product Type, 
+LOAD PRODUCT_DIVISION_A_ORDER_ID as Order ID,
+PRODUCT_DIVISION_A_ORDER_DATE as ISSUE_KEY as Order Date,
+PRODUCT_DIVISION_A_TYPE as Product Type,
 PRODUCT_DIVISION_A_SALES_MANAGER as Manager,
 PRODUCT_DIVISION_A_SHIPPED_STATUS as Shipped Status;
 
@@ -337,16 +340,16 @@ Results
 
 After loading the data, let's say we add the following dimensions to a table:
 
-- `Order ID`
-- `Order Date`
-- `Product Type`
-- `Manager`
-- `Shipped Status`
-- `Supplemental Info`
+- Order ID
+- Order Date
+- Product Type
+- Manager
+- Shipped Status
+- Supplemental Info
 
 The resulting chart could look like this.
 
-Results table: `Orders`
+Results table: Orders
 
 | Order ID | Order Date | Product Type | Manager | Shipped Status | Supplemental Info |
 | --- | --- | --- | --- | --- | --- |
@@ -355,11 +358,11 @@ Results table: `Orders`
 | PSF-001014 | 1/17/2024 | Home Appliances | Amalia Craig | Undefined | Bulk order, pending deal with Paracel. |
 | PSF-001625 | 1/21/2024 | Electronics | Amanda Honda | Undefined | Product damaged. Investigation required. |
 
-Note how all fields from both tables can be added to the same [visualization](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#glossary-6 "Glossary term"). The tables are associated to each other in the data model.
+Note how all fields from both tables can be added to the same [visualization](#glossary-6 "Glossary term"). The tables are associated to each other in the data model.
 
 ## Example - Omitting column headers
 
-Edit the format specification to load an inline table without defining column headers. This is done with the labels specification (setting it to a value of `no labels`). For more information, see [*Configuring the format specification in an inline load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#FormatSpec).
+Edit the format specification to load an inline table without defining column headers. This is done with the labels specification (setting it to a value of no labels). For more information, see [*Configuring the format specification in an inline load*](#FormatSpec).
 
 When you load a table without defining column names, system-defined column names are automatically used.
 
@@ -402,7 +405,7 @@ Results table
 
 ## Example - Loading another data type
 
-This example demonstrates how you can load an inline table in fixed record format. See [*Configuring the format specification in an inline load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#FormatSpec).
+This example demonstrates how you can load an inline table in fixed record format. See [*Configuring the format specification in an inline load*](#FormatSpec).
 
 Load script and results
 
@@ -412,7 +415,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- An inline load statement defining the table `DataTable`.
+- An inline load statement defining the table DataTable.
 - The use of fix (as part of the Table format specification) to indicate that the data to load is in fixed record format.
 
 Load script
@@ -435,10 +438,10 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `a`
-- `b`
-- `c`
-- `d`
+- a
+- b
+- c
+- d
 
 Results table
 
@@ -449,7 +452,7 @@ Results table
 
 ## Example - Multi-line content
 
-This example demonstrates how you can enter multi-line field content into an inline table. See [*Configuring the format specification in an inline load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#FormatSpec).
+This example demonstrates how you can enter multi-line field content into an inline table. See [*Configuring the format specification in an inline load*](#FormatSpec).
 
 Load script and results
 
@@ -459,8 +462,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A simple inline load to define the table `T1`.
-- Use of the Quotes specifier (with the value `msq`) to support multi-line content.
+- A simple inline load to define the table T1.
+- Use of the Quotes specifier (with the value msq) to support multi-line content.
 - Length values specified in feet and inches.
 - The double quotation mark symbol (") indicates the end of a multi-line entry. In this example, the same symbol is also used to denote the inch values. This is done to show the syntax and resulting behavior if you need to use both in the same LOAD statement. Essentially, entering the " symbol for two consecutive characters ("") indicates the code is to be interpreted as a single text instance of the symbol.
 
@@ -479,10 +482,10 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ID`
-- `Length`
+- ID
+- Length
 
-To view multi-line content as intended, The **Wrap text in cells** setting must be turned on in the properties panel. Additionally, the application theme (or [visualization](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#glossary-7 "Glossary term") settings) must allow for the sufficient **Row height (in lines)**.
+To view multi-line content as intended, The Wrap text in cells setting must be turned on in the properties panel. Additionally, the application theme (or [visualization](#glossary-7 "Glossary term") settings) must allow for the sufficient Row height (in lines).
 
 Results table
 
@@ -491,13 +494,13 @@ Results table
 | 1 | 1' 2"  22' 10" |
 | 2 | 14' 8" |
 
-In the above table, the record with an `ID` value of 1 contains multi-line content.
+In the above table, the record with an ID value of 1 contains multi-line content.
 
 ## Examples - Inline loads with transformations
 
 These examples show how you can perform calculations on fields loaded inline to create new fields in the data model.
 
-For more information, see [*Data transformations*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#Transform).
+For more information, see [*Data transformations*](#Transform).
 
 Example: Simple renaming of a field
 
@@ -524,8 +527,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Original`
-- `Updated`
+- Original
+- Updated
 
 Results table
 
@@ -564,8 +567,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ID`
-- `ProductName`
+- ID
+- ProductName
 
 Results table
 
@@ -581,13 +584,13 @@ Example: Configuring LOAD statements to handle transformations
 
 Overview
 
-This example shows several ways in which a simple transformation can be applied to inline data. You can use one or multiple LOAD statements, and configure the syntax in different ways, to define whether or not a transformation replaces the original [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#glossary-8 "Glossary term") or if both original and new fields are loaded.
+This example shows several ways in which a simple transformation can be applied to inline data. You can use one or multiple LOAD statements, and configure the syntax in different ways, to define whether or not a transformation replaces the original [field](#glossary-8 "Glossary term") or if both original and new fields are loaded.
 
 In particular, note the variations in the following and how they affect the output:
 
 - Number of LOAD statements within the table.
-- Presence or absence of `*` symbol (loads all subsequent fields).
-- Presence or absence of commas (`,` symbol).
+- Presence or absence of \* symbol (loads all subsequent fields).
+- Presence or absence of commas (, symbol).
 
 Open the Data load editor and add the load script below to a new section.
 
@@ -595,10 +598,10 @@ The load script contains:
 
 - Four tables, all of which reference the same data. The field names are different.
 
-  - `DerivedYears1`: Uses two LOAD statements to load an inline column and a column containing a transformation of the inline column.
-  - `DerivedYears2`: Uses two LOAD statements. The script loads an inline column, then loads a calculated field transformed from the original column. With the second LOAD statement, the original column is not loaded into the table, effectively making the new field a replacement of the original field.
-  - `DerivedYears3`: Uses a single LOAD statement to load both the original inline column and a transformed column.
-  - `DerivedYears4`: Uses a single LOAD statement to define an inline field and a transformation of that original field. Only the transformed field is loaded into the table.
+  - DerivedYears1: Uses two LOAD statements to load an inline column and a column containing a transformation of the inline column.
+  - DerivedYears2: Uses two LOAD statements. The script loads an inline column, then loads a calculated field transformed from the original column. With the second LOAD statement, the original column is not loaded into the table, effectively making the new field a replacement of the original field.
+  - DerivedYears3: Uses a single LOAD statement to load both the original inline column and a transformed column.
+  - DerivedYears4: Uses a single LOAD statement to define an inline field and a transformation of that original field. Only the transformed field is loaded into the table.
 
 Load script
 
@@ -608,7 +611,7 @@ DerivedYears1:
 Load *,
 Year(initial_date1) as derived_year1
 ;
-    
+
 Load
 * inline [
 initial_date1
@@ -622,7 +625,7 @@ DerivedYears2:
 Load
 Year(initial_date2) as derived_year2
 ;
-    
+
 Load
 * inline [
 initial_date2
@@ -654,13 +657,13 @@ initial_date4
 
 Results
 
-Load the data and open a sheet. Create three tables and add the [dimensions](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#glossary-9 "Glossary term") to them as follows:
+Load the data and open a sheet. Create three tables and add the [dimensions](#glossary-9 "Glossary term") to them as follows:
 
-- `DerivedYears1`: `initial_date1`, `derived_year1`
-- `DerivedYears2`: `initial_date2`
-- `DerivedYears3`: `initial_date3`, `derived_year3`
+- DerivedYears1: initial\_date1, derived\_year1
+- DerivedYears2: initial\_date2
+- DerivedYears3: initial\_date3, derived\_year3
 
-Results table: `DerivedYears1`
+Results table: DerivedYears1
 
 | initial\_date1 | derived\_year1 |
 | --- | --- |
@@ -668,7 +671,7 @@ Results table: `DerivedYears1`
 | 1/1/2023 | 2023 |
 | 1/1/2024 | 2024 |
 
-Results table: `DerivedYears2`
+Results table: DerivedYears2
 
 | derived\_year2 |
 | --- |
@@ -676,7 +679,7 @@ Results table: `DerivedYears2`
 | 2023 |
 | 2024 |
 
-Results table: `DerivedYears3`
+Results table: DerivedYears3
 
 | initial\_date3 | derived\_year3 |
 | --- | --- |
@@ -684,7 +687,7 @@ Results table: `DerivedYears3`
 | 1/1/2023 | 2023 |
 | 1/1/2024 | 2024 |
 
-Results table: `DerivedYears4`
+Results table: DerivedYears4
 
 | derived\_year4 |
 | --- |
@@ -702,15 +705,15 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- An inline table, `Transformations`, in which a transformation is defined to change text content of a field. The text being transformed is added after this.
-- Two LOAD statements. With the configuration in the example, only the derived field `ProductName_Trimmed` is loaded into the table.
+- An inline table, Transformations, in which a transformation is defined to change text content of a field. The text being transformed is added after this.
+- Two LOAD statements. With the configuration in the example, only the derived field ProductName\_Trimmed is loaded into the table.
 
 Load script
 
 ```
 Transformations:
 
-Load 
+Load
 Capitalize(TextBetween(OrigColumn, '{','}')) as ProductName_Trimmed;
 
 Load * inline [
@@ -723,7 +726,7 @@ Product: {electronics and video games}
 
 Results
 
-Load the data and open a sheet. Create a new table and add this field as a dimension: `ProductName_Trimmed`.
+Load the data and open a sheet. Create a new table and add this field as a dimension: ProductName\_Trimmed.
 
 Results table
 
@@ -735,9 +738,9 @@ Results table
 
 ## Example - Operators for transformations and clauses
 
-You can use operators to define transformations and specific clauses in the LOAD statement. For more information, see [*Operators and other clauses*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#OpsAndClauses).
+You can use operators to define transformations and specific clauses in the LOAD statement. For more information, see [*Operators and other clauses*](#OpsAndClauses).
 
-[*Operators*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/Operators/operators.htm)
+[*Operators*](Operators/operators.htm)
 
 Load script and results
 
@@ -747,9 +750,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A simple inline load to define the table `Purchases`.
-- The insertion of a calculated field, `OrderSize`. This field is a transformation of the `amount` field from the inline dataset. It categorizes purchases as small or large, depending on whether or not the amount surpasses $2000.00.
-- A where clause that prevent records from being loaded when the `amount` is less than $0.05.
+- A simple inline load to define the table Purchases.
+- The insertion of a calculated field, OrderSize. This field is a transformation of the amount field from the inline dataset. It categorizes purchases as small or large, depending on whether or not the amount surpasses $2000.00.
+- A where clause that prevent records from being loaded when the amount is less than $0.05.
 
 Load script
 
@@ -783,9 +786,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ID`
-- `amount`
-- `OrderSize`
+- ID
+- amount
+- OrderSize
 
 Results table
 
@@ -802,13 +805,13 @@ Results table
 | 10 | 614.34 | Small Purchase |
 | 11 | 675.93 | Small Purchase |
 
-In the above table, the transaction with an `ID` of 5 was not loaded into the table. This is because the `amount` value is less than $0.05.
+In the above table, the transaction with an ID of 5 was not loaded into the table. This is because the amount value is less than $0.05.
 
 ## Example - Creating null values in an inline table
 
 This example demonstrates how you can use the NullInterpret variable to create null values in your inline data.
 
-[*NullInterpret*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ValueHandlingVariables/NullInterpret.htm)
+[*NullInterpret*](ValueHandlingVariables/NullInterpret.htm)
 
 Load script and results
 
@@ -818,7 +821,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A simple inline load to define the table `T2`.
+- A simple inline load to define the table T2.
 - The NullInterpret variable defined as two single quotation marks. When the script is loaded, records containing this value are processed as null values.
 
 Load script
@@ -834,7 +837,7 @@ x ];
 
 Results
 
-Load the data and open a sheet. Create a new table and add this field as a dimension: `Test`.
+Load the data and open a sheet. Create a new table and add this field as a dimension: Test.
 
 Results table
 
@@ -842,18 +845,18 @@ Results table
 | --- |
 | x |
 
-In the above table, the first record is a null value. Therefore, it is not included in the visualization. Null values existing in tables with additional dimensions would be denoted with a `-` symbol.
+In the above table, the first record is a null value. Therefore, it is not included in the visualization. Null values existing in tables with additional dimensions would be denoted with a - symbol.
 
 ## More examples
 
-For additional examples, see [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm).
+For additional examples, see [*Load*](ScriptRegularStatements/Load.htm).
 
 Related learning:
 
-- [Introduction to the data load editor](https://help.qlik.com/lnk/Intro_Data_Load_Editor_QS)
+- [Introduction to the data load editor](/lnk/Intro_Data_Load_Editor_QS)
 
 ## Learn more
 
-- [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm)
-- [*Format specification items*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptSpecifiers/format-specification-items.htm)
-- [Introduction to the data load editor](https://help.qlik.com/lnk/Intro_Data_Load_Editor_QS)
+- [*Load*](ScriptRegularStatements/Load.htm)
+- [*Format specification items*](ScriptSpecifiers/format-specification-items.htm)
+- [Introduction to the data load editor](/lnk/Intro_Data_Load_Editor_QS)

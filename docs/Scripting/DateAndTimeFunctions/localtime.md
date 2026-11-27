@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
 # localtime Script and chart function
 
 This function returns a timestamp of the
@@ -22,8 +23,8 @@ Arguments
 
 | Argument | Description |
 | --- | --- |
-| timezone | The timezone is specified as a string containing any of the geographical places listed under Time Zone in the Windows Control Panel for Date and Time or as a string in the form 'GMT+hh:mm'. A list of accepted places and time zones is also presented in the table below.  If no time zone is specified, the local time is returned.  **Note:** If you use a DST offset (that is, you specify an ignoreDST argument value evaluating to False), you must specify a place, rather than a GMT offset, in the place argument. This is because adjusting for Daylight Saving Time requires latitudinal information in addition to the longitudinal information provided by a GMT offset. For more information, see [*Using GMT offsets in combination with DST*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/localtime.htm#Using). |
-| ignoreDST | If this argument evaluates to True, DST (daylight saving time) is ignored. Valid argument values evaluating to True include `-1` and `True()`.  If this argument evaluates to False, the timestamp is adjusted for daylight saving time. Valid argument values evaluating to False include `0` and `False()`.  If the ignoreDST argument value is invalid, the function evaluates the expression as if the ignore\_dst value evaluates to True. If the ignoreDST argument value is not specified, the function evaluates the expression as if the ignore\_dst value evaluates to False. |
+| timezone | The timezone is specified as a string containing any of the geographical places listed under Time Zone in the Windows Control Panel for Date and Time or as a string in the form 'GMT+hh:mm'. A list of accepted places and time zones is also presented in the table below.  If no time zone is specified, the local time is returned.  Information noteIf you use a DST offset (that is, you specify an ignoreDST argument value evaluating to False), you must specify a place, rather than a GMT offset, in the place argument. This is because adjusting for Daylight Saving Time requires latitudinal information in addition to the longitudinal information provided by a GMT offset. For more information, see [*Using GMT offsets in combination with DST*](#Using). |
+| ignoreDST | If this argument evaluates to True, DST (daylight saving time) is ignored. Valid argument values evaluating to True include -1 and True().  If this argument evaluates to False, the timestamp is adjusted for daylight saving time. Valid argument values evaluating to False include 0 and False().  If the ignoreDST argument value is invalid, the function evaluates the expression as if the ignore\_dst value evaluates to True. If the ignoreDST argument value is not specified, the function evaluates the expression as if the ignore\_dst value evaluates to False. |
 
 Valid places and time zones
 
@@ -74,13 +75,13 @@ Scripting examples
 
 | Example | Result |
 | --- | --- |
-| `localtime ()` | Returns the local time 2023-08-14 08:39:47. |
-| `localtime ('London')` | Returns the local time in London, 2023-08-14 13:39:47. |
-| `localtime ('GMT+02:00')` | Returns the local time in the timezone of GMT+02:00, 2023-08-14 14:39:47. No adjustment is made for daylight saving time because a GMT offset, rather than a place, is specified. |
-| `localtime ('Paris',-1)` | Returns the local time in Paris with daylight savings time ignored, 2023-08-14 13:39:47. |
-| `localtime ('Paris',True())` | Returns the local time in Paris with daylight savings time ignored, 2023-08-14 13:39:47. |
-| `localtime ('Paris',0)` | Returns the local time in Paris, taking daylight savings time into account, 2023-08-14 14:39:47. |
-| `localtime ('Paris',False())` | Returns the local time in Paris, taking daylight savings time into account, 2023-08-14 14:39:47. |
+| localtime () | Returns the local time 2023-08-14 08:39:47. |
+| localtime ('London') | Returns the local time in London, 2023-08-14 13:39:47. |
+| localtime ('GMT+02:00') | Returns the local time in the timezone of GMT+02:00, 2023-08-14 14:39:47. No adjustment is made for daylight saving time because a GMT offset, rather than a place, is specified. |
+| localtime ('Paris',-1) | Returns the local time in Paris with daylight savings time ignored, 2023-08-14 13:39:47. |
+| localtime ('Paris',True()) | Returns the local time in Paris with daylight savings time ignored, 2023-08-14 13:39:47. |
+| localtime ('Paris',0) | Returns the local time in Paris, taking daylight savings time into account, 2023-08-14 14:39:47. |
+| localtime ('Paris',False()) | Returns the local time in Paris, taking daylight savings time into account, 2023-08-14 14:39:47. |
 
 ## Using GMT offsets in combination with DST
 

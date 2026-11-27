@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Inter-record functions"]
 ---
+
 # LookUp Script function
 
 LookUp() looks into a table that is already loaded and returns the value of field\_name corresponding to the first
@@ -29,10 +30,10 @@ Arguments
 | --- | --- |
 | field\_name | Name of the field for which the return value is required. Input value must be given as a string (for example, quoted literals). |
 | match\_field\_name | Name of the field to look up match\_field\_value in. Input value must be given as a string (for example, quoted literals). |
-| match\_field\_value | Value to look up in match\_field\_name [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/InterRecordFunctions/LookUp.htm#glossary-0 "Glossary term"). |
+| match\_field\_value | Value to look up in match\_field\_name [field](#glossary-0 "Glossary term"). |
 | table\_name | Name of the table in which to look up the value. Input value must be given as a string (for example quoted literals).  If table\_name is omitted the current table is assumed. |
 
-> **Note:** Arguments without quotes refer to the current table. To refer to other tables, enclose an argument in single quotes.
+Information noteArguments without quotes refer to the current table. To refer to other tables, enclose an argument in single quotes.
 
 Limitations:
 
@@ -75,11 +76,11 @@ InvoiceID|CustomerID|ProductID|Units
 Drop Table ProductList;
 ```
 
-For more information about using inline loads, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+For more information about using inline loads, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 ### Create a visualization
 
-Create a table [visualization](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/InterRecordFunctions/LookUp.htm#glossary-1 "Glossary term") in a Qlik Sense [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/InterRecordFunctions/LookUp.htm#glossary-2 "Glossary term"). Add fields ProductID, InvoiceID, CustomerID, Units, and CategoryID to the table.
+Create a table [visualization](#glossary-1 "Glossary term") in a Qlik Sense [sheet](#glossary-2 "Glossary term"). Add fields ProductID, InvoiceID, CustomerID, Units, and CategoryID to the table.
 
 ### Result
 
@@ -97,7 +98,7 @@ Resulting table
 
 The sample data uses the Lookup() function in the following form:
 
-`Lookup('Category', 'ProductID', ProductID, 'ProductList')`
+Lookup('Category', 'ProductID', ProductID, 'ProductList')
 
 The ProductList table is loaded first.
 
@@ -107,8 +108,8 @@ The function returns the value for 'Category' (in the ProductList table), loaded
 
 The drop statement deletes the ProductList table from the data model because it is not required, which leaves the resulting OrderData table.
 
-> **Note:** The Lookup() function is flexible and can access any previously loaded table. However, it is slow compared with the Applymap() function.
+Information noteThe Lookup() function is flexible and can access any previously loaded table. However, it is slow compared with the Applymap() function.
 
 ## Learn more
 
-- [*ApplyMap Script function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/MappingFunctions/ApplyMap.htm)
+- [*ApplyMap Script function*](../MappingFunctions/ApplyMap.htm)

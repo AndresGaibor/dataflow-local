@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Financial functions"]
 ---
+
 # Pmt Script and chart function
 
 This function returns the payment for a loan based on periodic, constant payments
@@ -38,5 +39,5 @@ Scripting examples
 
 | Example | Result |
 | --- | --- |
-| The following formula returns the monthly payment on a $20,000 loan at an annual rate of 10 percent, that must be paid off in 8 months:  `Pmt(0.1/12,8,20000)` | Returns -$2,594.66 |
-| For the same loan, if payment is due at the beginning of the period, the payment is:  `Pmt(0.1/12,8,20000,0,1)` | Returns -$2,573.21 |
+| The following formula returns the monthly payment on a $20,000 loan at an annual rate of 10 percent, that must be paid off in 8 months:  Pmt(0.1/12,8,20000) | Returns -$2,594.66 |
+| For the same loan, if payment is due at the beginning of the period, the payment is:  Pmt(0.1/12,8,20000,0,1) | Returns -$2,573.21 |

@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Range functions"]
 ---
+
 # RangeXIRR Script and chart function
 
 RangeXIRR() returns the internal rate of return (yearly) for a
@@ -15,9 +16,9 @@ the internal rate of return for a series of periodic cash flows, use the
 RangeIRR
 function.
 
-Qlik's XIRR functionality (XIRR() and RangeXIRR() functions) uses the following equation, solving for the `Rate` value, to determine the correct XIRR value:
+Qlik's XIRR functionality (XIRR() and RangeXIRR() functions) uses the following equation, solving for the Rate value, to determine the correct XIRR value:
 
-`XNPV(Rate, pmt, date) = 0`
+XNPV(Rate, pmt, date) = 0
 
 The equation is solved using a simplified version of the Newton method.
 
@@ -43,12 +44,14 @@ When working with this function, the following limitations apply:
 
 The following topics might help you work with this function:
 
-- [*RangeXNPV Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/RangeFunctions/RangeXNPV.htm): Use this function calculate the net present value for a schedule
+- [*RangeXNPV Script and chart function*](RangeXNPV.htm): Use this function calculate the net present value for a schedule
   of cash flows that is not necessarily periodic.
-- [*XIRR Script function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FinancialAggregationFunctions/XIRR.htm): The **XIRR()** function calculates the aggregated internal
+- [*XIRR Script function*](../FinancialAggregationFunctions/XIRR.htm): The XIRR() function calculates the aggregated internal
   rate of return (yearly) for a schedule of cash flows (that is not necessarily periodic).
 
-> **Note:** For information about recent updates to the underlying algorithm used by this function, see support article [XIRR function Fix and Update](https://community.qlik.com/t5/Member-Articles/XIRR-function-Fix-and-Update/ta-p/2049021).
+Information note
+
+For information about recent updates to the underlying algorithm used by this function, see support article [XIRR function Fix and Update](https://community.qlik.com/t5/Member-Articles/XIRR-function-Fix-and-Update/ta-p/2049021).
 
 Examples and results:
 
@@ -56,11 +59,11 @@ Examples and results
 
 | Examples | Results |
 | --- | --- |
-| `RangeXIRR(-2500,'2008-01-01',2750,'2008-09-01')` | Returns 0.1532 |
+| RangeXIRR(-2500,'2008-01-01',2750,'2008-09-01') | Returns 0.1532 |
 
 ## Learn more
 
-- [*RangeIRR Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/RangeFunctions/RangeIRR.htm)
-- [*RangeXNPV Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/RangeFunctions/RangeXNPV.htm)
-- [*XIRR Script function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/FinancialAggregationFunctions/XIRR.htm)
+- [*RangeIRR Script and chart function*](RangeIRR.htm)
+- [*RangeXNPV Script and chart function*](RangeXNPV.htm)
+- [*XIRR Script function*](../FinancialAggregationFunctions/XIRR.htm)
 - [XIRR function Fix and Update](https://community.qlik.com/t5/Member-Articles/XIRR-function-Fix-and-Update/ta-p/2049021)

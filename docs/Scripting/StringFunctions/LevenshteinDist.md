@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# LevenshteinDist Script and chart function
+
 Expand/Collapse all
 
 # LevenshteinDist Script and chart function
@@ -31,7 +34,7 @@ Example: Chart expression
 
 | Example | Result |
 | --- | --- |
-| `LevenshteinDist( 'Kitten','Sitting' )` | Returns `3` |
+| LevenshteinDist( 'Kitten','Sitting' ) | Returns 3 |
 
 ## Example - LevenshteinDist fundamentals
 
@@ -43,8 +46,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `InputText`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called InputText.
 
 Load script
 
@@ -62,11 +65,11 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `InputText`
+- InputText
 
 Create the following measure:
 
-- `=LevenshteinDist('Silver', InputText)`, to calculate the minimum number of single character edits required to change the string value for `InputText` to the word `Silver`.
+- =LevenshteinDist('Silver', InputText), to calculate the minimum number of single character edits required to change the string value for InputText to the word Silver.
 
 Results table
 
@@ -76,7 +79,7 @@ Results table
 | SSiveer | 3 |
 | SSiver | 2 |
 
-The output of the `LevenshteinDist` function returns the number of changes required to change the `InputText` to the expected text, `Silver`. For example, the first row requires two changes to modify the word `Sliver` to `Silver`. The second row requires 3 changes: 1) Delete the extra character `S`. 2) Delete the extra character `e`. 3) Insert a new character `l`.
+The output of the LevenshteinDist function returns the number of changes required to change the InputText to the expected text, Silver. For example, the first row requires two changes to modify the word Sliver to Silver. The second row requires 3 changes: 1) Delete the extra character S. 2) Delete the extra character e. 3) Insert a new character l.
 
 ## Example - LevenshteinDist scenario
 
@@ -84,17 +87,17 @@ Chart expression
 
 Overview
 
-This example consolidates product names from different systems. The product names do not always use the same spelling due to typos, abbreviations, spacing, or other variations. Using the `LevenshteinDist` function, you can measure the similarity between two product names and identify which ones likely refer to the same product, even if the names are not identical.
+This example consolidates product names from different systems. The product names do not always use the same spelling due to typos, abbreviations, spacing, or other variations. Using the LevenshteinDist function, you can measure the similarity between two product names and identify which ones likely refer to the same product, even if the names are not identical.
 
 Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `ProductA`
-  - `ProductB`
+  - ProductA
+  - ProductB
 
 Load script
 
@@ -113,12 +116,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ProductA`
-- `ProductB`
+- ProductA
+- ProductB
 
 Create the following measure:
 
-- `=LevenshteinDist(ProductA, ProductB)`, to calculate the minimum number of single character edits required to change the string value for `ProductB` to match `ProductA`.
+- =LevenshteinDist(ProductA, ProductB), to calculate the minimum number of single character edits required to change the string value for ProductB to match ProductA.
 
 Results table
 

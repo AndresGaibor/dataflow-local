@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# SubStringCount Script and chart function
+
 Expand/Collapse all
 
 # SubStringCount Script and chart function
@@ -33,8 +36,8 @@ Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `SubStringCount( 'abcdefgcdxyz', 'cd' )` | Returns `2` |
-| `SubStringCount( 'abcdefgcdxyz', 'dc' )` | Returns `0` |
+| SubStringCount( 'abcdefgcdxyz', 'cd' ) | Returns 2 |
+| SubStringCount( 'abcdefgcdxyz', 'dc' ) | Returns 0 |
 
 ## Example - SubStringCount fundamentals
 
@@ -46,8 +49,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `FruitSentence`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called FruitSentence.
 
 Load script
 
@@ -67,11 +70,11 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `FruitSentence`
+- FruitSentence
 
 Create the following calculated dimension:
 
-- `=SubStringCount(FruitSentence, 'apple')`, to calculate how many times the word `apple` occurs in `FruitSentence`.
+- =SubStringCount(FruitSentence, 'apple'), to calculate how many times the word apple occurs in FruitSentence.
 
 Results table
 
@@ -83,13 +86,13 @@ Results table
 | I love eating an apple every day. Apple juice is great too! | 1 |
 | There is an apple and a banana on the table. | 1 |
 
-The table is sorted on the dimension `FruitSentence` in ascending order. The `SubStringCount` function returns the number of times the word `apple` occurs in each sentence. For example, the first sentence returns `2`, because the word occurs twice in the sentence. In the second and fourth sentences, the function ignores the word `Apple` because it does not match the case of the search term `apple`.
+The table is sorted on the dimension FruitSentence in ascending order. The SubStringCount function returns the number of times the word apple occurs in each sentence. For example, the first sentence returns 2, because the word occurs twice in the sentence. In the second and fourth sentences, the function ignores the word Apple because it does not match the case of the search term apple.
 
-> **Tip:** To do a case-insensitive search, you can convert your input string to upper or lowercase characters first, and then use the `SubStringCount` function on the result. For example, to search for all occurrences of the word apple, regardless of case, use the following measure expression: `=SubStringCount(Upper(FruitSentence),'APPLE')`.The expression uses the `SubStringCount` function with the `Upper` function to convert the whole string to uppercase characters, and then searches for the word `APPLE`.
+Tip noteTo do a case-insensitive search, you can convert your input string to upper or lowercase characters first, and then use the SubStringCount function on the result. For example, to search for all occurrences of the word apple, regardless of case, use the following measure expression: =SubStringCount(Upper(FruitSentence),'APPLE').The expression uses the SubStringCount function with the Upper function to convert the whole string to uppercase characters, and then searches for the word APPLE.
 
 Load script
 
-The following code shows how to use the function in a load script. This example includes a preceding load that uses the `SubStringCount` function with the `Upper` function to convert the whole string to uppercase characters, and then searches for the word `APPLE`.
+The following code shows how to use the function in a load script. This example includes a preceding load that uses the SubStringCount function with the Upper function to convert the whole string to uppercase characters, and then searches for the word APPLE.
 
 ```
 Example:
@@ -127,8 +130,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `ProductDescription`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called ProductDescription.
 
 Load script
 
@@ -153,9 +156,9 @@ Load the data and open a sheet. Create a new table and add this field as a dimen
 
 Create the following calculated dimensions:
 
-- `=SubStringCount(ProductDescription, 'apple')`, to calculate the number of occurrences of the word `apple` in the string `ProductDescription`.
-- `=SubStringCount(ProductDescription, 'banana')`, to calculate the number of occurrences of the word `banana` in the string `ProductDescription`.
-- `=SubStringCount(ProductDescription, 'orange')`, to calculate the number of occurrences of the word `orange` in the string `ProductDescription`.
+- =SubStringCount(ProductDescription, 'apple'), to calculate the number of occurrences of the word apple in the string ProductDescription.
+- =SubStringCount(ProductDescription, 'banana'), to calculate the number of occurrences of the word banana in the string ProductDescription.
+- =SubStringCount(ProductDescription, 'orange'), to calculate the number of occurrences of the word orange in the string ProductDescription.
 
 Results table
 
@@ -168,9 +171,9 @@ Results table
 | Organic apple, banana, and orange juice. Great for breakfast. | 1 | 1 | 1 |
 | Tropical banana and orange mix for smoothies. | 0 | 1 | 1 |
 
-The output of the `SubStringCount` function successfully returns the number of instances that each substring (`apple, banana, orange`) occurs in the product description. For example, in the first description, the function returns 2 because there are two instances of the word `orange`. The `sub_string` argument is case-sensitive, so in the second description, the function does not count the word `Banana` because it does not match the substring `banana` in the measure expression.
+The output of the SubStringCount function successfully returns the number of instances that each substring (apple, banana, orange) occurs in the product description. For example, in the first description, the function returns 2 because there are two instances of the word orange. The sub\_string argument is case-sensitive, so in the second description, the function does not count the word Banana because it does not match the substring banana in the measure expression.
 
-> **Tip:** To do a case-insensitive search, you can convert your input string to upper or lowercase characters first, and then use the `SubStringCount` function on the result. For example, to search for all occurrences of the word apple, regardless of case, use the following measure expression: `=SubStringCount(Upper(ProductDescription),'APPLE')`.The expression uses the `SubStringCount` function with the `Upper` function to convert the whole string to uppercase characters, and then searches for the word `APPLE`.
+Tip noteTo do a case-insensitive search, you can convert your input string to upper or lowercase characters first, and then use the SubStringCount function on the result. For example, to search for all occurrences of the word apple, regardless of case, use the following measure expression: =SubStringCount(Upper(ProductDescription),'APPLE').The expression uses the SubStringCount function with the Upper function to convert the whole string to uppercase characters, and then searches for the word APPLE.
 
 ## Example - SubStringCount scenario parsing nested data
 
@@ -178,17 +181,17 @@ Chart expression
 
 Overview
 
-A dataset of IT records contains a list of change ID numbers and categories. In the data table, the `Categories` field is derived from a multi-level hierarchy that lists the top parent category followed by all sub categories, for example Software > Program > Patch. This scenario demonstrates how to pick out the last value, or leaf value, from this ragged category hierarchy using a combination of the `SubStringCount` and the `SubField` functions.
+A dataset of IT records contains a list of change ID numbers and categories. In the data table, the Categories field is derived from a multi-level hierarchy that lists the top parent category followed by all sub categories, for example Software > Program > Patch. This scenario demonstrates how to pick out the last value, or leaf value, from this ragged category hierarchy using a combination of the SubStringCount and the SubField functions.
 
 Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `ChangeID` contains the original change ID to be processed.
-  - `Categories` contains a list of change categories. Categories are separated by semi-colons and listed in hierarchical order from left to right, starting from the top parent category to the most detailed sub-category.
+  - ChangeID contains the original change ID to be processed.
+  - Categories contains a list of change categories. Categories are separated by semi-colons and listed in hierarchical order from left to right, starting from the top parent category to the most detailed sub-category.
 
 Load script
 
@@ -206,13 +209,13 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ChangeID`
-- `Categories`
+- ChangeID
+- Categories
 
 Create the following calculated dimensions:
 
-- `=SubStringCount(Categories,';')+1`, to calculate the number of category levels in the change hierarchy.
-- `=SubField(Categories, ';' ,SubStringCount(Categories,';')+1)`, to extract the rightmost category in the change hierarchy.
+- =SubStringCount(Categories,';')+1, to calculate the number of category levels in the change hierarchy.
+- =SubField(Categories, ';' ,SubStringCount(Categories,';')+1), to extract the rightmost category in the change hierarchy.
 
 Results table
 
@@ -222,6 +225,6 @@ Results table
 | CHG00101 | Hardware;Server | 2 | Server |
 | CHG00102 | Hardware;Network;Router | 3 | Router |
 
-In this example, the `SubStringCount` function is nested within the `SubField` function. The first calculated dimension, `SubStringCount()`, calculates the number of nested values in the `Categories` field. This is determined by counting the number of semi-colons `';'` and adding 1 to the result. This output is then injected as the third parameter of the `SubField` function to extract the rightmost category nested in the `Categories` field.
+In this example, the SubStringCount function is nested within the SubField function. The first calculated dimension, SubStringCount(), calculates the number of nested values in the Categories field. This is determined by counting the number of semi-colons ';' and adding 1 to the result. This output is then injected as the third parameter of the SubField function to extract the rightmost category nested in the Categories field.
 
-For example, review the results for the `ChangeID` entry `CHG00100`. In the first calculated dimension, the `SubStringCount` is 2. The expression then adds 1 to that result to determine that the `Categories` field has three nested category values, `Software`, `Program`, and `Patch`. The `SubField` function, in the second calculated dimension, then uses this result to extract the third category, `Patch`.
+For example, review the results for the ChangeID entry CHG00100. In the first calculated dimension, the SubStringCount is 2. The expression then adds 1 to that result to determine that the Categories field has three nested category values, Software, Program, and Patch. The SubField function, in the second calculated dimension, then uses this result to extract the third category, Patch.

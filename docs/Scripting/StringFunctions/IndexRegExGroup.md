@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# IndexRegExGroup Script and chart function
+
 Expand/Collapse all
 
 # IndexRegExGroup Script and chart function
@@ -28,18 +31,18 @@ Arguments
 | --- | --- |
 | text | The input string text within which you want to search for a regular expression. |
 | regex | The regular expression to use for searching the input string. |
-| group | The number of the group, in the case of a composite regular expression.  A group value of `0` returns the index of the entire regex. However, if the regular expression only needs to return the index of the entire match, use the IndexRegEx() function instead.  You can specify a negative group value to search for matches from right to left. |
-| count | The number of the match. This is useful when multiple matches for the regular expression might be found in the text. For example, specify a value of `4` to search for the position of the fourth match.  This is an optional argument. Default is 1 if not specified. You can specify a negative value to search for matches from right to left. |
+| group | The number of the group, in the case of a composite regular expression.  A group value of 0 returns the index of the entire regex. However, if the regular expression only needs to return the index of the entire match, use the IndexRegEx() function instead.  You can specify a negative group value to search for matches from right to left. |
+| count | The number of the match. This is useful when multiple matches for the regular expression might be found in the text. For example, specify a value of 4 to search for the position of the fourth match.  This is an optional argument. Default is 1 if not specified. You can specify a negative value to search for matches from right to left. |
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `IndexRegExGroup('abc123','([a-z])([0-9]+)',0)` | Returns `3` (start position of complete regex). |
-| `IndexRegExGroup('abc123','([a-z])([0-9]+)',1)` | Returns `3` (start position of first group). |
-| `IndexRegExGroup('abc123','([a-z])([0-9]+)',2)` | Returns `4` , which is the start position of the second group. In the input regex pattern, the string `([0-9]+)` corresponds to the second group. |
-| `IndexRegExGroup('ABC123','([a-z])([0-9]+)',1)` | Returns `0`, because IndexRegExGroup() is case-sensitive. |
-| `IndexRegExGroupI('ABC123','([a-z])([0-9]+)',1)` | Returns `3`. The case-insensitive variant of the function, IndexRegExI(), is used. |
+| IndexRegExGroup('abc123','([a-z])([0-9]+)',0) | Returns 3 (start position of complete regex). |
+| IndexRegExGroup('abc123','([a-z])([0-9]+)',1) | Returns 3 (start position of first group). |
+| IndexRegExGroup('abc123','([a-z])([0-9]+)',2) | Returns 4 , which is the start position of the second group. In the input regex pattern, the string ([0-9]+) corresponds to the second group. |
+| IndexRegExGroup('ABC123','([a-z])([0-9]+)',1) | Returns 0, because IndexRegExGroup() is case-sensitive. |
+| IndexRegExGroupI('ABC123','([a-z])([0-9]+)',1) | Returns 3. The case-insensitive variant of the function, IndexRegExI(), is used. |
 
 ## When to use IndexRegExGroup
 
@@ -58,7 +61,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- The creation of a [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/IndexRegExGroup.htm#glossary-0 "Glossary term"), `ISBN_RegEx`, to store the regular expression we want to use.
+- The creation of a [variable](#glossary-0 "Glossary term"), ISBN\_RegEx, to store the regular expression we want to use.
 - A set of ISBN codes for books that a book store wants to order from several suppliers.
 
 For each ISBN code, we need to extract the starting position of each of the following:
@@ -95,12 +98,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Supplier`
-- `EAN`
-- `Group`
-- `Registrant`
-- `Publication`
-- `Checksum`
+- Supplier
+- EAN
+- Group
+- Registrant
+- Publication
+- Checksum
 
 Results table
 
@@ -131,7 +134,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table named `Correspondence`, which contains email message text in a field named `EmailBody`.
+- A table named Correspondence, which contains email message text in a field named EmailBody.
 - Email message content that contains web URLs.
 
 We want to find the position of the second URL, if present, as well as the positions of the following components:
@@ -159,7 +162,7 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `ID`
+- ID
 
 Add these calculated dimensions:
 
@@ -187,7 +190,7 @@ Results table
 | 2 | 0 | 0 | 0 |
 | 3 | 298 | 306 | 327 |
 
-IndexRegEx() returns the start position of the entire URL, while IndexRegExGroup() returns start positions of individual parts of the URL, corresponding to the group value we used. The record with an `ID` value of 2 only contains one URL, so values of 0 are returned.
+IndexRegEx() returns the start position of the entire URL, while IndexRegExGroup() returns start positions of individual parts of the URL, corresponding to the group value we used. The record with an ID value of 2 only contains one URL, so values of 0 are returned.
 
 The same regular expression is used across all chart expressions to return different pieces of information. A breakdown of the groups defined in the regular expression is as follows.
 
@@ -208,4 +211,4 @@ Groups in regular expression
 
 ## Learn more
 
-- [*Working with regular expressions in load scripts and chart expressions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/regular-expressions-qlik-analytics.htm)
+- [*Working with regular expressions in load scripts and chart expressions*](../regular-expressions-qlik-analytics.htm)

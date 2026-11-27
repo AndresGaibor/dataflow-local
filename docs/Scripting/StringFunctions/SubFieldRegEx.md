@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# SubFieldRegEx Script and chart function
+
 Expand/Collapse all
 
 # SubFieldRegEx Script and chart function
@@ -27,16 +30,16 @@ Arguments
 | Argument | Description |
 | --- | --- |
 | text | The input string text within which you want to search for a regular expression pattern. |
-| regex\_delimiter | String expression containing the regular expression to use as a delimiter. You can specify more than one delimiter in the same regular expression pattern by separating them with a `|` (vertical pipe) character. |
-| field\_no | Integer value indicating the number of the subdivision you want to extract. For example, specify a value of `4` to extract the fourth subdivision. This is an optional argument.  The following apply regardless of whether the function is used in a load script or chart expression:   - If field\_no is positive, the function will return one value, identifying matches from left to right. - If field\_no is negative, the function will return one value, identifying matches from right to left.   When using the function in a [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/SubFieldRegEx.htm#glossary-0 "Glossary term"):   - If you use the SubFieldRegEx() function in a LOAD statement and field\_no is omitted, the function generates as many records as there are matches. - If several fields are loaded using SubFieldRegEx() and none of them specify a field\_no argument, the Cartesian products of all combinations are created.   When using the function in a [chart](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/SubFieldRegEx.htm#glossary-1 "Glossary term") expression:   - If the field\_no is omitted, the default value is `1`. |
+| regex\_delimiter | String expression containing the regular expression to use as a delimiter. You can specify more than one delimiter in the same regular expression pattern by separating them with a | (vertical pipe) character. |
+| field\_no | Integer value indicating the number of the subdivision you want to extract. For example, specify a value of 4 to extract the fourth subdivision. This is an optional argument.  The following apply regardless of whether the function is used in a load script or chart expression:   - If field\_no is positive, the function will return one value, identifying matches from left to right. - If field\_no is negative, the function will return one value, identifying matches from right to left.   When using the function in a [load script](#glossary-0 "Glossary term"):   - If you use the SubFieldRegEx() function in a LOAD statement and field\_no is omitted, the function generates as many records as there are matches. - If several fields are loaded using SubFieldRegEx() and none of them specify a field\_no argument, the Cartesian products of all combinations are created.   When using the function in a [chart](#glossary-1 "Glossary term") expression:   - If the field\_no is omitted, the default value is 1. |
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `SubFieldRegEx('a,b c;1 2,3',' |,|;', 1)` | Returns `a`. In this example, three delimiter characters are specified (space, comma, and semicolon). |
-| `SubFieldRegEx('a;b;c;1;2;3',';', 2)` | Returns `b`. In this case, only one delimiter character is specified (semicolon). |
-| `SubFieldRegEx('a,b c;1 2,3',' |,|;', 4)` | Returns `1`. |
+| SubFieldRegEx('a,b c;1 2,3',' |,|;', 1) | Returns a. In this example, three delimiter characters are specified (space, comma, and semicolon). |
+| SubFieldRegEx('a;b;c;1;2;3',';', 2) | Returns b. In this case, only one delimiter character is specified (semicolon). |
+| SubFieldRegEx('a,b c;1 2,3',' |,|;', 4) | Returns 1. |
 
 ## When to use SubFieldRegEx
 
@@ -52,8 +55,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table `Transaction_By_Tag`, which initially contains transaction data. This data is processed to extract individual tag values into new records.
-- The creation of a field, `TransactionTag`, to store the extracted tag values.
+- A table Transaction\_By\_Tag, which initially contains transaction data. This data is processed to extract individual tag values into new records.
+- The creation of a field, TransactionTag, to store the extracted tag values.
 
 In the field containing the transaction tags, multiple tags are contained within text strings, separated by delimiters. The delimiter could be any of the following characters: , | ;
 
@@ -78,9 +81,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ID`
-- `Product`
-- `TransactionTag`
+- ID
+- Product
+- TransactionTag
 
 Results table
 
@@ -108,8 +111,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table `Transaction_By_Tag`, which contains transaction data.
-- A field, `Tags`, that contains text strings to store all tags associated with a transaction.
+- A table Transaction\_By\_Tag, which contains transaction data.
+- A field, Tags, that contains text strings to store all tags associated with a transaction.
 
 Our requirements:
 
@@ -134,14 +137,14 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ID`
-- `Tags`
+- ID
+- Tags
 
 Add these calculated dimensions:
 
-- `=SubFieldRegEx(Tags, ',|;|\|', 1)`
-- `=SubFieldRegEx(Tags, ',|;|\|', 2)`
-- `=SubFieldRegEx(Tags, ',|;|\|', 3)`
+- =SubFieldRegEx(Tags, ',|;|\|', 1)
+- =SubFieldRegEx(Tags, ',|;|\|', 2)
+- =SubFieldRegEx(Tags, ',|;|\|', 3)
 
 Results table
 
@@ -154,4 +157,4 @@ Results table
 
 ## Learn more
 
-- [*Working with regular expressions in load scripts and chart expressions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/regular-expressions-qlik-analytics.htm)
+- [*Working with regular expressions in load scripts and chart expressions*](../regular-expressions-qlik-analytics.htm)

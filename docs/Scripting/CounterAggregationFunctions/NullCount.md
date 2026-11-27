@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions", "Counter aggregation functions"]
 ---
+
 # NullCount Script function
 
 NullCount() returns the number of NULL values aggregated in the expression, as defined by a group by clause.
@@ -37,4 +38,4 @@ Scripting examples
 
 | Example | Result |
 | --- | --- |
-| Set NULLINTERPRET = NULL;  Temp:  LOAD \* inline [  Customer|Product|OrderNumber|UnitSales|CustomerID  Astrida|AA|1|10|1  Astrida|AA|7|18|1  Astrida|BB|4|9|1  Astrida|CC|6|2|1  Betacab|AA|5|4|2  Betacab|BB|2|5|2  Betacab|DD|||  Canutility|AA|3|8|  Canutility|CC|NULL||  ] (delimiter is '|');  Set NULLINTERPRET=;  NullCount1:  LOAD Customer,NullCount(OrderNumber) as NullOrdersByCustomer Resident Temp Group By Customer;    `LOAD NullCount(OrderNumber) as TotalNullCount Resident Temp;` | Customer NullOrdersByCustomer  Astrida 0  Betacab 0  Canutility 1    The second statement gives:  TotalNullCount  1  in a table with that [dimension](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/CounterAggregationFunctions/NullCount.htm#glossary-0 "Glossary term"), because only one record contains a null value. |
+| Set NULLINTERPRET = NULL;  Temp:  LOAD \* inline [  Customer|Product|OrderNumber|UnitSales|CustomerID  Astrida|AA|1|10|1  Astrida|AA|7|18|1  Astrida|BB|4|9|1  Astrida|CC|6|2|1  Betacab|AA|5|4|2  Betacab|BB|2|5|2  Betacab|DD|||  Canutility|AA|3|8|  Canutility|CC|NULL||  ] (delimiter is '|');  Set NULLINTERPRET=;  NullCount1:  LOAD Customer,NullCount(OrderNumber) as NullOrdersByCustomer Resident Temp Group By Customer;    LOAD NullCount(OrderNumber) as TotalNullCount Resident Temp; | Customer NullOrdersByCustomer  Astrida 0  Betacab 0  Canutility 1    The second statement gives:  TotalNullCount  1  in a table with that [dimension](#glossary-0 "Glossary term"), because only one record contains a null value. |

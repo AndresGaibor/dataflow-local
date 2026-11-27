@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# Mid Script and chart function
+
 Expand/Collapse all
 
 # Mid Script and chart function
@@ -31,8 +34,8 @@ Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `Mid( 'abcdef',3 )` | Returns `cdef` |
-| `Mid( 'abcdef',3, 2 )` | Returns `cd` |
+| Mid( 'abcdef',3 ) | Returns cdef |
+| Mid( 'abcdef',3, 2 ) | Returns cd |
 
 ## Example - Mid fundamentals
 
@@ -44,12 +47,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `InputText`, the original text string
-  - `StartPosition`, the starting position of the first character to include from the original text string after processing
-  - `CharacterCount`, the number of characters to return (optional parameter)
+  - InputText, the original text string
+  - StartPosition, the starting position of the first character to include from the original text string after processing
+  - CharacterCount, the number of characters to return (optional parameter)
 
 Load script
 
@@ -68,14 +71,14 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `InputText`
-- `StartPosition`
-- `CharacterCount`
+- InputText
+- StartPosition
+- CharacterCount
 
 Create the following calculated dimensions:
 
-- `=mid(InputText,StartPosition)`, to calculate the characters to extract from `InputText` starting at the value in the `StartPosition` field. The function will return all characters from the `StartPosition` value to the end of `InputString` because no `Count` parameter was provided.
-- `=mid(InputText,StartPosition,CharacterCount)`, to calculate the characters to extract from `InputText` starting at the value in the `StartPosition` field. The value in `CharacterCount` determines the number of characters returned, starting from the value in the `StartPosition` field.
+- =mid(InputText,StartPosition), to calculate the characters to extract from InputText starting at the value in the StartPosition field. The function will return all characters from the StartPosition value to the end of InputString because no Count parameter was provided.
+- =mid(InputText,StartPosition,CharacterCount), to calculate the characters to extract from InputText starting at the value in the StartPosition field. The value in CharacterCount determines the number of characters returned, starting from the value in the StartPosition field.
 
 Results table
 
@@ -86,13 +89,13 @@ Results table
 | 20210714 | 2 | 3 | 10714 | 107 |
 | 20210714 | 3 | 2 | 0714 | 07 |
 
-The first row returns the value `bcdef` for the first expression. The expression starts at position 2 and returns all characters because the `Count` argument is not set. The second expression also starts at position 2 but returns only the characters `bcd` because the `Count` argument is 2.
+The first row returns the value bcdef for the first expression. The expression starts at position 2 and returns all characters because the Count argument is not set. The second expression also starts at position 2 but returns only the characters bcd because the Count argument is 2.
 
-The second row returns the value `cdef` for the first expression. The expression starts at position 3 and returns all characters because the `Count` argument is not set. The second expression also starts at position 3 but returns only the characters `cd` because the `Count` argument is 2.
+The second row returns the value cdef for the first expression. The expression starts at position 3 and returns all characters because the Count argument is not set. The second expression also starts at position 3 but returns only the characters cd because the Count argument is 2.
 
-The third row returns the value `10714` for the first expression. The expression starts at position 2 and returns all characters because the `Count` argument is not set. The second expression also starts at position 2 but returns only the characters `107` because the `Count` argument is 3.
+The third row returns the value 10714 for the first expression. The expression starts at position 2 and returns all characters because the Count argument is not set. The second expression also starts at position 2 but returns only the characters 107 because the Count argument is 3.
 
-The fourth row returns the value `0714` for the first expression. The expression starts at position 3 and returns all characters because the `Count` argument is not set. The second expression also starts at position 2 but returns only the characters `07` because the `Count` argument is 2.
+The fourth row returns the value 0714 for the first expression. The expression starts at position 3 and returns all characters because the Count argument is not set. The second expression also starts at position 2 but returns only the characters 07 because the Count argument is 2.
 
 Load script
 
@@ -127,14 +130,14 @@ Chart expression
 
 Overview
 
-A data source contains a column called `OrderID` that uses the following structured format: `ORDYYYY-COUNTRYCODE-ORDERNUMBER`. To satisfy a reporting requirement, you must extract and present the country code as a separate column.
+A data source contains a column called OrderID that uses the following structured format: ORDYYYY-COUNTRYCODE-ORDERNUMBER. To satisfy a reporting requirement, you must extract and present the country code as a separate column.
 
 Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Orders`.
-- One field in the data table called `OrderID`.
+- A dataset which is loaded into a data table called Orders.
+- One field in the data table called OrderID.
 
 Load script
 
@@ -152,11 +155,11 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `OrderID`
+- OrderID
 
 Create the following calculated dimension:
 
-- `=Mid(OrderID, 9, 2)` to extract the two-letter country code from the `OrderID`.
+- =Mid(OrderID, 9, 2) to extract the two-letter country code from the OrderID.
 
 Results table
 
@@ -166,8 +169,8 @@ Results table
 | ORD2024-UK-654321 | UK |
 | ORD2024-US-123456 | US |
 
-The output of the `Mid` function has successfully extracted the two-letter country codes from the `OrderID` string values.
+The output of the Mid function has successfully extracted the two-letter country codes from the OrderID string values.
 
 ## Learn more
 
-- [*Index Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/Index.htm)
+- [*Index Script and chart function*](Index.htm)

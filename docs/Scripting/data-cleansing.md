@@ -4,14 +4,15 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Tutorial - Next steps in scripting"]
 ---
+
 # Data cleansing
 
 There are times when the source data that you load into Qlik Sense is not necessarily how you want it in the Qlik Sense application. Qlik Sense provides a host of functions and statements that allow you to transform our data into a format that works for us.
 
-Mapping can be used in a Qlik Sense script to replace or modify [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/data-cleansing.htm#glossary-1 "Glossary term") values or names when the script is run, so mapping can be used to clean up data and make it more consistent or to replace parts or all of a field value.
+Mapping can be used in a Qlik Sense script to replace or modify [field](#glossary-1 "Glossary term") values or names when the script is run, so mapping can be used to clean up data and make it more consistent or to replace parts or all of a field value.
 
 When you load data from different tables, field values denoting the same thing are not always consistently named. Since this lack of consistency hinders associations, the problem needs to be solved. This can be done in an elegant way by creating a mapping table for the comparison of field values.
 
@@ -45,7 +46,7 @@ The Mapping prefix is used in a script to create a mapping table. The mapping ta
 Do the following:
 
 1. Create a new application and give it a name.
-2. Add a new script section in the **Data load editor**.
+2. Add a new script section in the Data load editor.
 3. Call the section Countries.
 4. Enter the following script:
 
@@ -98,7 +99,7 @@ MAPPING LOAD * INLINE [
     United States, US
     United States of America, US
 ];
-	
+
 Data:
 LOAD
     ID,
@@ -109,7 +110,7 @@ FROM [lib://DataFiles/Data.xlsx]
 (ooxml, embedded labels, table is Sheet1);
 ```
 
-3. Modify the line containing `Country,` as follows:
+3. Modify the line containing Country, as follows:
 
 ```
 ApplyMap('CountryMap', Country) as Country,
@@ -117,17 +118,17 @@ ApplyMap('CountryMap', Country) as Country,
 
 The first parameter of the ApplyMap() function has the map name enclosed in single quotes. The second parameter is the field that has the data that is to be replaced.
 
-4. Click **Load data**.
+4. Click Load data.
 
 The resulting table looks like this:
 
 Table showing data loaded using ApplyMap() function
 
-![Table showing data loaded using ApplyMap function.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-data-cleansing-applymap.png)
+![Table showing data loaded using ApplyMap function.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-data-cleansing-applymap.png "Click to view full size")
 
 The various spellings of the United States have all been changed to US. There is one record that was not spelled correctly so the ApplyMap() function did not change that field value. Using the ApplyMap() function, you can use the third parameter to add a default expression if the mapping table does not have a matching value.
 
-5. Add `'US'` as the third parameter of the ApplyMap() function, to handle such cases when the country may have been entered incorrectly:
+5. Add 'US' as the third parameter of the ApplyMap() function, to handle such cases when the country may have been entered incorrectly:
 
 ```
 ApplyMap('CountryMap', Country, 'US') as Country,
@@ -155,14 +156,15 @@ FROM [lib://DataFiles/Data.xlsx]
 (ooxml, embedded labels, table is Sheet1);
 ```
 
-6. Click **Load data**.
+6. Click Load data.
 
 The resulting table looks like this:
 
 Table showing data loaded using ApplyMap function
 
-![](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-data-cleansing-applymap-updated.png)
-> **Note:** To learn more about ApplyMap(), see this blog post in Qlik Community: [Don't join - use Applymap instead](https://community.qlik.com/t5/Qlik-Design-Blog/Don-t-join-use-Applymap-instead/ba-p/1467592)
+![](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-data-cleansing-applymap-updated.png "Click to view full size")
+
+Information noteTo learn more about ApplyMap(), see this blog post in Qlik Community: [Don't join - use Applymap instead](https://community.qlik.com/t5/Qlik-Design-Blog/Don-t-join-use-Applymap-instead/ba-p/1467592)
 
 ## MapSubstring() function
 
@@ -191,7 +193,7 @@ F1, F2
 
 In the CodeMap table, the numbers 1 through 5, and 11 are mapped.
 
-2. In the Data section of the script modify the `Code` statement as follows:
+2. In the Data section of the script modify the Code statement as follows:
 
 ```
 MapSubString('CodeMap', Code) as Code
@@ -230,17 +232,17 @@ FROM [lib://DataFiles/Data.xlsx]
 (ooxml, embedded labels, table is Sheet1);
 ```
 
-3. Click **Load data**.
+3. Click Load data.
 
 The resulting table looks like this:
 
 Table showing data loaded using MapSubString function
 
-![Table showing data loaded using MapSubString function.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-data-cleansing-mapsubstring.png)
+![Table showing data loaded using MapSubString function.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-data-cleansing-mapsubstring.png "Click to view full size")
 
 The numeric characters were replaced with text in the Code field. If a number appears more than once as it does for ID=3, and ID=4, the text is also repeated. ID=4. Susan McDaniels had a 6 in her code. Since 6 was not mapped in the CodeMap table, it remains unchanged. ID=5, Dean Smith, had 111 in his code. This has been mapped as 'elevenone'.
 
-> **Note:** To learn more about MapSubstring(), see this blog post in Qlik Community: [Mapping … and not the geographical kind](https://community.qlik.com/t5/Qlik-Design-Blog/Mapping-and-not-the-geographical-kind/ba-p/1463192)
+Information noteTo learn more about MapSubstring(), see this blog post in Qlik Community: [Mapping … and not the geographical kind](https://community.qlik.com/t5/Qlik-Design-Blog/Mapping-and-not-the-geographical-kind/ba-p/1463192)
 
 ## Map … Using
 
@@ -265,7 +267,7 @@ LOAD
     Country
 FROM [lib://DataFiles/Data.xlsx]
 (ooxml, embedded labels, table is Sheet1);
-					
+
 Data2:
 LOAD
     ID,
@@ -275,10 +277,10 @@ FROM [lib://DataFiles/Data.xlsx]
 UNMAP;
 ```
 
-2. Click **Load data**.
+2. Click Load data.
 
 The resulting table looks like this:
 
 Table showing data loaded using Map … Using function
 
-![Table showing data loaded using Map … Using function.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-data-cleansing-mapusing.png)
+![Table showing data loaded using Map … Using function.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-data-cleansing-mapusing.png "Click to view full size")

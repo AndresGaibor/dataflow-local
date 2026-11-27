@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# KeepChar Script and chart function
+
 Expand/Collapse all
 
 # KeepChar Script and chart function
@@ -30,10 +33,10 @@ Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `KeepChar ( 'a1b2c3','123' )` | Returns `123` |
-| `KeepChar ( 'a1b2c3','1234' )` | Returns `123` |
-| `KeepChar ( 'a1b22c3','1234' )` | Returns `1223` |
-| `KeepChar( 'a1b2c3','312' )` | Returns `123` |
+| KeepChar ( 'a1b2c3','123' ) | Returns 123 |
+| KeepChar ( 'a1b2c3','1234' ) | Returns 123 |
+| KeepChar ( 'a1b22c3','1234' ) | Returns 1223 |
+| KeepChar( 'a1b2c3','312' ) | Returns 123 |
 
 ## Example - KeepChar fundamentals
 
@@ -45,11 +48,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `InputText` which contains the original text string to be processed.
-  - `CharsToKeep` which contains the list of characters to retain from the original text string after processing.
+  - InputText which contains the original text string to be processed.
+  - CharsToKeep which contains the list of characters to retain from the original text string after processing.
 
 Load script
 
@@ -72,7 +75,7 @@ Load the data and open a sheet. Create a new table and add these fields as dimen
 
 Create the following calculated dimension:
 
-- `=KeepChar(InputText, CharsToKeep)`, to calculate the characters in `InputText` that match the characters in `CharsToKeep`.
+- =KeepChar(InputText, CharsToKeep), to calculate the characters in InputText that match the characters in CharsToKeep.
 
 Results table
 
@@ -82,7 +85,7 @@ Results table
 | a^b^c | abc | abc |
 | A^b^c | abc | bc |
 
-The `KeepChar(InputText, CharsToKeep)` column returns only those characters in `InputText` that exactly match the characters in `CharsToKeep`. For example, the third row returns `bc` as those are the only characters in `InputText` that match the characters in `CharsToKeep`. The uppercase character `A` is not returned as the items in `CharsToKeep` are only lowercase.
+The KeepChar(InputText, CharsToKeep) column returns only those characters in InputText that exactly match the characters in CharsToKeep. For example, the third row returns bc as those are the only characters in InputText that match the characters in CharsToKeep. The uppercase character A is not returned as the items in CharsToKeep are only lowercase.
 
 Load script
 
@@ -117,11 +120,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `InputText` which contains the original text string to be processed.
-  - `CharsToKeep` which contains the list of characters to retain from the original text string after processing.
+  - InputText which contains the original text string to be processed.
+  - CharsToKeep which contains the list of characters to retain from the original text string after processing.
 
 Load script
 
@@ -144,7 +147,7 @@ Load the data and open a sheet. Create a new table and add these fields as dimen
 
 Create the following calculated dimension:
 
-- `=KeepChar(InputText, CharsToKeep)`, to calculate the characters in `InputText` that match the characters in `CharsToKeep`.
+- =KeepChar(InputText, CharsToKeep), to calculate the characters in InputText that match the characters in CharsToKeep.
 
 Results table
 
@@ -154,8 +157,8 @@ Results table
 | Find the goods received in bay 16a | 0123456789 | 16 |
 | The numeric code for input processing is 123-456|789 | 0123456789 | 123456789 |
 
-Compare the output of the `KeepChar` function to the original `InputText` string values that loaded in the script. The `KeepChar` function has successfully removed all non-numeric characters from the input text.
+Compare the output of the KeepChar function to the original InputText string values that loaded in the script. The KeepChar function has successfully removed all non-numeric characters from the input text.
 
 ## Learn more
 
-- [*PurgeChar Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/PurgeChar.htm)
+- [*PurgeChar Script and chart function*](PurgeChar.htm)

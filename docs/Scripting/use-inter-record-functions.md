@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Tutorial - Next steps in scripting", "Transforming data"]
 ---
+
 # Using inter-record functions: Peek, Previous, and Exists
 
 These functions are used when a value from previously loaded records
@@ -72,13 +73,14 @@ Currently this only collects data for month, hires and terminations, so we are g
 Do the following:
 
 1. Open the Advanced Scripting Tutorial application.
-2. Add a new script section in the **Data load editor**.
+2. Add a new script section in the Data load editor.
 3. Call the section Employees.
-4. Under **DataFiles** in the right menu, click **Select data**.
+4. Under DataFiles in the right menu, click Select data.
 5. Upload and then select Employees.xlsx.
-> **Note:** Under Field names, make sure that Embedded field names is selected to include the names of the table fields when you load the data.
 
-6. In the **Select data from** window, click **Add**.
+Information noteUnder Field names, make sure that Embedded field names is selected to include the names of the table fields when you load the data.
+
+6. In the Select data from window, click Add.
 
 Your script should look like this:
 
@@ -99,11 +101,11 @@ FROM [lib://DataFiles/Employees.xlsx]
        Hired,
        Terminated,
        If(rowno()=1, Hired-Terminated,  peek([Employee Count], -1)+(Hired-Terminated)) as [Employee Count]
-   FROM [lib://DataFiles/Employees.xlsx]		
+   FROM [lib://DataFiles/Employees.xlsx]
    (ooxml, embedded labels, table is Sheet1);
    ```
 
-The dates in the Date field in the Excel [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/use-inter-record-functions.htm#glossary-0 "Glossary term") are in the format MM/DD/YYYY. To ensure dates are interpreted correctly using the format from the system [variables](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/use-inter-record-functions.htm#glossary-1 "Glossary term") the Date function is applied to the Date field.
+The dates in the Date field in the Excel [sheet](#glossary-0 "Glossary term") are in the format MM/DD/YYYY. To ensure dates are interpreted correctly using the format from the system [variables](#glossary-1 "Glossary term") the Date function is applied to the Date field.
 
 The Peek() function lets you identify any value loaded for a defined field. In the expression, we first look to see if the rowno() is equal to 1. If it is equal to 1, no Employee Count will exist, so we populate the field with the difference of Hired minus Terminated.
 
@@ -151,17 +153,17 @@ LOAD
     Terminated,
     [Employee Count],
     If(rowno()=1,0,[Employee Count]-Previous([Employee Count])) as [Employee Var]
-Resident [Employees Init] Order By Row asc;	
+Resident [Employees Init] Order By Row asc;
 Drop Table [Employees Init];
 ```
 
-9. Click **Load data**.
+9. Click Load data.
 
 In a new sheet in the application overview, create a table using Date, Hired, Terminated, Employee Count and Employee Var as the columns of the table. The resulting table should look like this:
 
 Table following use of Peek and Previous in script
 
-![Table following use of Peek and Previous in script.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-peek-previous-table.png)
+![Table following use of Peek and Previous in script.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-peek-previous-table.png "Click to view full size")
 
 Peek() and Previous() allow you to target defined rows within a table. The biggest difference between the two functions is that the Peek() function allows the user to look into a field that was not previously loaded into the script whereas the Previous() function can only look into a previously loaded field. Previous() operates on the input to the LOAD statement, whereas Peek() operates on the output of the LOAD statement. (Same as the difference between RecNo() and RowNo().) This means that the two functions will behave differently if you have a Where-clause.
 
@@ -169,8 +171,8 @@ So the Previous() function would be better when you need to show the current val
 
 The Peek() function would be better when you are targeting a field that has not been previously loaded into the table, or when youo need to target a specific row. This was shown in the example where we calculated the Employee Count by peeking into the previous month’s Employee Count, and then added the difference between the hired and terminated employees for the current month. Remember that Employee Count was not a field in the original file
 
-> **Note:** To learn more about when to use Peek() and Previous(), see this blog post in Qlik Community: [Peek() vs Previous() – When to Use Each](https://community.qlik.com/t5/Qlik-Design-Blog/Peek-vs-Previous-When-to-Use-Each/ba-p/1475913).
-> The behaviors are discussed in the context of QlikView. However, the logic applies equally to Qlik Sense.
+Information noteTo learn more about when to use Peek() and Previous(), see this blog post in Qlik Community: [Peek() vs Previous() – When to Use Each](https://community.qlik.com/t5/Qlik-Design-Blog/Peek-vs-Previous-When-to-Use-Each/ba-p/1475913).
+The behaviors are discussed in the context of QlikView. However, the logic applies equally to Qlik Sense.
 
 ## Using Exists()
 
@@ -181,7 +183,7 @@ In the following example we also use the Dual() function to assign numeric value
 Do the following:
 
 1. Create a new application and give it a name.
-2. Add a new script section in the **Data load editor**.
+2. Add a new script section in the Data load editor.
 3. Call the section People.
 4. Enter the following script:
 
@@ -246,7 +248,7 @@ Where Exists(PersonID);
 DROP Table AgeTemp;
 ```
 
-5. Click **Load data**.
+5. Click Load data.
 
 In the script, the Age and AgeBucket fields are loaded only if the PersonID has already been loaded in the data model.
 
@@ -256,24 +258,24 @@ The output of the script look like this:
 
 Table following use of Exists in script
 
-![Table following use of Exists in script.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-exists-table.png)
+![Table following use of Exists in script.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-exists-table.png "Click to view full size")
 
 If none of the PersonIDs in the AgeTemp table had been loaded into the data model, then the Age and AgeBucket fields would not have been joined to the People table. Using the Exists() function can help to prevent orphan records/data in the data model, that is, Age and AgeBucket fields that do not have any associated people.
 
 6. Create a new sheet and give it a name.
-7. Open the new sheet and click **Edit sheet**.
+7. Open the new sheet and click Edit sheet.
 8. Add a standard table to the sheet with the dimension AgeBucket and name the visualization Age Groups.
 9. Add a bar chart to the sheet with the dimension AgeBucket, and the measure Count([AgeBucket]). Name the visualization Number of people in each age group.
-10. Adjust the properties of the table and bar chart to your preference and then click **Done**.
+10. Adjust the properties of the table and bar chart to your preference and then click Done.
 
     Your sheet should look similar to this:
 
     Sheet with groupings by age
 
-    ![Sheet with groupings by age.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-exists-chart.png)
+    ![Sheet with groupings by age.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-exists-chart.png "Click to view full size")
 
 The Dual() function is useful in the script, or in a chart expression, when there is the need to assign a numeric value to a string.
 
-In the script above you have an application that loads ages, and you have decided to put those ages in buckets so that you can create [visualizations](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/use-inter-record-functions.htm#glossary-2 "Glossary term") based on the age buckets versus the actual ages. There is a bucket for people under 25, between 25 and 35, and so on. By using the Dual() function, the age buckets can be assigned a numeric value that can later be used to sort the age buckets in a list box or in a chart. So, as in the application sheet, the sort puts "No age" at the end of the list.
+In the script above you have an application that loads ages, and you have decided to put those ages in buckets so that you can create [visualizations](#glossary-2 "Glossary term") based on the age buckets versus the actual ages. There is a bucket for people under 25, between 25 and 35, and so on. By using the Dual() function, the age buckets can be assigned a numeric value that can later be used to sort the age buckets in a list box or in a chart. So, as in the application sheet, the sort puts "No age" at the end of the list.
 
-> **Note:** To learn more about Exists() and Dual(), see this blog post in Qlik Community: [Dual & Exists – Useful Functions](https://community.qlik.com/t5/Qlik-Design-Blog/Dual-Exists-Useful-Functions/ba-p/1465290)
+Information noteTo learn more about Exists() and Dual(), see this blog post in Qlik Community: [Dual & Exists – Useful Functions](https://community.qlik.com/t5/Qlik-Design-Blog/Dual-Exists-Useful-Functions/ba-p/1465290)

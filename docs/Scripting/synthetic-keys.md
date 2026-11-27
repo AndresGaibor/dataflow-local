@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Understanding script syntax and data structures", "Logical tables"]
 ---
+
 # Synthetic keys
 
 Qlik Sense creates synthetic keys when two or more data tables have two or more fields in common. These keys are anonymous fields that represent all occurring combinations of the composite key.
@@ -15,15 +16,15 @@ If you receive a warning about synthetic keys when loading data, you should revi
 
 Multiple synthetic keys are often a symptom of an incorrect data model. However, a sure sign of an incorrect data model is if you have synthetic keys based on other synthetic keys.
 
-> **Warning:** When the number of synthetic keys increases, depending on data amounts, table structure and other factors, Qlik Sense may or may not handle them gracefully, and may end up using excessive amount of time and/or memory. In such a case you need to re-work your script by removing all synthetic keys.
+Warning noteWhen the number of synthetic keys increases, depending on data amounts, table structure and other factors, Qlik Sense may or may not handle them gracefully, and may end up using excessive amount of time and/or memory. In such a case you need to re-work your script by removing all synthetic keys.
 
 Three tables associated with synthetic key $Syn 1.
 
-![Three tables associated with a synthetic key.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ex_gen_SyntheticKeys_dmv.png)
+![Three tables associated with a synthetic key.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ex_gen_SyntheticKeys_dmv.png "Click to view full size")
 
 ## Handling synthetic keys
 
-If you need to avoid synthetic keys, there are a number of ways of solving this in the [data load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/synthetic-keys.htm#glossary-0 "Glossary term").
+If you need to avoid synthetic keys, there are a number of ways of solving this in the [data load script](#glossary-0 "Glossary term").
 
 - Check that only fields that logically link two tables are used as keys.
 
@@ -34,4 +35,4 @@ If you need to avoid synthetic keys, there are a number of ways of solving this 
 
 Related learning:
 
-- [Introduction to the data model viewer](https://help.qlik.com/lnk/Intro_Data_Model_Viewer_QS)
+- [Introduction to the data model viewer](/lnk/Intro_Data_Model_Viewer_QS)

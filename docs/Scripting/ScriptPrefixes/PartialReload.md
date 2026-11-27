@@ -4,16 +4,21 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script prefixes"]
 ---
+
+# Partial reload
+
 Expand/Collapse all
 
 # Partial reload
 
-A full reload always starts by deleting all tables in the existing data model, and then runs the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/PartialReload.htm#glossary-0 "Glossary term").
+A full reload always starts by deleting all tables in the existing data model, and then runs the [load script](#glossary-0 "Glossary term").
 
-> **Note:** Partial reloads are not supported with load scripts for scripts. For information on scripts, see [*Working with scripts in the catalog*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ScriptEditor/using-the-script-editor.htm).
+Information note
+
+Partial reloads are not supported with load scripts for scripts. For information on scripts, see [*Working with scripts in the catalog*](../../ScriptEditor/using-the-script-editor.htm).
 
 A partial reload will not do this. Instead it keeps all tables in the data model and then executes only Load and Select statements preceded by an Add, Merge, or Replace prefix. Other data tables are not affected by the command. The only argument denotes that the statement should be executed only during partial reloads, and should be disregarded during full reloads. The following table summarizes statement execution for partial and full reloads.
 
@@ -29,11 +34,11 @@ Partial reloads have several benefits compared to full reloads:
 - Less memory is consumed, because less data is loaded.
 - More reliable, because queries to source data run faster, reducing the risk of network problems.
 
-> **Note:** For partial reload to work properly, the application must be opened with data before a partial reload is triggered.
+Information noteFor partial reload to work properly, the application must be opened with data before a partial reload is triggered.
 
-Perform a partial reload using the **Reload** button. For more information, see [*Button*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Visualizations/Button/button.htm). You can also use the Qlik Engine JSON API.
+Perform a partial reload using the Reload button. For more information, see [*Button*](../../Visualizations/Button/button.htm). You can also use the Qlik Engine JSON API.
 
-To perform a partial reload on a schedule, click ![More](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_more.svg) on an application and then choose **Schedule reload**. In the dialog box that opens, turn on **Partial reload**.
+To perform a partial reload on a schedule, click ![More](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_more.svg) on an application and then choose Schedule reload. In the dialog box that opens, turn on Partial reload.
 
 ## Limitations
 
@@ -61,7 +66,7 @@ As a workaround you can surround the command with following if-statement:
 IF NOT IsPartialReload() THEN ... ENDIF.
 ```
 
-A partial reload can remove values from the data. However, this will not be reflected in the list of distinct values, which is a table maintained internally. So, after a partial reload, the list will contain all distinct values that have existed in the [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/PartialReload.htm#glossary-1 "Glossary term") since the last full reload, which may be more than what currently exists after the partial reload.
+A partial reload can remove values from the data. However, this will not be reflected in the list of distinct values, which is a table maintained internally. So, after a partial reload, the list will contain all distinct values that have existed in the [field](#glossary-1 "Glossary term") since the last full reload, which may be more than what currently exists after the partial reload.
 This affects the output of the FieldValueCount() and the FieldValue() functions. The FieldValueCount() could potentially return a number greater than the current number of field values.
 
 Example
@@ -70,7 +75,7 @@ Example
 
 ### Load script
 
-Add the example script to your application and do a partial reload. To see the result, add the fields listed in the results column to a [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/PartialReload.htm#glossary-3 "Glossary term") in your application.
+Add the example script to your application and do a partial reload. To see the result, add the fields listed in the results column to a [sheet](#glossary-3 "Glossary term") in your application.
 
 ```
 T1:
@@ -151,8 +156,8 @@ The first table is loaded during a full reload and the second table simply repla
 
 ## Learn more
 
-- [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm)
-- [*Select*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Select.htm)
-- [*Add*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Add.htm)
-- [*Merge*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Merge.htm)
-- [*Replace*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Replace.htm)
+- [*Load*](../ScriptRegularStatements/Load.htm)
+- [*Select*](../ScriptRegularStatements/Select.htm)
+- [*Add*](Add.htm)
+- [*Merge*](Merge.htm)
+- [*Replace*](Replace.htm)

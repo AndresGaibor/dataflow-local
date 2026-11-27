@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script prefixes"]
 ---
+
 # IntervalMatch
 
 The IntervalMatch prefix is used to create a table matching discrete numeric values to one or more numeric intervals, and optionally matching the values of one or several additional keys.
@@ -20,7 +21,7 @@ IntervalMatch (matchfield,keyfield1
 ... keyfield5 ] ) (loadstatement
 | selectstatement )
 
-The IntervalMatch prefix must be placed before a LOAD or a SELECT statement that loads the intervals. The [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/IntervalMatch.htm#glossary-0 "Glossary term") containing the discrete data points (Time in the example below) and additional keys must already have been loaded into Qlik Sense before the statement with the IntervalMatch prefix. The prefix does not by itself read this field from the database table. The prefix transforms the loaded table of intervals and keys to a table that contains an additional column: the discrete numeric data points. It also expands the number of records so that the new table has one record per possible combination of discrete data point, interval and value of the key field(s).
+The IntervalMatch prefix must be placed before a LOAD or a SELECT statement that loads the intervals. The [field](#glossary-0 "Glossary term") containing the discrete data points (Time in the example below) and additional keys must already have been loaded into Qlik Sense before the statement with the IntervalMatch prefix. The prefix does not by itself read this field from the database table. The prefix transforms the loaded table of intervals and keys to a table that contains an additional column: the discrete numeric data points. It also expands the number of records so that the new table has one record per possible combination of discrete data point, interval and value of the key field(s).
 
 The intervals may be overlapping and the discrete values will be linked to all matching intervals.
 

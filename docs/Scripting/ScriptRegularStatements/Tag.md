@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
 # Tag
 
 This script statement provides a way to assign tags to one or more fields or tables. If an attempt to tag a field or table not present in the application is made, the tagging will be ignored. If conflicting occurrences of a field or tag name are found, the last value is used.
@@ -15,11 +16,7 @@ Syntax:
 
 Tag [field|fields] fieldlist with tagname
 
-  
-
 Tag [field|fields] fieldlist using mapname
-
-  
 
 Tag table tablelist with tagname
 
@@ -54,7 +51,7 @@ tag field Alpha with 'MyTag2';
 
 ## Learn more
 
-- [*Untag*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Untag.htm)
-- [*Field tags*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/field-tags.htm)
-- [*Mapping*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Mapping.htm)
-- [*Field/Fields*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Field.htm)
+- [*Untag*](Untag.htm)
+- [*Field tags*](../field-tags.htm)
+- [*Mapping*](../ScriptPrefixes/Mapping.htm)
+- [*Field/Fields*](Field.htm)

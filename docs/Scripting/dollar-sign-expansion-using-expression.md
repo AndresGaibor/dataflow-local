@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Understanding script syntax and data structures", "Dollar-sign expansions"]
 ---
+
+# Dollar-sign expansion using an expression
+
 Expand/Collapse all
 
 # Dollar-sign expansion using an expression
@@ -51,9 +54,8 @@ A, 200
 B, 240
 B, 230
 C, 410
-C, 330 ];                      
- 
- 
+C, 330 ];
+
 MyTable2: // Create table and load aggregations as field values for Measure
 Load * Inline [
 Measure
@@ -62,22 +64,22 @@ sum(Sales)
 count(distinct Dim)];
 ```
 
-For more information about using inline loads, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+For more information about using inline loads, see [*Using inline loads to load data*](inline-loads-qs.htm).
 
 Explanation
 
-The script allows you to select a [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/dollar-sign-expansion-using-expression.htm#glossary-0 "Glossary term") by referencing the measure in a chart expression. The chart expression contains the variable expansion `$(=MinString(Measure))`. `MinString()` finds string values in the expression and returns the first text value sorted alphabetically, in this case `avg(Sales)`. This makes it possible to interactively decide (and select) which expression to use in a [visualization](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/dollar-sign-expansion-using-expression.htm#glossary-1 "Glossary term") without accessing and manipulating the [properties](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/dollar-sign-expansion-using-expression.htm#glossary-2 "Glossary term") of the object.
+The script allows you to select a [measure](#glossary-0 "Glossary term") by referencing the measure in a chart expression. The chart expression contains the variable expansion $(=MinString(Measure)). MinString() finds string values in the expression and returns the first text value sorted alphabetically, in this case avg(Sales). This makes it possible to interactively decide (and select) which expression to use in a [visualization](#glossary-1 "Glossary term") without accessing and manipulating the [properties](#glossary-2 "Glossary term") of the object.
 
 Output
 
 Create the following table in Qlik Sense by using:
 
-- Dimension: `Dim`
+- Dimension: Dim
 - Measures:
 
-  - `='$(vSelectMeasure)'`
-  - `=$(=MinString(Measure))`
-  - `Avg(Sales)`
+  - ='$(vSelectMeasure)'
+  - =$(=MinString(Measure))
+  - Avg(Sales)
 
 Table - Dollar-sign expansion using an expression
 
@@ -104,7 +106,7 @@ Load recno() as Denominator autogenerate 100;
 
 Explanation
 
-This script generates a pair of fields, containing 100 values each, that function as Numerators and Denominators in a calculation of the quota between the two. The chart measure contains the variable expansion `='$( vDivision )'` , making it possible to interactively decide (and select) which quota to be calculated.
+This script generates a pair of fields, containing 100 values each, that function as Numerators and Denominators in a calculation of the quota between the two. The chart measure contains the variable expansion ='$( vDivision )' , making it possible to interactively decide (and select) which quota to be calculated.
 
 Output
 
@@ -112,11 +114,11 @@ Create the following table in Qlik Sense by using:
 
 - Dimensions:
 
-  - `Numerator`
-  - `Denominator`
-- Measure: `='$(vDivision)'`
+  - Numerator
+  - Denominator
+- Measure: ='$(vDivision)'
 
-The resultant quota (Totals) is affected by the selected values in the fields. `Numerator` (=5) and `Denominator` (=3) and will be recalculated with each new selection in either field.
+The resultant quota (Totals) is affected by the selected values in the fields. Numerator (=5) and Denominator (=3) and will be recalculated with each new selection in either field.
 
 Table - Dollar-sign expansion as expression
 
@@ -136,7 +138,7 @@ $(include=filename)
 The above text will be replaced by the content
 of the file specified after the equal sign. This feature is useful when storing scripts or parts of scripts in text files.
 
-For more information, see [*Include*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemVariables/Include.htm).
+For more information, see [*Include*](SystemVariables/Include.htm).
 
 ## Dollar expansions and alternate states
 
@@ -152,4 +154,4 @@ The calculation will return the sum of amount based on the selection in the stat
 
 ## Interaction between dollar-sign expansions and outer set expressions
 
-When you combine dollar-sign expansions with outer set expressions, a specific order of evaluation applies. For details, see [*Outer set expressions and dollar-sign expansions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/SetAnalysis/outer-set-expression-dollar-sign-expansion.htm).
+When you combine dollar-sign expansions with outer set expressions, a specific order of evaluation applies. For details, see [*Outer set expressions and dollar-sign expansions*](../ChartFunctions/SetAnalysis/outer-set-expression-dollar-sign-expansion.htm).

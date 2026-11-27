@@ -4,14 +4,15 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
 # JsonSetEx Script and chart function
 
 JsonSetEx() modifies strings containing JSON (JavaScript Object Notation) data. It can set or insert JSON values with the new location specified by the path. The data must be valid JSON but can contain extra spaces or newlines.
 
-> **Note:** You can add any number of name-value pairs with JsonSetEx.
+Information noteYou can add any number of name-value pairs with JsonSetEx.
 
 Syntax:
 

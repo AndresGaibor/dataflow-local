@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script prefixes"]
 ---
+
+# Sample
+
 Expand/Collapse all
 
 # Sample
@@ -20,7 +23,7 @@ Sample 
 p ( loadstatement | selectstatement
 )
 
-The expression that is evaluated does not define the percentage of records from the [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Sample.htm#glossary-0 "Glossary term") that will be loaded into the Qlik Sense application, but the probability of each record that is read to be loaded into the application. In other words, specifying a value `p = 0.5` does not mean that 50% of the total number of records will be loaded, but instead that for each record there will be a 50% chance that it is loaded into the Qlik Sense application.
+The expression that is evaluated does not define the percentage of records from the [dataset](#glossary-0 "Glossary term") that will be loaded into the Qlik Sense application, but the probability of each record that is read to be loaded into the application. In other words, specifying a value p = 0.5 does not mean that 50% of the total number of records will be loaded, but instead that for each record there will be a 50% chance that it is loaded into the Qlik Sense application.
 
 Arguments
 
@@ -30,9 +33,9 @@ Arguments
 
 ## When to use Sample
 
-Sample is useful when you would like to sample data coming from a large table, to understand the nature of data, distribution or [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Sample.htm#glossary-1 "Glossary term") contents. As it brings a subset of data, the data loads are faster, allowing faster testing of scripts. Unlike `First`, the `Sample` function brings data from the whole table, instead of being limited to the first few rows. This can provide a more accurate representation of the data in some cases.
+Sample is useful when you would like to sample data coming from a large table, to understand the nature of data, distribution or [field](#glossary-1 "Glossary term") contents. As it brings a subset of data, the data loads are faster, allowing faster testing of scripts. Unlike First, the Sample function brings data from the whole table, instead of being limited to the first few rows. This can provide a more accurate representation of the data in some cases.
 
-The following examples show two possible uses of the `Sample` script prefix:
+The following examples show two possible uses of the Sample script prefix:
 
 Sample 0.15 SQL SELECT \* from Longtable;
 
@@ -41,11 +44,11 @@ LOAD \* from Longtab.csv;
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 ## Example 1 – Sample from an inline table
 
@@ -53,15 +56,15 @@ Load script and results
 
 Overview
 
-In this example, the script loads a sample set of data from a dataset containing seven records into a table named `Transactions` from an inline table.
+In this example, the script loads a sample set of data from a dataset containing seven records into a table named Transactions from an inline table.
 
 Load script
 
 ```
 Transactions:
 SAMPLE 0.3
-LOAD 
-* 
+LOAD
+*
 Inline [
 id, date, amount
 1, 08/30/2018, 23.56
@@ -78,12 +81,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `id`
-- `amount`
+- id
+- amount
 
-Add the following the [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Sample.htm#glossary-2 "Glossary term"):
+Add the following the [measure](#glossary-2 "Glossary term"):
 
-`=sum(amount)8`
+=sum(amount)8
 
 Results table
 
@@ -102,7 +105,7 @@ Load script and results
 
 Overview
 
-In this example, using `Autogenerate`, a dataset of 100 records is created with the fields `date`, `id`, and `amount`. However, the `Sample` prefix is used, with a value of 0.1.
+In this example, using Autogenerate, a dataset of 100 records is created with the fields date, id, and amount. However, the Sample prefix is used, with a value of 0.1.
 
 Load script
 
@@ -121,8 +124,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `id`
-- `amount`
+- id
+- amount
 
 Add the following the measure:
 
@@ -142,5 +145,5 @@ In the iteration of the load used in this example, seven records were loaded fro
 
 ## Learn more
 
-- [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm)
-- [*Select*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Select.htm)
+- [*Load*](../ScriptRegularStatements/Load.htm)
+- [*Select*](../ScriptRegularStatements/Select.htm)

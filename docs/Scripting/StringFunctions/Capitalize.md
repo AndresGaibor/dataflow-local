@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# Capitalize Script and chart function
+
 Expand/Collapse all
 
 # Capitalize Script and chart function
@@ -29,8 +32,8 @@ Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `Capitalize( 'star trek' )` | Returns `Star Trek` |
-| `Capitalize( 'AA bb cC Dd' )` | Returns `Aa Bb Cc Dd` |
+| Capitalize( 'star trek' ) | Returns Star Trek |
+| Capitalize( 'AA bb cC Dd' ) | Returns Aa Bb Cc Dd |
 
 ## Example - Capitalize fundamentals
 
@@ -42,8 +45,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `TextToCapitalize`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called TextToCapitalize.
 
 Load script
 
@@ -62,11 +65,11 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `TextToCapitalize`
+- TextToCapitalize
 
 Create the following calculated dimension:
 
-- `=Capitalize(TextToCapitalize)`, to calculate which characters to capitalize.
+- =Capitalize(TextToCapitalize), to calculate which characters to capitalize.
 
 Results table
 
@@ -90,7 +93,7 @@ Load script
 The following code shows how to use the function in a load script.
 
 ```
-Load 
+Load
 String,
 Capitalize(String)
 Inline
@@ -114,14 +117,14 @@ Chart expression
 
 Overview
 
-A dataset of customer names are entered using various formats, such as all lowercase, all uppercase, or mixed case. The `Capitalize` function is used to clean the data so that the customer's first and last name are properly capitalized when displayed in the dashboard.
+A dataset of customer names are entered using various formats, such as all lowercase, all uppercase, or mixed case. The Capitalize function is used to clean the data so that the customer's first and last name are properly capitalized when displayed in the dashboard.
 
 Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `CustomerName`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called CustomerName.
 
 Load script
 
@@ -143,7 +146,7 @@ Load the data and open a sheet. Create a new table and add this field as a dimen
 
 Create the following calculated dimension:
 
-- `=Capitalize(CustomerName)`, to capitalize the customer names.
+- =Capitalize(CustomerName), to capitalize the customer names.
 
 Results table
 
@@ -153,4 +156,4 @@ Results table
 | john smith | John Smith |
 | miCHAel Brown | Michael Brown |
 
-Compare the output of the `Capitalize` function to the original `CustomerName` string values that loaded in the script. You can see how the function successfully converted the names to use proper case. Displaying customer names with standardized capitalization improves the appearance, consistency, and readability of the dashboard.
+Compare the output of the Capitalize function to the original CustomerName string values that loaded in the script. You can see how the function successfully converted the names to use proper case. Displaying customer names with standardized capitalization improves the appearance, consistency, and readability of the dashboard.

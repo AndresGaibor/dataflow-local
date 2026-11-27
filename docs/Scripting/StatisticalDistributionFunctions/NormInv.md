@@ -4,12 +4,13 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Statistical distribution functions"]
 ---
+
 # NormInv Script and chart function
 
-`NormInv()` returns the inverse of the normal
+NormInv() returns the inverse of the normal
 cumulative distribution for the specified mean and standard deviation.
 
 Syntax:
@@ -31,9 +32,9 @@ Arguments
 
 This function
 is related to the NormDist function in
-the following way:   
-`If prob = NORMDIST(value, m,
-sd), then NORMINV(prob, m, sd) = value`
+the following way:
+If prob = NORMDIST(value, m,
+sd), then NORMINV(prob, m, sd) = value
 
 Limitations:
 
@@ -48,4 +49,4 @@ Examples and results:
 
 ## Learn more
 
-- [*NormDist Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StatisticalDistributionFunctions/NormDist.htm)
+- [*NormDist Script and chart function*](NormDist.htm)

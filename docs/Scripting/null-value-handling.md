@@ -4,32 +4,33 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Understanding script syntax and data structures"]
 ---
+
 # NULL value handling
 
-When no data can be produced for a certain [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/null-value-handling.htm#glossary-0 "Glossary term") as a result of a database
+When no data can be produced for a certain [field](#glossary-0 "Glossary term") as a result of a database
 query and/or a join between tables, the result is normally a NULL value.
 
 ## Overview
 
 The Qlik Sense logic treats the following as real NULL values:
 
-- NULL values returned from an ODBC [connection](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/null-value-handling.htm#glossary-1 "Glossary term").
+- NULL values returned from an ODBC [connection](#glossary-1 "Glossary term").
 - NULL values created as a result of a forced concatenation
-  of tables in the [data load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/null-value-handling.htm#glossary-2 "Glossary term").
+  of tables in the [data load script](#glossary-2 "Glossary term").
 - NULL values created as a result of a join made in the
   data load script
 - NULL values created as a result of the generation of
   field value combinations to be displayed in a table
 
-> **Note:** It is generally impossible to use these NULL values for associations
-> and selections except
-> when the NullAsValue
-> statement is being employed.
+Information noteIt is generally impossible to use these NULL values for associations
+and selections except
+when the NullAsValue
+statement is being employed.
 
-For more information about NullAsValue, see [*NullAsValue*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/NullAsValue.htm).
+For more information about NullAsValue, see [*NullAsValue*](ScriptRegularStatements/NullAsValue.htm).
 
 Text files per definition cannot
 contain NULL values.
@@ -50,7 +51,7 @@ use the following syntax:
 
 SET NULLDISPLAY=;
 
-> **Note:** The use of NULLDISPLAY only affects data from an ODBC data source.
+Information noteThe use of NULLDISPLAY only affects data from an ODBC data source.
 
 If you wish to have the Qlik Sense logic interpret NULL values returned
 from an ODBC connection as an empty string, add the following to your
@@ -58,9 +59,9 @@ script before any SELECT statement:
 
 SET NULLDISPLAY=";
 
-> **Note:** Here '' is actually two single quotation marks without anything in between.
+Information noteHere '' is actually two single quotation marks without anything in between.
 
-For more information about NullDisplay, see [*NullDisplay*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ValueHandlingVariables/NullDisplay.htm) .
+For more information about NullDisplay, see [*NullDisplay*](ValueHandlingVariables/NullDisplay.htm) .
 
 ## Creating NULL values from text files
 
@@ -78,10 +79,10 @@ use:
 
 SET NULLINTERPRET=;
 
-> **Note:**  The use of NULLINTERPRET
-> only affects data from text files and inline clauses.
+Information note The use of NULLINTERPRET
+only affects data from text files and inline clauses.
 
-For more information about NullInterpret, see [*NullInterpret*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ValueHandlingVariables/NullInterpret.htm) .
+For more information about NullInterpret, see [*NullInterpret*](ValueHandlingVariables/NullInterpret.htm) .
 
 ## Propagation of NULL values in expressions
 

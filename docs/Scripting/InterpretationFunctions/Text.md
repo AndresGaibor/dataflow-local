@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Interpretation functions"]
 ---
+
+# Text Script and chart function
+
 Expand/Collapse all
 
 # Text Script and chart function
@@ -30,8 +33,8 @@ Example: Chart expressions
 
 | Example | Results |
 | --- | --- |
-| `Text( 1234 )` | Returns `1234` as a string. There is no numeric value. |
-| `Text( pi( ) )` | Returns `3.1415926535898` as a string. There is no numeric value. |
+| Text( 1234 ) | Returns 1234 as a string. There is no numeric value. |
+| Text( pi( ) ) | Returns 3.1415926535898 as a string. There is no numeric value. |
 
 ## Example - Text fundamentals
 
@@ -43,12 +46,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `ID`
-  - `PostalCode`
-- A preceding load that uses the `Text` function to create a new field named `PostalCode_Text` to ensure that the postal codes remain as text and do not get converted to numbers.
+  - ID
+  - PostalCode
+- A preceding load that uses the Text function to create a new field named PostalCode\_Text to ensure that the postal codes remain as text and do not get converted to numbers.
 
 Load script
 
@@ -72,9 +75,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ID`
-- `PostalCode`
-- `PostalCode_Text`
+- ID
+- PostalCode
+- PostalCode\_Text
 
 Results table
 
@@ -86,7 +89,7 @@ Results table
 | 4 | 11223 | 11223 |
 | 5 | 33445 | 33445 |
 
-The output of the preceding load uses the `Text` function to ensure that any numeric values are treated as text. You can see that the values in the `PostalCode_Text` column are processed as text and appear left-aligned by default, whereas the values in the `PostalCode` column are numbers and appear right-aligned by default.
+The output of the preceding load uses the Text function to ensure that any numeric values are treated as text. You can see that the values in the PostalCode\_Text column are processed as text and appear left-aligned by default, whereas the values in the PostalCode column are numbers and appear right-aligned by default.
 
 ## Example - Text scenario
 
@@ -100,12 +103,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `InvoiceNumber`
-  - `CustomerName`
-- A preceding load that uses the `Text` function to create a new field named `InvoiceNumber_Text` to ensure that the invoice numbers are treated as text.
+  - InvoiceNumber
+  - CustomerName
+- A preceding load that uses the Text function to create a new field named InvoiceNumber\_Text to ensure that the invoice numbers are treated as text.
 
 Load script
 
@@ -129,9 +132,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `InvoiceNumber`
-- `CustomerName`
-- `InvoiceNumber_Text`
+- InvoiceNumber
+- CustomerName
+- InvoiceNumber\_Text
 
 Results table
 
@@ -143,4 +146,4 @@ Results table
 | 10004 | Alice Brown | 10004 |
 | 10005 | Michael Green | 10005 |
 
-The results show that the numeric values in the `InvoiceNumber` column have now been converted to text values in the `InvoiceNumber_Text` column and appear left-aligned.
+The results show that the numeric values in the InvoiceNumber column have now been converted to text values in the InvoiceNumber\_Text column and appear left-aligned.

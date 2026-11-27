@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Working with variables in the data load editor", "Number interpretation variables"]
 ---
+
 # TimestampFormat
 
 The format defined replaces the date and time formats of the operating
@@ -19,7 +20,7 @@ TimestampFormat
 
 Example:
 
-The following examples use 1983-12-14T13:15:30Z as timestamp data to show the results of different SET TimestampFormat statements. The date format used is YYYYMMDD and the time format is h:mm:ss TT. The date format is specified in the SET DateFormat statement and the time format is specified in the SET TimeFormat statement, at the top of the [data load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/NumberInterpretationVariables/TimestampFormat.htm#glossary-0 "Glossary term").
+The following examples use 1983-12-14T13:15:30Z as timestamp data to show the results of different SET TimestampFormat statements. The date format used is YYYYMMDD and the time format is h:mm:ss TT. The date format is specified in the SET DateFormat statement and the time format is specified in the SET TimeFormat statement, at the top of the [data load script](#glossary-0 "Glossary term").
 
 Results
 
@@ -52,7 +53,7 @@ Table showing the time data used and the format for each timestamp in the data s
 | 2018-09-16T13:15:30Z | YYYY-MM-DDhh:mmZ |
 | 9/30/18 19:36:14 | M/D/YY hh:mm:ss |
 
-In the **[Data load editor](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/NumberInterpretationVariables/TimestampFormat.htm#glossary-1 "Glossary term")**, create a new section, and then add the example script and run it. Then add, at least, the fields listed in the results column to a [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/NumberInterpretationVariables/TimestampFormat.htm#glossary-2 "Glossary term") in your application to see the result.
+In the [Data load editor](#glossary-1 "Glossary term"), create a new section, and then add the example script and run it. Then add, at least, the fields listed in the results column to a [sheet](#glossary-2 "Glossary term") in your application to see the result.
 
 Load script
 
@@ -97,7 +98,7 @@ Qlik Sense table showing results of the TimestampFormat interpretation variable 
 
 The next load script uses the same data set. However, it uses SET TimestampFormat='MM/DD/YYYY hh:mm:ss[.fff]' to match the non-ISO 8601 format of the sixth timestamp.
 
-In the **Data load editor**, replace the previous example script with the one below and run it. Then add, at least, the fields listed in the results column to a sheet in your application to see the result.
+In the Data load editor, replace the previous example script with the one below and run it. Then add, at least, the fields listed in the results column to a sheet in your application to see the result.
 
 Load script
 

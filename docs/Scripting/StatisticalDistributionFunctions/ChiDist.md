@@ -4,12 +4,13 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Statistical distribution functions"]
 ---
+
 # ChiDist Script and chart function
 
-`ChiDist()` returns the one-tailed probability
+ChiDist() returns the one-tailed probability
 of the chi2 distribution. The chi2 distribution is associated with a chi2 test.
 
 Syntax:
@@ -29,9 +30,9 @@ Arguments
 | degrees\_freedom | A positive integer stating the number of degrees of freedom. |
 
 This function is related
-to the ChiInv function in the following way:   
-`If prob = CHIDIST(value,df),
-then CHIINV(prob, df) = value`
+to the ChiInv function in the following way:
+If prob = CHIDIST(value,df),
+then CHIINV(prob, df) = value
 
 Limitations:
 
@@ -46,4 +47,4 @@ Examples and results:
 
 ## Learn more
 
-- [*ChiInv Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StatisticalDistributionFunctions/ChiInv.htm)
+- [*ChiInv Script and chart function*](ChiInv.htm)

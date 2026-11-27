@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script prefixes"]
 ---
+
+# Join
+
 Expand/Collapse all
 
 # Join
@@ -14,9 +17,7 @@ Expand/Collapse all
 The join prefix joins the loaded
 table with an existing named table or the last previously created data table.
 
-The effect of joining data is to extend the target table by an additional set of [fields](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Join.htm#glossary-0 "Glossary term") or attributes, namely ones not already present in the target table. Any common field names between the source data set and the target table are used to work out how to associate the new incoming records. This is commonly referred to as a “natural join”. A Qlik join operation can lead to the resulting target table having more or fewer records than it started with, depending on the uniqueness of the join association and the type of join employed.
-
-[Video: https://share.vidyard.com/watch/7xrdzssVH99Jsr8gmPunCC]
+The effect of joining data is to extend the target table by an additional set of [fields](#glossary-0 "Glossary term") or attributes, namely ones not already present in the target table. Any common field names between the source data set and the target table are used to work out how to associate the new incoming records. This is commonly referred to as a “natural join”. A Qlik join operation can lead to the resulting target table having more or fewer records than it started with, depending on the uniqueness of the join association and the type of join employed.
 
 ## Types of joins
 
@@ -29,33 +30,33 @@ There are four types of joins:
 
 Example results sets from different types of join operations
 
-![Example results sets from different types of join operations, with a before-and-after representation of the data tables following each operation. The inputs consist of a target table and an incoming dataset. The target table has two columns with two row entries for the fields 'Trade ID' and 'Asset Class'. The incoming data has two columns with two row eentries for the fields 'Trade ID' and 'Exchange'. The Left Join keeps the initial target table and adds a third column with everything blank except the addition of one of the 'Exchange' row entrties. The Inner Join create a table with one Trade ID row and a third column, again, for the 'Exchange' row entry. The Outer Join keeps the target table and adds a third column, along a third row to which the second row of the incoming dataset is appended. The Right Join removes the second row entry of the target table and replaces it with information from the second row entry of the incoming dataset, adding a third column in the process.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-join-examples-operations.png)
+![Example results sets from different types of join operations, with a before-and-after representation of the data tables following each operation. The inputs consist of a target table and an incoming dataset. The target table has two columns with two row entries for the fields 'Trade ID' and 'Asset Class'. The incoming data has two columns with two row eentries for the fields 'Trade ID' and 'Exchange'. The Left Join keeps the initial target table and adds a third column with everything blank except the addition of one of the 'Exchange' row entrties. The Inner Join create a table with one Trade ID row and a third column, again, for the 'Exchange' row entry. The Outer Join keeps the target table and adds a third column, along a third row to which the second row of the incoming dataset is appended. The Right Join removes the second row entry of the target table and replaces it with information from the second row entry of the incoming dataset, adding a third column in the process.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-join-examples-operations.png "Click to view full size")
 
 ### Left join
 
-Left joins are the most common join type. For example, if you have a transaction data set and would like to combine it with a reference data set, you would typically use a `Left Join`. You would load the transaction table first, then load the reference data set while joining it via a `Left Join` prefix onto the already loaded transaction table. A `Left Join` would keep all transactions as-is and add on the supplementary reference data fields where a match is found.
+Left joins are the most common join type. For example, if you have a transaction data set and would like to combine it with a reference data set, you would typically use a Left Join. You would load the transaction table first, then load the reference data set while joining it via a Left Join prefix onto the already loaded transaction table. A Left Join would keep all transactions as-is and add on the supplementary reference data fields where a match is found.
 
 Left join
 
-![Diagram outlining, at a high level, the data combinations that occur during a left join.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/join-types-scripting_left.png)
+![Diagram outlining, at a high level, the data combinations that occur during a left join.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/join-types-scripting_left.png "Click to view full size")
 
 ### Inner join
 
-When you have two data sets where you only care about any results where there is a matching association, consider using an `Inner Join`. This will eliminate all records from both the source data loaded and the target table if no match is found. As a result, this may leave your target table with fewer records than before the join operation took place.
+When you have two data sets where you only care about any results where there is a matching association, consider using an Inner Join. This will eliminate all records from both the source data loaded and the target table if no match is found. As a result, this may leave your target table with fewer records than before the join operation took place.
 
 Inner join
 
-![Diagram outlining, at a high level, the data combinations that occur during an inner join.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/join-types-scripting_inner.png)
+![Diagram outlining, at a high level, the data combinations that occur during an inner join.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/join-types-scripting_inner.png "Click to view full size")
 
 ### Outer join (default)
 
-When you need to keep both the target records and all of the incoming records, use an `Outer Join`. Where no match is found, each set of records is still kept while the fields from the opposite side of the join will remain unpopulated (null).
+When you need to keep both the target records and all of the incoming records, use an Outer Join. Where no match is found, each set of records is still kept while the fields from the opposite side of the join will remain unpopulated (null).
 
 If the type keyword is omitted, the default join type is an outer join.
 
 Outer join
 
-![Diagram outlining, at a high level, the data combinations that occur during an outer join.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/join-types-scripting_outer.png)
+![Diagram outlining, at a high level, the data combinations that occur during an outer join.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/join-types-scripting_outer.png "Click to view full size")
 
 ### Right join
 
@@ -63,15 +64,15 @@ This join type keeps all the records about to be loaded, while reducing the reco
 
 Right join
 
-![Diagram outlining, at a high level, the data combinations that occur during a right join.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/join-types-scripting_right.png)
+![Diagram outlining, at a high level, the data combinations that occur during a right join.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/join-types-scripting_right.png "Click to view full size")
 
 ### Cross join
 
-> **Note:** If there are no field names in common between the source and target of a join operation, the join will result in a cartesian product of all rows – this is called a “cross join”.
+Information noteIf there are no field names in common between the source and target of a join operation, the join will result in a cartesian product of all rows – this is called a “cross join”.
 
 Example result set from a "cross join" operation
 
-![Before-and-after comparison of input data with output after a cross join operation (which can involve a join operation of any type). The inputs are a target table and an incoming dataset. The target table consists of three columns, with two row entries. The columns are 'Trade ID', 'Base Currency', and 'Amount'. The incoming dataset has two columns ('Trade Currency' and 'Rate') and two row entries. The resulting table has five columns, which are 'Trade ID', 'Base Currency', 'Amount', 'Target Currency', and 'Rate'. There are four row entries, combining all of the data. Each 'Trade ID entry has two rows with different data in the other fields.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-examples-join-no-common-fields.png)
+![Before-and-after comparison of input data with output after a cross join operation (which can involve a join operation of any type). The inputs are a target table and an incoming dataset. The target table consists of three columns, with two row entries. The columns are 'Trade ID', 'Base Currency', and 'Amount'. The incoming dataset has two columns ('Trade Currency' and 'Rate') and two row entries. The resulting table has five columns, which are 'Trade ID', 'Base Currency', 'Amount', 'Target Currency', and 'Rate'. There are four row entries, combining all of the data. Each 'Trade ID entry has two rows with different data in the other fields.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-examples-join-no-common-fields.png "Click to view full size")
 
 ## Syntax and arguments
 
@@ -95,8 +96,8 @@ Related topics
 
 | Topic | Description |
 | --- | --- |
-| [*Combining tables with Join and Keep*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/combine-tables-join-keep.htm) | This topic provides further explanation of the concepts of “joining” and “keeping” data sets. |
-| [*Keep*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Keep.htm) | The `Keep` load prefix is similar to the `Join` prefix, but it does not combine the source and target datasets. Instead, it trims each [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Join.htm#glossary-1 "Glossary term") according to the type of operation adopted (inner, outer, left, or right). |
+| [*Combining tables with Join and Keep*](../combine-tables-join-keep.htm) | This topic provides further explanation of the concepts of “joining” and “keeping” data sets. |
+| [*Keep*](Keep.htm) | The Keep load prefix is similar to the Join prefix, but it does not combine the source and target datasets. Instead, it trims each [dataset](#glossary-1 "Glossary term") according to the type of operation adopted (inner, outer, left, or right). |
 
 ## Load script examples - Left join
 
@@ -125,7 +126,7 @@ A, C
 4, yy ];
 ```
 
-For more information about using inline loads, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+For more information about using inline loads, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 Results
 
@@ -190,8 +191,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset representing change records, which is loaded into a table named `Changes`. It includes a Status ID key field.
-- A second dataset representing change statuses, which is loaded and combined with the original change records by joining it with a left `Join` load prefix.
+- A dataset representing change records, which is loaded into a table named Changes. It includes a Status ID key field.
+- A second dataset representing change statuses, which is loaded and combined with the original change records by joining it with a left Join load prefix.
 
 This left join ensures that the change records remain intact while adding on status attributes where a match in the incoming status records is found based on a common Status ID.
 
@@ -199,8 +200,8 @@ Load script
 
 ```
 Changes:
-Load * inline [ 
-Change ID	Status ID	Scheduled Start Date	Scheduled End Date	Business Impact 
+Load * inline [
+Change ID	Status ID	Scheduled Start Date	Scheduled End Date	Business Impact
 10030	4	19/01/2022	23/02/2022	None
 10015	3	04/01/2022	15/02/2022	Low
 10103	1	02/04/2022	29/05/2022	Medium
@@ -226,13 +227,13 @@ Status ID	Status	Sub Status
 2	Open	Started
 3	Closed	Completed
 4	Closed	Cancelled
-5	Closed	Obsolete			
+5	Closed	Obsolete
 ] (delimiter is '\t');
 ```
 
 Results
 
-Open the [Data model viewer](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Join.htm#glossary-2 "Glossary term") and note the shape of the data model. Only one denormalized table is present. It is a combination of all the original change records, with the matching status attributes joined onto each change record.
+Open the [Data model viewer](#glossary-2 "Glossary term") and note the shape of the data model. Only one denormalized table is present. It is a combination of all the original change records, with the matching status attributes joined onto each change record.
 
 Resulting internal data model
 
@@ -270,11 +271,11 @@ Preview of Changes table in the Data model viewer
 
 Since the fifth row in the Status table (Status ID: '5', Status: 'Closed', Sub Status: 'Obsolete') does not correspond to any of the records in the Changes table, the information in this row does not appear in the result set above.
 
-Return to the Data load editor. Load the data and open a sheet. Create a new table and add this field as a dimension: `Status`.
+Return to the Data load editor. Load the data and open a sheet. Create a new table and add this field as a dimension: Status.
 
-Add this [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Join.htm#glossary-3 "Glossary term"):
+Add this [measure](#glossary-3 "Glossary term"):
 
-`=Count([Change ID])`
+=Count([Change ID])
 
 Now you can inspect the number of Changes by Status.
 
@@ -312,7 +313,7 @@ A, C
 4, yy ];
 ```
 
-For more information about using inline loads, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+For more information about using inline loads, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 Results
 
@@ -373,10 +374,10 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset representing change records, which is loaded into a table named `Changes`.
-- A second dataset representing change records originating from the source system `JIRA`.This is loaded and combined with the original records by joining it with an `Inner Join` load prefix.
+- A dataset representing change records, which is loaded into a table named Changes.
+- A second dataset representing change records originating from the source system JIRA.This is loaded and combined with the original records by joining it with an Inner Join load prefix.
 
-This `Inner Join` ensures that only the five change records which are found in both datasets are kept.
+This Inner Join ensures that only the five change records which are found in both datasets are kept.
 
 Load script
 
@@ -409,7 +410,7 @@ Load
 inline
 [
 Ticket ID	Source System
-10000	JIRA					
+10000	JIRA
 10030	JIRA
 10323	JIRA
 10134	JIRA
@@ -423,11 +424,11 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Source System`
-- `Change ID`
-- `Business Impact`
+- Source System
+- Change ID
+- Business Impact
 
-Now you can inspect the five resulting records. The resultant table from an `Inner Join` will only include records with matching information in both datasets.
+Now you can inspect the five resulting records. The resultant table from an Inner Join will only include records with matching information in both datasets.
 
 Results table
 
@@ -466,7 +467,7 @@ A, C
 4, yy ];
 ```
 
-For more information about using inline loads, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+For more information about using inline loads, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 Results
 
@@ -534,8 +535,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset representing change records, which is loaded into a table named `Changes`.
-- A second dataset representing change records originating from the source system `JIRA`, which is loaded and combined with the original records by joining it with an `Outer Join` load prefix.
+- A dataset representing change records, which is loaded into a table named Changes.
+- A second dataset representing change records originating from the source system JIRA, which is loaded and combined with the original records by joining it with an Outer Join load prefix.
 
 This ensures that all the overlapping change records from both datasets are kept.
 
@@ -580,9 +581,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Source System`
-- `Change ID`
-- `Business Impact`
+- Source System
+- Change ID
+- Business Impact
 
 Now you can inspect the 10 resulting records.
 
@@ -628,7 +629,7 @@ A, C
 4, yy ];
 ```
 
-For more information about using inline loads, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+For more information about using inline loads, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 Result
 
@@ -692,10 +693,10 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset representing change records, which is loaded into a table named `Changes`.
-- A second dataset representing change records originating from the source system `Teamwork`. This is loaded and combined with the original records by joining it with a `Right Join` load prefix.
+- A dataset representing change records, which is loaded into a table named Changes.
+- A second dataset representing change records originating from the source system Teamwork. This is loaded and combined with the original records by joining it with a Right Join load prefix.
 
-This ensures that only `Teamwork` change records are kept, while not losing any `Teamwork` records if the target table does not have a matching `Change ID`.
+This ensures that only Teamwork change records are kept, while not losing any Teamwork records if the target table does not have a matching Change ID.
 
 Load script
 
@@ -741,9 +742,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Source System`
-- `Change ID`
-- `Business Impact`
+- Source System
+- Change ID
+- Business Impact
 
 Now you can inspect the five resulting records.
 
@@ -798,15 +799,15 @@ Preview of table in the Data model viewer
 
 Each A\_ID is paired with each B\_ID (total 4 rows).
 
-> **Tip:** Always check that your field names match up as intended before running a join.
+Tip noteAlways check that your field names match up as intended before running a join.
 
 ## Learn more
 
-- [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm)
-- [*Select*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Select.htm)
-- [*Inner*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Inner.htm)
-- [*Outer*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Outer.htm)
-- [*Left*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Left.htm)
-- [*Right*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Right.htm)
-- [*Keep*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Keep.htm)
-- [*Combining tables with Join and Keep*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/combine-tables-join-keep.htm)
+- [*Load*](../ScriptRegularStatements/Load.htm)
+- [*Select*](../ScriptRegularStatements/Select.htm)
+- [*Inner*](Inner.htm)
+- [*Outer*](Outer.htm)
+- [*Left*](Left.htm)
+- [*Right*](Right.htm)
+- [*Keep*](Keep.htm)
+- [*Combining tables with Join and Keep*](../combine-tables-join-keep.htm)

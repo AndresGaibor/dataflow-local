@@ -4,16 +4,17 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Conditional functions"]
 ---
+
+# if Script and chart function
+
 Expand/Collapse all
 
 # if Script and chart function
 
 The if function returns a value depending on whether the condition provided with the function evaluates as True or False.
-
-[Video: https://share.vidyard.com/watch/qnkaRddq32LnAGUTTDGdLA]
 
 Syntax:
 
@@ -33,9 +34,9 @@ Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `if( Amount>= 0, 'OK', 'Alarm' )` | This expression tests if the amount is a positive number (0 or larger) and returns `OK` if it is. If the amount is less than 0, `Alarm` is returned. |
+| if( Amount>= 0, 'OK', 'Alarm' ) | This expression tests if the amount is a positive number (0 or larger) and returns OK if it is. If the amount is less than 0, Alarm is returned. |
 
-Some of the examples in this topic use inline loads. For more information, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+Some of the examples in this topic use inline loads. For more information, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 ## Example - Load script using if
 
@@ -43,7 +44,7 @@ Load script
 
 Overview
 
-If can be used in a [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ConditionalFunctions/if.htm#glossary-0 "Glossary term") with other methods and objects, including [variables](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ConditionalFunctions/if.htm#glossary-1 "Glossary term"). This example uses the `threshold` variable and includes a new [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ConditionalFunctions/if.htm#glossary-2 "Glossary term") in the data model that is based on the threshold.
+If can be used in a [load script](#glossary-0 "Glossary term") with other methods and objects, including [variables](#glossary-1 "Glossary term"). This example uses the threshold variable and includes a new [field](#glossary-2 "Glossary term") in the data model that is based on the threshold.
 
 Open the Data load editor and add the load script below to a new section.
 
@@ -51,9 +52,9 @@ The load script contains:
 
 - A dataset which is loaded into two data tables called:
 
-  - `Transactions`: Includes transaction fields
-  - `Transaction_Buckets`: Includes a `transaction_id` field and creates a new field, `[Compared to Threshold]`, using the `if` function to compare the `transaction_amount` field to the `threshold` variable setting.
-- A `threshold` variable statement set to `100`.
+  - Transactions: Includes transaction fields
+  - Transaction\_Buckets: Includes a transaction\_id field and creates a new field, [Compared to Threshold], using the if function to compare the transaction\_amount field to the threshold variable setting.
+- A threshold variable statement set to 100.
 
 Load script
 
@@ -69,10 +70,10 @@ transaction_id, transaction_date, transaction_amount, transaction_quantity, cust
 3756, 20180922, 59.18, 2, 2038593, M, Blue
 3757, 20180923, 177.42, 21, 203521, XL, Black
 ];
- 
+
 set threshold = 100;
-					
-/* Create new table called Transaction_Buckets 
+
+/* Create new table called Transaction_Buckets
 Compare transaction_amount field from Transaction table to threshold of 100.
 Output results into a new field called Compared to Threshold
  */
@@ -88,8 +89,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `transaction_id`
-- `[Compared to Threshold]`
+- transaction\_id
+- [Compared to Threshold]
 
 Results table showing the output from using the if function in the load script.
 
@@ -117,12 +118,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `ProductID`
-  - `ProductName`
-  - `ProductCategory`
+  - ProductID
+  - ProductName
+  - ProductCategory
 
 ```
 Example:
@@ -140,13 +141,13 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ProductID`
-- `ProductName`
-- `ProductCategory`
+- ProductID
+- ProductName
+- ProductCategory
 
 Create the following measure:
 
-- `=If(ProductCategory = 'Toiletries' or ProductCategory = 'Fruits', 'Consumable', 'Other')`, to return the values required.
+- =If(ProductCategory = 'Toiletries' or ProductCategory = 'Fruits', 'Consumable', 'Other'), to return the values required.
 
 Results table
 
@@ -158,7 +159,7 @@ Results table
 | 4 | TV | Electronics | Other |
 | 5 | Apple | Fruits | Consumable |
 
-You can see from the results that the `if` function evaluates the expression and returns the values required. For example, products in the category `Fruits` or `Toiletries` are classified as `Consumable`.
+You can see from the results that the if function evaluates the expression and returns the values required. For example, products in the category Fruits or Toiletries are classified as Consumable.
 
 ## Example - Evaluate and classify client data using if
 
@@ -174,13 +175,13 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `ClientID`
-  - `ClientName`
-  - `Region`
-  - `Industry`
+  - ClientID
+  - ClientName
+  - Region
+  - Industry
 
 ```
 Example:
@@ -198,14 +199,14 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ClientID`
-- `ClientName`
-- `Region`
-- `Industry`
+- ClientID
+- ClientName
+- Region
+- Industry
 
 Create the following measure:
 
-- `=If((Region = 'North' or Region = 'East') AND (Industry= 'Technology' or Industry = 'Manufacturing'), 'Target Segment', 'Secondary Segment')`, to return the value required.
+- =If((Region = 'North' or Region = 'East') AND (Industry= 'Technology' or Industry = 'Manufacturing'), 'Target Segment', 'Secondary Segment'), to return the value required.
 
 Results table
 
@@ -217,7 +218,7 @@ Results table
 | 4 | Delta LLC | North | Technology | Target Segment |
 | 5 | Epsilon GmbH | Sound | Healthcare | Secondary Segment |
 
-You can see from the results that the `if` function evaluates the expression and returns the values required. For example, `Acme Corp` is classified as a `Target Segment` because it meets the requirements to be part of the `North` or `East` region and the `Manufacturing` or `Technology` industry.
+You can see from the results that the if function evaluates the expression and returns the values required. For example, Acme Corp is classified as a Target Segment because it meets the requirements to be part of the North or East region and the Manufacturing or Technology industry.
 
 ## Example - Evaluate incident data using if
 
@@ -225,7 +226,7 @@ Chart expression
 
 Overview
 
-Use the `if` function to categorize a dataset of incident reports.
+Use the if function to categorize a dataset of incident reports.
 
 Load script
 
@@ -233,12 +234,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `Date`
-  - `Location`
-  - `Incidents`
+  - Date
+  - Location
+  - Incidents
 
 ```
 Example:
@@ -262,9 +263,9 @@ Load the data and open a sheet. Create a new table and add these fields as dimen
 
 Create the following calculated dimensions:
 
-- `=if(Incidents>=10, 'Critical', 'Ok' )`
-- `=if(Incidents>=10, 'Critical', If( Incidents>=1 and
-  Incidents<10, 'Warning', 'Ok'))`
+- =if(Incidents>=10, 'Critical', 'Ok' )
+- =if(Incidents>=10, 'Critical', If( Incidents>=1 and
+  Incidents<10, 'Warning', 'Ok'))
 
 Results table
 
@@ -283,7 +284,7 @@ Chart expression
 
 Overview
 
-Use the `if` function to categorize dates.
+Use the if function to categorize dates.
 
 Load script
 
@@ -291,7 +292,7 @@ Open the Data load editor and add the load script below to a new section.
 
 ```
 SET FirstWeekDay=0;
-Load 
+Load
 Date(MakeDate(2022)+RecNo()-1) as Date
 Autogenerate 14;
 ```
@@ -300,12 +301,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `Date`
+- Date
 
 Create the following calculated dimensions:
 
-- `WeekDay(Date)`
-- `=If(WeekDay(Date)>=5,'WeekEnd','Normal Day')`
+- WeekDay(Date)
+- =If(WeekDay(Date)>=5,'WeekEnd','Normal Day')
 
 Results table
 

@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Mapping functions"]
 ---
+
 # ApplyMap Script function
 
 The ApplyMap script function is used
@@ -26,11 +27,11 @@ Arguments
 
 | Argument | Description |
 | --- | --- |
-| map\_name | The name of a mapping table that has previously been created through the mapping load or the mapping select statement. Its name must be enclosed by single, straight quotation marks.  **Warning:** If you use this function in a macro expanded [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/MappingFunctions/ApplyMap.htm#glossary-0 "Glossary term") and refer to a mapping table that does not exist, the function call fails and a [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/MappingFunctions/ApplyMap.htm#glossary-1 "Glossary term") is not created. |
+| map\_name | The name of a mapping table that has previously been created through the mapping load or the mapping select statement. Its name must be enclosed by single, straight quotation marks.  Warning noteIf you use this function in a macro expanded [variable](#glossary-0 "Glossary term") and refer to a mapping table that does not exist, the function call fails and a [field](#glossary-1 "Glossary term") is not created. |
 | expression | The expression, the result of which should be mapped. |
 | default\_mapping | If stated, this value will be used as a default value if the mapping table does not contain a matching value for expression. If not stated, the value of expression will be returned as is. |
 
-> **Warning:** The output field of ApplyMap should not have the same name as one of its input fields. This may cause unexpected results. Example not to use: ApplyMap('Map', A) as A.
+Warning noteThe output field of ApplyMap should not have the same name as one of its input fields. This may cause unexpected results. Example not to use: ApplyMap('Map', A) as A.
 
 Example:
 
@@ -81,5 +82,5 @@ Resulting table
 
 ## Learn more
 
-- [*Mapping*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Mapping.htm)
-- [*Using quotation marks in the script*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/use-quotes-in-script.htm)
+- [[*Mapping*](../ScriptPrefixes/Mapping.htm)](../ScriptPrefixes/Mapping.htm)
+- [*Using quotation marks in the script*](../use-quotes-in-script.htm)

@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
 # firstworkdate Script and chart function
 
 The firstworkdate function returns
@@ -30,7 +31,7 @@ Arguments
 | --- | --- |
 | end\_date | The timestamp of end date to evaluate. |
 | no\_of\_workdays | The number of working days to achieve. |
-| holiday | Holiday periods to exclude from working days. A holiday is stated as a string constant date. You can specify multiple holiday dates, separated by commas.  Example:  `'12/25/2013', '12/26/2013', '12/31/2013', '01/01/2014'` |
+| holiday | Holiday periods to exclude from working days. A holiday is stated as a string constant date. You can specify multiple holiday dates, separated by commas.  Example:  '12/25/2013', '12/26/2013', '12/31/2013', '01/01/2014' |
 
 Examples and results:
 
@@ -40,8 +41,8 @@ Scripting examples
 
 | Example | Result |
 | --- | --- |
-| `firstworkdate ('29/12/2014', 9)` | Returns '17/12/2014. |
-| `firstworkdate ('29/12/2014', 9, '25/12/2014', '26/12/2014')` | Returns 15/12/2014 because a holiday period of two days is taken into account. |
+| firstworkdate ('29/12/2014', 9) | Returns '17/12/2014. |
+| firstworkdate ('29/12/2014', 9, '25/12/2014', '26/12/2014') | Returns 15/12/2014 because a holiday period of two days is taken into account. |
 
 Example:
 

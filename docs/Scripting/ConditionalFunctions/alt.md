@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Conditional functions"]
 ---
+
+# alt Script and chart function
+
 Expand/Collapse all
 
 # alt Script and chart function
@@ -39,8 +42,8 @@ Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| alt( date#( dat , 'YYYY/MM/DD' ),  date#( dat , 'MM/DD/YYYY' ),  date#( dat , 'MM/DD/YY' ),  'No valid date' ) | This expression will test if the [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ConditionalFunctions/alt.htm#glossary-0 "Glossary term") date contains a date according to any of the three specified date formats. If so, it will return a dual value containing the original string and a valid number representation of a date. If no match is found, the text `No valid date` will be returned (without any valid number representation). |
-| alt(Sales,0) + alt(Margin,0) | This expression adds the fields `Sales` and `Margin`, replacing any missing value (NULL) with a `0`. |
+| alt( date#( dat , 'YYYY/MM/DD' ),  date#( dat , 'MM/DD/YYYY' ),  date#( dat , 'MM/DD/YY' ),  'No valid date' ) | This expression will test if the [field](#glossary-0 "Glossary term") date contains a date according to any of the three specified date formats. If so, it will return a dual value containing the original string and a valid number representation of a date. If no match is found, the text  No valid date will be returned (without any valid number representation). |
+| alt(Sales,0) + alt(Margin,0) | This expression adds the fields Sales and Margin, replacing any missing value (NULL) with a 0. |
 
 ## Example - alt fundamentals
 
@@ -54,12 +57,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `ID`
-  - `Sales`
-  - `Forecast`
+  - ID
+  - Sales
+  - Forecast
 
 Load script
 
@@ -79,13 +82,13 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ID`
-- `Sales`
-- `Forecast`
+- ID
+- Sales
+- Forecast
 
 Create the following measure:
 
-- `=Sum(alt(Sales, Forecast))` to return a valid number representation by replacing missing values with valid alternate values.
+- =Sum(alt(Sales, Forecast)) to return a valid number representation by replacing missing values with valid alternate values.
 
 Results table
 
@@ -98,7 +101,7 @@ Results table
 | 4 |  | 400 | 400 |
 | 5 | 350 |  | 350 |
 
-The `alt` function returns the `Forecast` value in the measure calculation for the `ID` rows with missing `Sales` values. By replacing missing values with valid alternate values you can generate a fully populated dataset.
+The alt function returns the Forecast value in the measure calculation for the ID rows with missing Sales values. By replacing missing values with valid alternate values you can generate a fully populated dataset.
 
 ## Example - Using alt to replace missing values
 
@@ -112,12 +115,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `Time`
-  - `Temp_Sensor1`
-  - `Temp_Sensor2`
+  - Time
+  - Temp\_Sensor1
+  - Temp\_Sensor2
 
 Load script
 
@@ -137,13 +140,13 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Time`
-- `Temp_Sensor1`
-- `Temp_Sensor2`
+- Time
+- Temp\_Sensor1
+- Temp\_Sensor2
 
 Create the following measure:
 
-- `=Sum(alt(Temp_Sensor1, Temp_Sensor2))` to return a valid number representation.
+- =Sum(alt(Temp\_Sensor1, Temp\_Sensor2)) to return a valid number representation.
 
 Results table
 
@@ -156,7 +159,7 @@ Results table
 | 11:00 |  | 24.5 | 24.5 |
 | 12:00 | 23.9 | 24.1 | 23.9 |
 
-Looking at the results, the `alt` function has replaced missing sensor data with valid alternate results from the other sensor. This completes the dataset by filling in gaps.
+Looking at the results, the alt function has replaced missing sensor data with valid alternate results from the other sensor. This completes the dataset by filling in gaps.
 
 ## Example - alt scenario
 
@@ -164,25 +167,25 @@ Chart expression
 
 Overview
 
-This scenario shows different ways you can use the `alt` function to replace missing or null values.
+This scenario shows different ways you can use the alt function to replace missing or null values.
 
 Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `ProductID`
-  - `ProductName`
-  - `SalesAmount`
-  - `ReturnAmount`
-  - `Profit`
-  - `Discount`
-  - `Category`
-  - `Year`
-  - `Region`
-  - `CustomerRating`
+  - ProductID
+  - ProductName
+  - SalesAmount
+  - ReturnAmount
+  - Profit
+  - Discount
+  - Category
+  - Year
+  - Region
+  - CustomerRating
 
 Load script
 
@@ -208,20 +211,20 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `ProductID`
+- ProductID
 
 Create the following calculated dimension:
 
-- `=Coalesce( ProductName, 'Unknown Product')`, to provide the description `Unknown Product` for all products that have no value for `ProductName`.
+- =Coalesce( ProductName, 'Unknown Product'), to provide the description Unknown Product for all products that have no value for ProductName.
 
 Create the following measures:
 
-- `=Sum(alt(SalesAmount, ReturnAmount, Profit))`, to return a valid number if no `SalesAmount` is found.
-- `=avg(alt(CustomerRating, 3))`, to return a valid standardized customer rating if none is originally supplied.
-- `=Sum(alt(Discount, SalesAmount * 0.05))`, to return a valid discount.
-- `=Sum(alt(Profit, SalesAmount * 0.1))`, to return a valid profit value.
-- `=Sum(alt(SalesAmount, avg(TOTAL SalesAmount)))`, to return a valid sales value.
-- `=Sum(alt(Discount, avg(TOTAL Discount)))`, to return a valid discount value.
+- =Sum(alt(SalesAmount, ReturnAmount, Profit)), to return a valid number if no SalesAmount is found.
+- =avg(alt(CustomerRating, 3)), to return a valid standardized customer rating if none is originally supplied.
+- =Sum(alt(Discount, SalesAmount \* 0.05)), to return a valid discount.
+- =Sum(alt(Profit, SalesAmount \* 0.1)), to return a valid profit value.
+- =Sum(alt(SalesAmount, avg(TOTAL SalesAmount))), to return a valid sales value.
+- =Sum(alt(Discount, avg(TOTAL Discount))), to return a valid discount value.
 
 Results table
 
@@ -239,12 +242,12 @@ Results table
 | 109 | Unknown Product | 600 | 4 | 30 | 60 | 600 | 41 |
 | 110 | Headphones | 300 | 3 | 15 | 100 | 300 | 41 |
 
-The `alt` function ensures that when values are missing, alternate values can be calculated and returned. Observe the following results:
+The alt function ensures that when values are missing, alternate values can be calculated and returned. Observe the following results:
 
-- Column 2 uses the `Coalesce` function to return the value `Unknown Product` for all null values. The `Alt` function cannot be used as it applies to only numeric values.
-- Column 3 returns the value for `SalesAmount`. If no value is found then it returns the `ReturnAmount` value. If no `ReturnAmount` value is found, it returns the `Profit` value. This helps to ensure that the column is populated with a value if `SalesAmount` has no value.
-- Column 4 returns the `CustomerRating`. If no value is found then this defaults to a value of `3`. For example, the product `Laptop` has no customer rating so `3` is returned. The measure then calculates the average for the column.
-- Column 5 returns the discount value. If no value is available, it is calculated as 5% of the `SalesAmount` value.
-- Column 6 returns the `Profit` value. If no value is available, it returns 10% of the `SalesAmount`.
-- Column 7 returns the `SalesAmount`. If no value is supplied then the average `SalesAmount` across the entire dataset is returned. For example, the products `Monitor` and `Mouse` have no value for `SalesAmount`, so both return `750`, which is the average of all `SalesAmount` values.
-- Column 8 returns the `Discount` value. If no value is found, then the system calculates and returns the average discount across the entire dataset.
+- Column 2 uses the Coalesce function to return the value Unknown Product for all null values. The Alt function cannot be used as it applies to only numeric values.
+- Column 3 returns the value for SalesAmount. If no value is found then it returns the ReturnAmount value. If no ReturnAmount value is found, it returns the Profit value. This helps to ensure that the column is populated with a value if SalesAmount has no value.
+- Column 4 returns the CustomerRating. If no value is found then this defaults to a value of 3. For example, the product Laptop has no customer rating so 3 is returned. The measure then calculates the average for the column.
+- Column 5 returns the discount value. If no value is available, it is calculated as 5% of the SalesAmount value.
+- Column 6 returns the Profit value. If no value is available, it returns 10% of the SalesAmount.
+- Column 7 returns the SalesAmount. If no value is supplied then the average SalesAmount across the entire dataset is returned. For example, the products Monitor and Mouse have no value for SalesAmount, so both return 750, which is the average of all SalesAmount values.
+- Column 8 returns the Discount value. If no value is found, then the system calculates and returns the average discount across the entire dataset.

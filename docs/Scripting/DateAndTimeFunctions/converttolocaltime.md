@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
 # converttolocaltime Script and chart function
 
 Converts
@@ -25,8 +26,8 @@ Arguments
 | Argument | Description |
 | --- | --- |
 | timestamp | The timestamp, or expression resolving to a timestamp, to convert. |
-| place | A place or timezone from the table of valid places and timezones below. Alternatively, you can use GMT or UTC to define the local time. The following values and time offset ranges are valid:   - GMT - GMT-12:00 - GMT-01:00 - GMT+01:00 - GMT+14:00 - UTC - UTC-12:00 - UTC-01:00 - UTC+01:00 - UTC+14:00   **Note:** If you use a DST offset (that is, you specify an ignore\_dst argument value evaluating to False), you must specify a place, rather than a GMT offset, in the place argument. This is because adjusting for Daylight Saving Time requires latitudinal information in addition to the longitudinal information provided by a GMT offset. For information, see [*Using GMT offsets in combination with DST*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/converttolocaltime.htm#Using).  **Note:** You can only use standard time offsets. It's not possible to use an arbitrary time offset, for example, GMT-04:27. |
-| ignore\_dst | If this argument evaluates to True, DST (daylight saving time) is ignored. Valid argument values evaluating to True include `-1` and `True()`.  If this argument evaluates to False, the timestamp is adjusted for daylight saving time. Valid argument values evaluating to False include `0` and `False()`.  If the ignore\_dst argument value is invalid, the function evaluates the expression as if the ignore\_dst value evaluates to True. If the ignore\_dst argument value is not specified, the function evaluates the expression as if the ignore\_dst value evaluates to False. |
+| place | A place or timezone from the table of valid places and timezones below. Alternatively, you can use GMT or UTC to define the local time. The following values and time offset ranges are valid:   - GMT - GMT-12:00 - GMT-01:00 - GMT+01:00 - GMT+14:00 - UTC - UTC-12:00 - UTC-01:00 - UTC+01:00 - UTC+14:00   Information noteIf you use a DST offset (that is, you specify an ignore\_dst argument value evaluating to False), you must specify a place, rather than a GMT offset, in the place argument. This is because adjusting for Daylight Saving Time requires latitudinal information in addition to the longitudinal information provided by a GMT offset. For information, see [*Using GMT offsets in combination with DST*](#Using).  Information noteYou can only use standard time offsets. It's not possible to use an arbitrary time offset, for example, GMT-04:27. |
+| ignore\_dst | If this argument evaluates to True, DST (daylight saving time) is ignored. Valid argument values evaluating to True include -1 and True().  If this argument evaluates to False, the timestamp is adjusted for daylight saving time. Valid argument values evaluating to False include 0 and False().  If the ignore\_dst argument value is invalid, the function evaluates the expression as if the ignore\_dst value evaluates to True. If the ignore\_dst argument value is not specified, the function evaluates the expression as if the ignore\_dst value evaluates to False. |
 
 Valid places and time zones
 
@@ -75,14 +76,14 @@ Scripting examples
 
 | Example | Result |
 | --- | --- |
-| `ConvertToLocalTime('2023-08-14 08:39:47','Paris')` | Returns '2023-08-14 10:39:47' and the corresponding internal timestamp representation. |
-| `ConvertToLocalTime(UTC(), 'Stockholm')` | Returns the time for Stockholm, adjusting for daylight saving time. |
-| `ConvertToLocalTime(UTC(), 'Stockholm', -1)` | Returns the time for Stockholm, without daylight saving time adjustment. |
-| `ConvertToLocalTime(UTC(), 'GMT-05:00')` | Returns the time for the North American east coast, for example, New York. No adjustment is made for daylight saving time because a GMT offset, rather than a place, is specified. |
-| `ConvertToLocalTime(UTC(), 'New York', -1)` | Returns the time for the North American east coast (New York), without daylight saving time adjustment. |
-| `ConvertToLocalTime(UTC(), 'New York', True())` | Returns the time for the North American east coast (New York), without daylight saving time adjustment. |
-| `ConvertToLocalTime(UTC(), 'New York', 0)` | Returns the time for the North American east coast (New York), adjusting for daylight saving time. |
-| `ConvertToLocalTime(UTC(), 'New York', False())` | Returns the time for the North American east coast (New York), adjusting for daylight saving time. |
+| ConvertToLocalTime('2023-08-14 08:39:47','Paris') | Returns '2023-08-14 10:39:47' and the corresponding internal timestamp representation. |
+| ConvertToLocalTime(UTC(), 'Stockholm') | Returns the time for Stockholm, adjusting for daylight saving time. |
+| ConvertToLocalTime(UTC(), 'Stockholm', -1) | Returns the time for Stockholm, without daylight saving time adjustment. |
+| ConvertToLocalTime(UTC(), 'GMT-05:00') | Returns the time for the North American east coast, for example, New York. No adjustment is made for daylight saving time because a GMT offset, rather than a place, is specified. |
+| ConvertToLocalTime(UTC(), 'New York', -1) | Returns the time for the North American east coast (New York), without daylight saving time adjustment. |
+| ConvertToLocalTime(UTC(), 'New York', True()) | Returns the time for the North American east coast (New York), without daylight saving time adjustment. |
+| ConvertToLocalTime(UTC(), 'New York', 0) | Returns the time for the North American east coast (New York), adjusting for daylight saving time. |
+| ConvertToLocalTime(UTC(), 'New York', False()) | Returns the time for the North American east coast (New York), adjusting for daylight saving time. |
 
 ## Using GMT offsets in combination with DST
 

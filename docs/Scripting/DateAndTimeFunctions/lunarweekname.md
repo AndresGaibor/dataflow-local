@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
-breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions", "sheet"]
+last_updated: "2026-11-27"
+breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
+# lunarweekname Script and chart function
+
 Expand/Collapse all
 
 # lunarweekname Script and chart function
@@ -19,11 +22,11 @@ LunarWeekName(date [, period\_no[, first\_week\_day]])
 
 Return data type:  dual
 
-Example diagram of `lunarweekname()` function
+Example diagram of lunarweekname() function
 
-![Example diagram showing how the lunarweekname function converts an input date into a value displaying a combination of year and lunar week number.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekname-general.png)
+![Example diagram showing how the lunarweekname function converts an input date into a value displaying a combination of year and lunar week number.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekname-general.png "Click to view full size")
 
-The `lunarweekname()` function determines which lunar week the date falls into, beginning a week count from January 1. It then returns a value comprised of `year/weekcount`.
+The lunarweekname() function determines which lunar week the date falls into, beginning a week count from January 1. It then returns a value comprised of year/weekcount.
 
 Arguments
 
@@ -35,25 +38,25 @@ Arguments
 
 ## When to use lunarweekname
 
-The `lunarweekname()` function is useful when you would like to compare aggregations by lunar weeks. For example, the function could be used to determine the total sales of products by lunar week. Lunar weeks are useful when you would like to ensure that all values contained in the first week of the year contain only values from January 1 at the earliest.
+The lunarweekname() function is useful when you would like to compare aggregations by lunar weeks. For example, the function could be used to determine the total sales of products by lunar week. Lunar weeks are useful when you would like to ensure that all values contained in the first week of the year contain only values from January 1 at the earliest.
 
-These [dimensions](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekname.htm#glossary-0 "Glossary term") can be created in the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekname.htm#glossary-1 "Glossary term") by using the function to create a [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekname.htm#glossary-2 "Glossary term") in a Master Calendar table. The function can also be used directly in a [chart](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekname.htm#glossary-3 "Glossary term") as a calculated [dimension](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekname.htm#glossary-4 "Glossary term").
+These [dimensions](#glossary-0 "Glossary term") can be created in the [load script](#glossary-1 "Glossary term") by using the function to create a [field](#glossary-2 "Glossary term") in a Master Calendar table. The function can also be used directly in a [chart](#glossary-3 "Glossary term") as a calculated [dimension](#glossary-4 "Glossary term").
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `lunarweekname('01/12/2013')` | Returns 2006/02. |
-| `lunarweekname('01/12/2013', -1)` | Returns 2006/01. |
-| `lunarweekname('01/12/2013', 0, 1)` | Returns 2006/02. |
+| lunarweekname('01/12/2013') | Returns 2006/02. |
+| lunarweekname('01/12/2013', -1) | Returns 2006/01. |
+| lunarweekname('01/12/2013', 0, 1) | Returns 2006/02. |
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 ## Example 1 – date with no additional arguments
 
@@ -65,9 +68,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekname.htm#glossary-5 "Glossary term") containing a set of transactions for 2022, which is loaded into a table called `Transactions`.
-- The date field provided in the `DateFormat` system [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekname.htm#glossary-6 "Glossary term") (MM/DD/YYYY) format.
-- The creation of a field, `lunar_week_name`, that returns the year and week number for the lunar week in which the transactions took place.
+- A [dataset](#glossary-5 "Glossary term") containing a set of transactions for 2022, which is loaded into a table called Transactions.
+- The date field provided in the DateFormat system [variable](#glossary-6 "Glossary term") (MM/DD/YYYY) format.
+- The creation of a field, lunar\_week\_name, that returns the year and week number for the lunar week in which the transactions took place.
 
 Load script
 
@@ -81,7 +84,7 @@ Transactions:
         ;
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,1/7/2022,17.17
@@ -111,8 +114,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `lunar_week_name`
+- date
+- lunar\_week\_name
 
 Results table
 
@@ -139,15 +142,15 @@ Results table
 | 10/14/2022 | 2022/41 |
 | 10/29/2022 | 2022/44 |
 
-The `lunar_week_name` field is created in the [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekname.htm#glossary-7 "Glossary term") statement by using the `lunarweekname()` function, and passing the `date` field as the function’s argument.
+The lunar\_week\_name field is created in the [preceding load](#glossary-7 "Glossary term") statement by using the lunarweekname() function, and passing the date field as the function’s argument.
 
-The `lunarweekname()` function identifies which lunar week the date value falls into, returning the year and week number of that date.
+The lunarweekname() function identifies which lunar week the date value falls into, returning the year and week number of that date.
 
-Diagram of `lunarweekname()` function, example with no additional arguments
+Diagram of lunarweekname() function, example with no additional arguments
 
-![Diagram showing how the lunarweekname function converts an input date into a value displaying a combination of year and lunar week number. Here, date is passed into the function as its only parameter.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekname-examples-no-add-arg.png)
+![Diagram showing how the lunarweekname function converts an input date into a value displaying a combination of year and lunar week number. Here, date is passed into the function as its only parameter.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekname-examples-no-add-arg.png "Click to view full size")
 
-Transaction 8189 took place on January 19. The `lunarweekname()` function identifies that this date falls into the lunar week beginning on January 15; this is the third lunar week of the year. Therefore, the `lunar_week_name` value returned for that transaction is 2022/03.
+Transaction 8189 took place on January 19. The lunarweekname() function identifies that this date falls into the lunar week beginning on January 15; this is the third lunar week of the year. Therefore, the lunar\_week\_name value returned for that transaction is 2022/03.
 
 ## Example 2 – date with period\_no argument
 
@@ -160,7 +163,7 @@ Open the Data load editor and add the load script below to a new section.
 The load script contains:
 
 - The same dataset and scenario as the first example.
-- The creation of a field, `previous_lunar_week_name`, that returns the year and week number for the lunar week prior to when the transactions took place.
+- The creation of a field, previous\_lunar\_week\_name, that returns the year and week number for the lunar week prior to when the transactions took place.
 
 Load script
 
@@ -174,7 +177,7 @@ Transactions:
         ;
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,1/7/2022,17.17
@@ -204,8 +207,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `previous_lunar_week_name`
+- date
+- previous\_lunar\_week\_name
 
 Results table
 
@@ -232,13 +235,13 @@ Results table
 | 10/14/2022 | 2022/40 |
 | 10/29/2022 | 2022/43 |
 
-In this instance, because a `period_no` of -1 was used as the offset argument in the `lunarweekname()` function, the function first identifies the lunar week in which the transactions took place. It then returns the year and the number of one week prior.
+In this instance, because a period\_no of -1 was used as the offset argument in the lunarweekname() function, the function first identifies the lunar week in which the transactions took place. It then returns the year and the number of one week prior.
 
-Diagram of `lunarweekname()` function, period\_no example
+Diagram of lunarweekname() function, period\_no example
 
-![Diagram showing how the lunarweekname function converts the input date for a transaction into a combined value displaying the year and week number for the lunar week in which the transaction happened. Here, a period_no of -1 is passed as an additional parameter into the function.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekname-examples-period-no.png)
+![Diagram showing how the lunarweekname function converts the input date for a transaction into a combined value displaying the year and week number for the lunar week in which the transaction happened. Here, a period_no of -1 is passed as an additional parameter into the function.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekname-examples-period-no.png "Click to view full size")
 
-Transaction 8189 took place on January 19. The `lunarweekname()` function identifies that this transaction took place in the third lunar week of the year, so it then returns the year and value for one week prior, 2022/02, for the `previous_lunar_week_name` field.
+Transaction 8189 took place on January 19. The lunarweekname() function identifies that this transaction took place in the third lunar week of the year, so it then returns the year and value for one week prior, 2022/02, for the previous\_lunar\_week\_name field.
 
 ## Example 3 – date with first\_week\_day argument
 
@@ -246,7 +249,7 @@ Load script and results
 
 Overview
 
-Open the [Data load editor](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekname.htm#glossary-8 "Glossary term") and add the load script below to a new tab.
+Open the [Data load editor](#glossary-8 "Glossary term") and add the load script below to a new tab.
 
 The load script contains the same dataset and scenario as the first example. In this example, we set lunar weeks to begin on January 5.
 
@@ -262,7 +265,7 @@ Transactions:
         ;
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,1/7/2022,17.17
@@ -292,8 +295,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `lunar_week_name`
+- date
+- lunar\_week\_name
 
 Results table
 
@@ -320,13 +323,13 @@ Results table
 | 10/14/2022 | 2022/41 |
 | 10/29/2022 | 2022/43 |
 
-Diagram of `lunarweekname()` function, first\_week\_day example
+Diagram of lunarweekname() function, first\_week\_day example
 
-![Diagram showing how the lunarweekname function converts the input date for each transaction into a combined value displaying the year and lunar week number. Here, the first_week_day argument is defined as 4, which shifts the start of lunar weeks by 4 days.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekname-examples-first-week-day.png)
+![Diagram showing how the lunarweekname function converts the input date for each transaction into a combined value displaying the year and lunar week number. Here, the first_week_day argument is defined as 4, which shifts the start of lunar weeks by 4 days.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekname-examples-first-week-day.png "Click to view full size")
 
-In this instance, because the `first_week_date` argument of 4 is used in the `lunarweekname()` function, it offsets the start of lunar weeks from January 1 to January 5.
+In this instance, because the first\_week\_date argument of 4 is used in the lunarweekname() function, it offsets the start of lunar weeks from January 1 to January 5.
 
-Transaction 8188 took place on January 7. Due to lunar weeks beginning on January 5, the `lunarweekname()` function identifies that the lunar week containing January 7 is the first lunar week of the year. Therefore, the returned `lunar_week_name` value for that transaction is 2022/01.
+Transaction 8188 took place on January 7. Due to lunar weeks beginning on January 5, the lunarweekname() function identifies that the lunar week containing January 7 is the first lunar week of the year. Therefore, the returned lunar\_week\_name value for that transaction is 2022/01.
 
 ## Example 4 – Chart object example
 
@@ -338,7 +341,7 @@ Open the Data load editor and add the load script below to a new tab.
 
 The load script contains the same dataset and scenario as the first example.
 
-However, in this example, the unchanged dataset is loaded into the application. The calculation that returns the lunar week number and year in which the transactions took place is created as a [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekname.htm#glossary-9 "Glossary term") in a chart object of the application.
+However, in this example, the unchanged dataset is loaded into the application. The calculation that returns the lunar week number and year in which the transactions took place is created as a [measure](#glossary-9 "Glossary term") in a chart object of the application.
 
 Load script
 
@@ -346,7 +349,7 @@ Load script
 Transactions:
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,1/7/2022,17.17
@@ -374,11 +377,11 @@ id,date,amount
 
 Results
 
-Load the data and open a sheet. Create a new table and add this field as a dimension: `date`.
+Load the data and open a sheet. Create a new table and add this field as a dimension: date.
 
 To calculate the start date of the lunar week in which a transaction takes place, create the following measure:
 
-`=lunarweekname(date)`
+=lunarweekname(date)
 
 Results table
 
@@ -405,15 +408,15 @@ Results table
 | 10/14/2022 | 2022/41 |
 | 10/29/2022 | 2022/44 |
 
-The `lunar_week_name` measure is created in the chart object by using the `lunarweekname()` function and passing the `date` field as the function’s argument.
+The lunar\_week\_name measure is created in the chart object by using the lunarweekname() function and passing the date field as the function’s argument.
 
-The `lunarweekname()` function identifies which lunar week the date value falls into, returning the year and week number of that date.
+The lunarweekname() function identifies which lunar week the date value falls into, returning the year and week number of that date.
 
-Diagram of `lunarweekname()` function, chart object example
+Diagram of lunarweekname() function, chart object example
 
-![Diagram showing how the lunarweekname function converts an input date into a value displaying a combination of year and lunar week number. Here, a chart object is used to perform the calculation.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekname-examples-chart-object.png)
+![Diagram showing how the lunarweekname function converts an input date into a value displaying a combination of year and lunar week number. Here, a chart object is used to perform the calculation.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-lunarweekname-examples-chart-object.png "Click to view full size")
 
-Transaction 8189 took place on January 19. The `lunarweekname()` function identifies that this date falls into the lunar week beginning on January 15; this is the third lunar week of the year. Therefore, the `lunar_week_name` value for that transaction is 2022/03.
+Transaction 8189 took place on January 19. The lunarweekname() function identifies that this date falls into the lunar week beginning on January 15; this is the third lunar week of the year. Therefore, the lunar\_week\_name value for that transaction is 2022/03.
 
 ## Example 5 – Scenario
 
@@ -425,10 +428,10 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset containing a set of transactions for 2022, which is loaded into a table called `Transactions`.
-- The date field provided in the `DateFormat` system variable (MM/DD/YYYY) format.
+- A dataset containing a set of transactions for 2022, which is loaded into a table called Transactions.
+- The date field provided in the DateFormat system variable (MM/DD/YYYY) format.
 
-The end user would like a chart object that presents the total sales by week for the current year. Week 1, with a length of seven days, should begin on January 1. This could be achieved even when this dimension is not available in the data model by using the `lunarweekname()` function as a calculated dimension in the chart.
+The end user would like a chart object that presents the total sales by week for the current year. Week 1, with a length of seven days, should begin on January 1. This could be achieved even when this dimension is not available in the data model by using the lunarweekname() function as a calculated dimension in the chart.
 
 Load script
 
@@ -438,7 +441,7 @@ SET DateFormat='MM/DD/YYYY';
 Transactions:
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,1/7/2022,17.17
@@ -468,14 +471,14 @@ Results
 
 Do the following:
 
-1. Load the data and open a [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekname.htm#glossary-10 "Glossary term"). Create a new table.
+1. Load the data and open a [sheet](#glossary-10 "Glossary term"). Create a new table.
 2. Create a calculated dimension using the following expression:
 
-   `=lunarweekname(date)`
-3. Calculate total sales using the following [aggregation](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/lunarweekname.htm#glossary-11 "Glossary term") measure:
+   =lunarweekname(date)
+3. Calculate total sales using the following [aggregation](#glossary-11 "Glossary term") measure:
 
-   `=sum(amount)`
-4. Set the measure's **Number formatting** to **Money**.
+   =sum(amount)
+4. Set the measure's Number formatting to Money.
 
 Results table
 

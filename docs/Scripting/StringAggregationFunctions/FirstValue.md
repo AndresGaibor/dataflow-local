@@ -4,15 +4,16 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions", "String aggregation functions"]
 ---
+
 # FirstValue Script function
 
 FirstValue() returns the value that was loaded first from the
 records defined by the expression, sorted by a group by clause.
 
-> **Note:** This function is only available as a script function.
+Information noteThis function is only available as a script function.
 
 Syntax:
 

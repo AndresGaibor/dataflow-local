@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# ReplaceRegEx Script and chart function
+
 Expand/Collapse all
 
 # ReplaceRegEx Script and chart function
@@ -15,8 +18,6 @@ ReplaceRegEx() returns a string after replacing one or more matches
 between an input string and a specified regular expression pattern. The text that replaces the matching text is specified in the to\_str argument. The function works from left to right, but if you specify a negative occurrence value, the functions reads from right to left.
 
 This function performs regex operations that are case-sensitive. You can alternatively use the variant ReplaceRegExI() to perform case-insensitive regex operations.
-
-[Video: https://share.vidyard.com/watch/1STBZFJeqoouP4SSofdb5R]
 
 Syntax:
 
@@ -38,11 +39,11 @@ Function examples
 
 | Example | Result |
 | --- | --- |
-| `ReplaceRegEx('abc123','[0-9]','x')` | Returns `abcxxx`. In this example, all text from the input string that matches the regex pattern are replaced with the new text. |
-| `ReplaceRegEx('abc123','[0-9]','x',1)` | Returns `abcx23`. Only the first occurrence of a match between the input string and the regex pattern are replaced. |
-| `ReplaceRegEx('abc123','[0-9]','x',4)` | Returns `abc123` . There are only three possible matches between the input string and the regex pattern, so no modification is performed. |
-| `ReplaceRegEx('ABC123','[a-c]','5')` | Returns `ABC123`. No modification is performed because **ReplaceRegEx()** is case-sensitive, and the case-insensitive variant is not used. |
-| `ReplaceRegExI('ABC123','[a-c]','5')` | Returns `555123`. The case-insensitive variant of the function, ReplaceRegExI(), is used. |
+| ReplaceRegEx('abc123','[0-9]','x') | Returns abcxxx. In this example, all text from the input string that matches the regex pattern are replaced with the new text. |
+| ReplaceRegEx('abc123','[0-9]','x',1) | Returns abcx23. Only the first occurrence of a match between the input string and the regex pattern are replaced. |
+| ReplaceRegEx('abc123','[0-9]','x',4) | Returns abc123 . There are only three possible matches between the input string and the regex pattern, so no modification is performed. |
+| ReplaceRegEx('ABC123','[a-c]','5') | Returns ABC123. No modification is performed because ReplaceRegEx() is case-sensitive, and the case-insensitive variant is not used. |
+| ReplaceRegExI('ABC123','[a-c]','5') | Returns 555123. The case-insensitive variant of the function, ReplaceRegExI(), is used. |
 
 ## When to use ReplaceRegEx
 
@@ -60,14 +61,14 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table `Employees` containing the email addresses of employees of an organization.
-- Creation of a new field, `Email_Updated`, to perform a find and replace operation on values in the field `Email_Original`.
+- A table Employees containing the email addresses of employees of an organization.
+- Creation of a new field, Email\_Updated, to perform a find and replace operation on values in the field Email\_Original.
 
 After the company has changed its name, all email addresses have been updated to reflect the new name.
 
 Our requirements:
 
-- Convert all domain references of `test.com` to `newcompanyname.com`.
+- Convert all domain references of test.com to newcompanyname.com.
 - We need to use case-insensitive regex operations.
 
 Load script
@@ -75,7 +76,7 @@ Load script
 ```
 Employees:
 
-Load 
+Load
 ReplaceRegExI(Email_Original, '@[a-zA-Z0-9.-]*\.?test\.com', '@newcompanyname.com') as Email_Updated,
 * Inline [
 ID, Email_Original
@@ -92,9 +93,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ID`
-- `Email_Original`
-- `Email_Updated`
+- ID
+- Email\_Original
+- Email\_Updated
 
 Results table
 
@@ -117,8 +118,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- [Variables](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/ReplaceRegEx.htm#glossary-0 "Glossary term") `ISBN_13` and `ISBN_10`, which store the regular expressions to use for 13-digit and 10-digit ISBN string patterns, respectively.
-- A table `Employees` containing raw numeric values for ISBN book codes. The table contains both 13-digit and 10-digit ISBNs.
+- [Variables](#glossary-0 "Glossary term") ISBN\_13 and ISBN\_10, which store the regular expressions to use for 13-digit and 10-digit ISBN string patterns, respectively.
+- A table Employees containing raw numeric values for ISBN book codes. The table contains both 13-digit and 10-digit ISBNs.
 - Several operations to extract each part of the ISBN, and then return a string showing the entire code in the standard, expected format. We use a combination of ReplaceRegEx(), MatchRegEx(), ExtractRegExGroup(), and Pick().
 
 Our requirements:
@@ -166,7 +167,7 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `ISBN_Formatted`
+- ISBN\_Formatted
 
 Results table
 
@@ -195,11 +196,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table `Employees` containing the email addresses of employees of an organization. These are stored in a single string for each employee, in which multiple email addresses are stored.
+- A table Employees containing the email addresses of employees of an organization. These are stored in a single string for each employee, in which multiple email addresses are stored.
 
 Our requirements:
 
-- Secondary email addresses need to be updated to use the domain `newcompanyname.com`. We do not want to update any primary email addresses.
+- Secondary email addresses need to be updated to use the domain newcompanyname.com. We do not want to update any primary email addresses.
 - We need to use case-insensitive regex operations.
 
 Load script
@@ -222,8 +223,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ID`
-- `Emails`
+- ID
+- Emails
 
 Add the following calculated dimension:
 
@@ -246,4 +247,4 @@ By specifying a value of 2 for the occurrence argument, we are able to only upda
 
 ## Learn more
 
-- [*Working with regular expressions in load scripts and chart expressions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/regular-expressions-qlik-analytics.htm)
+- [*Working with regular expressions in load scripts and chart expressions*](../regular-expressions-qlik-analytics.htm)

@@ -4,13 +4,14 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Understanding script syntax and data structures", "Fields"]
 ---
+
 # System fields
 
 In
-addition to the fields extracted from the data source, system fields are also produced by Qlik Sense. These all begin with "$" and can be displayed like ordinary fields in a [visualization](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/system-fields.htm#glossary-0 "Glossary term"), such as a filter pane or a table. System fields are created automatically when you load data, and are primarily used as an aid in application design.
+addition to the fields extracted from the data source, system fields are also produced by Qlik Sense. These all begin with "$" and can be displayed like ordinary fields in a [visualization](#glossary-0 "Glossary term"), such as a filter pane or a table. System fields are created automatically when you load data, and are primarily used as an aid in application design.
 
 ## Available system fields
 
@@ -18,7 +19,7 @@ The following system fields are available:
 
 Available system fields
 
-| System [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/system-fields.htm#glossary-2 "Glossary term") | Description |
+| System [field](#glossary-2 "Glossary term") | Description |
 | --- | --- |
 | $Table | Contains all tables that are loaded. |
 | $Field | Contains all fields in the tables that are loaded. |

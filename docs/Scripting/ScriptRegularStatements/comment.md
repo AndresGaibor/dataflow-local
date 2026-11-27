@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
 # Comment field
 
 Provides a way of displaying the field comments (metadata) from databases and spreadsheets. Field names not present in the application will be ignored. If multiple occurrences of a field name are found, the last value is used.
@@ -56,5 +57,5 @@ comment Gamma with 'Mickey Mouse field';
 
 ## Learn more
 
-- [*Mapping*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Mapping.htm)
-- [*Field/Fields*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Field.htm)
+- [*Mapping*](../ScriptPrefixes/Mapping.htm)
+- [*Field/Fields*](Field.htm)

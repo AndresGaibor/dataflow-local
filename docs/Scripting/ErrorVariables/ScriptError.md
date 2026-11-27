@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Working with variables in the data load editor", "Error variables"]
 ---
+
 # ScriptError
 
 This error variable returns the error code of the last executed script statement.
@@ -15,7 +16,7 @@ Syntax:
 
 ScriptError
 
-This [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ErrorVariables/ScriptError.htm#glossary-0 "Glossary term")
+This [variable](#glossary-0 "Glossary term")
 will be reset to 0 after each successfully executed script statement.
 If an error occurs it will be set to an internal Qlik Sense error code.
 Error codes are dual values with a numeric and a text component. The following
@@ -58,4 +59,4 @@ end if
 
 ## Learn more
 
-- [*Error variables*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ErrorVariables/ErrorVariables.htm)
+- [*Error variables*](ErrorVariables.htm)

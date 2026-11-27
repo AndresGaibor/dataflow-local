@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Modeling your data", "Best practices for data modeling"]
 ---
+
 # Combining tables with Join and Keep
 
 A join is an operation that uses two tables
@@ -23,7 +24,7 @@ It is possible to join tables already in the script. The Qlik Sense logic will t
 
 The Keep functionality, which has the effect of reducing one or both of the two tables to the intersection of table data before the tables are stored in Qlik Sense, has been designed to reduce the number of cases where explicit joins need to be used.
 
-> **Note:** In this documentation, the term join is usually used for joins made before the internal tables are created. The association made after the internal tables are created, is however essentially also a join.
+Information noteIn this documentation, the term join is usually used for joins made before the internal tables are created. The association made after the internal tables are created, is however essentially also a join.
 
 ## Joins within a SQL SELECT statement
 
@@ -57,19 +58,19 @@ LOAD a, b, c from table1.csv;
 
 join LOAD a, d from table2.csv;
 
-The resulting internal table has the fields a, b, c and d. The number of records differs depending on the [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/combine-tables-join-keep.htm#glossary-0 "Glossary term") values of the two tables.
+The resulting internal table has the fields a, b, c and d. The number of records differs depending on the [field](#glossary-0 "Glossary term") values of the two tables.
 
-> **Note:** The names of the fields to join over must be exactly the same. The number of fields to join over is arbitrary. Usually the tables should have one or a few fields in common. No field in common will render the cartesian product of the tables. All fields in common is also possible, but usually makes no sense. Unless a table name of a previously loaded table is specified in the Join statement the Join prefix uses the last previously created table. The order of the two statements is thus not arbitrary.
+Information noteThe names of the fields to join over must be exactly the same. The number of fields to join over is arbitrary. Usually the tables should have one or a few fields in common. No field in common will render the cartesian product of the tables. All fields in common is also possible, but usually makes no sense. Unless a table name of a previously loaded table is specified in the Join statement the Join prefix uses the last previously created table. The order of the two statements is thus not arbitrary.
 
-For more information, see [*Join*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Join.htm).
+For more information, see [*Join*](ScriptPrefixes/Join.htm).
 
 ## Keep
 
-The explicit Join prefix in the data [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/combine-tables-join-keep.htm#glossary-1 "Glossary term") performs a full join of the two tables. The result is one table. In many cases such joins will result in very large tables. One of the main features of Qlik Sense is its ability to make associations between tables instead of joining them, which reduces space in memory, increases speed and gives enormous flexibility. The keep functionality has been designed to reduce the number of cases where explicit joins need to be used.
+The explicit Join prefix in the data [load script](#glossary-1 "Glossary term") performs a full join of the two tables. The result is one table. In many cases such joins will result in very large tables. One of the main features of Qlik Sense is its ability to make associations between tables instead of joining them, which reduces space in memory, increases speed and gives enormous flexibility. The keep functionality has been designed to reduce the number of cases where explicit joins need to be used.
 
 The Keep prefix between two LOAD or SELECT statements has the effect of reducing one or both of the two tables to the intersection of table data before they are stored in Qlik Sense. The Keep prefix must always be preceded by one of the keywords Inner, Left or Right. The selection of records from the tables is made in the same way as in a corresponding join. However, the two tables are not joined and will be stored in Qlik Sense as two separately named tables.
 
-For more information, see [*Keep*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Keep.htm).
+For more information, see [*Keep*](ScriptPrefixes/Keep.htm).
 
 ## Inner
 
@@ -138,7 +139,7 @@ VTab2
 | --- | --- |
 | 1 | xx |
 
-For more information, see [*Inner*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Inner.htm).
+For more information, see [*Inner*](ScriptPrefixes/Inner.htm).
 
 ## Left
 
@@ -207,7 +208,7 @@ VTab2
 | --- | --- |
 | 1 | xx |
 
-For more information, see [*Left*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Left.htm).
+For more information, see [*Left*](ScriptPrefixes/Left.htm).
 
 ## Right
 
@@ -274,4 +275,4 @@ VTab2
 | 1 | xx |
 | 4 | yy |
 
-For more information, see [*Right*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Right.htm).
+For more information, see [*Right*](ScriptPrefixes/Right.htm).

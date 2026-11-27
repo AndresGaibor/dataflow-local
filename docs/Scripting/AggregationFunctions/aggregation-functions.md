@@ -4,16 +4,17 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions"]
 ---
+
 # Aggregation functions
 
-The family of functions known as aggregation functions consists of functions that take multiple [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/AggregationFunctions/aggregation-functions.htm#glossary-0 "Glossary term") values as their input and return a single result per group, where the grouping is defined by a [chart](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/AggregationFunctions/aggregation-functions.htm#glossary-1 "Glossary term") [dimension](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/AggregationFunctions/aggregation-functions.htm#glossary-2 "Glossary term") or a group by clause in the script statement.
+The family of functions known as aggregation functions consists of functions that take multiple [field](#glossary-0 "Glossary term") values as their input and return a single result per group, where the grouping is defined by a [chart](#glossary-1 "Glossary term") [dimension](#glossary-2 "Glossary term") or a group by clause in the script statement.
 
 Aggregation functions include Sum(), Count(), Min(), Max(), and many more.
 
-Most aggregation functions can be used in both the data [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/AggregationFunctions/aggregation-functions.htm#glossary-3 "Glossary term") and chart expressions, but the syntax differs.
+Most aggregation functions can be used in both the data [load script](#glossary-3 "Glossary term") and chart expressions, but the syntax differs.
 
 Limitations:
 
@@ -36,9 +37,9 @@ The parameter of the aggregation function must not contain other aggregation fun
 more advanced nested aggregations, use the advanced function Aggr, in combination with a specified dimension.
 
 An aggregation function aggregates over the set of possible records defined by the selection. However, an alternative set of records
-can be defined by using a set expression in [set analysis](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/AggregationFunctions/aggregation-functions.htm#glossary-4 "Glossary term").
+can be defined by using a set expression in [set analysis](#glossary-4 "Glossary term").
 
-See: [*Set analysis*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/ChartFunctions/SetAnalysis/set-analysis-expressions.htm)
+See: [*Set analysis*](../../ChartFunctions/SetAnalysis/set-analysis-expressions.htm)
 
 ## How aggregations are calculated
 
@@ -58,7 +59,7 @@ For example, in the following tables, ProductId is the key between the tables.
 
 ProductId key between Products and Details tables
 
-![Data model showing two tables linked by a key field 'ProductId'](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ProductIdDetails.png)
+![Data model showing two tables linked by a key field 'ProductId'](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ProductIdDetails.png "Click to view full size")
 
 Count(ProductId) can be counted either in the Products table (which has only one record per product – ProductId is the primary key) or it can be counted in the Details table (which most likely has several records per product). If you want to count the number of distinct products, you should use Count(distinct ProductId). If you want to count the number of rows in a specific table, you should not use the key.
 
@@ -68,4 +69,4 @@ The distinct prefix only works with key fields linking up to two tables. When gr
 
 Related learning:
 
-- [Associating Tables and Transforming Data](https://help.qlik.com/lnk/Assoc_tables_transform_data_QS)
+- [Associating Tables and Transforming Data](/lnk/Assoc_tables_transform_data_QS)

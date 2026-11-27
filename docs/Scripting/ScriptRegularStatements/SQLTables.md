@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
 # SQLTables
 
 The sqltables statement returns
@@ -42,11 +43,11 @@ to 'MS Access 7.0 Database; DBQ=C:\Course3\DataSrc\QWT.mbd';
 
 SQLTables;
 
-> **Note:** Some ODBC drivers may not support
-> this command. Some ODBC drivers may produce
-> additional fields.
+Information noteSome ODBC drivers may not support
+this command. Some ODBC drivers may produce
+additional fields.
 
 ## Learn more
 
-- [*SQLColumns*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/SQLColumns.htm)
-- [*SQLTypes*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/SQLTypes.htm)
+- [*SQLColumns*](SQLColumns.htm)
+- [*SQLTypes*](SQLTypes.htm)

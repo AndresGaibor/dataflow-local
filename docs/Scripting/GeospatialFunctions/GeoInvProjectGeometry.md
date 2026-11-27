@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Geospatial functions"]
 ---
+
 # GeoInvProjectGeometry Script and chart function
 
 GeoInvProjectGeometry() is used to aggregate a geometry into an area and apply the inverse of a projection.
@@ -32,6 +33,6 @@ Scripting example
 
 | Example | Result |
 | --- | --- |
-| In a `Load` statement: `GeoInvProjectGeometry('mercator',AreaPolygon) as InvProjectGeometry` | The geometry loaded as AreaPolygon is transformed using the inverse transformation of the Mercator projection and stored as InvProjectGeometry for use in [visualizations](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/GeoInvProjectGeometry.htm#glossary-0 "Glossary term"). |
+| In a Load statement: GeoInvProjectGeometry('mercator',AreaPolygon) as InvProjectGeometry | The geometry loaded as AreaPolygon is transformed using the inverse transformation of the Mercator projection and stored as InvProjectGeometry for use in [visualizations](#glossary-0 "Glossary term"). |
 
-[*Loading your own map data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Visualizations/Map/load-map-data.htm)
+[*Loading your own map data*](../../Visualizations/Map/load-map-data.htm)

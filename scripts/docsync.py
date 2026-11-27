@@ -27,6 +27,8 @@ import urllib.request
 INDEX = "https://help.qlik.com/sitemap.xml"
 UA = "dfemu-docsync/0.1 (+https://github.com/AndresGaibor/dataflow-local)"
 DEFAULT_FAMILY = "cloud-services_en-US"
+# carpetas de docs/ escritas a mano: --prune no las toca nunca
+PROTECTED = {"banco-de-pruebas", "superpowers"}
 
 
 def _get(url: str, timeout: int = 60, retries: int = 3, backoff: float = 2.0) -> bytes:
@@ -98,15 +100,34 @@ def target_path(url: str) -> str:
     return stem + ".md"
 
 
+IMG_EXT = re.compile(r"\.(png|jpe?g|gif|svg|webp|bmp)$", re.I)
+
+
 def image_target(url: str, src: str) -> tuple[str | None, str | None]:
-    """(enlace relativo desde el .md, ruta dentro de docs/) de una imagen de Qlik."""
+    """(enlace relativo desde el .md, ruta dentro de docs/) de una imagen de Qlik.
+
+    Las paginas usan rutas relativas (`../../Resources/Images/...`) y tambien
+    `_images/...`; en los dos casos la imagen se guarda espejando su ruta en
+    help.qlik.com, que es lo que evita colisiones entre secciones.
+    """
     absolute = urllib.parse.urljoin(url, src)
-    if "/_images/" not in absolute:
+    parts = urllib.parse.urlsplit(absolute)
+    if parts.netloc != "help.qlik.com" or not IMG_EXT.search(parts.path):
         return None, None
-    inside = absolute.split("/_images/", 1)[1].split("?", 1)[0]
-    target = os.path.join("_images", *[p for p in inside.split("/") if p])
+    inside = [p for p in parts.path.split("/") if p]
+    if inside and inside[0] == "_images":
+        inside = inside[1:]
+    target = os.path.join("_images", *inside)
     rel = os.path.relpath(target, os.path.dirname(target_path(url)) or ".")
     return rel.replace(os.sep, "/"), target
+
+
+def image_url(target: str) -> str:
+    """Ruta en docs/ -> URL absoluta en help.qlik.com (para descargarla)."""
+    inside = os.path.normpath(target).replace(os.sep, "/")
+    if inside.startswith("_images/"):
+        inside = inside[len("_images/"):]
+    return "https://help.qlik.com/" + inside
 
 
 def _q(value: str) -> str:
@@ -209,13 +230,21 @@ def images_of(md: str) -> list[str]:
     return [m for m in re.findall(r"\]\(([^)\s]+)\)", md) if "_images/" in m]
 
 
-def sync(urls: list[str], root: str, fetch=_get, workers: int = 4, progress=None) -> dict:
-    """Descarga `urls` a `root/docs` y devuelve el informe de lo hecho."""
+def sync(urls: list[str], root: str, fetch=_get, workers: int = 4, progress=None, skip_known: bool = False) -> dict:
+    """Descarga `urls` a `root/docs` y devuelve el informe de lo hecho.
+
+    Con `skip_known` no se vuelve a bajar lo que ya esta en el manifiesto y en disco;
+    sirve para completar imagenes o anadir paginas nuevas sin repetir el corpus.
+    """
     state = _read_manifest(root)
     report = {"written": 0, "unchanged": 0, "images": 0, "failed": {}}
     pending_images: dict[str, str] = {}
 
     def one(url: str):
+        known = state["pages"].get(url)
+        if skip_known and known and os.path.exists(os.path.join(root, "docs", known["path"])):
+            with open(os.path.join(root, "docs", known["path"]), encoding="utf-8") as f:
+                return url, f.read(), "skip"  # ya esta: solo se miran sus imagenes
         try:
             return url, convert(fetch(url).decode("utf-8", "replace"), url), None
         except Exception as e:  # red o HTML raro: se informa y se sigue
@@ -223,13 +252,16 @@ def sync(urls: list[str], root: str, fetch=_get, workers: int = 4, progress=None
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
         for n, (url, md, err) in enumerate(pool.map(one, urls), 1):
-            if err:
+            if err and err != "skip":
                 report["failed"][url] = err
                 continue
+            skipped = err == "skip"
             rel = target_path(url)
             path = os.path.join(root, "docs", rel)
             sha = _sha(md)
             previous = state["pages"].get(url)
+            if skipped:
+                report["unchanged"] += 1
             if previous and previous.get("sha256") == sha and os.path.exists(path):
                 report["unchanged"] += 1
             else:
@@ -240,26 +272,30 @@ def sync(urls: list[str], root: str, fetch=_get, workers: int = 4, progress=None
             state["pages"][url] = {"path": rel.replace(os.sep, "/"), "sha256": sha, "bytes": len(md.encode("utf-8"))}
             for link in images_of(md):
                 target = os.path.normpath(os.path.join(os.path.dirname(rel), link))
-                pending_images[urllib.parse.urljoin(url, link)] = target
+                pending_images[target] = target
             if progress:
                 progress(n, len(urls), url)
 
-    for img_url, target in sorted(pending_images.items()):
-        path = os.path.join(root, "docs", target)
-        known = state["images"].get(img_url)
-        if known and os.path.exists(path):
-            continue
-        real = img_url.replace("/_images/", "/_images/")  # ya es absoluta
+    pending = [t for t in sorted(pending_images) if not (state["images"].get(image_url(t)) and os.path.exists(os.path.join(root, "docs", t)))]
+
+    def one_image(target: str):
         try:
-            data = fetch(real)
-        except Exception as e:
-            report["failed"][img_url] = str(e)
-            continue
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path, "wb") as f:
-            f.write(data)
-        state["images"][img_url] = {"path": target.replace(os.sep, "/"), "sha256": hashlib.sha256(data).hexdigest()}
-        report["images"] += 1
+            return target, fetch(image_url(target)), None
+        except Exception as e:  # una imagen que falla no tumba el espejo
+            return target, None, str(e)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
+        for target, data, err in pool.map(one_image, pending):
+            url = image_url(target)
+            if err:
+                report["failed"][url] = err
+                continue
+            path = os.path.join(root, "docs", target)
+            os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+            with open(path, "wb") as f:
+                f.write(data)
+            state["images"][url] = {"path": target.replace(os.sep, "/"), "sha256": hashlib.sha256(data).hexdigest()}
+            report["images"] += 1
 
     _write_manifest(root, state)
     return report
@@ -308,6 +344,8 @@ def prune(urls: list[str], root: str) -> list[str]:
                 continue
             full = os.path.join(dirpath, name)
             rel = os.path.normpath(os.path.relpath(full, docs))
+            if rel.split(os.sep, 1)[0] in PROTECTED:
+                continue
             if rel not in keep:
                 os.remove(full)
                 removed.append(rel.replace(os.sep, "/"))
@@ -330,6 +368,7 @@ def main(argv=None) -> int:
     p.add_argument("--check", action="store_true", help="no descarga: falla si falta una pagina o una imagen")
     p.add_argument("--no-images", action="store_true", help="no descarga imagenes")
     p.add_argument("--prune", action="store_true", help="borra los .md que ya no estan en el sitemap")
+    p.add_argument("--skip-known", action="store_true", help="no vuelve a bajar las paginas ya espejadas")
     a = p.parse_args(argv)
 
     index = _get(INDEX)
@@ -358,7 +397,7 @@ def main(argv=None) -> int:
     fetch = _get
     if a.no_images:
         fetch = lambda u: b"" if "/_images/" in u else _get(u)
-    report = sync(urls, a.out, fetch=fetch, workers=a.workers,
+    report = sync(urls, a.out, fetch=fetch, workers=a.workers, skip_known=a.skip_known,
                   progress=lambda n, total, u: print(f"[{n}/{total}] {u}", flush=True))
     if a.prune:
         for gone in prune(urls, a.out):

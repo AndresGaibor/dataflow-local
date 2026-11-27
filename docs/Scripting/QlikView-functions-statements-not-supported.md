@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions"]
 ---
+
 # QlikView functions and statements not supported in Qlik Sense
 
 Most functions and statements that can be used in QlikView load scripts and chart expressions are also supported in Qlik Sense, but there are some exceptions, as described here.

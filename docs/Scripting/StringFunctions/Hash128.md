@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# Hash128 Script and chart function
+
 Expand/Collapse all
 
 # Hash128 Script and chart function
@@ -29,8 +32,8 @@ Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `Hash128( 'abc', 'xyz', '123' )` | Returns `MA&5]6+3=:>:>G%S<U*S2+` |
-| `Hash128 ( Region, Year, Month )`  Note: `Region`, `Year`, and `Month` are table fields. | Returns `G7*=6GKPJ(Z+)^KM?<$'A+` |
+| Hash128( 'abc', 'xyz', '123' ) | Returns MA&5]6+3=:>:>G%S<U\*S2+ |
+| Hash128 ( Region, Year, Month )  Note: Region, Year, and Month are table fields. | Returns G7\*=6GKPJ(Z+)^KM?<$'A+ |
 
 ## Example - Hash128 fundamentals
 
@@ -42,12 +45,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields which will be used to create a 128-bit hash value:
 
-  - `Region`
-  - `Year`
-  - `Month`
+  - Region
+  - Year
+  - Month
 
 Load script
 
@@ -67,13 +70,13 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Region`
-- `Year`
-- `Month`
+- Region
+- Year
+- Month
 
 Create the following calculated dimension:
 
-- `=Hash128(Region, Year, Month)`, to calculate the 128-bit hash value.
+- =Hash128(Region, Year, Month), to calculate the 128-bit hash value.
 
 Results table
 
@@ -84,7 +87,7 @@ Results table
 | UK | 2022 | 02 | O5T;+1?[B&"F&1//MA[MN! |
 | US | 2022 | 02 | C6@#]4#\_G-(]J7EQY#KRW0 |
 
-For each row, the hash strings for `Region`, `Year`, and `Month` are joined together and a 22-character string is returned.
+For each row, the hash strings for Region, Year, and Month are joined together and a 22-character string is returned.
 
 Load script
 
@@ -123,13 +126,13 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `TransactionID`
-  - `ProductID`
-  - `ProductName`
-  - `SupplierID`
+  - TransactionID
+  - ProductID
+  - ProductName
+  - SupplierID
 
 Load script
 
@@ -148,14 +151,14 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Transaction ID`
-- `ProductID`
-- `ProductName`
-- `SupplierID`
+- Transaction ID
+- ProductID
+- ProductName
+- SupplierID
 
 Create the following calculated dimension:
 
-- `=Hash128(ProductID, ProductName, SupplierID)`, to calculate a 22-character key.
+- =Hash128(ProductID, ProductName, SupplierID), to calculate a 22-character key.
 
 Results table
 
@@ -165,7 +168,7 @@ Results table
 | 2 | 102 | Widget B | S002 | ​O7(1;V1%MG;Z+A[/H)G5&0 |
 | 3 | 101 | Widget A | S001 | ​CY`&^(N,E/#`TJT4&]/7N% |
 
-Compare the output of the `Hash128` function. Notice that the first and third `TransactionID` records have duplicate hash values because the combination of the `ProductID`, `ProductName`, and `SupplierID` strings are the same for these rows.
+Compare the output of the Hash128 function. Notice that the first and third TransactionID records have duplicate hash values because the combination of the ProductID, ProductName, and SupplierID strings are the same for these rows.
 
 ## Example - Hash128 scenario to anonymize data
 
@@ -179,12 +182,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `CustomerID`
-  - `CustomerName`
-  - `SSN`
+  - CustomerID
+  - CustomerName
+  - SSN
 
 Load script
 
@@ -202,14 +205,14 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `CustomerID`
-- `CustomerName`
-- `SSN`
+- CustomerID
+- CustomerName
+- SSN
 
 Create the following calculated dimensions:
 
-- ​`=Hash128(CustomerName)`
-- `=Hash128(SSN)`
+- ​=Hash128(CustomerName)
+- =Hash128(SSN)
 
 Results table
 

@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# CountRegEx Script and chart function
+
 Expand/Collapse all
 
 # CountRegEx Script and chart function
@@ -33,11 +36,11 @@ Function examples
 
 | Example | Result |
 | --- | --- |
-| `CountRegEx('abc123','[a-z]')` | Returns `3`. |
-| `CountRegEx('abc123','[a-z][0-9]')` | Returns `1`. |
-| `CountRegEx('abc123','[0-9]')` | Returns `3`. |
-| `CountRegEx('ABC','[a-z]{3}')` | Returns `0`. |
-| `CountRegExI('ABC','[a-z]{3}')` | Returns `1`. Because the CountRegExI() variant is used, text searches are not case-sensitive. |
+| CountRegEx('abc123','[a-z]') | Returns 3. |
+| CountRegEx('abc123','[a-z][0-9]') | Returns 1. |
+| CountRegEx('abc123','[0-9]') | Returns 3. |
+| CountRegEx('ABC','[a-z]{3}') | Returns 0. |
+| CountRegExI('ABC','[a-z]{3}') | Returns 1. Because the CountRegExI() variant is used, text searches are not case-sensitive. |
 
 ## When to use CountRegEx
 
@@ -56,8 +59,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A tabled named `Vehicles` containing a list of vehicles, along with the condition and model year of each vehicle.
-- For each record in `Vehicles`, a calculation to determine whether the year range for the vehicle meets the expected syntax. Valid year ranges include 1990s, 2000s, 2010s, and 2020s. This calculation is performed using the CountRegEx() function.
+- A tabled named Vehicles containing a list of vehicles, along with the condition and model year of each vehicle.
+- For each record in Vehicles, a calculation to determine whether the year range for the vehicle meets the expected syntax. Valid year ranges include 1990s, 2000s, 2010s, and 2020s. This calculation is performed using the CountRegEx() function.
 
 Load script
 
@@ -83,8 +86,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Vehicle_ID`
-- `Valid_Year_Data`
+- Vehicle\_ID
+- Valid\_Year\_Data
 
 Results table
 
@@ -101,7 +104,7 @@ Results table
 | 9 | 0 |
 | 10 | 1 |
 
-You can also add a KPI to the sheet, and add this [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/CountRegEx.htm#glossary-0 "Glossary term"):
+You can also add a KPI to the sheet, and add this [measure](#glossary-0 "Glossary term"):
 
 ```
 Sum(Valid_Year_Data)
@@ -109,7 +112,7 @@ Sum(Valid_Year_Data)
 
 This chart shows the total number of records with valid Model\_YearRange values.
 
-> **Note:** The MatchRegEx() function is also useful for these types of validation use cases.
+Information noteThe MatchRegEx() function is also useful for these types of validation use cases.
 
 ## Example 2 – load script to count number of email addresses in text strings
 
@@ -121,8 +124,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A tabled named `Employees` containing data about a company's employees. All email address for each employee are contained within a single string.
-- The creation of a field, `NoOfEmails`, to calculate how many email addresses are contained within the input string for each employee.
+- A tabled named Employees containing data about a company's employees. All email address for each employee are contained within a single string.
+- The creation of a field, NoOfEmails, to calculate how many email addresses are contained within the input string for each employee.
 
 Load script
 
@@ -145,9 +148,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ID`
-- `Emails`
-- `NoOfEmails`
+- ID
+- Emails
+- NoOfEmails
 
 Results table
 
@@ -173,7 +176,7 @@ The load script contains the text from a number of corporate correspondences tha
 Our requirements:
 
 - Identify which messages contain a string that includes the email address TestCompanyNameCorrespondence@test.com, along with a specific introduction to this address that indicates that it was the sender.
-- We want flexibility in which introductions to identify, but also to still have some definite restrictions. The introductions `Sender` and `Sent by` are both considered valid. To achieve this goal, regex patterns can be used.
+- We want flexibility in which introductions to identify, but also to still have some definite restrictions. The introductions Sender and Sent by are both considered valid. To achieve this goal, regex patterns can be used.
 - Case sensitivity of email addresses is not a factor. Therefore, the search should be case-insensitive.
 
 Load script
@@ -182,7 +185,7 @@ Load script
 Correspondences:
 Load * Inline [
 ID|MessageBody
-1|Sent by-- TestCompanyNameCorrespondence@test.com Good morning TestCompanyName team! I hope you are all well. I am just reaching out about the fabulous benefits package we launched just year. Our goal is to take a poll of what you all think. Can you please rate the new options from 1-10 in a response to this email, by this Tuesday? Thank you! 
+1|Sent by-- TestCompanyNameCorrespondence@test.com Good morning TestCompanyName team! I hope you are all well. I am just reaching out about the fabulous benefits package we launched just year. Our goal is to take a poll of what you all think. Can you please rate the new options from 1-10 in a response to this email, by this Tuesday? Thank you!
 2|Sender: TestCompanyNameIT@test.com Did you know you can access our IT portal anytime, from any of your company devices? It's true! Reach out to your team lead to learn more.
 3|Sender: TESTCOMPANYNAMECORRESPONDENCE@test.COM URGENT: This is a message to inform employees of an ongoing issue with our local branch. The branch will be closed until further notice. Thank you
 4|Sender: TestCompanyNameVolunteering@test.com Dear team! We are looking for volunteers to help with this year's charity event! We need 40 volunteers to help with the event. If you are interested, please send an email to your direct supervisor. Thanks, TestCompanyName team members, for helping make the world a better place!
@@ -194,8 +197,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ID`
-- `MessageBody`
+- ID
+- MessageBody
 
 Add the following measure:
 
@@ -203,15 +206,15 @@ Add the following measure:
 =CountRegExI(MessageBody,'(Sender.*TestCompanyNameCorrespondence@test.com)|(Sent by.*TestCompanyNameCorrespondence@test.com)')
 ```
 
-In the measure properties, set **Totals function** to **Sum**. This configures the totals row at the top of the table to count the total number of records that contribute to the count.
+In the measure properties, set Totals function to Sum. This configures the totals row at the top of the table to count the total number of records that contribute to the count.
 
-The measure counts the number of matches for the specified regex pattern within the message content. In the regex pattern, `.*` indicates any number of any character except newline characters. The pattern also accounts for variation in how the email address is introduced: both `Sender` and `Sent by` are valid matches. The CountRegExI() variant of the function ensures case-insensitive searches.
+The measure counts the number of matches for the specified regex pattern within the message content. In the regex pattern, .\* indicates any number of any character except newline characters. The pattern also accounts for variation in how the email address is introduced: both Sender and Sent by are valid matches. The CountRegExI() variant of the function ensures case-insensitive searches.
 
 Results table
 
 | ID | MessageBody | =CountRegExI(MessageBody,'(Sender.\*TestCompanyNameCorrespondence@test.com)|(Sent by.\*TestCompanyNameCorrespondence@test.com)') |
 | --- | --- | --- |
-| **Totals** | - | **3** |
+| Totals | - | 3 |
 | 1 | Sent by-- TestCompanyNameCorrespondence@test.com Good morning TestCompanyName team! I hope you are all well. I am just reaching out about the fabulous benefits package we launched just year. Our goal is to take a poll of what you all think. Can you please rate the new options from 1-10 in a response to this email, by this Tuesday? Thank you! | 1 |
 | 2 | Sender: TestCompanyNameIT@test.com Did you know you can access our IT portal anytime, from any of your company devices? It's true! Reach out to your team lead to learn more. | 0 |
 | 3 | Sender: TESTCOMPANYNAMECORRESPONDENCE@TEST.COM URGENT: This is a message to inform employees of an ongoing issue with our local branch. The branch will be closed until further notice. Thank you | 1 |
@@ -220,8 +223,8 @@ Results table
 
 Across the five messages, there are three that match the specified regex pattern. Each message contains one match.
 
-> **Note:** The MatchRegEx() function is also useful for these types of validation use cases.
+Information noteThe MatchRegEx() function is also useful for these types of validation use cases.
 
 ## Learn more
 
-- [*Working with regular expressions in load scripts and chart expressions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/regular-expressions-qlik-analytics.htm)
+- [*Working with regular expressions in load scripts and chart expressions*](../regular-expressions-qlik-analytics.htm)

@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Formatting functions"]
 ---
+
+# Timestamp Script and chart function
+
 Expand/Collapse all
 
 # Timestamp Script and chart function
@@ -28,16 +31,16 @@ Arguments
 | Argument | Description |
 | --- | --- |
 | number | The number to be formatted. |
-| format | String describing how the resulting timestamp string is to be formatted. If omitted, the short date format, time format, and decimal separator set in the operating system is used.  The `Timestamp` function supports many format options for different time structures, for example:  `DD/MM/YYYY`: Focuses on just the date (for example: `15/11/2024`).  ​`YYYY-MM-DD hh:mm:ss`: ​Displays the full timestamp (for example: `2024-11-15 13:30:45`).  `​MMM DD, YYYY`: ​Displays a short version of the month and the full year (for example: `Nov 15, 2024`).  ​`hh:mm:ss TT`: ​Shows only the time in 12-hour format (for example: `01:30:45 PM`)  `​HH:mm:ss`: ​Displays time in 24-hour format (for example: `13:30:45`)  `​wwww, MMM DD YYYY`: ​Shows full day of the week and date (for example: `Friday, Nov 15 2024`)  `​YYYY-MM-DD hh:mm:ss.fff`: ​Includes milliseconds (for example: `2024-11-15 13:30:45.123`​).  [*Descriptions for number and time formats*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Introduction/conventions-number-time-formats.htm) |
+| format | String describing how the resulting timestamp string is to be formatted. If omitted, the short date format, time format, and decimal separator set in the operating system is used.  The Timestamp function supports many format options for different time structures, for example:  DD/MM/YYYY: Focuses on just the date (for example: 15/11/2024).  ​YYYY-MM-DD hh:mm:ss: ​Displays the full timestamp (for example: 2024-11-15 13:30:45).  ​MMM DD, YYYY: ​Displays a short version of the month and the full year (for example: Nov 15, 2024).  ​hh:mm:ss TT: ​Shows only the time in 12-hour format (for example: 01:30:45 PM)  ​HH:mm:ss: ​Displays time in 24-hour format (for example: 13:30:45)  ​wwww, MMM DD YYYY: ​Shows full day of the week and date (for example: Friday, Nov 15 2024)  ​YYYY-MM-DD hh:mm:ss.fff: ​Includes milliseconds (for example: 2024-11-15 13:30:45.123​).  [*Descriptions for number and time formats*](../../Introduction/conventions-number-time-formats.htm) |
 
 Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `Timestamp( 35648 )` | Returns `97-08-06 00:00:00` when the `TimestampFormat` is `YY-MM-DD hh:mm:ss`. |
-| `Timestamp(35648,'YYYY-MM-DD hh.mm')` | Returns `1997-08-06 00.00` when the format supplied is `YYYY-MM-DD hh.mm`. |
-| `Timestamp( 35648,'M/D/YYYY h:mm:ss[.fff] TT')` | Returns `8/6/1997 12:00:00 AM` when the format supplied is `M/D/YYYY h:mm:ss[.fff] TT`. |
-| `Timestamp( 35648,'www, DD MMM YYYY hh:mm TT')` | Returns `Wed, 06 Aug 1997 12:00 AM` when the format supplied is `www, DD MMM YYYY hh:mm TT`. |
+| Timestamp( 35648 ) | Returns 97-08-06 00:00:00 when the TimestampFormat is YY-MM-DD hh:mm:ss. |
+| Timestamp(35648,'YYYY-MM-DD hh.mm') | Returns 1997-08-06 00.00 when the format supplied is YYYY-MM-DD hh.mm. |
+| Timestamp( 35648,'M/D/YYYY h:mm:ss[.fff] TT') | Returns 8/6/1997 12:00:00 AM when the format supplied is M/D/YYYY h:mm:ss[.fff] TT. |
+| Timestamp( 35648,'www, DD MMM YYYY hh:mm TT') | Returns Wed, 06 Aug 1997 12:00 AM when the format supplied is www, DD MMM YYYY hh:mm TT. |
 
 ## Example - Timestamp fundamentals
 
@@ -49,11 +52,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following field in a data table:
 
-  - `TimeStampValue`
-- The `TimestampFormat` variable, which uses the `YY-MM-DD hh:mm:ss` format.
+  - TimeStampValue
+- The TimestampFormat variable, which uses the YY-MM-DD hh:mm:ss format.
 
 Load script
 
@@ -73,16 +76,16 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `TimeStampValue`
+- TimeStampValue
 
 Create the following measures:
 
-- `=Timestamp(TimeStampValue)` to view the value as a timestamp format using the system setting.
-- `=Timestamp(TimeStampValue,'YYYY-MM-DD hh.mm')` to view the value as a timestamp format using the format supplied in the function.
-- `=Timestamp(TimeStampValue,'M/D/YYYY h:mm:ss[.fff] TT')` to view the value as a timestamp format using the format supplied in the function.
-- `=Timestamp(TimeStampValue,'YYYY-MM-DD hh:mm:ss.fff')` to view the value as a timestamp format using the format supplied in the function.
-- `=Timestamp(TimeStampValue,'www, DD MMM YYYY hh:mm TT')` to view the value as a timestamp format using the format supplied in the function.
-- `=Timestamp(TimeStampValue,'wwww, MMM DD YYYY')` to view the value as a timestamp format using the format supplied in the function.
+- =Timestamp(TimeStampValue) to view the value as a timestamp format using the system setting.
+- =Timestamp(TimeStampValue,'YYYY-MM-DD hh.mm') to view the value as a timestamp format using the format supplied in the function.
+- =Timestamp(TimeStampValue,'M/D/YYYY h:mm:ss[.fff] TT') to view the value as a timestamp format using the format supplied in the function.
+- =Timestamp(TimeStampValue,'YYYY-MM-DD hh:mm:ss.fff') to view the value as a timestamp format using the format supplied in the function.
+- =Timestamp(TimeStampValue,'www, DD MMM YYYY hh:mm TT') to view the value as a timestamp format using the format supplied in the function.
+- =Timestamp(TimeStampValue,'wwww, MMM DD YYYY') to view the value as a timestamp format using the format supplied in the function.
 
 Results table
 
@@ -93,7 +96,7 @@ Results table
 | 36648.875 | 00-05-02 21:00:00 | 2000-05-02 21.00 | 5/2/2000 9:00:00 PM | 2000-05-02 21:00:00.000 | Tue, 02 May 2000 09:00 PM | Tuesday, May 02 2000 |
 | 36648.8756789 | 00-05-02 21:00:58 | 2000-05-02 21.00 | 5/2/2000 9:00:58 PM | 2000-05-02 21:00:58.657 | Tue, 02 May 2000 09:00 PM | Tuesday, May 02 2000 |
 
-The results show how the `TimestampFormat` function can display values using different format parameters.
+The results show how the TimestampFormat function can display values using different format parameters.
 
 ## Example - Timestamp fundamentals using a different TimestampFormat setting
 
@@ -105,11 +108,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following field in a data table:
 
-  - `TimeStampValue`
-- The `TimestampFormat` variable, which uses the `YY-MM-DD hh:mm:ss` format.
+  - TimeStampValue
+- The TimestampFormat variable, which uses the YY-MM-DD hh:mm:ss format.
 
 Load script
 
@@ -129,16 +132,16 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `TimeStampValue`
+- TimeStampValue
 
 Create the following measures:
 
-- `=Timestamp(TimeStampValue)` to view the value as a timestamp format using the system setting.
-- `=Timestamp(TimeStampValue,'YYYY-MM-DD hh.mm')` to view the value as a timestamp format using the format supplied in the function.
-- `=Timestamp(TimeStampValue,'M/D/YYYY h:mm:ss[.fff] TT')` to view the value as a timestamp format using the format supplied in the function.
-- `=Timestamp(TimeStampValue,'YYYY-MM-DD hh:mm:ss.fff')` to view the value as a timestamp format using the format supplied in the function.
-- `=Timestamp(TimeStampValue,'www, DD MMM YYYY hh:mm TT')` to view the value as a timestamp format using the format supplied in the function.
-- `=Timestamp(TimeStampValue,'wwww, MMM DD YYYY')` to view the value as a timestamp format using the format supplied in the function.
+- =Timestamp(TimeStampValue) to view the value as a timestamp format using the system setting.
+- =Timestamp(TimeStampValue,'YYYY-MM-DD hh.mm') to view the value as a timestamp format using the format supplied in the function.
+- =Timestamp(TimeStampValue,'M/D/YYYY h:mm:ss[.fff] TT') to view the value as a timestamp format using the format supplied in the function.
+- =Timestamp(TimeStampValue,'YYYY-MM-DD hh:mm:ss.fff') to view the value as a timestamp format using the format supplied in the function.
+- =Timestamp(TimeStampValue,'www, DD MMM YYYY hh:mm TT') to view the value as a timestamp format using the format supplied in the function.
+- =Timestamp(TimeStampValue,'wwww, MMM DD YYYY') to view the value as a timestamp format using the format supplied in the function.
 
 Results table
 
@@ -149,7 +152,7 @@ Results table
 | 36648.875 | 5/2/00 21:00:00 | 2000-05-02 21.00 | 5/2/2000 9:00:00 PM | 2000-05-02 21:00:00.000 | Tue, 02 May 2000 09:00 PM | Tuesday, May 02 2000 |
 | 36648.8756789 | 5/2/00 21:00:58 | 2000-05-02 21.00 | 5/2/2000 9:00:58 PM | 2000-05-02 21:00:58.657 | Tue, 02 May 2000 09:00 PM | Tuesday, May 02 2000 |
 
-The results show how the `TimestampFormat` function can display values using different format parameters.
+The results show how the TimestampFormat function can display values using different format parameters.
 
 ## Example - Changing the timestamp format of customer orders
 
@@ -161,12 +164,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `Customer`
-  - `CustomerName`
-  - `OrderTimestamp`
+  - Customer
+  - CustomerName
+  - OrderTimestamp
 
 Load script
 
@@ -186,12 +189,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `OrderID`
-- `CustomerName`
+- OrderID
+- CustomerName
 
 Create the following measure:
 
-- `=Timestamp(OrderTimestamp, 'WWWW, DD MMM YYYY hh:mm TT')`, to display the order timestamp in a format that shows the day of the week, the date, and the time.
+- =Timestamp(OrderTimestamp, 'WWWW, DD MMM YYYY hh:mm TT'), to display the order timestamp in a format that shows the day of the week, the date, and the time.
 
 Results table
 
@@ -203,4 +206,4 @@ Results table
 | 4 | David | Tuesday, 21 May 2024 09:10 PM |
 | 5 | Eve | Sunday, 30 Jun 2024 02:25 PM |
 
-Using the `Timestamp` function, the timestamp data is now formatted to include the day of the week and the new format for the date and time.
+Using the Timestamp function, the timestamp data is now formatted to include the day of the week and the new format for the date and time.

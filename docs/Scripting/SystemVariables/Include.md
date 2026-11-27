@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Working with variables in the data load editor", "System variables"]
 ---
+
 # Include
 
 The Include/Must\_Include variable specifies
@@ -29,7 +30,7 @@ There are two versions of the variable:
 
 If working with files, if you do not specify a path, the filename will be relative to the Qlik Sense application working directory. You can also specify an absolute file path, or a path to a lib:// folder connection. Do not put a space character before or after the equal sign. If working with other scripts, you can specify the script with by following script:// with the script ID.
 
-> **Note:** The construction set Include =filename is not applicable.
+Information noteThe construction set Include =filename is not applicable.
 
 Examples:
 
@@ -49,8 +50,8 @@ Space permissions for inserted scripts
 
 | Format of inserted script | Required role in space containing the inserted script |
 | --- | --- |
-| QVF (standalone script asset) | - Shared space: **Can edit**, **Can edit data in applications**, **Can manage**, or **Owner** - Managed space: **Can operate**, **Can manage**, or **Owner** |
-| QVS or other text format | - Shared space: **Can consume data**, **Can edit**, **Can edit data in applications**, **Can manage**, or **Owner** - Managed space: **Can consume data**, **Can operate**, **Can manage**, or **Owner** |
+| QVF (standalone script asset) | - Shared space: Can edit, Can edit data in applications, Can manage, or Owner - Managed space: Can operate, Can manage, or Owner |
+| QVS or other text format | - Shared space: Can consume data, Can edit, Can edit data in applications, Can manage, or Owner - Managed space: Can consume data, Can operate, Can manage, or Owner |
 
 ## Limitations
 
@@ -72,7 +73,7 @@ For more information, see [Byte order mark](https://en.wikipedia.org/wiki/Byte_o
 
 ## Inserting QVS code from spaces in Qlik Cloud Analytics
 
-In Qlik Cloud Analytics, when loading data from a data file within a load script, you can use a LOAD statement or insert QVS code. In both cases, hierarchical space folder structures can be referenced in your script statement. Follow the rules for [valid space folder paths](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Spaces/manage-data-files-spaces.htm#PathRules). Additionally, the file and all referenced folders need to already exist in the specified location. Otherwise, the reload fails.
+In Qlik Cloud Analytics, when loading data from a data file within a load script, you can use a LOAD statement or insert QVS code. In both cases, hierarchical space folder structures can be referenced in your script statement. Follow the rules for [valid space folder paths](/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Spaces/manage-data-files-spaces.htm#PathRules). Additionally, the file and all referenced folders need to already exist in the specified location. Otherwise, the reload fails.
 
 Example: Referencing QVS file at the top-level path of a space
 
@@ -90,4 +91,4 @@ In this example, the file test.qvs is referenced in the load script. The file is
 $(Must_Include=lib://TeamSharedSpace:DataFiles/SalesData/test.qvs)
 ```
 
-For more information about referencing space folder structure in load scripts, see [*Referencing space folder structure in application and script development*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Spaces/manage-data-files-spaces.htm#FolderStructureRefExamples).
+For more information about referencing space folder structure in load scripts, see [*Referencing space folder structure in application and script development*](../../Spaces/manage-data-files-spaces.htm#FolderStructureRefExamples).

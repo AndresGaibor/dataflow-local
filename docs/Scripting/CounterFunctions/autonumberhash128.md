@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Counter functions"]
 ---
+
 # autonumberhash128 Script function
 
 This script function calculates
@@ -15,7 +16,7 @@ a unique integer value for each distinct hash value encountered during
 the script execution. This function can be used for example for creating a compact
 memory representation of a complex key.
 
-> **Note:** You can only connect autonumberhash128 keys that have been generated in the same data load, as the integer is generated according to the order the table is read. If you need to use keys that are persistent between data loads, independent of source data sorting, you should use the hash128, hash160 or hash256 functions.
+Information noteYou can only connect autonumberhash128 keys that have been generated in the same data load, as the integer is generated according to the order the table is read. If you need to use keys that are persistent between data loads, independent of source data sorting, you should use the hash128, hash160 or hash256 functions.
 
 Syntax:
 
@@ -37,7 +38,7 @@ Example data
 | South | 2013 | May | 367 |
 | South | 2013 | May | 221 |
 
-The source data is loaded using inline data. Then we add a [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/CounterFunctions/autonumberhash128.htm#glossary-0 "Glossary term"), which creates a composite key from the Region, Year and Month fields.
+The source data is loaded using inline data. Then we add a [preceding load](#glossary-0 "Glossary term"), which creates a composite key from the Region, Year and Month fields.
 
 RegionSales:
 LOAD \*,
@@ -67,7 +68,7 @@ Results table
 
 In this example you can refer to the RYMkey, for example 1, instead of the string 'North2014May' if you need to link to another table.
 
-Now we load a source table of costs in a similar way. The Region, Year and Month fields are excluded in the preceding load to avoid creating a [synthetic key](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/CounterFunctions/autonumberhash128.htm#glossary-1 "Glossary term"), we are already creating a composite key with the autonumberhash128 function, linking the tables.
+Now we load a source table of costs in a similar way. The Region, Year and Month fields are excluded in the preceding load to avoid creating a [synthetic key](#glossary-1 "Glossary term"), we are already creating a composite key with the autonumberhash128 function, linking the tables.
 
 RegionCosts:
 LOAD Costs,
@@ -82,7 +83,7 @@ South, 2013, May, 172
 South, 2013, May, 126
 ];
 
-Now we can add a table [visualization](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/CounterFunctions/autonumberhash128.htm#glossary-2 "Glossary term") to a [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/CounterFunctions/autonumberhash128.htm#glossary-3 "Glossary term"), and add the Region, Year and Month fields, as well as Sum [measures](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/CounterFunctions/autonumberhash128.htm#glossary-4 "Glossary term") for the sales and the costs. The table will look like this:
+Now we can add a table [visualization](#glossary-2 "Glossary term") to a [sheet](#glossary-3 "Glossary term"), and add the Region, Year and Month fields, as well as Sum [measures](#glossary-4 "Glossary term") for the sales and the costs. The table will look like this:
 
 Results table
 
@@ -96,5 +97,5 @@ Results table
 
 ## Learn more
 
-- [*autonumberhash256 Script function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/CounterFunctions/autonumberhash256.htm)
-- [*autonumber Script function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/CounterFunctions/autonumber.htm)
+- [*autonumberhash256 Script function*](autonumberhash256.htm)
+- [*autonumber Script function*](autonumber.htm)

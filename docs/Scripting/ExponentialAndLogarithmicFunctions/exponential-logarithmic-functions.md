@@ -1,17 +1,20 @@
 ---
 title: "Exponential and logarithmic functions"
-source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ExponentialAndLogarithmicFunctions/exponential-logarithmic-functions.htm#exp?id=1316
+source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ExponentialAndLogarithmicFunctions/exponential-logarithmic-functions.htm
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions"]
 ---
+
+# Exponential and logarithmic functions
+
 Expand/Collapse all
 
 # Exponential and logarithmic functions
 
-This section describes functions related to exponential and logarithmic calculations. All functions can be used in both the data [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ExponentialAndLogarithmicFunctions/exponential-logarithmic-functions.htm#glossary-0 "Glossary term") and in [chart](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ExponentialAndLogarithmicFunctions/exponential-logarithmic-functions.htm#glossary-1 "Glossary term") expressions.
+This section describes functions related to exponential and logarithmic calculations. All functions can be used in both the data [load script](#glossary-0 "Glossary term") and in [chart](#glossary-1 "Glossary term") expressions.
 
 In the functions below, the parameters are expressions where x and y
 should be interpreted as real valued numbers.
@@ -26,7 +29,7 @@ exp(x
 
 Examples and results:
 
-`exp(3)` returns 20.085.
+exp(3) returns 20.085.
 
 log
 
@@ -39,7 +42,7 @@ log(x
 
 Examples and results:
 
-`log(3)` returns 1.0986
+log(3) returns 1.0986
 
 log10
 
@@ -52,7 +55,7 @@ log10(x
 
 Examples and results:
 
-`log10(3)` returns 0.4771
+log10(3) returns 0.4771
 
 pow
 
@@ -65,7 +68,7 @@ pow(x,y
 
 Examples and results:
 
-`pow(3, 3)` returns 27
+pow(3, 3) returns 27
 
 sqr
 
@@ -76,7 +79,7 @@ sqr (x )
 
 Examples and results:
 
-`sqr(3)` returns 9
+sqr(3) returns 9
 
 sqrt
 
@@ -89,4 +92,4 @@ sqrt(x
 
 Examples and results:
 
-`sqrt(3)` returns 1.732
+sqrt(3) returns 1.732

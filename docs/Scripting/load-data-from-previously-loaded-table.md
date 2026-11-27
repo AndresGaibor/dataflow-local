@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Understanding script syntax and data structures", "Logical tables"]
 ---
+
 # Loading data from a previously loaded table
 
 There are two ways to load and transform data from a table that already has been loaded.
@@ -49,11 +50,11 @@ Amount
 Resident PreBudget;
 Drop Table PreBudget;
 
-> **Tip:** A common case for using Resident is where you want to use a temporary table for calculations or filtering. Once you have achieved the purpose of the temporary table, it should be dropped using the Drop table statement.
+Tip noteA common case for using Resident is where you want to use a temporary table for calculations or filtering. Once you have achieved the purpose of the temporary table, it should be dropped using the Drop table statement.
 
 ## Preceding load
 
-The [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/load-data-from-previously-loaded-table.htm#glossary-0 "Glossary term") feature allows you to load a table in one pass, but still define several successive transformations. Basically, it is a LOAD statement that loads from the LOAD or SELECT statement below, without specifying a source qualifier such as From or Resident as you would normally do. You can stack any number of LOAD statements this way. The statement at the bottom will be evaluated first, then the statement above, and so on until the top statement has been evaluated.
+The [preceding load](#glossary-0 "Glossary term") feature allows you to load a table in one pass, but still define several successive transformations. Basically, it is a LOAD statement that loads from the LOAD or SELECT statement below, without specifying a source qualifier such as From or Resident as you would normally do. You can stack any number of LOAD statements this way. The statement at the bottom will be evaluated first, then the statement above, and so on until the top statement has been evaluated.
 
 You can achieve the same result using Resident, but in most cases a preceding LOAD will be faster.
 
@@ -93,5 +94,5 @@ While IterNo() <= ToDate - FromDate + 1 ;
 
 ## Learn more
 
-- [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm)
-- [*Drop table*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/drop-table.htm)
+- [*Load*](ScriptRegularStatements/Load.htm)
+- [*Drop table*](ScriptRegularStatements/drop-table.htm)

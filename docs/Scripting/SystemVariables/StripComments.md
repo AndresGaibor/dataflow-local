@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Working with variables in the data load editor", "System variables"]
 ---
+
 # StripComments
 
 If this variable is set to 0, stripping of /\*..\*/ and // comments in the
@@ -21,9 +22,9 @@ Certain
 database drivers use /\*..\*/ as optimization hints in SELECT
 statements. If this is the case, the comments should not be stripped before sending the SELECT statement to the database driver.
 
-> **Note:**  It is recommended that this
-> variable be reset to 1 immediately after the statement(s) where it is
-> needed.
+Information note It is recommended that this
+variable be reset to 1 immediately after the statement(s) where it is
+needed.
 
 Example:
 
@@ -35,4 +36,4 @@ set StripComments=1;
 
 ## Learn more
 
-- [*System variables*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemVariables/system-variables.htm)
+- [*System variables*](system-variables.htm)

@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# Lower Script and chart function
+
 Expand/Collapse all
 
 # Lower Script and chart function
@@ -29,7 +32,7 @@ Example: Chart expression
 
 | Example | Result |
 | --- | --- |
-| `Lower( 'abcD' )` | Returns `abcd` |
+| Lower( 'abcD' ) | Returns abcd |
 
 ## Example - Lower fundamentals
 
@@ -41,8 +44,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `InputText`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called InputText.
 
 Load script
 
@@ -60,11 +63,11 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `InputText`
+- InputText
 
 Create the following calculated dimension:
 
-- `=Lower(InputText)` to convert all characters in the `InputText` field to lowercase.
+- =Lower(InputText) to convert all characters in the InputText field to lowercase.
 
 Results table
 
@@ -74,7 +77,7 @@ Results table
 | rHode iSland | rhode island |
 | washingTon d.C. | washington d.c. |
 
-The output of the `Lower` function converts all values to lowercase.
+The output of the Lower function converts all values to lowercase.
 
 Load script
 
@@ -111,12 +114,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `CustomerID`
-  - `EmailAddress`
-  - `Inquiry`
+  - CustomerID
+  - EmailAddress
+  - Inquiry
 
 Load script
 
@@ -136,12 +139,12 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `CustomerID`
-- `EmailAddress`
+- CustomerID
+- EmailAddress
 
 Create the following calculated dimension:
 
-- `=Lower(EmailAddress)` to separate the domain part of the email as a new column and convert the characters to lowercase.
+- =Lower(EmailAddress) to separate the domain part of the email as a new column and convert the characters to lowercase.
 
 Results table
 
@@ -153,4 +156,4 @@ Results table
 | 1004 | lisa.black@Outlook.Com | lisa.black@outlook.com |
 | 1005 | james.wong@Yahoo.COM | james.won@yahoo.com |
 
-The output of the `Lower` function returns all email addresses in lowercase.
+The output of the Lower function returns all email addresses in lowercase.

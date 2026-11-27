@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
+# daynumberofquarter Script and chart function
+
 Expand/Collapse all
 
 # daynumberofquarter Script and chart function
@@ -33,8 +36,8 @@ Function examples
 
 | Example | Result |
 | --- | --- |
-| `DayNumberOfQuarter('12/09/2014')` | Returns 74, the day number of the current quarter. |
-| `DayNumberOfQuarter('12/09/2014',3)` | Returns 12, the day number of the current quarter.  In this case, the first quarter starts with March (because start\_month is specified as 3). This means that the current quarter is the third quarter, which started on September 1. |
+| DayNumberOfQuarter('12/09/2014') | Returns 74, the day number of the current quarter. |
+| DayNumberOfQuarter('12/09/2014',3) | Returns 12, the day number of the current quarter.  In this case, the first quarter starts with March (because start\_month is specified as 3). This means that the current quarter is the third quarter, which started on September 1. |
 
 ## Example 1 – January start of year (script)
 
@@ -42,39 +45,39 @@ Load script and results
 
 Overview
 
-Open the Data load editor and add the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/daynumberofquarter.htm#glossary-0 "Glossary term") below to a new tab.
+Open the Data load editor and add the [load script](#glossary-0 "Glossary term") below to a new tab.
 
 The load script contains:
 
-- A simple [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/daynumberofquarter.htm#glossary-1 "Glossary term") containing a list of dates, which is loaded into a table named `Calendar`. The default `DateFormat` system variable MM/DD/YYYY is used.
-- A [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/daynumberofquarter.htm#glossary-2 "Glossary term") that creates an additional [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/daynumberofquarter.htm#glossary-3 "Glossary term") named `DayNrQtr`, using the `DayNumberOfQuarter()` function.
+- A simple [dataset](#glossary-1 "Glossary term") containing a list of dates, which is loaded into a table named Calendar. The default DateFormat system variable MM/DD/YYYY is used.
+- A [preceding load](#glossary-2 "Glossary term") that creates an additional [field](#glossary-3 "Glossary term") named DayNrQtr, using the DayNumberOfQuarter() function.
 
 Aside from the date, no additional parameters are provided to the function.
 
 Load script
 
 ```
-SET DateFormat='MM/DD/YYYY'; 
- 
-Calendar: 
-Load 
-        date, 
-        DayNumberOfQuarter(date) as DayNrQtr 
-        ; 
-Load 
-date 
-Inline  
-[	 
-date 
-01/01/2022 
-01/10/2022 
-01/31/2022 
-02/01/2022 
-02/10/2022 
-02/28/2022 
-03/01/2022 
-03/31/2022 
-04/01/2022 
+SET DateFormat='MM/DD/YYYY';
+
+Calendar:
+Load
+        date,
+        DayNumberOfQuarter(date) as DayNrQtr
+        ;
+Load
+date
+Inline
+[
+date
+01/01/2022
+01/10/2022
+01/31/2022
+02/01/2022
+02/10/2022
+02/28/2022
+03/01/2022
+03/31/2022
+04/01/2022
 ];
 ```
 
@@ -82,8 +85,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `daynrqtr`
+- date
+- daynrqtr
 
 Results table
 
@@ -99,7 +102,7 @@ Results table
 | 03/31/2022 | 91 |
 | 04/01/2022 | 1 |
 
-The first day of the year is January 1 because no second argument was passed into the `DayNumberOfQuarter()` function.
+The first day of the year is January 1 because no second argument was passed into the DayNumberOfQuarter() function.
 
 January 1st is the 1st day of the quarter whilst February 1st is the 32nd day of the quarter. The 31st of March is the 91st and final day of the quarter, whilst the 1st of April is the 1st day of the 2nd Quarter.
 
@@ -114,14 +117,14 @@ Open the Data load editor and add the load script below to a new tab.
 The load script contains:
 
 - The same dataset from the first example.
-- The default `DateFormat` system variable MM/DD/YYYY is used.
-- A `start_month` argument beginning on February 1. This sets the financial year to February 1.
+- The default DateFormat system variable MM/DD/YYYY is used.
+- A start\_month argument beginning on February 1. This sets the financial year to February 1.
 
 Load script
 
 ```
-SET DateFormat='MM/DD/YYYY'; 
-					
+SET DateFormat='MM/DD/YYYY';
+
 Calendar:
 Load
 	date,
@@ -148,8 +151,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `daynrqtr`
+- date
+- daynrqtr
 
 Results table
 
@@ -165,7 +168,7 @@ Results table
 | 03/31/2022 | 60 |
 | 04/01/2022 | 61 |
 
-The first day of the year is the 1st of February because the second argument passed into the `DayNumberOfQuarter()` function was 2.
+The first day of the year is the 1st of February because the second argument passed into the DayNumberOfQuarter() function was 2.
 
 The first quarter of the year operates between February and April whilst the fourth quarter operates between November and January. This is shown in the results table where February 1st is the 1st day of the quarter whilst January 31st is the 92nd and last day of the quarter.
 
@@ -180,15 +183,15 @@ Open the Data load editor and add the load script below to a new tab.
 The load script contains:
 
 - The same dataset from the first example.
-- The default `DateFormat` system variable MM/DD/YYYY is used.
+- The default DateFormat system variable MM/DD/YYYY is used.
 
-However, in this example, the unchanged dataset is loaded into the application. The value of the day of the quarter is calculated via a [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/daynumberofquarter.htm#glossary-4 "Glossary term") in a chart object.
+However, in this example, the unchanged dataset is loaded into the application. The value of the day of the quarter is calculated via a [measure](#glossary-4 "Glossary term") in a chart object.
 
 Load script
 
 ```
 SET DateFormat='MM/DD/YYYY';
-						
+
 Calendar:
 Load
 date
@@ -209,7 +212,7 @@ date
 
 Results
 
-Load the data and open a sheet. Create a new table and add this field as a dimension: `date`.
+Load the data and open a sheet. Create a new table and add this field as a dimension: date.
 
 Create the following measure:
 
@@ -229,7 +232,7 @@ Results table
 | 03/31/2022 | 91 |
 | 04/01/2022 | 1 |
 
-The first day of the year is the 1st of January because no second argument passed into the `DayNumberOfQuarter()` function.
+The first day of the year is the 1st of January because no second argument passed into the DayNumberOfQuarter() function.
 
 January 1st is the 1st day of the quarter whilst February 1st is the 32nd day of the quarter. The 31st of March is the 91st and final day of the quarter, whilst the 1st of April is the 1st day of the 2nd Quarter.
 
@@ -244,7 +247,7 @@ Open the Data load editor and add the load script below to a new tab.
 The load script contains:
 
 - The same dataset from the first example.
-- The default `DateFormat` system variable MM/DD/YYYY is used.
+- The default DateFormat system variable MM/DD/YYYY is used.
 - The financial year runs from the 1st of February to the 31st of January.
 
 However, in this example, the unchanged dataset is loaded into the application. The value of the day of the quarter is calculated via a measure in a chart object.
@@ -253,7 +256,7 @@ Load script
 
 ```
 SET DateFormat='MM/DD/YYYY';
-						
+
 Calendar:
 Load
 date
@@ -274,7 +277,7 @@ date
 
 Chart object
 
-Load the data and open a sheet. Create a new table and add this field as a dimension: `date`.
+Load the data and open a sheet. Create a new table and add this field as a dimension: date.
 
 Create the following measure:
 
@@ -296,6 +299,6 @@ Results table
 | 03/31/2022 | 60 |
 | 04/01/2022 | 61 |
 
-The first day of the year is the 1st of January because the second argument passed into the `DayNumberOfQuarter()` function was 2.
+The first day of the year is the 1st of January because the second argument passed into the DayNumberOfQuarter() function was 2.
 
 The first quarter of the year operates between February and April whilst the fourth quarter operates between November and January. This is evidenced in the results table where February 1st is the 1st day of the quarter whilst January 31st is the 92nd and last day of the quarter.

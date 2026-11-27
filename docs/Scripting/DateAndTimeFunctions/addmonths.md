@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
+# addmonths Script and chart function
+
 Expand/Collapse all
 
 # addmonths Script and chart function
@@ -22,19 +25,19 @@ AddMonths(startdate, n
 
 Return data type:  dual
 
-The `addmonths()` function adds or subtracts a defined number of months, `n`, from a `startdate` and returns the resultant date.
+The addmonths() function adds or subtracts a defined number of months, n, from a startdate and returns the resultant date.
 
-The `mode` argument will impact `startdate` values on or after the 28th of the month. By setting the `mode` argument to 1, the `addmonths()` function returns a date that is equal in relative distance to the end of the month as the `startdate`.
+The mode argument will impact startdate values on or after the 28th of the month. By setting the mode argument to 1, the addmonths() function returns a date that is equal in relative distance to the end of the month as the startdate.
 
-Example diagram of `addmonths()` function
+Example diagram of addmonths() function
 
-![Example diagram showing how the various components of the addmonths function come together to produce an output date.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addmonths-overview.png)
+![Example diagram showing how the various components of the addmonths function come together to produce an output date.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addmonths-overview.png "Click to view full size")
 
-For example, February 28 is the last day of the month. If the `addmonths()` function, with a `mode` of 1, is used to return the date two months later, the function will return the last date of April, April 30.
+For example, February 28 is the last day of the month. If the addmonths() function, with a mode of 1, is used to return the date two months later, the function will return the last date of April, April 30.
 
-Example diagram of `addmonths()` function, with `mode=1`
+Example diagram of addmonths() function, with mode=1
 
-![Example diagram showing how the 'mode' argument can be altered to change the output date of the addmonths function.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addmonths-overview-n-mode-arguments.png)
+![Example diagram showing how the 'mode' argument can be altered to change the output date of the addmonths function.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addmonths-overview-n-mode-arguments.png "Click to view full size")
 
 Arguments
 
@@ -46,30 +49,30 @@ Arguments
 
 ## When to use addmonths
 
-The `addmonths()` function will commonly be used in an expression to find a date a given number of months before or after a period of time.
+The addmonths() function will commonly be used in an expression to find a date a given number of months before or after a period of time.
 
-For example, the `addmonths()` function can be used to identify the end date of mobile phone contracts.
+For example, the addmonths() function can be used to identify the end date of mobile phone contracts.
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `addmonths ('01/29/2003' ,3)` | Returns '04/29/2003'. |
-| `addmonths ('01/29/2003',3,0)` | Returns '04/29/2003'. |
-| `addmonths ('01/29/2003',3,1)` | Returns '04/28/2003'. |
-| `addmonths ('01/29/2003',1,0)` | Returns '02/28/2003'. |
-| `addmonths ('01/29/2003',1,1)` | Returns '02/26/2003'. |
-| `addmonths ('02/28/2003',1,0)` | Returns '03/28/2003'. |
-| `addmonths ('02/28/2003',1,1)` | Returns '03/31/2003'. |
-| `addmonths ('01/29/2003',-3)` | Returns '10/29/2002'. |
+| addmonths ('01/29/2003' ,3) | Returns '04/29/2003'. |
+| addmonths ('01/29/2003',3,0) | Returns '04/29/2003'. |
+| addmonths ('01/29/2003',3,1) | Returns '04/28/2003'. |
+| addmonths ('01/29/2003',1,0) | Returns '02/28/2003'. |
+| addmonths ('01/29/2003',1,1) | Returns '02/26/2003'. |
+| addmonths ('02/28/2003',1,0) | Returns '03/28/2003'. |
+| addmonths ('02/28/2003',1,1) | Returns '03/31/2003'. |
+| addmonths ('01/29/2003',-3) | Returns '10/29/2002'. |
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 ## Example 1 – No additional arguments
 
@@ -81,9 +84,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/addmonths.htm#glossary-0 "Glossary term") containing a set of transactions between 2020 and 2022, which is loaded into a table called `Transactions`.
-- The date [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/addmonths.htm#glossary-1 "Glossary term") provided in the `DateFormat` system [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/addmonths.htm#glossary-2 "Glossary term") (MM/DD/YYYY) format.
-- The creation of a field, `two_months_later`, that returns the date for two months after the transaction took place.
+- A [dataset](#glossary-0 "Glossary term") containing a set of transactions between 2020 and 2022, which is loaded into a table called Transactions.
+- The date [field](#glossary-1 "Glossary term") provided in the DateFormat system [variable](#glossary-2 "Glossary term") (MM/DD/YYYY) format.
+- The creation of a field, two\_months\_later, that returns the date for two months after the transaction took place.
 
 Load script
 
@@ -97,7 +100,7 @@ Transactions:
         ;
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,'01/10/2020',37.23
@@ -127,8 +130,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `two_months_later`
+- date
+- two\_months\_later
 
 Results table
 
@@ -155,13 +158,13 @@ Results table
 | 03/07/2022 | 05/07/2022 |
 | 03/11/2022 | 05/11/2022 |
 
-The `two_months_later` field is created in the [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/addmonths.htm#glossary-3 "Glossary term") statement by using the `addmonths()` function. The first argument provided identifies which date is being evaluated. The second argument is the number of months to add or subtract from the `startdate`. In this instance, the value of 2 is provided.
+The two\_months\_later field is created in the [preceding load](#glossary-3 "Glossary term") statement by using the addmonths() function. The first argument provided identifies which date is being evaluated. The second argument is the number of months to add or subtract from the startdate. In this instance, the value of 2 is provided.
 
-Diagram of `addmonths()` function, example with no additional arguments
+Diagram of addmonths() function, example with no additional arguments
 
-![Diagram of addmonths function showing how Transaction 8193 from the load script is converted from an input date to a resulting output date. This example contains no additional arguments.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addmonths-examples-no-add-arg.png)
+![Diagram of addmonths function showing how Transaction 8193 from the load script is converted from an input date to a resulting output date. This example contains no additional arguments.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addmonths-examples-no-add-arg.png "Click to view full size")
 
-Transaction 8193 took place on August 14. Therefore, the `addmonths()` function returns October 14, 2020 for the `two_months_later` field.
+Transaction 8193 took place on August 14. Therefore, the addmonths() function returns October 14, 2020 for the two\_months\_later field.
 
 ## Example 2 – Relative month end
 
@@ -173,9 +176,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset containing a set of month-end transactions in 2022, which is loaded into a table called `Transactions`.
-- The date field provided in the `DateFormat` system variable (MM/DD/YYYY) format.
-- The creation of a field, `relative_two_months_prior`, that returns the relative month-end date for two months before the transaction took place.
+- A dataset containing a set of month-end transactions in 2022, which is loaded into a table called Transactions.
+- The date field provided in the DateFormat system variable (MM/DD/YYYY) format.
+- The creation of a field, relative\_two\_months\_prior, that returns the relative month-end date for two months before the transaction took place.
 
 Load script
 
@@ -189,7 +192,7 @@ Transactions:
         ;
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,'01/28/2022',37.23
@@ -207,8 +210,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `relative_two_months_prior`
+- date
+- relative\_two\_months\_prior
 
 Results table
 
@@ -223,11 +226,11 @@ Results table
 | 08/14/2022 | 06/14/2022 |
 | 10/07/2022 | 08/07/2022 |
 
-The `relative_two_months_prior` field is created in the preceding load statement by using the `addmonths()` function. The first argument provided identifies which date is being evaluated. The second argument is the number of months to add or subtract from the `startdate`. In this instance, the value of -2 is provided. The final argument is the mode, with a value of 1, which forces the function to calculate the relative month-end date for all dates greater than or equal to 28.
+The relative\_two\_months\_prior field is created in the preceding load statement by using the addmonths() function. The first argument provided identifies which date is being evaluated. The second argument is the number of months to add or subtract from the startdate. In this instance, the value of -2 is provided. The final argument is the mode, with a value of 1, which forces the function to calculate the relative month-end date for all dates greater than or equal to 28.
 
-Diagram of `addmonths()` function, example with `n=-2`
+Diagram of addmonths() function, example with n=-2
 
-![Diagram of addmonths function showing how Transaction 8191 from the load script is converted from an input date to a resulting output date. This example uses a negative 'n' value to demonstrate the functionality.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addmonths-examples-rel-mth-end.png)
+![Diagram of addmonths function showing how Transaction 8191 from the load script is converted from an input date to a resulting output date. This example uses a negative 'n' value to demonstrate the functionality.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addmonths-examples-rel-mth-end.png "Click to view full size")
 
 Transaction 8191 takes place on April 29, 2022. Initially, two months prior would set the month to February. Then, due to the third argument of the function setting the mode to 1 and the day value being later than the 27th, the function calculates the relative month-end value. The function identifies that the 29th is the second last day of April and therefore returns the second last day of February, the 27th.
 
@@ -237,11 +240,11 @@ Load script and chart expression
 
 Overview
 
-Open the [Data load editor](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/addmonths.htm#glossary-4 "Glossary term") and add the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/addmonths.htm#glossary-5 "Glossary term") below to a new tab.
+Open the [Data load editor](#glossary-4 "Glossary term") and add the [load script](#glossary-5 "Glossary term") below to a new tab.
 
 The load script contains the same dataset and scenario as the first example.
 
-However, in this example, the unchanged dataset is loaded into the application. The calculation that returns the date for two months after the transaction took place is created as a [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/addmonths.htm#glossary-6 "Glossary term") in a chart object.
+However, in this example, the unchanged dataset is loaded into the application. The calculation that returns the date for two months after the transaction took place is created as a [measure](#glossary-6 "Glossary term") in a chart object.
 
 Load script
 
@@ -251,7 +254,7 @@ SET DateFormat='MM/DD/YYYY';
 Transactions:
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,'01/10/2020',37.23
@@ -279,11 +282,11 @@ id,date,amount
 
 Results
 
-Load the data and open a sheet. Create a new table and add this field as a dimension: `date`.
+Load the data and open a sheet. Create a new table and add this field as a dimension: date.
 
 Create the following measure:
 
-`=addmonths(date,2)`
+=addmonths(date,2)
 
 Results table
 
@@ -310,13 +313,13 @@ Results table
 | 03/07/2022 | 05/07/2022 |
 | 03/11/2022 | 05/11/2022 |
 
-The `two_months_later` measure is created in the chart object by using the `addmonths()` function. The first argument provided identifies which date is being evaluated. The second argument is the number of months to add or subtract from the `startdate`. In this instance, the value of 2 is provided.
+The two\_months\_later measure is created in the chart object by using the addmonths() function. The first argument provided identifies which date is being evaluated. The second argument is the number of months to add or subtract from the startdate. In this instance, the value of 2 is provided.
 
-Diagram of `addmonths()` function, chart object example
+Diagram of addmonths() function, chart object example
 
-![Diagram of addmonths function showing how Transaction 8193 from the load script is converted from an input date to a resulting output date. This example uses a chart object to obtain the result.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addmonths-examples-chart-object.png)
+![Diagram of addmonths function showing how Transaction 8193 from the load script is converted from an input date to a resulting output date. This example uses a chart object to obtain the result.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addmonths-examples-chart-object.png "Click to view full size")
 
-Transaction 8193 took place on August 14. Therefore, the `addmonths()` function returns the October 14, 2020 for the `two_months_later` field.
+Transaction 8193 took place on August 14. Therefore, the addmonths() function returns the October 14, 2020 for the two\_months\_later field.
 
 ## Example 4 – Scenario
 
@@ -328,7 +331,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a table called `Mobile_Plans`.
+- A dataset which is loaded into a table called Mobile\_Plans.
 - Information with the contract ID, start date, contract length, and monthly fee.
 
 The end user would like a chart object that displays, by contract ID, the termination date of each phone contract.
@@ -339,7 +342,7 @@ Load script
 Mobile_Plans:
 Load
 *
-Inline 
+Inline
 [
 contract_id,start_date,contract_length,monthly_fee
 8188,'01/13/2020',18,37.23
@@ -369,13 +372,13 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `contract_id`
-- `start_date`
-- `contract_length`
+- contract\_id
+- start\_date
+- contract\_length
 
 Create the following measure to calculate the end date of each contract:
 
-`=addmonths(start_date,contract_length, 0)`
+=addmonths(start\_date,contract\_length, 0)
 
 Results table
 

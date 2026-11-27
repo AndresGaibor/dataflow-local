@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# ExtractRegEx Script and chart function
+
 Expand/Collapse all
 
 # ExtractRegEx Script and chart function
@@ -28,18 +31,18 @@ Arguments
 | --- | --- |
 | text | String expression containing the text to be extracted in the return value. |
 | regex | The regular expression to use for extracting text. |
-| field\_no | The number of the match to extract. This is useful when multiple matches for the regular expression might be found in the text. For example, specify a value of `4` to extract the fourth match. This is an optional argument. Specify a negative value to reverse the order of the matches.  The following apply regardless of whether the function is used in a load script or chart expression:   - If field\_no is positive, the function will return one value, identifying matches from left to right. - If field\_no is negative, the function will return one value, identifying matches from right to left.   When using the function in a [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/ExtractRegEx.htm#glossary-0 "Glossary term"):   - If you use the ExtractRegEx() function in a LOAD statement and field\_no is omitted, the function generates as many records as there are matches. - If several fields are loaded using ExtractRegEx() and none of them specify a field\_no argument, the Cartesian products of all combinations are created.   When using the function in a [chart](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/ExtractRegEx.htm#glossary-1 "Glossary term") expression:   - If the field\_no is omitted, the default value is `1`. |
+| field\_no | The number of the match to extract. This is useful when multiple matches for the regular expression might be found in the text. For example, specify a value of 4 to extract the fourth match. This is an optional argument. Specify a negative value to reverse the order of the matches.  The following apply regardless of whether the function is used in a load script or chart expression:   - If field\_no is positive, the function will return one value, identifying matches from left to right. - If field\_no is negative, the function will return one value, identifying matches from right to left.   When using the function in a [load script](#glossary-0 "Glossary term"):   - If you use the ExtractRegEx() function in a LOAD statement and field\_no is omitted, the function generates as many records as there are matches. - If several fields are loaded using ExtractRegEx() and none of them specify a field\_no argument, the Cartesian products of all combinations are created.   When using the function in a [chart](#glossary-1 "Glossary term") expression:   - If the field\_no is omitted, the default value is 1. |
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `ExtractRegEx('a,b c;1 2,3','[a-z]|[0-9]', 1)` | Returns `a`, which is the first match found. |
-| `ExtractRegEx('a,b c;1 2,3','[a-z]|[0-9]', 2)` | Returns `b`, which is the second match found. |
-| `ExtractRegEx('a,b c;1 2,3','[a-z]|[0-9]', 4)` | Returns `1`, which is the fourth match found. |
-| `ExtractRegEx('abc','a|b',-1)` | Returns `b`. When a negative value is specified, matches are counted in reverse. |
-| `ExtractRegEx('A,B C;1 2,3','[a-c]|[4-9]')` | Returns a null value, because ExtractRegEx() is case-sensitive, and the case-insensitive variant was not used. |
-| `ExtractRegExI('A,B C;1 2,3','[a-c]|[4-9]')` | Returns `A`, because the case-insensitive variant ExtractRegExI() was used. |
+| ExtractRegEx('a,b c;1 2,3','[a-z]|[0-9]', 1) | Returns a, which is the first match found. |
+| ExtractRegEx('a,b c;1 2,3','[a-z]|[0-9]', 2) | Returns b, which is the second match found. |
+| ExtractRegEx('a,b c;1 2,3','[a-z]|[0-9]', 4) | Returns 1, which is the fourth match found. |
+| ExtractRegEx('abc','a|b',-1) | Returns b. When a negative value is specified, matches are counted in reverse. |
+| ExtractRegEx('A,B C;1 2,3','[a-c]|[4-9]') | Returns a null value, because ExtractRegEx() is case-sensitive, and the case-insensitive variant was not used. |
+| ExtractRegExI('A,B C;1 2,3','[a-c]|[4-9]') | Returns A, because the case-insensitive variant ExtractRegExI() was used. |
 
 ## When to use ExtractRegEx
 
@@ -59,13 +62,13 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table `OrderDetails` containing a field `OrderJson`.
-- The field `OrderJson` contains a JSON string with order data. Formatting, such as indentation and line breaks, has been removed from the JSON. The order data contains email addresses that we want to extract into separate values.
-- A new table `EmailAddresses`, which is loaded after `OrderDetails`. In the `EmailAddresses` LOAD statement, we load the `OrderJson` field from the `OrderDetails` table, and create a new calculated field, `Email`, which contains the extracted email addresses. `OrderDetails` is then dropped.
+- A table OrderDetails containing a field OrderJson.
+- The field OrderJson contains a JSON string with order data. Formatting, such as indentation and line breaks, has been removed from the JSON. The order data contains email addresses that we want to extract into separate values.
+- A new table EmailAddresses, which is loaded after OrderDetails. In the EmailAddresses LOAD statement, we load the OrderJson field from the OrderDetails table, and create a new calculated field, Email, which contains the extracted email addresses. OrderDetails is then dropped.
 
 Our requirements:
 
-- Email addresses in a specific domain: `example.com`.
+- Email addresses in a specific domain: example.com.
 - Email addresses that contain any number of alphanumeric characters, as well as a defined set of special characters.
 
 Load script
@@ -89,7 +92,7 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `Email`
+- Email
 
 Results table
 
@@ -112,9 +115,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table `Sales` containing sales data.
-- Within the `Sales` table, a field named `Amount`, which contains transaction amounts in USD. These amounts are expressed as strings, which include currency symbols and codes.
-- The definition of a custom field within `Sales`, `OrderAmountNumeric_USD`, which extracts each amount into a purely numeric value. This data needs to be in numeric form so that we can use it in chart aggregations.
+- A table Sales containing sales data.
+- Within the Sales table, a field named Amount, which contains transaction amounts in USD. These amounts are expressed as strings, which include currency symbols and codes.
+- The definition of a custom field within Sales, OrderAmountNumeric\_USD, which extracts each amount into a purely numeric value. This data needs to be in numeric form so that we can use it in chart aggregations.
 
 Load script
 
@@ -153,9 +156,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `OrderID`
-- `Amount`
-- `OrderAmountNumeric_USD`
+- OrderID
+- Amount
+- OrderAmountNumeric\_USD
 
 Results table
 
@@ -192,12 +195,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table `OrderDetails` containing a field `OrderJson`.
-- The field `OrderJson` contains a JSON string with order data. Formatting, such as indentation and line breaks, has been removed from the JSON. The order data contains email addresses that we want to extract into separate values.
+- A table OrderDetails containing a field OrderJson.
+- The field OrderJson contains a JSON string with order data. Formatting, such as indentation and line breaks, has been removed from the JSON. The order data contains email addresses that we want to extract into separate values.
 
 Our requirements:
 
-- Email addresses in a specific domain: `example.com`.
+- Email addresses in a specific domain: example.com.
 - Email addresses that contain any number of alphanumeric characters, as well as a defined set of special characters.
 
 Load script
@@ -215,10 +218,10 @@ Results
 
 Load the data and open a sheet. Create a table and add each of the following expressions as calculated dimensions:
 
-- `=ExtractRegEx(OrderJson,'[a-zA-Z0-9!#$%^&*-_+=~{|}\/.'']+@example.com',1)`
-- `=ExtractRegEx(OrderJson,'[a-zA-Z0-9!#$%^&*-_+=~{|}\/.'']+@example.com',2)`
-- `=ExtractRegEx(OrderJson,'[a-zA-Z0-9!#$%^&*-_+=~{|}\/.'']+@example.com',3)`
-- `=ExtractRegEx(OrderJson,'[a-zA-Z0-9!#$%^&*-_+=~{|}\/.'']+@example.com',4)`
+- =ExtractRegEx(OrderJson,'[a-zA-Z0-9!#$%^&\*-\_+=~{|}\/.'']+@example.com',1)
+- =ExtractRegEx(OrderJson,'[a-zA-Z0-9!#$%^&\*-\_+=~{|}\/.'']+@example.com',2)
+- =ExtractRegEx(OrderJson,'[a-zA-Z0-9!#$%^&\*-\_+=~{|}\/.'']+@example.com',3)
+- =ExtractRegEx(OrderJson,'[a-zA-Z0-9!#$%^&\*-\_+=~{|}\/.'']+@example.com',4)
 
 Results table
 
@@ -228,4 +231,4 @@ Results table
 
 ## Learn more
 
-- [*Working with regular expressions in load scripts and chart expressions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/regular-expressions-qlik-analytics.htm)
+- [*Working with regular expressions in load scripts and chart expressions*](../regular-expressions-qlik-analytics.htm)

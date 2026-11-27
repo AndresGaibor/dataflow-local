@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
+# addyears Script and chart function
+
 Expand/Collapse all
 
 # addyears Script and chart function
@@ -21,11 +24,11 @@ AddYears(startdate, n)
 
 Return data type:  dual
 
-Example diagram of `addyears()` function
+Example diagram of addyears() function
 
-![Example diagram showing how the various components of the addyears function come together to produce an output date.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addyears_overview.png)
+![Example diagram showing how the various components of the addyears function come together to produce an output date.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addyears_overview.png "Click to view full size")
 
-The `addyears()` function adds or subtracts a defined number of years, `n`, from a `startdate`. It then returns the resulting date.
+The addyears() function adds or subtracts a defined number of years, n, from a startdate. It then returns the resulting date.
 
 Arguments
 
@@ -38,16 +41,16 @@ Function examples
 
 | Example | Result |
 | --- | --- |
-| `addyears ('01/29/2010',3)` | Returns '01/29/2013'. |
-| `addyears ('01/29/2010',-1)` | Returns '01/29/2009'. |
+| addyears ('01/29/2010',3) | Returns '01/29/2013'. |
+| addyears ('01/29/2010',-1) | Returns '01/29/2009'. |
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 ## Example 1 – Simple example
 
@@ -59,9 +62,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/addyears.htm#glossary-0 "Glossary term") containing a set of transactions between 2020 and 2022, which is loaded into a table called `Transactions`.
-- The date [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/addyears.htm#glossary-1 "Glossary term") provided in the `DateFormat` system [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/addyears.htm#glossary-2 "Glossary term") (MM/DD/YYYY) format.
-- The creation of a field, `two_years_later`, that returns the date for two years after the transaction took place.
+- A [dataset](#glossary-0 "Glossary term") containing a set of transactions between 2020 and 2022, which is loaded into a table called Transactions.
+- The date [field](#glossary-1 "Glossary term") provided in the DateFormat system [variable](#glossary-2 "Glossary term") (MM/DD/YYYY) format.
+- The creation of a field, two\_years\_later, that returns the date for two years after the transaction took place.
 
 Load script
 
@@ -75,7 +78,7 @@ Transactions:
         ;
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,'01/10/2020',37.23
@@ -105,8 +108,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `two_years_later`
+- date
+- two\_years\_later
 
 Results table
 
@@ -133,13 +136,13 @@ Results table
 | 03/07/2022 | 03/07/2024 |
 | 03/11/2022 | 03/11/2024 |
 
-The `two_years_later` field is created in the [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/addyears.htm#glossary-3 "Glossary term") statement by using the `addyears()` function. The first argument provided identifies which date is being evaluated. The second argument is the number of years to add or subtract from the start date. In this instance, the value of 2 is provided.
+The two\_years\_later field is created in the [preceding load](#glossary-3 "Glossary term") statement by using the addyears() function. The first argument provided identifies which date is being evaluated. The second argument is the number of years to add or subtract from the start date. In this instance, the value of 2 is provided.
 
-Diagram of `addyears()` function, basic example
+Diagram of addyears() function, basic example
 
-![Diagram of addyears function showing how Transaction 8193 from the load script is converted from an input date to a resulting output date.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addyears-examples-basic.png)
+![Diagram of addyears function showing how Transaction 8193 from the load script is converted from an input date to a resulting output date.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addyears-examples-basic.png "Click to view full size")
 
-Transaction 8193 took place on August 14, 2020. Therefore, the `addyears()` function returns August 14, 2022 for the `two_years_later` field.
+Transaction 8193 took place on August 14, 2020. Therefore, the addyears() function returns August 14, 2022 for the two\_years\_later field.
 
 ## Example 2 – Chart object example
 
@@ -151,10 +154,10 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset containing a set of transactions between 2020 and 2022, which is loaded into a table called `Transactions`.
-- The date field provided in the `DateFormat` system variable (MM/DD/YYYY) format.
+- A dataset containing a set of transactions between 2020 and 2022, which is loaded into a table called Transactions.
+- The date field provided in the DateFormat system variable (MM/DD/YYYY) format.
 
-In a chart object, create a [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/addyears.htm#glossary-4 "Glossary term"), `prior_year_date`, that returns the date one year prior to when the transaction takes place.
+In a chart object, create a [measure](#glossary-4 "Glossary term"), prior\_year\_date, that returns the date one year prior to when the transaction takes place.
 
 Load script
 
@@ -164,7 +167,7 @@ SET DateFormat='MM/DD/YYYY';
 Transactions:
 Load
 *
-Inline 
+Inline
 [
 id,date,amount
 8188,'01/10/2020',37.23
@@ -192,11 +195,11 @@ id,date,amount
 
 Results
 
-Load the data and open a sheet. Create a new table and add this field as a dimension: `date`.
+Load the data and open a sheet. Create a new table and add this field as a dimension: date.
 
 Create the following measure to calculate the date one year prior to each transaction:
 
-`=addyears(date,-1)`
+=addyears(date,-1)
 
 Results table
 
@@ -223,13 +226,13 @@ Results table
 | 03/07/2022 | 03/07/2021 |
 | 03/11/2022 | 03/11/2021 |
 
-The `one_year_prior` measure is created in the chart object by using the `addyears()` function. The first argument provided identifies which date is being evaluated. The second argument is the number of years to add or subtract from the `startdate`. In this instance, the value of -1 is provided.
+The one\_year\_prior measure is created in the chart object by using the addyears() function. The first argument provided identifies which date is being evaluated. The second argument is the number of years to add or subtract from the startdate. In this instance, the value of -1 is provided.
 
-Diagram of `addyears()` function, chart object example
+Diagram of addyears() function, chart object example
 
-![Diagram of addyears function showing how Transaction 8193 from the load script is converted from an input date to a resulting output date. This example uses a chart object to obtain the result.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addyears-examples-chart-object.png)
+![Diagram of addyears function showing how Transaction 8193 from the load script is converted from an input date to a resulting output date. This example uses a chart object to obtain the result.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-addyears-examples-chart-object.png "Click to view full size")
 
-Transaction 8193 took place on August 14. Therefore, the `addyears()` function returns August 14, 2019 for the `one_year_prior` field.
+Transaction 8193 took place on August 14. Therefore, the addyears() function returns August 14, 2019 for the one\_year\_prior field.
 
 ## Example 3 – Scenario
 
@@ -241,7 +244,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a table called `Warranties`.
+- A dataset which is loaded into a table called Warranties.
 - Information with the product ID, purchase date, warranty length, and purchase price.
 
 The end user would like a chart object that displays, by product ID, the warranty termination date of each product.
@@ -252,7 +255,7 @@ Load script
 Warranties:
 Load
 *
-Inline 
+Inline
 [
 product_id,purchase_date,warranty_length,purchase_price
 8188,'01/13/2020',4,32000
@@ -282,13 +285,13 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `product_id`
-- `purchase_date`
-- `warranty_length`
+- product\_id
+- purchase\_date
+- warranty\_length
 
 Create the following measure to calculate the end date of each product's warranty:
 
-`=addyears(purchase_date,warranty_length)`
+=addyears(purchase\_date,warranty\_length)
 
 Results table
 

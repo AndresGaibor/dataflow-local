@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# IndexRegEx Script and chart function
+
 Expand/Collapse all
 
 # IndexRegEx Script and chart function
@@ -28,16 +31,16 @@ Arguments
 | --- | --- |
 | text | The input string text within which you want to search for a regular expression. |
 | regex | The regular expression to use for searching the input string. |
-| count | The number of the match. This is useful when multiple matches for the regular expression might be found in the text. For example, specify a value of `4` to extract the position of the fourth match.  This is an optional argument. Default is 1 if not specified. You can specify a negative value to search for matches from right to left. |
+| count | The number of the match. This is useful when multiple matches for the regular expression might be found in the text. For example, specify a value of 4 to extract the position of the fourth match.  This is an optional argument. Default is 1 if not specified. You can specify a negative value to search for matches from right to left. |
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `IndexRegEx('abc123','[a-z][0-9]+')` | Returns `3` (the start position of first match). |
-| `IndexRegEx('abc123','[a-z][0-9]+',2)` | Returns `0` (regex does not have a second match). |
-| `IndexRegEx('ABC123','[a-z][0-9]+')` | Returns `0`, because IndexRegEx() is case-sensitive. |
-| `IndexRegExI('ABC123','[a-z][0-9]+')` | Returns `3`. The case-insensitive variant of the function, IndexRegExI(), is used. |
+| IndexRegEx('abc123','[a-z][0-9]+') | Returns 3 (the start position of first match). |
+| IndexRegEx('abc123','[a-z][0-9]+',2) | Returns 0 (regex does not have a second match). |
+| IndexRegEx('ABC123','[a-z][0-9]+') | Returns 0, because IndexRegEx() is case-sensitive. |
+| IndexRegExI('ABC123','[a-z][0-9]+') | Returns 3. The case-insensitive variant of the function, IndexRegExI(), is used. |
 
 ## When to use IndexRegEx
 
@@ -56,7 +59,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table `ISBN` containing email message content in a field named `EmailBody`.
+- A table ISBN containing email message content in a field named EmailBody.
 
 We want to find the positions of all 13-digit ISBN codes from the natural language in the email message.
 
@@ -79,9 +82,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `ISBNCode1`
-- `ISBNCode2`
-- `ISBNCode3`
+- ISBNCode1
+- ISBNCode2
+- ISBNCode3
 
 Results table
 
@@ -99,8 +102,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table named `BusinessContactInfo`, which contains information about companies that was found on each company's website.
-- `ContactInfo` is a field that contains company phone numbers. We want to determine which companies have multiple phone numbers available.
+- A table named BusinessContactInfo, which contains information about companies that was found on each company's website.
+- ContactInfo is a field that contains company phone numbers. We want to determine which companies have multiple phone numbers available.
 
 Our requirements:
 
@@ -126,7 +129,7 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `CompanyName`
+- CompanyName
 
 Add this calculated dimension to the table:
 
@@ -142,10 +145,10 @@ Results table
 | Company B | Has secondary phone number(s) |
 | Company C | No secondary phone number(s) |
 
-`Company A` has one secondary phone number. `Company B` has two secondary phone numbers. `Company C` has three secondary phone numbers.
+Company A has one secondary phone number. Company B has two secondary phone numbers. Company C has three secondary phone numbers.
 
-> **Note:** The MatchRegEx() function is also useful for these types of validation use cases.
+Information noteThe MatchRegEx() function is also useful for these types of validation use cases.
 
 ## Learn more
 
-- [*Working with regular expressions in load scripts and chart expressions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/regular-expressions-qlik-analytics.htm)
+- [*Working with regular expressions in load scripts and chart expressions*](../regular-expressions-qlik-analytics.htm)

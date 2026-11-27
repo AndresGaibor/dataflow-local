@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Mapping functions"]
 ---
+
 # MapSubstring Script function
 
 The MapSubstring script function is
@@ -27,7 +28,7 @@ Arguments
 
 | Argument | Description |
 | --- | --- |
-| map\_name | The name of a mapping table previously read by a mapping load or a mapping select statement. The name must be enclosed by single straight quotation marks.  **Warning:** If you use this function in a macro expanded [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/MappingFunctions/MapSubstring.htm#glossary-0 "Glossary term") and refer to a mapping table that does not exist, the function call fails and a [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/MappingFunctions/MapSubstring.htm#glossary-1 "Glossary term") is not created. |
+| map\_name | The name of a mapping table previously read by a mapping load or a mapping select statement. The name must be enclosed by single straight quotation marks.  Warning noteIf you use this function in a macro expanded [variable](#glossary-0 "Glossary term") and refer to a mapping table that does not exist, the function call fails and a [field](#glossary-1 "Glossary term") is not created. |
 | expression | The expression whose result is to be mapped by substrings. |
 
 Example:
@@ -79,5 +80,5 @@ Resulting table
 
 ## Learn more
 
-- [*Mapping*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Mapping.htm)
-- [*Using quotation marks in the script*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/use-quotes-in-script.htm)
+- [[*Mapping*](../ScriptPrefixes/Mapping.htm)](../ScriptPrefixes/Mapping.htm)
+- [*Using quotation marks in the script*](../use-quotes-in-script.htm)

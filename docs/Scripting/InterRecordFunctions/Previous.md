@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Inter-record functions"]
 ---
+
 # Previous Script function
 
 Previous() finds the value of the expr expression using data from the previous input record that has not been discarded because of
@@ -34,7 +35,7 @@ of an internal table, the function returns NULL.
 
 Example:
 
-Input the following into your [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/InterRecordFunctions/Previous.htm#glossary-0 "Glossary term"):
+Input the following into your [load script](#glossary-0 "Glossary term"):
 
 Sales2013:
 
@@ -68,7 +69,7 @@ Month|Sales
 
 ] (delimiter is '|');
 
-By using the Previous() function in the Load statement, we can compare the current value of Sales with the preceding value, and use it in a third [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/InterRecordFunctions/Previous.htm#glossary-1 "Glossary term") Increase.
+By using the Previous() function in the Load statement, we can compare the current value of Sales with the preceding value, and use it in a third [field](#glossary-1 "Glossary term") Increase.
 
 Resulting table
 
@@ -89,4 +90,4 @@ Resulting table
 
 ## Learn more
 
-- [*Peek Script function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/InterRecordFunctions/Peek.htm)
+- [*Peek Script function*](Peek.htm)

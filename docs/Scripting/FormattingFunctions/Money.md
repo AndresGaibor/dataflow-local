@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Formatting functions"]
 ---
+
+# Money Script and chart function
+
 Expand/Collapse all
 
 # Money Script and chart function
@@ -25,9 +28,9 @@ Arguments
 | Argument | Description |
 | --- | --- |
 | number | The number to be formatted. |
-| format | String describing how the resulting money string is to be formatted. If omitted, the value set in the data load script for `MoneyFormat` is used. The `Money` function supports many format options for different date structures, for example:  ​`$#,##0.00`: Adds a dollar sign and two decimal places.  `€ #,##0`: Adds a euro sign and no decimal places, with a space after the euro sign.  `​¥#,##0`: Adds a Japanese yen sign with no decimal places.  ​`$#,##0;($#,##0)`: Formats negative values in parentheses.  ​`₣ #.##0,00`:​ Adds a Swiss franc sign with periods as thousand separators and a comma for decimals (for example, `₣ 1.000,00`).  ​`R #,##0.00`: South African rand sign with two decimal places and space after the rand sign.  ​`$ #,##0.000`: Adds three decimal places to the dollar format. |
-| dec\_sep | String specifying the decimal number separator. If omitted, the `MoneyDecimalSep` value set in the data load script is used. The `Money` function supports many decimal number separator formats, for example:  Comma ​' `,` ': For example, `$1,000,00` for one thousand dollars.  Period ' `.` ':​ For example, `€ 1,000.00`.  Hyphen ' `-` ': When used instead of the traditional period or comma for the decimal separator, it shows values like `¥1,000-00`. |
-| thou\_sep | String specifying the thousands number separator. If omitted, the `MoneyThousandSep` value set in the data load script is used. The `Money` function supports many options for the thousands number separator:  Period ​' `.` ': Uses a period for the thousands separator (common in some European formats), displaying as `$1.000,00` if combined with a comma decimal separator.  Space ​' ': Uses a space for the thousands separator, which is common in some European countries. Displays as `€ 1 000.00`.  Underscore ​'`_`':​ Uses an underscore for the thousands separator, which is sometimes used in technical or specific regional formats. Displays values like `$1_000.00`. |
+| format | String describing how the resulting money string is to be formatted. If omitted, the value set in the data load script for MoneyFormat is used. The Money function supports many format options for different date structures, for example:  ​$#,##0.00: Adds a dollar sign and two decimal places.  € #,##0: Adds a euro sign and no decimal places, with a space after the euro sign.  ​¥#,##0: Adds a Japanese yen sign with no decimal places.  ​$#,##0;($#,##0): Formats negative values in parentheses.  ​₣ #.##0,00:​ Adds a Swiss franc sign with periods as thousand separators and a comma for decimals (for example, ₣ 1.000,00).  ​R #,##0.00: South African rand sign with two decimal places and space after the rand sign.  ​$ #,##0.000: Adds three decimal places to the dollar format. |
+| dec\_sep | String specifying the decimal number separator. If omitted, the MoneyDecimalSep value set in the data load script is used. The Money function supports many decimal number separator formats, for example:  Comma ​' , ': For example, $1,000,00 for one thousand dollars.  Period ' . ':​ For example, € 1,000.00.  Hyphen ' - ': When used instead of the traditional period or comma for the decimal separator, it shows values like ¥1,000-00. |
+| thou\_sep | String specifying the thousands number separator. If omitted, the MoneyThousandSep value set in the data load script is used. The Money function supports many options for the thousands number separator:  Period ​' . ': Uses a period for the thousands separator (common in some European formats), displaying as $1.000,00 if combined with a comma decimal separator.  Space ​' ': Uses a space for the thousands separator, which is common in some European countries. Displays as € 1 000.00.  Underscore ​'\_':​ Uses an underscore for the thousands separator, which is sometimes used in technical or specific regional formats. Displays values like $1\_000.00. |
 
 If the format, dec\_sep, and thou\_sep arguments are omitted, the currency format set in the operating system is used when formatting each specific part of the output. The operating system settings are automatically included as system variables upon creation of the script, thus making sure that these are consistent throughout the entire application.
 
@@ -37,9 +40,9 @@ Example: Chart expressions
 
 | Example | Results |
 | --- | --- |
-| `Money( 35648 )` | Returns `kr 35 648,00` when the `MoneyFormat` setting is `kr ##0,00` and the `MoneyThousandSep` is a period `' '` . |
-| `Money( 35648, '#,##0 ¥', '.' , ',' )` | Returns `3,564,800 ¥` by ignoring the `MoneyFormat` setting and the `MoneyThousandSep` setting since the optional parameters `Format`, `dec_sep` and `thou_sep` are supplied in the function. |
-| `Money(35648)` | Returns `$ 35,648.00` when the `MoneyFormat` setting is `$ #,##0.00` and the `MoneyThousandSep` is a comma `','`. |
+| Money( 35648 ) | Returns kr 35 648,00 when the MoneyFormat setting is kr ##0,00 and the MoneyThousandSep is a period ' ' . |
+| Money( 35648, '#,##0 ¥', '.' , ',' ) | Returns 3,564,800 ¥ by ignoring the MoneyFormat setting and the MoneyThousandSep setting since the optional parameters Format, dec\_sep and thou\_sep are supplied in the function. |
+| Money(35648) | Returns $ 35,648.00 when the MoneyFormat setting is $ #,##0.00 and the MoneyThousandSep is a comma ','. |
 
 ## Example - Money fundamentals
 
@@ -51,12 +54,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `InputValue`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called InputValue.
 - The following variable formats:
 
-  - `MoneyFormat` variable, which uses the format: `kr ##0,00`
-  - `MoneyThousandSep` variable set to use a space `' '`
+  - MoneyFormat variable, which uses the format: kr ##0,00
+  - MoneyThousandSep variable set to use a space ' '
 
 Load script
 
@@ -75,13 +78,13 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `InputValue`
+- InputValue
 
 Create the following measures:
 
-- `=Money(InputValue)`, to view the value as a money that is formatted using the system setting.
-- `=Money(InputValue, '#,##0 ¥', '.' , ',')`, to view the value as money that is formatted using the format supplied in the function.
-- `=Num(InputValue)`, to return the numeric value.
+- =Money(InputValue), to view the value as a money that is formatted using the system setting.
+- =Money(InputValue, '#,##0 ¥', '.' , ','), to view the value as money that is formatted using the format supplied in the function.
+- =Num(InputValue), to return the numeric value.
 
 Results table
 
@@ -90,7 +93,7 @@ Results table
 | 35648 | kr35 648,00 | 35,648 ¥ | 35648 |
 | 3564800 | kr3 564 800,00 | 3,564,800 ¥ | 3564800 |
 
-In this example, you can see how the `Money` function displays values and how the values in the format parameter can change the output.
+In this example, you can see how the Money function displays values and how the values in the format parameter can change the output.
 
 ## Example - Money fundamentals using a different format setting
 
@@ -102,12 +105,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `InputValue`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called InputValue.
 - The following variable formats:
 
-  - `MoneyFormat` variable, which uses the format: `$ #,##0.00`
-  - `MoneyThousandSep` variable set to use a comma `','`
+  - MoneyFormat variable, which uses the format: $ #,##0.00
+  - MoneyThousandSep variable set to use a comma ','
 
 Load script
 
@@ -126,13 +129,13 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `InputValue`
+- InputValue
 
 Create the following measures:
 
-- `=Money(InputValue)`, to view the value as a money that is formatted using the system setting.
-- `=Money(InputValue, '#,##0 ¥', '.' , ', )`, to view the value as money that is formatted using the format supplied in the function.
-- `=Num(InputValue)`, to return the numeric value.
+- =Money(InputValue), to view the value as a money that is formatted using the system setting.
+- =Money(InputValue, '#,##0 ¥', '.' , ', ), to view the value as money that is formatted using the format supplied in the function.
+- =Num(InputValue), to return the numeric value.
 
 Results table
 
@@ -141,7 +144,7 @@ Results table
 | 35648 | $ 35,648.00 | 35,648 ¥ | 35648 |
 | 3564800 | $ 3,564,800.00 | 3,564,800 ¥ | 3564800 |
 
-In this example, you can see how the `Money` function displays values and how the values in the format parameter can change the output.
+In this example, you can see how the Money function displays values and how the values in the format parameter can change the output.
 
 ## Example - Money scenario
 
@@ -155,16 +158,16 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
-  - `Customer`
-  - `CurrencyCode`
-  - `Sales`
+  - Customer
+  - CurrencyCode
+  - Sales
 - The following variable formats:
 
-  - `MoneyFormat` variable, which uses the format: `$ ###0.00;-$ ###0.00`
-  - `MoneyThousandSep` variable set to use a comma `','`
-  - `MoneyDecimalSep` variable set to use a period '.'
+  - MoneyFormat variable, which uses the format: $ ###0.00;-$ ###0.00
+  - MoneyThousandSep variable set to use a comma ','
+  - MoneyDecimalSep variable set to use a period '.'
 
 Load script
 
@@ -185,11 +188,11 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `Customer`
+- Customer
 
 Create the following measure:
 
-- `=Money(Sales, If(CurrencyCode = 'USD', '$#,##0.00', If(CurrencyCode = 'EUR', '€ #,##0.00', '¥#,##0')))`, to display the currency in the correct currency format.
+- =Money(Sales, If(CurrencyCode = 'USD', '$#,##0.00', If(CurrencyCode = 'EUR', '€ #,##0.00', '¥#,##0'))), to display the currency in the correct currency format.
 
 Results table
 

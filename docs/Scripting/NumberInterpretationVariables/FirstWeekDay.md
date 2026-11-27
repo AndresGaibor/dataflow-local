@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Working with variables in the data load editor", "Number interpretation variables"]
 ---
+
+# FirstWeekDay
+
 Expand/Collapse all
 
 # FirstWeekDay
@@ -21,9 +24,9 @@ Monday is the first day of the week according to ISO 8601, the international sta
 
 But in other countries, like in the United States and Canada, Sunday is considered to be the start of the week.
 
-In Qlik Sense, the regional settings are fetched when the application is created, and the corresponding settings are stored in the script as environment [variables](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/NumberInterpretationVariables/FirstWeekDay.htm#glossary-1 "Glossary term").
+In Qlik Sense, the regional settings are fetched when the application is created, and the corresponding settings are stored in the script as environment [variables](#glossary-1 "Glossary term").
 
-A North American application developer often gets `Set FirstWeekDay=6;` in the script, corresponding to Sunday. A European application developer often gets `Set FirstWeekDay=0;` in the script, corresponding to Monday.
+A North American application developer often gets Set FirstWeekDay=6; in the script, corresponding to Sunday. A European application developer often gets Set FirstWeekDay=0; in the script, corresponding to Monday.
 
 Values that can be set for FirstWeekDay
 
@@ -39,11 +42,11 @@ Values that can be set for FirstWeekDay
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 Examples:
 
@@ -65,9 +68,9 @@ Load script and results
 
 Overview
 
-Open the Data load editor and add the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/NumberInterpretationVariables/FirstWeekDay.htm#glossary-2 "Glossary term") below to a new tab.
+Open the Data load editor and add the [load script](#glossary-2 "Glossary term") below to a new tab.
 
-In this example, the load script uses the default Qlik Sense system variable value, `FirstWeekDay=6`. This data contains data for the first 14 days in 2020.
+In this example, the load script uses the default Qlik Sense system variable value, FirstWeekDay=6. This data contains data for the first 14 days in 2020.
 
 Load script
 
@@ -81,7 +84,7 @@ LOAD
 	 date,
 	 sales,
 	 week(date) as week,
-	 weekday(date) as weekday 
+	 weekday(date) as weekday
 Inline [
 date,sales
 01/01/2021,6000
@@ -105,9 +108,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `week`
-- `weekday`
+- date
+- week
+- weekday
 
 Results table
 
@@ -128,7 +131,7 @@ Results table
 | 01/13/2020 | 3 | Mon |
 | 01/14/2020 | 3 | Tue |
 
-Because the default settings are being used, the `FirstWeekDay` system variable is set to 6. In the results table, each new week can be seen beginning on Sunday (the 5th and 12th of January).
+Because the default settings are being used, the FirstWeekDay system variable is set to 6. In the results table, each new week can be seen beginning on Sunday (the 5th and 12th of January).
 
 ## Example 2 – Changing the FirstWeekDay variable (script)
 
@@ -138,7 +141,7 @@ Overview
 
 Open the Data load editor and add the load script below to a new tab.
 
-In this example, the data contains the first 14 days in 2020. At the start of the script, we set the `FirstWeekDay` variable to 3.
+In this example, the data contains the first 14 days in 2020. At the start of the script, we set the FirstWeekDay variable to 3.
 
 Load script
 
@@ -152,7 +155,7 @@ LOAD
 	date,
 	sales,
 	week(date) as week,
-	weekday(date) as weekday 
+	weekday(date) as weekday
 Inline [
 date,sales
 01/01/2021,6000
@@ -176,9 +179,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `week`
-- `weekday`
+- date
+- week
+- weekday
 
 Results table
 
@@ -199,4 +202,4 @@ Results table
 | 01/13/2020 | 2 | Mon |
 | 01/14/2020 | 2 | Tue |
 
-Because the `FirstWeekDay` system variable is set to 3, the first day of each week will be a Thursday. In the results table, each new week can be seen beginning on Thursday (the 2nd and 9th of January).
+Because the FirstWeekDay system variable is set to 3, the first day of each week will be a Thursday. In the results table, each new week can be seen beginning on Thursday (the 2nd and 9th of January).

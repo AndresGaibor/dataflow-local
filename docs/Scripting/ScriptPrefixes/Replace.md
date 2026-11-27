@@ -4,26 +4,25 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script prefixes", "Replace"]
 ---
+
 # Replace
 
 The Replace prefix
 can be added to any LOAD or SELECT statement in the script to specify that the loaded table should replace another table. It also specifies that this statement should be run in a partial reload. The Replace prefix can also be used in a Map statement.
 
-> **Note:** For partial reload to work properly, the application must be opened with data before a partial reload is triggered.
+Information noteFor partial reload to work properly, the application must be opened with data before a partial reload is triggered.
 
-Perform a partial reload using the **Reload** button. For more information, see [*Button*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Visualizations/Button/button.htm). You can also use the Qlik Engine JSON API.
+Perform a partial reload using the Reload button. For more information, see [*Button*](../../Visualizations/Button/button.htm). You can also use the Qlik Engine JSON API.
 
-To perform a partial reload on a schedule, click ![More](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_more.svg) on an application and then choose **Schedule reload**. In the dialog box that opens, turn on **Partial reload**.
+To perform a partial reload on a schedule, click ![More](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_more.svg) on an application and then choose Schedule reload. In the dialog box that opens, turn on Partial reload.
 
 Syntax:
 
 Replace [only] [Concatenate[(tablename)]] (loadstatement |
 selectstatement)
-
-  
 
 Replace [only] mapstatement
 
@@ -54,8 +53,8 @@ Examples and results:
 
 ## Learn more
 
-- [*Partial reload*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/PartialReload.htm)
-- [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm)
-- [*Concatenate*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/concatenate.htm)
-- [*Map*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Map.htm)
-- [*Only*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/Only.htm)
+- [*Partial reload*](PartialReload.htm)
+- [*Load*](../ScriptRegularStatements/Load.htm)
+- [*Concatenate*](concatenate.htm)
+- [*Map*](../ScriptRegularStatements/Map.htm)
+- [*Only*](../Only.htm)

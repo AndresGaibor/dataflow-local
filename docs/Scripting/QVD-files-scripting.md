@@ -4,12 +4,13 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Loading and transforming data with scripting", "Tutorial - Next steps in scripting"]
 ---
+
 # QVD files
 
-A [QVD](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/QVD-files-scripting.htm#glossary-0 "Glossary term") (QlikView Data) file is a file containing a table of data exported from Qlik Sense or QlikView. QVD is a native Qlik format and can only be written to and read by Qlik Sense or QlikView. The file format is optimized for speed when reading data from a Qlik Sense script but it is still very compact. Reading data from a QVD file is typically 10-100 times faster than reading from other data sources.
+A [QVD](#glossary-0 "Glossary term") (QlikView Data) file is a file containing a table of data exported from Qlik Sense or QlikView. QVD is a native Qlik format and can only be written to and read by Qlik Sense or QlikView. The file format is optimized for speed when reading data from a Qlik Sense script but it is still very compact. Reading data from a QVD file is typically 10-100 times faster than reading from other data sources.
 
 QVD files can be read in two modes: standard (fast) and optimized (faster). The selected mode is determined automatically by the Qlik Sense script engine. Optimized mode can be utilized only when all loaded fields are read without any transformations (formulas acting upon the fields), although renaming of fields is allowed. A Where clause causing Qlik Sense to unpack the records will also disable the optimized load.
 
@@ -33,7 +34,9 @@ With the Binary script statement it is possible to load data from only one singl
 
 In many common cases the QVD functionality can be used for facilitating incremental load by exclusively loading new records from a growing database.
 
-> **Note:** To see how the Qlik Community is using Qlik Automate to improve QVD load times, see [How to split QVDs using an automation to improve reloads](https://community.qlik.com/t5/Official-Support-Articles/How-to-split-QVDs-using-an-automation-to-improve-reloads/ta-p/1997153).
+Information note
+
+To see how the Qlik Community is using Qlik Automate to improve QVD load times, see [How to split QVDs using an automation to improve reloads](https://community.qlik.com/t5/Official-Support-Articles/How-to-split-QVDs-using-an-automation-to-improve-reloads/ta-p/1997153).
 
 ## Creating QVD files
 
@@ -82,13 +85,13 @@ LOAD
     "Mar 2014",
     "Apr 2014",
     "May 2014"
-FROM [lib://DataFiles/Product.xlsx] 
+FROM [lib://DataFiles/Product.xlsx]
 (ooxml, embedded labels, table is Product);
 
 Store * from Product into [lib://DataFiles/ProductData.qvd](qvd);
 ```
 
-4. Click **Load data**.
+4. Click Load data.
 
 The Product.qvd file should now be in the list of files.
 
@@ -114,17 +117,18 @@ Do the following:
 2. Enter the following script:
 
 ```
-Load * from [lib://DataFiles/ProductData.qvd](qvd);			
+Load * from [lib://DataFiles/ProductData.qvd](qvd);
 ```
 
-3. Click **Load data**.
+3. Click Load data.
 
 The data is loaded from the QVD file.
 
 Data load progress window
 
-![Data load progress window.](../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-load-qvd.png)
-> **Note:** To learn about using QVD files for incremental loads, see this blog post in Qlik Community: [Overview of Qlik Incremental Loading](https://community.qlik.com/t5/Qlik-Design-Blog/Overview-of-Qlik-Incremental-Loading/ba-p/1466780)
+![Data load progress window.](../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/tutorial-load-qvd.png "Click to view full size")
+
+Information noteTo learn about using QVD files for incremental loads, see this blog post in Qlik Community: [Overview of Qlik Incremental Loading](https://community.qlik.com/t5/Qlik-Design-Blog/Overview-of-Qlik-Incremental-Loading/ba-p/1466780)
 
 ## Thank you!
 

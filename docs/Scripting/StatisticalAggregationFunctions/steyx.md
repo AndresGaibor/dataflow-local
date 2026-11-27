@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions", "Statistical aggregation functions"]
 ---
+
 # STEYX Script function
 
 STEYX() returns
@@ -42,4 +43,4 @@ Resulting data
 
 | Example | Result |
 | --- | --- |
-| Trend:  Load \*, 1 as Grp;  LOAD \* inline [  Month|KnownY|KnownX  Jan|2|6  Feb|3|5  Mar|9|11  Apr|6|7  May|8|5  Jun|7|4  Jul|5|5  Aug|10|8  Sep|9|10  Oct|12|14  Nov|15|17  Dec|14|16  ] (delimiter is '|');  STEYX1:  LOAD Grp,  STEYX(KnownY, KnownX) as MySTEYX  Resident Trend Group By Grp; | In a table with the [dimension](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StatisticalAggregationFunctions/steyx.htm#glossary-0 "Glossary term") `MySTEYX`, the result of the STEYX() calculation in the data [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StatisticalAggregationFunctions/steyx.htm#glossary-1 "Glossary term") is 2.0714764. |
+| Trend:  Load \*, 1 as Grp;  LOAD \* inline [  Month|KnownY|KnownX  Jan|2|6  Feb|3|5  Mar|9|11  Apr|6|7  May|8|5  Jun|7|4  Jul|5|5  Aug|10|8  Sep|9|10  Oct|12|14  Nov|15|17  Dec|14|16  ] (delimiter is '|');  STEYX1:  LOAD Grp,  STEYX(KnownY, KnownX) as MySTEYX  Resident Trend Group By Grp; | In a table with the [dimension](#glossary-0 "Glossary term") MySTEYX, the result of the STEYX() calculation in the data [load script](#glossary-1 "Glossary term") is 2.0714764. |

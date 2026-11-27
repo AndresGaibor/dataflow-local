@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# Trim Script and chart function
+
 Expand/Collapse all
 
 # Trim Script and chart function
@@ -30,9 +33,9 @@ Example: Chart expression
 
 | Example | Result |
 | --- | --- |
-| `Trim( ' abc' )` | Returns `abc` |
-| `Trim( 'abc ' )` | Returns `abc` |
-| `Trim( ' abc ' )` | Returns `abc` |
+| Trim( ' abc' ) | Returns abc |
+| Trim( 'abc ' ) | Returns abc |
+| Trim( ' abc ' ) | Returns abc |
 
 ## Example - Trim fundamentals
 
@@ -44,8 +47,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `InputText`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called InputText.
 
 Load script
 
@@ -58,17 +61,17 @@ InputText
 ' def  '];
 ```
 
-> **Note:** The "Set verbatim=1" statement is included in the example to ensure that the spaces are not automatically trimmed before the demonstration of the trim function. See [*Verbatim*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemVariables/Verbatim.htm)  for more information.
+Information noteThe "Set verbatim=1" statement is included in the example to ensure that the spaces are not automatically trimmed before the demonstration of the trim function. See [*Verbatim*](../SystemVariables/Verbatim.htm)  for more information.
 
 Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `InputText`
+- InputText
 
 Create the following calculated dimension:
 
-- `=Trim(InputText)` to remove any extra leading or trailing spaces from `InputText`.
+- =Trim(InputText) to remove any extra leading or trailing spaces from InputText.
 
 Results table
 
@@ -77,7 +80,7 @@ Results table
 | '   abc    ' | 'abc' |
 | ' def  ' | 'def' |
 
-The output of the `Trim` function removes all leading and trailing spaces.
+The output of the Trim function removes all leading and trailing spaces.
 
 ## Example - Trim scenario
 
@@ -91,8 +94,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `CustomerName`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called CustomerName.
 
 Load script
 
@@ -108,17 +111,17 @@ CustomerName
 ];
 ```
 
-> **Note:** The "Set verbatim=1" statement is included in the example to ensure that the spaces are not automatically trimmed before the demonstration of the trim function. See [*Verbatim*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemVariables/Verbatim.htm)  for more information.
+Information noteThe "Set verbatim=1" statement is included in the example to ensure that the spaces are not automatically trimmed before the demonstration of the trim function. See [*Verbatim*](../SystemVariables/Verbatim.htm)  for more information.
 
 Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `CustomerName`
+- CustomerName
 
 Create the following calculated dimension:
 
-- `=Trim(CustomerName)` to remove any extra leading or trailing spaces from `CustomerName`.
+- =Trim(CustomerName) to remove any extra leading or trailing spaces from CustomerName.
 
 Results table
 
@@ -129,7 +132,7 @@ Results table
 | 'Emily Davis' | 'Emily Davis' |
 | 'Jane Smith ' | 'Jane Smith' |
 
-The output shows that the `Trim` function removed all leading and trailing spaces from the original string values in `CustomerName`.
+The output shows that the Trim function removed all leading and trailing spaces from the original string values in CustomerName.
 
 ## Example - Trim advanced scenario
 
@@ -137,14 +140,14 @@ Chart expression
 
 Overview
 
-This example removes all leading and trailing spaces from the original text string. The chart expression includes measures that use the `Len` function to count the characters in the string before and after using the `Trim` function.
+This example removes all leading and trailing spaces from the original text string. The chart expression includes measures that use the Len function to count the characters in the string before and after using the Trim function.
 
 Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `String`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called String.
 
 Load script
 
@@ -157,22 +160,22 @@ String
 ' def  '];
 ```
 
-> **Note:** The "Set verbatim=1" statement is included in the example to ensure that the spaces are not automatically trimmed before the demonstration of the trim function. See [*Verbatim*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemVariables/Verbatim.htm)  for more information.
+Information noteThe "Set verbatim=1" statement is included in the example to ensure that the spaces are not automatically trimmed before the demonstration of the trim function. See [*Verbatim*](../SystemVariables/Verbatim.htm)  for more information.
 
 Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `String`
+- String
 
 Create the following calculated dimension:
 
-- `=Trim(String)`, to remove any extra leading or trailing spaces
+- =Trim(String), to remove any extra leading or trailing spaces
 
 Create the following measures:
 
-- `=Len(String)`, to count the length of the original string
-- `=Len(Trim(String))`, to count the length of the string after the spaces have been removed.
+- =Len(String), to count the length of the original string
+- =Len(Trim(String)), to count the length of the string after the spaces have been removed.
 
 Results table
 
@@ -181,7 +184,7 @@ Results table
 | ​'   abc    ' | 'abc' | 10 | 3 |
 | ​'  def ' | 'def' | 6 | 3 |
 
-When you compare the output of the `Trim` function to the original string values in the script, you can see how all leading and trailing spaces have been removed.
+When you compare the output of the Trim function to the original string values in the script, you can see how all leading and trailing spaces have been removed.
 
 Load script
 
@@ -199,7 +202,7 @@ String
 ' def  '](delimiter is '\t');
 ```
 
-> **Note:** The "Set verbatim=1" statement is included in the example to ensure that the spaces are not automatically trimmed before the demonstration of the trim function. See [*Verbatim*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemVariables/Verbatim.htm)  for more information.
+Information noteThe "Set verbatim=1" statement is included in the example to ensure that the spaces are not automatically trimmed before the demonstration of the trim function. See [*Verbatim*](../SystemVariables/Verbatim.htm)  for more information.
 
 Results table
 

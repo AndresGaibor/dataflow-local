@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
-breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions", "sheet"]
+last_updated: "2026-11-27"
+breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
+# quartername Script and chart function
+
 Expand/Collapse all
 
 # quartername Script and chart function
@@ -23,11 +26,11 @@ QuarterName(date[, period\_no[, first\_month\_of\_year]])
 
 Return data type:  dual
 
-Diagram of `quartername()` function
+Diagram of quartername() function
 
-![Example diagram showing how the quartername function converts an input date into a range of months contained in the quarter in which date occurs.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-quartername-general.png)
+![Example diagram showing how the quartername function converts an input date into a range of months contained in the quarter in which date occurs.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-quartername-general.png "Click to view full size")
 
-The `quartername()` function determines which quarter the date falls into. It then returns a value showing the start-end months of this quarter as well as the year. The underlying numeric value of this result is the first millisecond of the quarter.
+The quartername() function determines which quarter the date falls into. It then returns a value showing the start-end months of this quarter as well as the year. The underlying numeric value of this result is the first millisecond of the quarter.
 
 Arguments
 
@@ -39,27 +42,27 @@ Arguments
 
 ## When to use quartername
 
-The `quartername()` function is useful when you would like to compare aggregations by quarter. For example, if you would like to see the total sales of products by quarter.
+The quartername() function is useful when you would like to compare aggregations by quarter. For example, if you would like to see the total sales of products by quarter.
 
-This function could be used in the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/quartername.htm#glossary-0 "Glossary term") to create a [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/quartername.htm#glossary-1 "Glossary term") in a Master Calendar table. Alternatively, it could be used directly in a [chart](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/quartername.htm#glossary-2 "Glossary term") as a calculated [dimension](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/quartername.htm#glossary-3 "Glossary term").
+This function could be used in the [load script](#glossary-0 "Glossary term") to create a [field](#glossary-1 "Glossary term") in a Master Calendar table. Alternatively, it could be used directly in a [chart](#glossary-2 "Glossary term") as a calculated [dimension](#glossary-3 "Glossary term").
 
-These examples use the date format MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement at the top of your data load script. Change the format in the examples to suit your requirements.
+These examples use the date format MM/DD/YYYY. The date format is specified in the SET DateFormat statement at the top of your data load script. Change the format in the examples to suit your requirements.
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `quartername('10/29/2013')` | Returns Oct-Dec 2013. |
-| `quartername('10/29/2013', -1)` | Returns Jul-Sep 2013. |
-| `quartername('10/29/2013', 0, 3)` | Returns Sep-Nov 2013. |
+| quartername('10/29/2013') | Returns Oct-Dec 2013. |
+| quartername('10/29/2013', -1) | Returns Jul-Sep 2013. |
+| quartername('10/29/2013', 0, 3) | Returns Sep-Nov 2013. |
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 ## Example 1 – date with no additional arguments
 
@@ -71,9 +74,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/quartername.htm#glossary-4 "Glossary term") containing a set of transactions for 2022, which is loaded into a table called `Transactions`.
-- The date field provided in the `DateFormat` system [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/quartername.htm#glossary-5 "Glossary term") (MM/DD/YYYY) format.
-- The creation of a field, `transaction_quarter`, which returns the quarter in which the transactions took place.
+- A [dataset](#glossary-4 "Glossary term") containing a set of transactions for 2022, which is loaded into a table called Transactions.
+- The date field provided in the DateFormat system [variable](#glossary-5 "Glossary term") (MM/DD/YYYY) format.
+- The creation of a field, transaction\_quarter, which returns the quarter in which the transactions took place.
 
 Add your other text here, as needed, with lists etc.
 
@@ -120,8 +123,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `transaction_quarter`
+- date
+- transaction\_quarter
 
 Results table
 
@@ -148,15 +151,15 @@ Results table
 | 10/14/2022 | Oct-Dec 2022 |
 | 10/29/2022 | Oct-Dec 2022 |
 
-The `transaction_quarter` field is created in the [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/quartername.htm#glossary-6 "Glossary term") statement by using the `quartername()` function and passing the date field as the function’s argument.
+The transaction\_quarter field is created in the [preceding load](#glossary-6 "Glossary term") statement by using the quartername() function and passing the date field as the function’s argument.
 
-The `quartername()` function initially identifies the quarter into which the date value falls. It then returns a value showing the start-end months of this quarter, as well as the year.
+The quartername() function initially identifies the quarter into which the date value falls. It then returns a value showing the start-end months of this quarter, as well as the year.
 
-Diagram of `quartername()` function, example with no additional arguments
+Diagram of quartername() function, example with no additional arguments
 
-![Diagram showing how the quartername function determines the range of months of the quarter in which a transaction takes place.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-quartername-examples-no-add-arg.png)
+![Diagram showing how the quartername function determines the range of months of the quarter in which a transaction takes place.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-quartername-examples-no-add-arg.png "Click to view full size")
 
-Transaction 8203 took place on August 8, 2022. The `quartername()` function identifies that the transaction took place in the third quarter, and therefore returns Jul-Sep 2022. The months are displayed in the same format as the `MonthNames` system variable.
+Transaction 8203 took place on August 8, 2022. The quartername() function identifies that the transaction took place in the third quarter, and therefore returns Jul-Sep 2022. The months are displayed in the same format as the MonthNames system variable.
 
 ## Example 2 – date with period\_no argument
 
@@ -169,7 +172,7 @@ Open the Data load editor and add the load script below to a new section.
 The load script contains:
 
 - The same dataset and scenario as the first example.
-- The creation of a field, `previous_quarter`, that that returns the previous quarter to when the transactions took place.
+- The creation of a field, previous\_quarter, that that returns the previous quarter to when the transactions took place.
 
 Load script
 
@@ -214,8 +217,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `previous_quarter`
+- date
+- previous\_quarter
 
 Results table
 
@@ -242,13 +245,13 @@ Results table
 | 10/14/2022 | Jul-Sep 2022 |
 | 10/29/2022 | Jul-Sep 2022 |
 
-In this instance, because a `period_no` of -1 was used as the offset argument in the `quartername()` function, the function first identifies that the transactions took place in the third quarter. It then shifts one quarter prior and returns a value showing the start-end months of this quarter, as well as the year.
+In this instance, because a period\_no of -1 was used as the offset argument in the quartername() function, the function first identifies that the transactions took place in the third quarter. It then shifts one quarter prior and returns a value showing the start-end months of this quarter, as well as the year.
 
-Diagram of `quartername()` function, period\_no example
+Diagram of quartername() function, period\_no example
 
-![Diagram showing how the quartername function determines the range of months of the quarter in which a transaction takes place.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-quartername-examples-period-no.png)
+![Diagram showing how the quartername function determines the range of months of the quarter in which a transaction takes place.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-quartername-examples-period-no.png "Click to view full size")
 
-Transaction 8203 took place on August 8. The `quartername()` function identifies that the quarter before the transaction took place was between April 1 and June 30. Therefore, it returns Apr-Jun 2022.
+Transaction 8203 took place on August 8. The quartername() function identifies that the quarter before the transaction took place was between April 1 and June 30. Therefore, it returns Apr-Jun 2022.
 
 ## Example 3 – date with first\_week\_day argument
 
@@ -256,7 +259,7 @@ Load script and results
 
 Overview
 
-Open the [Data load editor](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/quartername.htm#glossary-7 "Glossary term") and add the load script below to a new tab.
+Open the [Data load editor](#glossary-7 "Glossary term") and add the load script below to a new tab.
 
 The load script contains the same dataset and scenario as the first example. However, in this example, we need to set March 1 as the beginning of the financial year.
 
@@ -303,8 +306,8 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `transaction_quarter`
+- date
+- transaction\_quarter
 
 Results table
 
@@ -331,13 +334,13 @@ Results table
 | 10/14/2022 | Sep-Nov 2022 |
 | 10/29/2022 | Sep-Nov 2022 |
 
-In this instance, because the `first_month_of_year` argument of 3 is used in the `quartername()` function, the start of the year moves from January 1 to March 1. Therefore, the quarters in the year are separated into March-May, June-August, September-November and December-February.
+In this instance, because the first\_month\_of\_year argument of 3 is used in the quartername() function, the start of the year moves from January 1 to March 1. Therefore, the quarters in the year are separated into March-May, June-August, September-November and December-February.
 
-Diagram of `quartername()` function, first\_week\_day example
+Diagram of quartername() function, first\_week\_day example
 
-![Diagram showing how the quartername function determines the range of months of the quarter in which a transaction takes place.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-quartername-examples-first-week-day.png)
+![Diagram showing how the quartername function determines the range of months of the quarter in which a transaction takes place.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-quartername-examples-first-week-day.png "Click to view full size")
 
-Transaction 8203 took place on August 8. The `quartername()` function identifies that the transaction took place in the second quarter, between the start of June and the end of August. Therefore, it returns Jun-Aug 2022.
+Transaction 8203 took place on August 8. The quartername() function identifies that the transaction took place in the second quarter, between the start of June and the end of August. Therefore, it returns Jun-Aug 2022.
 
 ## Example 4 – Chart object example
 
@@ -349,7 +352,7 @@ Open the Data load editor and add the load script below to a new tab.
 
 The load script contains the same dataset and scenario as the first example.
 
-However, in this example, the unchanged dataset is loaded into the application. The calculation that returns a timestamp for the end of the quarter when the transactions took place is created as a [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/quartername.htm#glossary-8 "Glossary term") in a chart object of the application.
+However, in this example, the unchanged dataset is loaded into the application. The calculation that returns a timestamp for the end of the quarter when the transactions took place is created as a [measure](#glossary-8 "Glossary term") in a chart object of the application.
 
 Load script
 
@@ -385,11 +388,11 @@ id,date,amount
 
 Results
 
-Load the data and open a sheet. Create a new table and add this field as a dimension: `date`.
+Load the data and open a sheet. Create a new table and add this field as a dimension: date.
 
 Create the following measure:
 
-`=quartername(date)`
+=quartername(date)
 
 Results table
 
@@ -416,15 +419,15 @@ Results table
 | 10/14/2022 | Oct-Dec 2022 |
 | 10/29/2022 | Oct-Dec 2022 |
 
-The `transaction_quarter` measure is created in the chart object by using the `quartername()` function and passing the `date` field as the function’s argument.
+The transaction\_quarter measure is created in the chart object by using the quartername() function and passing the date field as the function’s argument.
 
-The `quartername()` function initially identifies the quarter into which the date value falls. It then returns a value showing the start-end months of this quarter, as well as the year.
+The quartername() function initially identifies the quarter into which the date value falls. It then returns a value showing the start-end months of this quarter, as well as the year.
 
-Diagram of `quartername()` function, chart object example
+Diagram of quartername() function, chart object example
 
-![Diagram showing how the quartername function determines the range of months of the quarter in which a transaction takes place.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-quartername-examples-chart-object.png)
+![Diagram showing how the quartername function determines the range of months of the quarter in which a transaction takes place.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-quartername-examples-chart-object.png "Click to view full size")
 
-Transaction 8203 took place on August 8, 2022. The `quartername()` function identifies that the transaction took place in the third quarter, and therefore returns Jul-Sep 2022. The months are displayed in the same format as the `MonthNames` system variable.
+Transaction 8203 took place on August 8, 2022. The quartername() function identifies that the transaction took place in the third quarter, and therefore returns Jul-Sep 2022. The months are displayed in the same format as the MonthNames system variable.
 
 ## Example 5 – Scenario
 
@@ -436,10 +439,10 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset containing a set of transactions for 2022, which is loaded into a table called `Transactions`.
-- The date field provided in the `DateFormat` system variable (MM/DD/YYYY) format.
+- A dataset containing a set of transactions for 2022, which is loaded into a table called Transactions.
+- The date field provided in the DateFormat system variable (MM/DD/YYYY) format.
 
-The end user would like a chart object that presents the total sales by quarter for the transactions. This could be achieved even when this dimension is not available in the data model, using the `quartername()` function as a calculated dimension in the chart.
+The end user would like a chart object that presents the total sales by quarter for the transactions. This could be achieved even when this dimension is not available in the data model, using the quartername() function as a calculated dimension in the chart.
 
 Load script
 
@@ -479,14 +482,14 @@ Results
 
 Do the following:
 
-1. Load the data and open a [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/quartername.htm#glossary-9 "Glossary term"). Create a new table.
+1. Load the data and open a [sheet](#glossary-9 "Glossary term"). Create a new table.
 2. Create a calculated dimension using the following expression:
 
-   `=quartername(date)`
-3. Next, calculate total sales using the following [aggregation](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/quartername.htm#glossary-10 "Glossary term") measure:
+   =quartername(date)
+3. Next, calculate total sales using the following [aggregation](#glossary-10 "Glossary term") measure:
 
-   `=sum(amount)`
-4. Set the measure's **Number formatting** to **Money**.
+   =sum(amount)
+4. Set the measure's Number formatting to Money.
 
 Results table
 

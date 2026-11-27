@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
+# quarter Script and chart function
+
 Expand/Collapse all
 
 # quarter Script and chart function
@@ -34,16 +37,16 @@ Function examples
 
 | Example | Result |
 | --- | --- |
-| `quarter('10/29/2026')` | Returns 4. |
-| `quarter('10/29/2026', 3)` | Returns 3. |
+| quarter('10/29/2026') | Returns 4. |
+| quarter('10/29/2026', 3) | Returns 3. |
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 ## Example – load script
 
@@ -55,12 +58,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/quarter.htm#glossary-0 "Glossary term") containing a set of transactions for 2025, which is loaded into a table called `Transactions`.
-- The date field provided in the `DateFormat` system [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/quarter.htm#glossary-1 "Glossary term") (M/D/YYYY) format.
+- A [dataset](#glossary-0 "Glossary term") containing a set of transactions for 2025, which is loaded into a table called Transactions.
+- The date field provided in the DateFormat system [variable](#glossary-1 "Glossary term") (M/D/YYYY) format.
 - The creation of two fields:
 
-  - `transaction_quarter` returns the quarter in which the transactions took place.
-  - `transaction_quarter_march_yearstart` returns the quarter of the transactions, adjusted to set March 1 as the beginning of the financial year.
+  - transaction\_quarter returns the quarter in which the transactions took place.
+  - transaction\_quarter\_march\_yearstart returns the quarter of the transactions, adjusted to set March 1 as the beginning of the financial year.
 
 Load script
 
@@ -105,9 +108,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `transaction_quarter`
-- `transaction_quarter_march_yearstart`
+- date
+- transaction\_quarter
+- transaction\_quarter\_march\_yearstart
 
 Results table
 
@@ -144,7 +147,7 @@ Open the Data load editor and add the load script below to a new tab.
 
 The load script contains the same dataset and scenario as the first example.
 
-However, in this example, the unchanged dataset is loaded into the application. The calculations of the transaction quarters are created as [measures](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/quarter.htm#glossary-2 "Glossary term") in a chart object of the application.
+However, in this example, the unchanged dataset is loaded into the application. The calculations of the transaction quarters are created as [measures](#glossary-2 "Glossary term") in a chart object of the application.
 
 Load script
 
@@ -199,7 +202,7 @@ Create the following measures:
 
   This measure returns the quarter of the transactions, adjusted to set March 1 as the beginning of the financial year.
 
-The measures are created in the chart object by using the `quarter()` function and passing the `date` field as arguments.
+The measures are created in the chart object by using the quarter() function and passing the date field as arguments.
 
 Results table
 

@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script prefixes"]
 ---
+
 # Left
 
 The Join
@@ -19,7 +20,7 @@ combinations of field values from the raw data tables where the linking field va
 that the second raw data table should be reduced to its common intersection
 with the first table, before being stored in Qlik Sense.
 
-> **Note:** Were you looking for the string function by the same name? See: [*Left Script and chart function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/Left.htm)
+Information noteWere you looking for the string function by the same name? See: [*Left Script and chart function*](../StringFunctions/Left.htm)
 
 Syntax:
 
@@ -58,7 +59,7 @@ A, C
 4, yy ];
 ```
 
-For more information about using inline loads, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+For more information about using inline loads, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 ### Result
 
@@ -98,7 +99,7 @@ A, C
 4, yy ];
 ```
 
-For more information about using inline loads, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+For more information about using inline loads, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 ### Result
 
@@ -117,8 +118,8 @@ This example demonstrates the Left Join output where only values present in the 
 
 ## Learn more
 
-- [*Join*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Join.htm)
-- [*Keep*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Keep.htm)
-- [*Inner*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Inner.htm)
-- [*Outer*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Outer.htm)
-- [*Right*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Right.htm)
+- [*Join*](Join.htm)
+- [*Keep*](Keep.htm)
+- [*Inner*](Inner.htm)
+- [*Outer*](Outer.htm)
+- [*Right*](Right.htm)

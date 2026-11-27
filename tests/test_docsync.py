@@ -152,3 +152,26 @@ def test_prune_removes_pages_that_are_not_in_the_manifest(tmp_path, page_urls):
     assert removed == ["Scripting/viejo.md"]
     assert not orphan.exists()
     assert (tmp_path / "docs" / "Scripting" / "load-data.md").exists()
+
+def test_image_target_handles_the_relative_resources_path():
+    rel, target = ds.image_target(URL, '../../Resources/Images/Dataflow/x.png')
+    assert target == os.path.join('_images', 'en-US', 'cloud-services', 'Subsystems', 'Hub', 'Content', 'Resources', 'Images', 'Dataflow', 'x.png')
+    assert rel == '../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Dataflow/x.png'
+
+
+def test_image_url_is_the_inverse_of_image_target():
+    rel, target = ds.image_target(URL, '../../Resources/Images/Dataflow/x.png')
+    assert ds.image_url(target) == 'https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Dataflow/x.png'
+
+
+def test_prune_never_touches_the_curated_docs(tmp_path, page_urls):
+    fetch = lambda url: b"PNG" if url.endswith(".png") else PAGE.encode("utf-8")
+    ds.sync(page_urls[:1], tmp_path, fetch=fetch)
+    curated = tmp_path / "docs" / "banco-de-pruebas" / "01-hallazgos-api-qlik.md"
+    curated.parent.mkdir(parents=True, exist_ok=True)
+    curated.write_text("hallazgos", encoding="utf-8")
+    plan = tmp_path / "docs" / "superpowers" / "plans" / "p.md"
+    plan.parent.mkdir(parents=True, exist_ok=True)
+    plan.write_text("plan", encoding="utf-8")
+    assert ds.prune(page_urls[:1], tmp_path) == []
+    assert curated.exists() and plan.exists()

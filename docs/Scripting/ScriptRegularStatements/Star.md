@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
 # Star
 
 The string used for representing the set of all the values of a field
@@ -28,7 +29,7 @@ Arguments
 | --- | --- |
 | string | An arbitrary text. Note that the string must be enclosed by quotation marks if it contains blanks.  If nothing is specified, star is; is assumed, i.e. there is no star symbol available unless explicitly specified. This definition is valid until a new star statement is made. |
 
-The Star is statement is not recommended for use in the data part of the script (under Section Application) if [section access](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Star.htm#glossary-0 "Glossary term") is used. The star character is however fully supported for the protected fields in the Section Access part of the script. In this case you do not need to use the explicit Star is statement since this is always implicit in section access.
+The Star is statement is not recommended for use in the data part of the script (under Section Application) if [section access](#glossary-0 "Glossary term") is used. The star character is however fully supported for the protected fields in the Section Access part of the script. In this case you do not need to use the explicit Star is statement since this is always implicit in section access.
 
 ## Limitations
 
@@ -40,7 +41,7 @@ The Star is statement is not recommended for use in the data part of the script 
 
 ## Example
 
-The example below is an extract of a data [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Star.htm#glossary-1 "Glossary term") featuring section access.
+The example below is an extract of a data [load script](#glossary-1 "Glossary term") featuring section access.
 
 Star is \*;
 

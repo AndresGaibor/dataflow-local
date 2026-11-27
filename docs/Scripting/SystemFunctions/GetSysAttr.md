@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
-breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "System functions", "properties"]
+last_updated: "2026-11-27"
+breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "System functions"]
 ---
+
+# GetSysAttr Script and chart function
+
 Expand/Collapse all
 
 # GetSysAttr Script and chart function
@@ -27,7 +30,7 @@ Use GetSysAttr() to determine the following information about your application:
 - The name of the space where the application is located.
 - The type of the space (shared or managed) where the application is located.
 
-The GetSysAttr() function can be used directly in the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/GetSysAttr.htm#glossary-0 "Glossary term") or in a chart expression. In either case, you can use the function to store attributes in a variable, or directly without a variable.
+The GetSysAttr() function can be used directly in the [load script](#glossary-0 "Glossary term") or in a chart expression. In either case, you can use the function to store attributes in a variable, or directly without a variable.
 
 If you use this function in Qlik Sense Client-Managed, it only returns empty data values. Therefore, you can use the function to develop scripts in Qlik Sense Client-Managed without encountering errors, with the intention of later uploading the applications to Qlik Cloud.
 
@@ -49,20 +52,20 @@ Environment attributes that can be returned by the GetSysAttr() function
 
 | Attribute | Description | Example of load script variable | Example of chart expression (no variable) |
 | --- | --- | --- | --- |
-| tenantId | The [tenant](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/GetSysAttr.htm#glossary-2 "Glossary term") ID. | Let vTenantID = GetSysAttr('tenantId') | =GetSysAttr('tenantId') |
+| tenantId | The [tenant](#glossary-2 "Glossary term") ID. | Let vTenantID = GetSysAttr('tenantId') | =GetSysAttr('tenantId') |
 | tenantName | The name of the tenant. | Let vTenantName = GetSysAttr('tenantName') | =GetSysAttr('tenantName') |
 | tenantUrl | The default URL for the tenant. | Let vTenantUrl = GetSysAttr('tenantUrl') | =GetSysAttr('tenantUrl') |
 | tenantUrlAlias | The alias URL that has been defined for the tenant. | Let vTenantUrlAlias = GetSysAttr('tenantUrlAlias') | =GetSysAttr('tenantUrlAlias') |
 | tenantRegion | The region in which the tenant resides. | Let vTenantRegion = GetSysAttr('tenantRegion') | =GetSysAttr('tenantRegion') |
-| spaceId | The space ID. This is only defined for an application in a [shared](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/GetSysAttr.htm#glossary-3 "Glossary term") or [managed space](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/GetSysAttr.htm#glossary-4 "Glossary term").  **Note:** If the GetSysAttr() function returns an empty `spaceId` value in Qlik Cloud, this indicates that the application is located in a [personal space](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/GetSysAttr.htm#glossary-5 "Glossary term").  The GetSysAttr() function always returns an empty `spaceId` value when used in Qlik Sense Client-Managed. | Let vSpaceId = GetSysAttr('spaceId') | =GetSysAttr('spaceId') |
-| spaceName | The name of the space. This is only defined for an application in a shared or managed space.  **Note:** If the GetSysAttr() function returns an empty `spaceName` value in Qlik Cloud, this indicates that the application is located in a personal space.  The GetSysAttr() function always returns an empty `spaceName` value when used in Qlik Sense Client-Managed. | Let vSpaceName = GetSysAttr('spaceName') | =GetSysAttr('spaceName') |
-| spaceType | The type of space in which the application is located. This is only defined for an application in a shared or managed space.  **Note:** If the GetSysAttr() function returns an empty `spaceType` value in Qlik Cloud, this indicates that the application is located in a personal space.  The GetSysAttr() function always returns an empty `spaceType` value when used in Qlik Sense Client-Managed. | Let vSpaceType = GetSysAttr('spaceType') | =GetSysAttr('spaceType') |
+| spaceId | The space ID. This is only defined for an application in a [shared](#glossary-3 "Glossary term") or [managed space](#glossary-4 "Glossary term").  Information note If the GetSysAttr() function returns an empty spaceId value in Qlik Cloud, this indicates that the application is located in a [personal space](#glossary-5 "Glossary term").  The GetSysAttr() function always returns an empty spaceId value when used in Qlik Sense Client-Managed. | Let vSpaceId = GetSysAttr('spaceId') | =GetSysAttr('spaceId') |
+| spaceName | The name of the space. This is only defined for an application in a shared or managed space.  Information note If the GetSysAttr() function returns an empty spaceName value in Qlik Cloud, this indicates that the application is located in a personal space.  The GetSysAttr() function always returns an empty spaceName value when used in Qlik Sense Client-Managed. | Let vSpaceName = GetSysAttr('spaceName') | =GetSysAttr('spaceName') |
+| spaceType | The type of space in which the application is located. This is only defined for an application in a shared or managed space.  Information note If the GetSysAttr() function returns an empty spaceType value in Qlik Cloud, this indicates that the application is located in a personal space.  The GetSysAttr() function always returns an empty spaceType value when used in Qlik Sense Client-Managed. | Let vSpaceType = GetSysAttr('spaceType') | =GetSysAttr('spaceType') |
 
 ## Example 1 – Storing environment attributes as load script variables
 
 Load script and variables
 
-In this example, we define a set of script [variables](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/GetSysAttr.htm#glossary-6 "Glossary term") that can be used in the application content you create. Each time the application is reloaded, the attributes are evaluated and added to the application.
+In this example, we define a set of script [variables](#glossary-6 "Glossary term") that can be used in the application content you create. Each time the application is reloaded, the attributes are evaluated and added to the application.
 
 Do the following:
 
@@ -72,7 +75,7 @@ Do the following:
 
    ```
    Transactions:
-   						
+
    Load * inline [
    id,date,amount
    1,1/1/2023,500.67
@@ -99,21 +102,21 @@ Do the following:
 
 This load script contains the following:
 
-- A new table, called `Transactions`, contains sample transaction data. This could be replaced with any data, and is added as a placeholder.
+- A new table, called Transactions, contains sample transaction data. This could be replaced with any data, and is added as a placeholder.
 - A series of script variable definitions, for the available attributes that can be fetched by GetSysAttr().
 
-Load the data and open a new [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/GetSysAttr.htm#glossary-7 "Glossary term") in advanced edit mode.
+Load the data and open a new [sheet](#glossary-7 "Glossary term") in advanced edit mode.
 
-Create a table and add the following expressions as [dimensions](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/GetSysAttr.htm#glossary-8 "Glossary term"), along with their respective labels:
+Create a table and add the following expressions as [dimensions](#glossary-8 "Glossary term"), along with their respective labels:
 
-- `=vTenantId`, with label `Tenant ID`
-- `=vTenantName`, with label `Tenant Name`
-- `=vTenantUrl`, with label `Tenant URL (Default)`
-- `=vTenantUrlAlias`, with label `Tenant URL (Alias)`
-- `=vTenantRegion`, with label `Tenant Region`
-- `=vSpaceId`, with label `Space ID`
-- `=vSpaceName`, with label `Space Name`
-- `=vSpaceType`, with label `Space Type`
+- =vTenantId, with label Tenant ID
+- =vTenantName, with label Tenant Name
+- =vTenantUrl, with label Tenant URL (Default)
+- =vTenantUrlAlias, with label Tenant URL (Alias)
+- =vTenantRegion, with label Tenant Region
+- =vSpaceId, with label Space ID
+- =vSpaceName, with label Space Name
+- =vSpaceType, with label Space Type
 
 You now have a table in your application that dynamically displays each of the available environment attributes. Exporting the application and uploading it to a different tenant and space would give you these attributes for the newly uploaded version of the application.
 
@@ -127,53 +130,53 @@ Do the following:
 
 1. Create a new Qlik Sense application in a shared space.
 2. Open a new sheet in advanced edit mode.
-3. Click ![Variables](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_variables_outline.svg) to open the variables dialog.
-4. Click **Create new**.
-5. Under **Name**, enter vTenantId.
-6. Under **Definition**, enter =GetSysAttr('tenantId').
-7. Click **Create**.
+3. Click ![Variables](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_variables_outline.svg) to open the variables dialog.
+4. Click Create new.
+5. Under Name, enter vTenantId.
+6. Under Definition, enter =GetSysAttr('tenantId').
+7. Click Create.
 
 This creates an application variable to display the ID of the tenant. Repeat steps 3 to 6 to create a variable for each of the remaining attributes. Use the following parameters:
 
 - Tenant Name
 
-  - **Name**: vTenantName
-  - **Definition**: =GetSysAttr('tenantName')
+  - Name: vTenantName
+  - Definition: =GetSysAttr('tenantName')
 - Tenant URL
 
-  - **Name**: vTenantUrl
-  - **Definition**: =GetSysAttr('tenantUrl')
+  - Name: vTenantUrl
+  - Definition: =GetSysAttr('tenantUrl')
 - Tenant URL Alias
 
-  - **Name**: vTenantUrlAlias
-  - **Definition**: =GetSysAttr('tenantUrlAlias')
+  - Name: vTenantUrlAlias
+  - Definition: =GetSysAttr('tenantUrlAlias')
 - Tenant Region
 
-  - **Name**: vTenantRegion
-  - **Definition**: =GetSysAttr('tenantRegion')
+  - Name: vTenantRegion
+  - Definition: =GetSysAttr('tenantRegion')
 - Space ID
 
-  - **Name**: vSpaceId
-  - **Definition**: =GetSysAttr('spaceId')
+  - Name: vSpaceId
+  - Definition: =GetSysAttr('spaceId')
 - Space Name
 
-  - **Name**: vSpaceName
-  - **Definition**: =GetSysAttr('spaceName')
+  - Name: vSpaceName
+  - Definition: =GetSysAttr('spaceName')
 - Space Type
 
-  - **Name**: vSpaceType
-  - **Definition**: =GetSysAttr('spaceType')
+  - Name: vSpaceType
+  - Definition: =GetSysAttr('spaceType')
 
 Create a table and add each of following expressions as dimensions, along with their respective labels:
 
-- `=vTenantId`, with label `Tenant ID`
-- `=vTenantName`, with label `Tenant Name`
-- `=vTenantUrl`, with label `Tenant URL (Default)`
-- `=vTenantUrlAlias`, with label `Tenant URL (Alias)`
-- `=vTenantRegion`, with label `Tenant Region`
-- `=vSpaceId`, with label `Space ID`
-- `=vSpaceName`, with label `Space Name`
-- `=vSpaceType`, with label `Space Type`
+- =vTenantId, with label Tenant ID
+- =vTenantName, with label Tenant Name
+- =vTenantUrl, with label Tenant URL (Default)
+- =vTenantUrlAlias, with label Tenant URL (Alias)
+- =vTenantRegion, with label Tenant Region
+- =vSpaceId, with label Space ID
+- =vSpaceName, with label Space Name
+- =vSpaceType, with label Space Type
 
 You now have a table in your application, dynamically displaying each of the available environment attributes. Exporting the application and uploading it to a different tenant and space would give you these attributes for the newly uploaded version of the application.
 
@@ -183,7 +186,7 @@ The main benefit of using the function in chart expressions is that the applicat
 
 Load script and results
 
-You can also use the function in your applications without a variable. This example demonstrates how to load a table with each attribute as an individual [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/GetSysAttr.htm#glossary-9 "Glossary term"). From here, you can create [visualizations](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/GetSysAttr.htm#glossary-10 "Glossary term") in the application to display these details.
+You can also use the function in your applications without a variable. This example demonstrates how to load a table with each attribute as an individual [field](#glossary-9 "Glossary term"). From here, you can create [visualizations](#glossary-10 "Glossary term") in the application to display these details.
 
 Do the following:
 
@@ -225,7 +228,7 @@ Do the following:
 4. Click inside the blank chart to add text, and type:
 
    Tenant ID:
-5. In the [properties](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/SystemFunctions/GetSysAttr.htm#glossary-11 "Glossary term") panel, click **Add measure**.
+5. In the [properties](#glossary-11 "Glossary term") panel, click Add measure.
 6. Enter the following expression:
 
    =GetSysAttr('tenantId')

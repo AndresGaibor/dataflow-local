@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
-breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements", "Load"]
+last_updated: "2026-11-27"
+breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements", "Load", "Format specification items"]
 ---
+
 # Quotes
 
 Quotes is a file specifier for the LOAD statement that defines whether quotes can be used and the precedence between quotes and separators. For text files only.
@@ -17,7 +18,7 @@ no quotes
 
 msq
 
-If the specifier is omitted, standard quoting is used, that is, the quotes " " or ' ' can be used, but only if they are the first and last non blank character of a [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptSpecifiers/quotes.htm#glossary-0 "Glossary term") value.
+If the specifier is omitted, standard quoting is used, that is, the quotes " " or ' ' can be used, but only if they are the first and last non blank character of a [field](#glossary-0 "Glossary term") value.
 
 Arguments:
 
@@ -30,7 +31,7 @@ Arguments
 
 ## Learn more
 
-- [*Using quotation marks in the script*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/use-quotes-in-script.htm)
-- [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm)
-- [*Script regular statements*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/script-regular-statements.htm)
-- [*Example - Multi-line content*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm#ExMultLine)
+- [*Using quotation marks in the script*](../use-quotes-in-script.htm)
+- [*Load*](../ScriptRegularStatements/Load.htm)
+- [*Script regular statements*](../ScriptRegularStatements/script-regular-statements.htm)
+- [*Example - Multi-line content*](../inline-loads-qs.htm#ExMultLine)

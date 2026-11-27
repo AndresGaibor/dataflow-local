@@ -4,14 +4,17 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions"]
 ---
+
+# Geospatial functions
+
 Expand/Collapse all
 
 # Geospatial functions
 
-These functions are used to handle geospatial data in map [visualizations](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/geospatial-functions.htm#glossary-0 "Glossary term"). Qlik Sense follows GeoJSON specifications for geospatial data and supports the following:
+These functions are used to handle geospatial data in map [visualizations](#glossary-0 "Glossary term"). Qlik Sense follows GeoJSON specifications for geospatial data and supports the following:
 
 - Point
 - Linestring
@@ -22,7 +25,7 @@ For more information on GeoJSON specifications, see:
 
 [GeoJSON.org](http://geojson.org/)
 
-[*Map chart*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Visualizations/Map/Map.htm)
+[*Map chart*](../../Visualizations/Map/Map.htm)
 
 Use the drop-down on each function to see a brief description and the syntax of each function. Click the function name in the syntax description for further details.
 
@@ -38,37 +41,37 @@ GeoAggrGeometry
 
 GeoAggrGeometry() is used to aggregate a number of areas into a larger area, for example aggregating a number of sub-regions to a region.
 
-[**GeoAggrGeometry**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/GeoAggrGeometry.htm)(field\_name)
+[**GeoAggrGeometry**](GeoAggrGeometry.htm)(field\_name)
 
 GeoBoundingBox
 
 GeoBoundingBox() is used to aggregate a geometry into an area and calculate the smallest bounding box that contains all coordinates.
 
-[**GeoBoundingBox**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/GeoBoundingBox.htm)(field\_name)
+[**GeoBoundingBox**](GeoBoundingBox.htm)(field\_name)
 
 GeoCountVertex
 
 GeoCountVertex() is used to find the number of vertices a polygon geometry contains.
 
-[**GeoCountVertex**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/GeoCountVertex.htm)(field\_name)
+[**GeoCountVertex**](GeoCountVertex.htm)(field\_name)
 
 GeoInvProjectGeometry
 
 GeoInvProjectGeometry() is used to aggregate a geometry into an area and apply the inverse of a projection.
 
-[**GeoInvProjectGeometry**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/GeoInvProjectGeometry.htm)(type, field\_name)
+[**GeoInvProjectGeometry**](GeoInvProjectGeometry.htm)(type, field\_name)
 
 GeoProjectGeometry
 
 GeoProjectGeometry() is used to aggregate a geometry into an area and apply a projection.
 
-[**GeoProjectGeometry**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/GeoProjectGeometry.htm)(type, field\_name)
+[**GeoProjectGeometry**](GeoProjectGeometry.htm)(type, field\_name)
 
 GeoReduceGeometry
 
 GeoReduceGeometry() is used to reduce the number of vertices of a geometry, and to aggregate a number of areas into one area, but still displaying the boundary lines from the individual areas.
 
-[**GeoReduceGeometry**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/GeoReduceGeometry.htm)(geometry)
+[**GeoReduceGeometry**](GeoReduceGeometry.htm)(geometry)
 
 The following are non-aggregation functions:
 
@@ -76,46 +79,46 @@ GeoGetBoundingBox
 
 GeoGetBoundingBox() is used in scripts and chart expressions to calculate the smallest geospatial bounding box that contains all coordinates of a geometry.
 
-[**GeoGetBoundingBox**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/GeoGetBoundingBox.htm)(geometry)
+[**GeoGetBoundingBox**](GeoGetBoundingBox.htm)(geometry)
 
 GeoGetPolygonCenter
 
 GeoGetPolygonCenter() is used in scripts and chart expressions to calculate and return the center point of a geometry.
 
-[**GeoGetPolygonCenter**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/GeoGetPolygonCenter.htm)(geometry)
+[**GeoGetPolygonCenter**](GeoGetPolygonCenter.htm)(geometry)
 
 GeoMakePoint
 
 GeoMakePoint() is used in scripts and chart expressions to create and tag a point with latitude and longitude.
 
-[**GeoMakePoint**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/GeoMakePoint.htm)(lat\_field\_name, lon\_field\_name)
+[**GeoMakePoint**](GeoMakePoint.htm)(lat\_field\_name, lon\_field\_name)
 
 GeoProject
 
 GeoProject() is used in scripts and chart expressions to apply a projection to a geometry.
 
-[**GeoProject**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/GeoProject.htm)(geo\_data)
+[**GeoProject**](GeoProject.htm)(geo\_data)
 
 MakeGeoLine
 
-**MakeGeoLine()** is used to validate geographic data in JSON and set the appropriate tags on the field. **MakeGeoLine()** confirms the data is an array with points.
+MakeGeoLine() is used to validate geographic data in JSON and set the appropriate tags on the field. MakeGeoLine() confirms the data is an array with points.
 
-[**MakeGeoLine**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/MakeGeoLine.htm)(geo\_data)
+[**MakeGeoLine**](MakeGeoLine.htm)(geo\_data)
 
 MakeGeoPolygon
 
-**MakeGeoPolygon()** is used to validate geographic data in JSON and set the appropriate tags on the field. **MakeGeoPolygon()** confirms the data is an array with lines.
+MakeGeoPolygon() is used to validate geographic data in JSON and set the appropriate tags on the field. MakeGeoPolygon() confirms the data is an array with lines.
 
-[**MakeGeoPolygon**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/MakeGeoPolygon.htm)(geo\_data)
+[**MakeGeoPolygon**](MakeGeoPolygon.htm)(geo\_data)
 
 MakeGeoPoint
 
-**MakeGeoPoint()** is used to validate geographic data in JSON and set the appropriate tags on the field. **MakeGeoPoint()** confirms the data is an array with two numbers.
+MakeGeoPoint() is used to validate geographic data in JSON and set the appropriate tags on the field. MakeGeoPoint() confirms the data is an array with two numbers.
 
-[**MakeGeoPoint**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/MakeGeoPoint.htm)(geo\_data)
+[**MakeGeoPoint**](MakeGeoPoint.htm)(geo\_data)
 
 MakeGeoRegion
 
-**MakeGeoRegion()** is used to validate geographic data in JSON and set the appropriate tags on the field. **MakeGeoRegion()** confirms the data is an array with polygons.
+MakeGeoRegion() is used to validate geographic data in JSON and set the appropriate tags on the field. MakeGeoRegion() confirms the data is an array with polygons.
 
-[**MakeGeoRegion**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/GeospatialFunctions/MakeGeoRegion.htm)(geo\_data)
+[**MakeGeoRegion**](MakeGeoRegion.htm)(geo\_data)

@@ -4,12 +4,13 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
-breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions", "Statistical test functions"]
+last_updated: "2026-11-27"
+breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions", "Statistical test functions", "Statistical test function examples"]
 ---
+
 # Examples of how to use chi2-test functions in the data load script
 
-The chi2-test functions are used to find values associated with chi squared statistical analysis. This section describes how to use the chi-squared distribution test functions available in Qlik Sense in the [data load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StatisticalTestFunctions/chi2Tests/chi2test-script-example.htm#glossary-0 "Glossary term"). Please refer to the individual chi2-test script function topics for descriptions of syntax and arguments.
+The chi2-test functions are used to find values associated with chi squared statistical analysis. This section describes how to use the chi-squared distribution test functions available in Qlik Sense in the [data load script](#glossary-0 "Glossary term"). Please refer to the individual chi2-test script function topics for descriptions of syntax and arguments.
 
 This example uses a table containing the number of students achieving a grade (A-F) for two groups of students (I and II).
 
@@ -60,7 +61,7 @@ Do the following:
    II,F,16
 
    ];
-3. Click ![run script](../../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_run_script.svg) to load data.
+3. Click ![run script](../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_run_script.svg) to load data.
 
 You have now loaded the sample data.
 
@@ -86,13 +87,13 @@ Do the following:
    Chi2Test\_p(Grp, Grade, Count) as p
 
    resident Sample\_1 group by Grp;
-2. Click ![run script](../../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_run_script.svg) to load data.
+2. Click ![run script](../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_run_script.svg) to load data.
 
 You have now loaded the chi2-test values in a table named Chi2\_table.
 
 ## Results
 
-You can view the resulting chi2-test values in the data model viewer under **Preview**, they should look like this:
+You can view the resulting chi2-test values in the data model viewer under Preview, they should look like this:
 
 Results
 

@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# ReplaceRegExGroup Script and chart function
+
 Expand/Collapse all
 
 # ReplaceRegExGroup Script and chart function
@@ -30,19 +33,19 @@ Arguments
 | text | The input string text that you want to replace, fully or partially, with the new text from to\_str. |
 | regex | The regular expression that defines when to replace text. Matches between this argument and the text argument are replaced. |
 | to\_str | The new text that you want to use to replace existing content from text. |
-| group | The number of the group, in the case of a composite regular expression.  If the regular expression only contains one group, use the ReplaceRegEx() function instead. Alternatively, use ReplaceRegExGroup() with a group value of `0`.  You can specify a negative group value to search for groups from right to left. |
+| group | The number of the group, in the case of a composite regular expression.  If the regular expression only contains one group, use the ReplaceRegEx() function instead. Alternatively, use ReplaceRegExGroup() with a group value of 0.  You can specify a negative group value to search for groups from right to left. |
 | occurrence | The number of the match (between input text and regular expression) to replace with new text.  This is an optional argument. The default is 0 if omitted. When a value of 0 is used, or if the argument is omitted, all matches between the text and regex are replaced with to\_str.  You can specify a negative value for occurrence if you want to identify matches from right to left. |
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `ReplaceRegExGroup('abc123','([a-z])([0-9]+)','x',0)` | Returns `abx` (replace complete match). |
-| `ReplaceRegExGroup('abc123','([a-z])([0-9]+)','x',1)` | Returns `abx123` (only replace first group in match). |
-| `ReplaceRegExGroup('abc123','([a-z])([0-9]+)','x',2)` | Returns `abcx` (only replace second group in match). |
-| `ReplaceRegExGroup('abc123abc123','([a-z])([0-9]+)','x',1,2)` | Returns `abc123abx123`. There are two matches between the first group of the input text and the regex pattern. However, only the second occurrence is replaced. |
-| `ReplaceRegExGroup('ABC123ABC123','([a-z])([0-9]+)','x',1)` | Returns `ABC123ABC123`. In other words, no text is replaced. This is because the function is case-sensitive, and the case-insensitive variant of the function is not used. |
-| `ReplaceRegExGroupI('ABC123ABC123','([a-z])([0-9]+)','x',1)` | Returns `ABx123ABx123`. In this example, text replacement happens because the case-insensitive variant of the function, ReplaceRegExGroupI(), is used. |
+| ReplaceRegExGroup('abc123','([a-z])([0-9]+)','x',0) | Returns abx (replace complete match). |
+| ReplaceRegExGroup('abc123','([a-z])([0-9]+)','x',1) | Returns abx123 (only replace first group in match). |
+| ReplaceRegExGroup('abc123','([a-z])([0-9]+)','x',2) | Returns abcx (only replace second group in match). |
+| ReplaceRegExGroup('abc123abc123','([a-z])([0-9]+)','x',1,2) | Returns abc123abx123. There are two matches between the first group of the input text and the regex pattern. However, only the second occurrence is replaced. |
+| ReplaceRegExGroup('ABC123ABC123','([a-z])([0-9]+)','x',1) | Returns ABC123ABC123. In other words, no text is replaced. This is because the function is case-sensitive, and the case-insensitive variant of the function is not used. |
+| ReplaceRegExGroupI('ABC123ABC123','([a-z])([0-9]+)','x',1) | Returns ABx123ABx123. In this example, text replacement happens because the case-insensitive variant of the function, ReplaceRegExGroupI(), is used. |
 
 ## When to use ReplaceRegExGroup
 
@@ -60,9 +63,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table `URLs` that initially contains a list of input strings in which we want to identify and update specific URLs. We want to update the domain in these URLs.
-- The creation of a field, `ResourceURL_Updated`, that contains modified input text with the processed URLs.
-- A [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/StringFunctions/ReplaceRegExGroup.htm#glossary-0 "Glossary term") `URL_RegEx` to store the regular expression being used to identify URLs to process.
+- A table URLs that initially contains a list of input strings in which we want to identify and update specific URLs. We want to update the domain in these URLs.
+- The creation of a field, ResourceURL\_Updated, that contains modified input text with the processed URLs.
+- A [variable](#glossary-0 "Glossary term") URL\_RegEx to store the regular expression being used to identify URLs to process.
 
 Our requirements:
 
@@ -96,7 +99,7 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `ResourceURL_Updated`
+- ResourceURL\_Updated
 
 Results table
 
@@ -121,7 +124,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A table `URLsList` containing a list of input strings in which we want to identify and update specific URLs. We want to update the protocol from http to https in the links to the Support website.
+- A table URLsList containing a list of input strings in which we want to identify and update specific URLs. We want to update the protocol from http to https in the links to the Support website.
 
 Our requirements:
 
@@ -150,7 +153,7 @@ Results
 
 Load the data and open a sheet. Create a new table and add this field as a dimension:
 
-- `URLsList`
+- URLsList
 
 Add this calculated dimension:
 
@@ -173,4 +176,4 @@ Results table
 
 ## Learn more
 
-- [*Working with regular expressions in load scripts and chart expressions*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/regular-expressions-qlik-analytics.htm)
+- [*Working with regular expressions in load scripts and chart expressions*](../regular-expressions-qlik-analytics.htm)

@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
+# monthstart Script and chart function
+
 Expand/Collapse all
 
 # monthstart Script and chart function
@@ -21,11 +24,11 @@ MonthStart(date[, period\_no])
 
 Return data type:  dual
 
-Diagram of `monthstart()` function
+Diagram of monthstart() function
 
-![Example diagram of how the elements of the function work together to return the result. The monthstart takes an input date and converts it to a timestamp of the first millisecond of the month in which the date occurs.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthstart-general.png)
+![Example diagram of how the elements of the function work together to return the result. The monthstart takes an input date and converts it to a timestamp of the first millisecond of the month in which the date occurs.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthstart-general.png "Click to view full size")
 
-The `monthstart()` function determines which month the date falls into. It then returns a timestamp, in date format, for the first millisecond of that month.
+The monthstart() function determines which month the date falls into. It then returns a timestamp, in date format, for the first millisecond of that month.
 
 Arguments
 
@@ -36,22 +39,22 @@ Arguments
 
 ## When to use monthstart
 
-The `monthstart()` function is commonly used as part of an expression when the user would like the calculation to use the fraction of the month that has elapsed thus far. For example, it can be used to calculate the interest that has been accumulated in a month up to a certain date.
+The monthstart() function is commonly used as part of an expression when the user would like the calculation to use the fraction of the month that has elapsed thus far. For example, it can be used to calculate the interest that has been accumulated in a month up to a certain date.
 
 Function examples
 
 | Example | Result |
 | --- | --- |
-| `monthstart('10/19/2001')` | Returns 10/01/2001. |
-| `monthstart('10/19/2001', -1)` | Returns 09/01/2001. |
+| monthstart('10/19/2001') | Returns 10/01/2001. |
+| monthstart('10/19/2001', -1) | Returns 09/01/2001. |
 
 ## Regional settings
 
-Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the `SET DateFormat` statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Apps/regional-settings-in-apps.htm).
+Unless otherwise specified, the examples in this topic use the following date format: MM/DD/YYYY. The date format is specified in the SET DateFormat statement in your data load script. The default date formatting may be different in your system, due to your regional settings and other factors. You can change the formats in the examples below to suit your requirements. Or you can change the formats in your load script to match these examples. For more information, see [*Modifying regional settings for applications and scripts*](../../Apps/regional-settings-in-apps.htm).
 
 Default regional settings in applications are based on the user profile. These regional format settings are not related to the language displayed in the Qlik Cloud user interface. Qlik Cloud will be displayed in the same language as the browser you are using.
 
-If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/UserInterface/Languages.htm#Setting).
+If you are an application creator, you can set the default region for applications you create. For more information, see [*Setting your preferred regional settings for creating apps and scripts in Qlik Cloud Analytics*](../../UserInterface/Languages.htm#Setting).
 
 ## Example 1 – No additional arguments
 
@@ -63,9 +66,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A [dataset](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthstart.htm#glossary-0 "Glossary term") containing a set of transactions for 2022, which is loaded into a table called `Transactions`.
-- The date [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthstart.htm#glossary-1 "Glossary term") provided in the `DateFormat` system [variable](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthstart.htm#glossary-2 "Glossary term") (MM/DD/YYYY) format.
-- The creation of a field, `start_of_month`, which returns a timestamp for the start of the month when the transactions took place.
+- A [dataset](#glossary-0 "Glossary term") containing a set of transactions for 2022, which is loaded into a table called Transactions.
+- The date [field](#glossary-1 "Glossary term") provided in the DateFormat system [variable](#glossary-2 "Glossary term") (MM/DD/YYYY) format.
+- The creation of a field, start\_of\_month, which returns a timestamp for the start of the month when the transactions took place.
 
 Load script
 
@@ -110,9 +113,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `start_of_month`
-- `start_of_month_timestamp`
+- date
+- start\_of\_month
+- start\_of\_month\_timestamp
 
 Results table
 
@@ -139,15 +142,15 @@ Results table
 | 10/14/2022 | 10/01/2022 | 10/1/2022 12:00:00 AM |
 | 10/29/2022 | 10/01/2022 | 10/1/2022 12:00:00 AM |
 
-The `start_of_month` field is created in the [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthstart.htm#glossary-3 "Glossary term") statement by using the `monthstart()` function and passing the date field as the function’s argument.
+The start\_of\_month field is created in the [preceding load](#glossary-3 "Glossary term") statement by using the monthstart() function and passing the date field as the function’s argument.
 
-The `monthstart()` function identifies which month the date value falls into, returning a timestamp for the first millisecond of that month.
+The monthstart() function identifies which month the date value falls into, returning a timestamp for the first millisecond of that month.
 
-Diagram of `monthstart()` function, example with no additional arguments
+Diagram of monthstart() function, example with no additional arguments
 
-![Diagram showing the results of using the monthstart function to determine the month in which a transaction took place. In this case, it determines that transaction number 8192, which took place on March 16, will return 12:00:00 AM on March 1, 2022.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthstart-example-no-add-arg.png)
+![Diagram showing the results of using the monthstart function to determine the month in which a transaction took place. In this case, it determines that transaction number 8192, which took place on March 16, will return 12:00:00 AM on March 1, 2022.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthstart-example-no-add-arg.png "Click to view full size")
 
-Transaction 8192 took place on March 16. The `monthstart()` function returns the first millisecond of that month, which is March 1 at 12:00:00 AM.
+Transaction 8192 took place on March 16. The monthstart() function returns the first millisecond of that month, which is March 1 at 12:00:00 AM.
 
 ## Example 2 – period\_no
 
@@ -160,7 +163,7 @@ Open the Data load editor and add the load script below to a new section.
 The load script contains:
 
 - The same dataset and scenario as the first example.
-- The creation of a field, `previous_month_start`, which returns the timestamp for the start of the month before the transaction took place.
+- The creation of a field, previous\_month\_start, which returns the timestamp for the start of the month before the transaction took place.
 
 Load script
 
@@ -205,9 +208,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `date`
-- `previous_month_start`
-- `previous_month_start_timestamp`
+- date
+- previous\_month\_start
+- previous\_month\_start\_timestamp
 
 Results table
 
@@ -234,13 +237,13 @@ Results table
 | 10/14/2022 | 09/01/2022 | 9/1/2022 12:00:00 AM |
 | 10/29/2022 | 09/01/2022 | 9/1/2022 12:00:00 AM |
 
-In this instance, because a `period_no` of -1 was used as the offset argument in the `monthstart()` function, the function first identifies the month that the transactions take place in. It then shifts one month prior and identifies the first millisecond of that month.
+In this instance, because a period\_no of -1 was used as the offset argument in the monthstart() function, the function first identifies the month that the transactions take place in. It then shifts one month prior and identifies the first millisecond of that month.
 
-Diagram of `monthstart()` function, period\_no example
+Diagram of monthstart() function, period\_no example
 
-![Diagram showing the results of using the monthstart function to determine the month in which a transaction took place. In this case demonstrating period_no, it determines that transaction number 8192, which took place on March 16, will return 12:00:00 AM on February 1, 2022.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthstart-example-period-no.png)
+![Diagram showing the results of using the monthstart function to determine the month in which a transaction took place. In this case demonstrating period_no, it determines that transaction number 8192, which took place on March 16, will return 12:00:00 AM on February 1, 2022.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthstart-example-period-no.png "Click to view full size")
 
-Transaction 8192 took place on March 16. The `monthstart()` function identifies that the month before the transaction took place in was February. It then returns the first millisecond of that month, February 1 at 12:00:00 AM.
+Transaction 8192 took place on March 16. The monthstart() function identifies that the month before the transaction took place in was February. It then returns the first millisecond of that month, February 1 at 12:00:00 AM.
 
 ## Example 3 – Chart object example
 
@@ -248,17 +251,17 @@ Load script and chart expression
 
 Overview
 
-Open the [Data load editor](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthstart.htm#glossary-4 "Glossary term") and add the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthstart.htm#glossary-5 "Glossary term") below to a new tab.
+Open the [Data load editor](#glossary-4 "Glossary term") and add the [load script](#glossary-5 "Glossary term") below to a new tab.
 
 The load script contains the same dataset and scenario as the first example.
 
-However, in this example, the unchanged dataset is loaded into the application. The calculation that returns a timestamp for the start of the month when the transactions took place is created as a [measure](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/DateAndTimeFunctions/monthstart.htm#glossary-6 "Glossary term") in a chart object of the application.
+However, in this example, the unchanged dataset is loaded into the application. The calculation that returns a timestamp for the start of the month when the transactions took place is created as a [measure](#glossary-6 "Glossary term") in a chart object of the application.
 
 Load script
 
 ```
 SET DateFormat='MM/DD/YYYY';
- 
+
 Transactions:
 Load
 *
@@ -290,12 +293,12 @@ id,date,amount
 
 Results
 
-Load the data and open a sheet. Create a new table and add this field as a dimension: `date`.
+Load the data and open a sheet. Create a new table and add this field as a dimension: date.
 
 To calculate the start date of the month that a transaction takes place in, create the following measures:
 
-- `=monthstart(date)`
-- `=timestamp(monthstart(date))`
+- =monthstart(date)
+- =timestamp(monthstart(date))
 
 Results table
 
@@ -322,15 +325,15 @@ Results table
 | 1/7/2022 | 01/01/2022 | 1/1/2022 12:00:00 AM |
 | 1/19/2022 | 01/01/2022 | 1/1/2022 12:00:00 AM |
 
-The `start_of_month` measure is created in the chart object by using the `monthstart()` function and passing the date field as the function’s argument.
+The start\_of\_month measure is created in the chart object by using the monthstart() function and passing the date field as the function’s argument.
 
-The `monthstart()` function identifies which month the date value falls into returning a timestamp for the first millisecond of that month.
+The monthstart() function identifies which month the date value falls into returning a timestamp for the first millisecond of that month.
 
-Diagram of `monthstart()` function, chart object example
+Diagram of monthstart() function, chart object example
 
-![Diagram showing the results of using the monthstart function to determine the month in which a transaction took place. This example uses a chart object to do this. In this case, it determines that transaction number 8192, which took place on March 16, will return 12:00:00 AM on March 1, 2022.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthstart-example-chart-object.png)
+![Diagram showing the results of using the monthstart function to determine the month in which a transaction took place. This example uses a chart object to do this. In this case, it determines that transaction number 8192, which took place on March 16, will return 12:00:00 AM on March 1, 2022.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/scripting-functions-monthstart-example-chart-object.png "Click to view full size")
 
-Transaction 8192 took place on March 16. The `monthstart()` function identifies that the transaction took place in March and returns the first millisecond of that month, which is March 1 at 12:00:00 AM.
+Transaction 8192 took place on March 16. The monthstart() function identifies that the transaction took place in March and returns the first millisecond of that month, which is March 1 at 12:00:00 AM.
 
 ## Example 4 – Scenario
 
@@ -342,7 +345,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset containing a set of loan balances, which is loaded into a table called `Loans`.
+- A dataset containing a set of loan balances, which is loaded into a table called Loans.
 - Data consisting of loan IDs, the balance at the start of the month, and the simple interest rate charged on each loan per annum.
 
 The end user would like a chart object that displays, by loan ID, the current interest that has been accrued on each loan in the month to date.
@@ -372,12 +375,12 @@ Do the following:
 
 1. Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-   - `loan_id`
-   - `start_balance`
+   - loan\_id
+   - start\_balance
 2. Next, create a measure to calculate the accumulated interest:
 
-   `=start_balance*(rate*(today(1)-monthstart(today(1)))/365)`
-3. Set the measure's **Number formatting** to **Money**.
+   =start\_balance\*(rate\*(today(1)-monthstart(today(1)))/365)
+3. Set the measure's Number formatting to Money.
 
 Results table
 
@@ -389,6 +392,6 @@ Results table
 | 8191 | $21000.00 | $48.90 |
 | 8192 | $90000.00 | $517.81 |
 
-The `monthstart()` function, using today’s date as its only argument, returns the start date of the current month. By subtracting that result from the current date, the expression returns the number of days that have elapsed so far this month.
+The monthstart() function, using today’s date as its only argument, returns the start date of the current month. By subtracting that result from the current date, the expression returns the number of days that have elapsed so far this month.
 
 This value is then multiplied by the interest rate and divided by 365 to return the effective interest rate incurred for this period. The result is then multiplied by the starting balance of the loan to return the interest that has been accrued so far this month.

@@ -4,15 +4,16 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
 # AutoNumber
 
 This statement creates a unique integer value for each distinct evaluated value in a field encountered during
 the script execution.
 
-You can also use the [*autonumber Script function*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/CounterFunctions/autonumber.htm) function inside a LOAD statement, but this has some limitations when you want to use an optimized load. You can create an optimized load by loading the data from a QVD file first, and then using the AutoNumber statement to convert values to symbol keys.
+You can also use the [*autonumber Script function*](../CounterFunctions/autonumber.htm) function inside a LOAD statement, but this has some limitations when you want to use an optimized load. You can create an optimized load by loading the data from a QVD file first, and then using the AutoNumber statement to convert values to symbol keys.
 
 Syntax:
 
@@ -24,7 +25,7 @@ Arguments
 
 | Argument | Description |
 | --- | --- |
-| \*fieldlist | A comma-separated list of the fields where the values should be replaced by a unique integer value.  You can use wildcard characters ? and \* in the [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Autonumber.htm#glossary-0 "Glossary term") names to include all fields with matching names. You can also use \* to include all fields. You need to quote field names when wildcards are used. |
+| \*fieldlist | A comma-separated list of the fields where the values should be replaced by a unique integer value.  You can use wildcard characters ? and \* in the [field](#glossary-0 "Glossary term") names to include all fields with matching names. You can also use \* to include all fields. You need to quote field names when wildcards are used. |
 | namespace | Using namespace is optional. You can use this option if you want to create a namespace, where identical values in different fields share the same key.  If you do not use this option, all fields will have a separate key index. |
 
 Limitations:
@@ -67,11 +68,11 @@ South, 2013, May, 200
 ];
 //AutoNumber KeyToOtherTable;
 
-For more information about using inline loads, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+For more information about using inline loads, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 ### Create visualizations
 
-Create two table [visualizations](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Autonumber.htm#glossary-1 "Glossary term") in a Qlik Sense [sheet](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Autonumber.htm#glossary-2 "Glossary term"). Add KeyToOtherTable, Region, Year, Month, and Sales as [dimensions](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Autonumber.htm#glossary-3 "Glossary term") to the first table. Add KeyToOtherTable, Region, Year, Month, and Budget as dimensions to the second table.
+Create two table [visualizations](#glossary-1 "Glossary term") in a Qlik Sense [sheet](#glossary-2 "Glossary term"). Add KeyToOtherTable, Region, Year, Month, and Sales as [dimensions](#glossary-3 "Glossary term") to the first table. Add KeyToOtherTable, Region, Year, Month, and Budget as dimensions to the second table.
 
 ### Result
 
@@ -103,7 +104,7 @@ The example shows a composite field KeyToOtherTable that links the two tables. A
 
 ### Add AutoNumber statement
 
-Uncomment the AutoNumber statement in the [load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Autonumber.htm#glossary-4 "Glossary term"):
+Uncomment the AutoNumber statement in the [load script](#glossary-4 "Glossary term"):
 
 AutoNumber KeyToOtherTable;
 

@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script prefixes"]
 ---
+
 # HierarchyBelongsTo
 
 This prefix is used to transform a parent-child hierarchy table to a table that is useful in a Qlik Sense data model. It can be put in front of a LOAD or a SELECT statement and will use the result of the loading statement as input for a table transformation.
@@ -20,7 +21,7 @@ NodeName, AncestorID,
 AncestorName, [DepthDiff])(loadstatement
 | selectstatement)
 
-The input table must be an adjacent nodes table. Adjacent nodes tables are tables where each record corresponds to a node and has a [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/HierarchyBelongsTo.htm#glossary-0 "Glossary term") that contains a reference to the parent node. In such a table the node is stored on one record only but the node can still have any number of children. The table may of course contain additional fields describing attributes for the nodes.
+The input table must be an adjacent nodes table. Adjacent nodes tables are tables where each record corresponds to a node and has a [field](#glossary-0 "Glossary term") that contains a reference to the parent node. In such a table the node is stored on one record only but the node can still have any number of children. The table may of course contain additional fields describing attributes for the nodes.
 
 The prefix creates a table containing all
 ancestor-child relations of the hierarchy. The ancestor fields can then
@@ -79,6 +80,6 @@ Results
 
 ## Learn more
 
-- [*Load*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Load.htm)
-- [*Select*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Select.htm)
-- [*Loading hierarchy data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/DataSource/hierarchies.htm)
+- [*Load*](../ScriptRegularStatements/Load.htm)
+- [*Select*](../ScriptRegularStatements/Select.htm)
+- [*Loading hierarchy data*](../../DataSource/hierarchies.htm)

@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Conditional functions"]
 ---
+
+# class Script and chart function
+
 Expand/Collapse all
 
 # class Script and chart function
@@ -33,11 +36,11 @@ Example: Chart expressions
 
 | Example | Result |
 | --- | --- |
-| `class( var,10 )` with `var = 23` | Returns `20<=x<30` |
-| `class( var,5,'value' )` with `var = 23` | Returns `20<= value <25` |
-| `class( var,10,'x',5 )` with `var = 23` | Returns `15<=x<25` |
+| class( var,10 ) with var = 23 | Returns 20<=x<30 |
+| class( var,5,'value' ) with var = 23 | Returns 20<= value <25 |
+| class( var,10,'x',5 ) with var = 23 | Returns 15<=x<25 |
 
-Some of the examples in this topic use inline loads. For more information, see [*Using inline loads to load data*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/inline-loads-qs.htm).
+Some of the examples in this topic use inline loads. For more information, see [*Using inline loads to load data*](../inline-loads-qs.htm).
 
 ## Example - class fundamentals
 
@@ -51,11 +54,11 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `Age`
-  - `Name`
+  - Age
+  - Name
 
 Load script
 
@@ -78,20 +81,20 @@ Results
 
    1. Add these dimensions:
 
-      - `Age`
-      - `Name`
+      - Age
+      - Name
    2. Create the following measure:
 
-      - `=class(Age, 10, 'age')`, to classify the data into age categories.
+      - =class(Age, 10, 'age'), to classify the data into age categories.
 3. In the second table, do the following:
    1. Add this expression as a dimension
 
-      - `=class(Age, 10, 'age')`
+      - =class(Age, 10, 'age')
    2. Create the following measure:
 
-      - `=Count(Age)`, to count the number of people age classification.
+      - =Count(Age), to count the number of people age classification.
 
-The first table shows the raw data for `Name` and `Age`, and which age category they are classified in.
+The first table shows the raw data for Name and Age, and which age category they are classified in.
 
 Results table 1
 
@@ -103,7 +106,7 @@ Results table 1
 | Karen | 42 | 40 <= age < 50 |
 | Yoshi | 53 | 50 <= age < 60 |
 
-In the second table, you can see how the data is now classified and summarized. The results of the `class` function created 3 age categories in the first measure. The second measure counts the number of people in each age category.
+In the second table, you can see how the data is now classified and summarized. The results of the class function created 3 age categories in the first measure. The second measure counts the number of people in each age category.
 
 Results table 2
 
@@ -118,7 +121,7 @@ Load script
 
 Overview
 
-A data table is loaded that contains names and ages. You want to add a [field](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ConditionalFunctions/class.htm#glossary-0 "Glossary term") that classifies each person according to an age group with a ten year interval. The original source table looks like the following.
+A data table is loaded that contains names and ages. You want to add a [field](#glossary-0 "Glossary term") that classifies each person according to an age group with a ten year interval. The original source table looks like the following.
 
 Original source table
 
@@ -132,7 +135,7 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A [preceding load](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ConditionalFunctions/class.htm#glossary-1 "Glossary term") statement that uses the class function to create a new field called `Agegroup`.
+- A [preceding load](#glossary-1 "Glossary term") statement that uses the class function to create a new field called Agegroup.
 
 Load script
 
@@ -151,9 +154,9 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Name`
-- `Age`
-- `Agegroup`
+- Name
+- Age
+- Agegroup
 
 Results table
 
@@ -163,7 +166,7 @@ Results table
 | Karen | 42 | 40 <= age < 50 |
 | Yoshi | 53 | 50 <= age < 60 |
 
-The new field `Agegroup` classifies each person by age category.
+The new field Agegroup classifies each person by age category.
 
 ## Example - class scenario
 
@@ -177,12 +180,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `CustomerID`
-  - `CustomerName`
-  - `LifetimeValue`
+  - CustomerID
+  - CustomerName
+  - LifetimeValue
 
 Load script
 
@@ -205,18 +208,18 @@ Results
 
    1. Add these dimensions:
 
-      - `CustomerID`
-      - `CustomerName`
-      - `LifetimeValue`
+      - CustomerID
+      - CustomerName
+      - LifetimeValue
    2. Create the following calculated dimension:
-      - `=Class(LifetimeValue, 10000, 'Lifetime Value Group')`, to classify the data based on the `LifetimeValue` field.
+      - =Class(LifetimeValue, 10000, 'Lifetime Value Group'), to classify the data based on the LifetimeValue field.
 3. In the second table, do the following:
    1. Add this expression as a dimension
 
-      - `=Class(LifetimeValue, 10000, 'Lifetime Value Group')`
+      - =Class(LifetimeValue, 10000, 'Lifetime Value Group')
    2. Create the following measure:
 
-      - `=Count(CustomerID)`, to count the number of people age classification.
+      - =Count(CustomerID), to count the number of people age classification.
 
 The first table shows the raw data that has been entered and the results of using the class function.
 
@@ -230,7 +233,7 @@ Results table 1
 | 4 | Lisa White | 50000 | 50000 <= Lifetime Value Group < 60000 |
 | 5 | Tom Harris | 22000 | 20000 <= Lifetime Value Group < 30000 |
 
-The second table shows how the data can be classified and summarized. The data is categorized into four groups using the `class` function, and then counted to show the number of customers in each group.
+The second table shows how the data can be classified and summarized. The data is categorized into four groups using the class function, and then counted to show the number of customers in each group.
 
 Results table 2
 

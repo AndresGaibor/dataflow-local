@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Working with variables in the data load editor", "System variables"]
 ---
+
 # CreateSearchIndexOnReload
 
 This variable defines if search index files are created when an application's data is reloaded.
@@ -27,10 +28,12 @@ If this variable is set to 1, search index files are created upon data reload, w
 - The application has been searched recently (determined by the number of days that have passed since the last search was performed on the application).
 - The application's data is relatively large (determined by the duration of the most recent index creation).
 
-> **Note:** For session applications, search index files will not be created during data reload, regardless of the setting of this variable.
+Information noteFor session applications, search index files will not be created during data reload, regardless of the setting of this variable.
 
-> **Note:** New applications include `set
-> CreateSearchIndexOnReload=1` in the default `SET` statements. When creating scripts in the Analytics activity center, the SET expressions does not include `CreateSearchIndexOnReload` as script assets do not persist data, making an index value unnecessary.
+Information note
+
+New applications include set
+CreateSearchIndexOnReload=1 in the default SET statements. When creating scripts in the Analytics activity center, the SET expressions does not include CreateSearchIndexOnReload as script assets do not persist data, making an index value unnecessary.
 
 Example 1: Create search index fields during data reload
 

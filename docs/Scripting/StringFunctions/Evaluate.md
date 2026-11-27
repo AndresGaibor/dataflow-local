@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "String functions"]
 ---
+
+# Evaluate Script function
+
 Expand/Collapse all
 
 # Evaluate Script function
@@ -26,13 +29,13 @@ Arguments
 | --- | --- |
 | text | The string to evaluate. |
 
-> **Note:** This string function cannot be used in chart expressions.
+Information noteThis string function cannot be used in chart expressions.
 
 Function example and results
 
 | Function example | Result |
 | --- | --- |
-| `Evaluate( 5 * 8 )` | Returns `40` |
+| Evaluate( 5 \* 8 ) | Returns 40 |
 
 ## Example - Evaluate fundamentals
 
@@ -44,9 +47,9 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
-- One field in the data table called `ExpressionText`.
-- A preceding load that uses the `Evaluate` function to evaluate the field `ExpressionText` and return two new fields: `Evaluated` and `Evaluatedx4`.
+- A dataset which is loaded into a data table called Example.
+- One field in the data table called ExpressionText.
+- A preceding load that uses the Evaluate function to evaluate the field ExpressionText and return two new fields: Evaluated and Evaluatedx4.
 
 Load script
 
@@ -77,9 +80,9 @@ Results
 
 The following fields are loaded in the data table:
 
-- `ExpressionText`
-- `Evaluated`
-- `Evaluatedx4`
+- ExpressionText
+- Evaluated
+- Evaluatedx4
 
 Results table
 
@@ -97,9 +100,9 @@ Results table
 | Today() | 11/5/2024 | 182404 |
 | Bob | - | - |
 
-The output of the `Evaluate` function returns values for all `ExpressionText` strings except the last row. The string `Bob` cannot be evaluated, so the function returns no value - NULL. All rows have been evaluated, for example the second row adds `5` and `3` to return `8`. Some of the `ExpressionText` strings return the string as-is because the string already evaluates to a number. For example, the string `0123456789012345678` evaluates to the same number.
+The output of the Evaluate function returns values for all ExpressionText strings except the last row. The string Bob cannot be evaluated, so the function returns no value - NULL. All rows have been evaluated, for example the second row adds 5 and 3 to return 8. Some of the ExpressionText strings return the string as-is because the string already evaluates to a number. For example, the string 0123456789012345678 evaluates to the same number.
 
-Although Qlik Sense has a 14-digit precision limit for numeric values, the `Evaluate` function evaluated 18-digit strings as a number and applied multiplication within the script. This is useful for handling very large numbers within the script.
+Although Qlik Sense has a 14-digit precision limit for numeric values, the Evaluate function evaluated 18-digit strings as a number and applied multiplication within the script. This is useful for handling very large numbers within the script.
 
 ## Example - Evaluate scenario
 
@@ -113,13 +116,13 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A dataset which is loaded into a data table called `Example`.
+- A dataset which is loaded into a data table called Example.
 - The following fields in the data table:
 
-  - `Product`
-  - `Price`
-  - `Discount %`
-- A preceding load which takes the `Price` and `Discount %` values and calculates an additional field called `DiscountedPrice`. This new field uses the `Evaluate` function to calculate the price minus the discount.
+  - Product
+  - Price
+  - Discount %
+- A preceding load which takes the Price and Discount % values and calculates an additional field called DiscountedPrice. This new field uses the Evaluate function to calculate the price minus the discount.
 
 Load script
 
@@ -143,10 +146,10 @@ Results
 
 Load the data and open a sheet. Create a new table and add these fields as dimensions:
 
-- `Product`
-- `Price`
-- `Discount %`
-- `DiscountedPrice`
+- Product
+- Price
+- Discount %
+- DiscountedPrice
 
 Results table
 
@@ -157,4 +160,4 @@ Results table
 | Smartphone | 800 | 10 | 720 |
 | Laptop | 1000 | 15 | 850 |
 
-The output of the `Evaluate` function demonstrates how you can use the function to compute values.
+The output of the Evaluate function demonstrates how you can use the function to compute values.

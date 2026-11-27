@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
 # Select
 
 The selection of fields from an ODBC
@@ -49,11 +50,11 @@ depending on the capabilities of the ODBC drivers or OLE DB provider, for exampl
 - The ODBC driver sometimes does not accept all the different quotation
   marks listed above.
 
-> **Note:** This is not a complete description of the SQL SELECT
-> statement! E.g. SELECT statements
-> can be nested, several joins can be made in one SELECT
-> statement, the number of functions allowed in expressions is sometimes
-> very large, etc.
+Information noteThis is not a complete description of the SQL SELECT
+statement! E.g. SELECT statements
+can be nested, several joins can be made in one SELECT
+statement, the number of functions allowed in expressions is sometimes
+very large, etc.
 
 Arguments:
 
@@ -64,7 +65,7 @@ Arguments
 | distinct | distinct is a predicate used if duplicate combinations of values in the selected fields only should be loaded once. |
 | distinctrow | distinctrow is a predicate used if duplicate records in the source table only should be loaded once. |
 | fieldlist | fieldlist ::= (\*| field ) {, field }  A list of the fields to be selected. Using \* as field list indicates all fields in the table. fieldlist ::= field {, field }  A list of one or more fields, separated by commas. field ::= ( fieldref | expression ) [as aliasname ] The expression can e.g. be a numeric or string function based on one or several other fields. Some of the operators and functions usually accepted are: +, -, \*, /, & (string concatenation), sum(fieldname), count(fieldname), avg(fieldname)(average), month(fieldname), etc. See the documentation of the ODBC driver for more information. fieldref ::= [ tablename. ] fieldname  The tablename and the fieldname are text strings identical to what they imply. They must be enclosed by straight double quotation marks if they contain e.g. spaces. The as clause is used for assigning a new name to the field. |
-| from | tablelist ::= table {, table } The list of tables that the fields are to be selected from.  table ::= tablename [ [as ] aliasname ]  The tablename may or may not be put within quotes.  [*From*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/From.htm) |
+| from | tablelist ::= table {, table } The list of tables that the fields are to be selected from.  table ::= tablename [ [as ] aliasname ]  The tablename may or may not be put within quotes.  [*From*](From.htm) |
 | where | where is a clause used for stating whether a record should be included in the selection or not. criterion is a logical expression that can sometimes be very complex. Some of the operators accepted are: numeric operators and functions, =,　<> or #(not equal), >,　>=,　<,　<=,　and, or, not, exists, some, all, in and also new SELECT statements. See the documentation of the ODBC driver or OLE DB providerfor more information. |
 | group by | group by is a clause used for aggregating (group) several records into one. Within one group, for a certain field, all the records must either have the same value, or the field can only be used from within an expression, e.g. as a sum or an average. The expression based on one or several fields is defined in the expression of the field symbol. |
 | having | having is a clause used for qualifying groups in a similar manner to how the where clause is used for qualifying records. |
@@ -111,4 +112,4 @@ by `Order Details`.`Order ID`;
 
 ## Learn more
 
-- [*Join*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptPrefixes/Join.htm)
+- [*Join*](../ScriptPrefixes/Join.htm)

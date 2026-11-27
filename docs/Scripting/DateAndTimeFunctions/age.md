@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Date and time functions"]
 ---
+
 # age Script and chart function
 
 The age function returns
@@ -39,8 +40,8 @@ Scripting examples
 
 | Example | Result |
 | --- | --- |
-| `age('25/01/2014', '29/10/2012')` | Returns 1. |
-| `age('29/10/2014', '29/10/2012')` | Returns 2. |
+| age('25/01/2014', '29/10/2012') | Returns 1. |
+| age('29/10/2014', '29/10/2012') | Returns 2. |
 
 Example:
 

@@ -4,9 +4,12 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions"]
 ---
+
+# Table functions
+
 Expand/Collapse all
 
 # Table functions
@@ -26,7 +29,7 @@ The FieldName script function returns the name of the field with the specified n
 loaded table. If the function is used within a LOAD statement, it
 must not reference the table currently being loaded.
 
-[**FieldName**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/TableFunctions/FieldName.htm)(field\_number ,table\_name)
+[**FieldName**](FieldName.htm)(field\_number ,table\_name)
 
 FieldNumber
 
@@ -34,7 +37,7 @@ The FieldNumber script function returns the number of a specified field within a
 table. If the function is used within a LOAD statement, it must not reference
 the table currently being loaded.
 
-[**FieldNumber**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/TableFunctions/FieldNumber.htm)(field\_name ,table\_name)
+[**FieldNumber**](FieldNumber.htm)(field\_name ,table\_name)
 
 NoOfFields
 
@@ -42,7 +45,7 @@ The NoOfFields script function returns the number of fields in a previously load
 the function is used within a LOAD statement, it must not reference the
 table currently being loaded.
 
-[**NoOfFields**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/TableFunctions/NoOfFields.htm)(table\_name)
+[**NoOfFields**](NoOfFields.htm)(table\_name)
 
 NoOfRows
 
@@ -50,7 +53,7 @@ The NoOfRows function returns the number of rows (records) in a previously loade
 If the function is used within a LOAD statement, it must not reference
 the table currently being loaded.
 
-[**NoOfRows**](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/TableFunctions/NoOfRows.htm)(table\_name)
+[**NoOfRows**](NoOfRows.htm)(table\_name)
 
 NoOfTables
 

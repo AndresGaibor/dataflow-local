@@ -4,14 +4,17 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script statements and keywords", "Script regular statements"]
 ---
+
+# Constrain
+
 Expand/Collapse all
 
 # Constrain
 
-The Constrain statement can be used in combination with Let or Set statements for defining script [variables](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Constrain.htm#glossary-0 "Glossary term"). The Constrain statement allows you to define constraints on possible values for these variables. If a variable definition violates the constraints, the reload fails. With constraints, you can require variable values to match specific types, fall within specific numeric ranges, and match with acceptable values that you define.
+The Constrain statement can be used in combination with Let or Set statements for defining script [variables](#glossary-0 "Glossary term"). The Constrain statement allows you to define constraints on possible values for these variables. If a variable definition violates the constraints, the reload fails. With constraints, you can require variable values to match specific types, fall within specific numeric ranges, and match with acceptable values that you define.
 
 Syntax:
 
@@ -26,11 +29,11 @@ Constraint types
 
 | Constraint type (key) | Meaning | Constraint requirements (value) | Examples |
 | --- | --- | --- | --- |
-| `"type"` | Constrain variable values to a specific data type. | `"text"` specifies a text type.  `"number"` specifies a numeric type. | ``` CONSTRAIN vExampleText = {"type": "text"} ```  ``` CONSTRAIN vExampleNumeric = {"type": "number"} ``` |
-| `"maxnum"` | Set a maximum value for a variable. | Numbers only (integer or floating point). Scientific notation is allowed. | ``` CONSTRAIN vExample = {"maxnum": 5000} ``` |
-| `"minnum"` | Set a minimum value for a variable. | Numbers only (integer or floating point). Scientific notation is allowed. | ``` CONSTRAIN vExample = {"minnum": 250} ``` |
-| `"valuesnum"` | Define a list of acceptable numeric values for the variable. | Comma-separated list of numbers enclosed in square brackets. For example: `[1,2,3]` | ``` CONSTRAIN vExample = {"valuesnum": [1,2,3]} ``` |
-| `"valuestext"` | Define a list of acceptable text values for the variable. | Comma-separated list of strings enclosed in square brackets. For example: `["a","b","c"]` | ``` CONSTRAIN vExample = {"valuestext": ["Department A", "Department B", "Department C"]} ``` |
+| "type" | Constrain variable values to a specific data type. | "text" specifies a text type.  "number" specifies a numeric type. | ``` CONSTRAIN vExampleText = {"type": "text"} ```  ``` CONSTRAIN vExampleNumeric = {"type": "number"} ``` |
+| "maxnum" | Set a maximum value for a variable. | Numbers only (integer or floating point). Scientific notation is allowed. | ``` CONSTRAIN vExample = {"maxnum": 5000} ``` |
+| "minnum" | Set a minimum value for a variable. | Numbers only (integer or floating point). Scientific notation is allowed. | ``` CONSTRAIN vExample = {"minnum": 250} ``` |
+| "valuesnum" | Define a list of acceptable numeric values for the variable. | Comma-separated list of numbers enclosed in square brackets. For example: [1,2,3] | ``` CONSTRAIN vExample = {"valuesnum": [1,2,3]} ``` |
+| "valuestext" | Define a list of acceptable text values for the variable. | Comma-separated list of strings enclosed in square brackets. For example: ["a","b","c"] | ``` CONSTRAIN vExample = {"valuestext": ["Department A", "Department B", "Department C"]} ``` |
 
 ## When to use a Constrain statement
 
@@ -53,7 +56,7 @@ Even when used outside of reload-time variable update scenarios, Constrain enhan
 ## Considerations
 
 - The Constrain definition for the variable must be a valid JSON object.
-- You can specify more than one constraint for a single variable. All constraints for a variable need to be contained within a single constraint object. For examples, see [*Examples - Multiple constraints*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Constrain.htm#Examples).
+- You can specify more than one constraint for a single variable. All constraints for a variable need to be contained within a single constraint object. For examples, see [*Examples - Multiple constraints*](#Examples).
 - If you have already loaded a script variable with a certain name into the application, future attempts to define constraints and values for that variable can fail due to conflicts between the original and the redefined variables.
 
   To resolve these conflicts, reset the variable constraints and values by inserting blank definitions. Examples:
@@ -68,13 +71,13 @@ Even when used outside of reload-time variable update scenarios, Constrain enhan
   SET x;
   ```
 
-  You can then redefine the variable and its constraints in subsequent sections in the load script. For a long-form example, see [*Example - Resolving variable definition conflicts*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Constrain.htm#ConflictResolve).
+  You can then redefine the variable and its constraints in subsequent sections in the load script. For a long-form example, see [*Example - Resolving variable definition conflicts*](#ConflictResolve).
 - The order of the variable definition and the constraint definition does not matter. However, in the event of variable-related reload failure, the line at which the break point occurs will be different.
-- The Constrain script statement only restricts variable definitions for script variables. You can also apply constraints on script and end-user variables (those created or updated in sheet view or as session variables using the API) by using the public API. For more information, see [*Developer alternatives for defining variable constraints*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Constrain.htm#Developer).
+- The Constrain script statement only restricts variable definitions for script variables. You can also apply constraints on script and end-user variables (those created or updated in sheet view or as session variables using the API) by using the public API. For more information, see [*Developer alternatives for defining variable constraints*](#Developer).
 - Constraints are validated to avoid scenarios that cannot match any value for the variable. Examples of invalid constraints:
 
   - {"minnum": 5000, "maxnum": 4}
-  - `{"type": "text", "maxnum": 4}`
+  - {"type": "text", "maxnum": 4}
 
 ## Developer alternatives for defining variable constraints
 
@@ -92,8 +95,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A Constrain statement to specify that the variable definition for `a` needs to have the `number` type.
-- A LET statement defining variable `a`.
+- A Constrain statement to specify that the variable definition for a needs to have the number type.
+- A LET statement defining variable a.
 
 Load script
 
@@ -106,9 +109,9 @@ Results
 
 Load the data.
 
-The reload fails because the constraint requires a text type for variable `a` . The variable definition is a number.
+The reload fails because the constraint requires a text type for variable a . The variable definition is a number.
 
-By contrast, specifying a `type` of `number` in the constraint would cause the reload to succeed.
+By contrast, specifying a type of number in the constraint would cause the reload to succeed.
 
 ## Example - maxnum
 
@@ -120,8 +123,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A Constrain statement to specify that the variable definition for `b` can have a maximum value of 3000.
-- A LET statement defining variable `b`.
+- A Constrain statement to specify that the variable definition for b can have a maximum value of 3000.
+- A LET statement defining variable b.
 
 ```
 CONSTRAIN b = {"maxnum": "3000"};
@@ -132,9 +135,9 @@ Results
 
 Load the data.
 
-The reload fails because the constraint requires a maximum value of 3000 for variable `b` . The variable definition evaluates as 3001.
+The reload fails because the constraint requires a maximum value of 3000 for variable b . The variable definition evaluates as 3001.
 
-By contrast, specifying `b` as 2999 would cause the reload to succeed.
+By contrast, specifying b as 2999 would cause the reload to succeed.
 
 ## Example - minnum
 
@@ -146,8 +149,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A Constrain statement to specify that the variable definition for `b` can have a minimum value of 3000.
-- A LET statement defining variable `c`.
+- A Constrain statement to specify that the variable definition for b can have a minimum value of 3000.
+- A LET statement defining variable c.
 
 ```
 CONSTRAIN c = {"minnum": "3000"};
@@ -158,9 +161,9 @@ Results
 
 Load the data.
 
-The reload fails because the constraint requires a minimum value of 3000 for variable `c` . The variable definition evaluates as 2999.
+The reload fails because the constraint requires a minimum value of 3000 for variable c . The variable definition evaluates as 2999.
 
-By contrast, specifying `c` as 3000 would cause the reload to succeed.
+By contrast, specifying c as 3000 would cause the reload to succeed.
 
 ## Example - valuesnum
 
@@ -172,8 +175,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A Constrain statement to specify that the variable definition for `d` must be numeric and must be 2, 3, or 4.
-- A LET statement defining variable `d`.
+- A Constrain statement to specify that the variable definition for d must be numeric and must be 2, 3, or 4.
+- A LET statement defining variable d.
 
 ```
 CONSTRAIN d = {"valuesnum": [2,3,4]};
@@ -184,9 +187,9 @@ Results
 
 Load the data.
 
-The reload fails because the variable `d` is evaluated to be 1, which is not in the list of three possible values.
+The reload fails because the variable d is evaluated to be 1, which is not in the list of three possible values.
 
-By contrast, specifying `d` as 2 would cause the reload to succeed.
+By contrast, specifying d as 2 would cause the reload to succeed.
 
 ## Example - valuestext
 
@@ -198,12 +201,12 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A Constrain statement to specify that the variable definition for `e` must be one of the following text values:
+- A Constrain statement to specify that the variable definition for e must be one of the following text values:
 
   - Department A
   - Department B
   - Department C
-- A SET statement defining variable `e`.
+- A SET statement defining variable e.
 
 ```
 CONSTRAIN e = {"valuestext": ["Department A", "Department B", "Department C"]};
@@ -214,13 +217,13 @@ Results
 
 Load the data.
 
-The reload fails because the variable `e` is `Department D`, which is not in the list of allowed values defined by the constraint.
+The reload fails because the variable e is Department D, which is not in the list of allowed values defined by the constraint.
 
-By contrast, specifying `e` as `Department C` would cause the reload to succeed.
+By contrast, specifying e as Department C would cause the reload to succeed.
 
 ## Examples - SET versus LET
 
-These examples show the differences between how constraints are applied when using SET or **LET** during variable definition. All examples use constraints applying a type requirement, but these principles apply to all constraint types generally.
+These examples show the differences between how constraints are applied when using SET or LET during variable definition. All examples use constraints applying a type requirement, but these principles apply to all constraint types generally.
 
 Failed reload with SET
 
@@ -230,8 +233,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A Constrain statement to specify that the variable definition for `f` needs to have the `number` type.
-- A SET statement defining variable `f`.
+- A Constrain statement to specify that the variable definition for f needs to have the number type.
+- A SET statement defining variable f.
 
 Load script
 
@@ -244,7 +247,7 @@ Results
 
 Load the data.
 
-The reload fails because the constraint requires a numeric type for variable `f` . The variable definition contains a numeric expression but because a SET statement is used, the definition is evaluated as text.
+The reload fails because the constraint requires a numeric type for variable f . The variable definition contains a numeric expression but because a SET statement is used, the definition is evaluated as text.
 
 Failed reload with LET
 
@@ -254,8 +257,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A Constrain statement to specify that the variable definition for `g` needs to have the `text` type.
-- A LET statement defining variable `g`.
+- A Constrain statement to specify that the variable definition for g needs to have the text type.
+- A LET statement defining variable g.
 
 Load script
 
@@ -266,7 +269,7 @@ LET g = 500*2;
 
 Load the data.
 
-The reload fails because the constraint requires a text type for variable `g` . The variable definition contains a numeric expression and a LET statement is used, causing the definition to be evaluated as a number.
+The reload fails because the constraint requires a text type for variable g . The variable definition contains a numeric expression and a LET statement is used, causing the definition to be evaluated as a number.
 
 Successful reload with SET
 
@@ -276,8 +279,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A Constrain statement to specify that the variable definition for `h` needs to have the `text` type.
-- A SET statement defining variable `h`.
+- A Constrain statement to specify that the variable definition for h needs to have the text type.
+- A SET statement defining variable h.
 
 Load script
 
@@ -288,7 +291,7 @@ SET h = 500*2;
 
 Load the data.
 
-The reload succeeds. The constraint requires a text type for variable `h` . The variable definition contains a numeric expression but because a SET statement is used, the definition is evaluated as text.
+The reload succeeds. The constraint requires a text type for variable h . The variable definition contains a numeric expression but because a SET statement is used, the definition is evaluated as text.
 
 Successful reload with LET
 
@@ -298,8 +301,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A Constrain statement to specify that the variable definition for `i` needs to have the `number` type.
-- A LET statement defining variable `i`.
+- A Constrain statement to specify that the variable definition for i needs to have the number type.
+- A LET statement defining variable i.
 
 Load script
 
@@ -310,7 +313,7 @@ LET i = 500*2;
 
 Load the data.
 
-The reload succeeds. The constraint requires a numeric type for variable `i` . The variable definition contains a numeric expression and a LET statement is used, causing the definition to be evaluated as a number.
+The reload succeeds. The constraint requires a numeric type for variable i . The variable definition contains a numeric expression and a LET statement is used, causing the definition to be evaluated as a number.
 
 ## Examples - Multiple constraints
 
@@ -322,8 +325,8 @@ Open the Data load editor and add the load script below to a new section.
 
 The load script contains:
 
-- A Constrain statement to specify that the variable definition for `j` needs to be between 1 and 5.
-- A LET statement defining variable `j`.
+- A Constrain statement to specify that the variable definition for j needs to be between 1 and 5.
+- A LET statement defining variable j.
 
 Load script
 
@@ -334,7 +337,7 @@ LET j = 2;
 
 Load the data.
 
-The reload succeeds. The variable `f` evaluates to 2, which is within the acceptable range.
+The reload succeeds. The variable f evaluates to 2, which is within the acceptable range.
 
 Accepting both text and numbers from lists
 
@@ -345,7 +348,7 @@ Open the Data load editor and add the load script below to a new section.
 The load script contains:
 
 - A Constrain statement allowing the variable to be text or numeric, as long as it is one of the acceptable values.
-- A LET statement defining variable `k`.
+- A LET statement defining variable k.
 
 Load script
 
@@ -356,7 +359,7 @@ LET k = 'def';
 
 Load the data.
 
-The reload succeeds. The value for variable `k` is found in the list of acceptable values. Similarly, specifying `k` as 3 would result in successful reload.
+The reload succeeds. The value for variable k is found in the list of acceptable values. Similarly, specifying k as 3 would result in successful reload.
 
 ## Example - Resolving variable definition conflicts
 
@@ -374,7 +377,7 @@ Open the Data load editor. Add the following script:
 LET vConflictExample = 'Department C';
 ```
 
-Load the data. The reload is successful. Variable `vConflictExample` has been created in the application as a script variable.
+Load the data. The reload is successful. Variable vConflictExample has been created in the application as a script variable.
 
 Load script 2: Attempting constraint definition on previously loaded script variable
 
@@ -401,8 +404,8 @@ CONSTRAIN vConflictExample = {"type": "number"};
 LET vConflictExample = 123;
 
 MockData:
-LOAD 
-* 
+LOAD
+*
 Inline [
 id, date, amount
 1, 05/30/2025, 23.56
@@ -413,18 +416,18 @@ Load the data.
 
 The reload succeeds. The script above can be broken down into three parts, each separated by blank lines:
 
-- The first part resets the constraint and value definition for `vConflictExample`. This removes the definition that was loaded into the application with load script 1.
+- The first part resets the constraint and value definition for vConflictExample. This removes the definition that was loaded into the application with load script 1.
 - The second part reapplies the new constraint and value definitions that failed in load script 2.
 - The third part adds mock data simply so we can open sheet view and inspect the variable value (see below).
 
-Open sheet view in edit mode, and open the ![Variables](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_variables_outline.svg) **Variables** dialog. We can see that variable `vConflictExample` has been successfully created.
+Open sheet view in edit mode, and open the ![Variables](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/Icons/ic_variables_outline.svg) Variables dialog. We can see that variable vConflictExample has been successfully created.
 
-Variables dialog in sheet view showing that the variable definition conflict for `vConflictExample` has been resolved.
+Variables dialog in sheet view showing that the variable definition conflict for vConflictExample has been resolved.
 
-![Variables dialog in sheet view showing that the script variable has successfully been created.](../../../../../../../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_script-variable_constrain-conflict-resolved.png)
+![Variables dialog in sheet view showing that the script variable has successfully been created.](../../_images/en-US/cloud-services/Subsystems/Hub/Content/Resources/Images/ui_script-variable_constrain-conflict-resolved.png "Click to view full size")
 
 ## Learn more
 
-- [*Let*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Let.htm)
-- [*Set*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/ScriptRegularStatements/Set.htm)
-- [*Working with variables in the data load editor*](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/work-with-variables-in-data-load-editor.htm)
+- [*Let*](Let.htm)
+- [*Set*](Set.htm)
+- [*Working with variables in the data load editor*](../work-with-variables-in-data-load-editor.htm)

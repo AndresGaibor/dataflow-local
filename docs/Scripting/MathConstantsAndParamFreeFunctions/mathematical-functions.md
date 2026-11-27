@@ -1,12 +1,15 @@
 ---
 title: "Mathematical  functions"
-source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/MathConstantsAndParamFreeFunctions/mathematical-functions.htm#e?id=1426
+source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/MathConstantsAndParamFreeFunctions/mathematical-functions.htm
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions"]
 ---
+
+# Mathematical  functions
+
 Expand/Collapse all
 
 # Mathematical functions
@@ -14,7 +17,7 @@ Expand/Collapse all
 This section describes functions for mathematical constants and Boolean values. These functions do not have any parameters, but the parentheses are still
 required.
 
-All functions can be used in both the [data load script](https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/MathConstantsAndParamFreeFunctions/mathematical-functions.htm#glossary-0 "Glossary term") and in chart expressions.
+All functions can be used in both the [data load script](#glossary-0 "Glossary term") and in chart expressions.
 
 e
 

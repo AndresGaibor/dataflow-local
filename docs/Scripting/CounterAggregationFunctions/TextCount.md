@@ -4,9 +4,10 @@ source_url: https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Se
 guide: "Qlik Cloud"
 product: "Qlik Cloud"
 version: ""
-last_updated: "10/9/2026"
+last_updated: "2026-11-27"
 breadcrumbs: ["Qlik Cloud", "Analyzing data", "Loading and modeling analytics data", "Loading analytics data", "Script syntax and chart functions", "Script and chart functions", "Aggregation functions", "Counter aggregation functions"]
 ---
+
 # TextCount Script function
 
 TextCount() returns the number of field values that are non-numeric aggregated in the expression, as defined by a group by clause.
@@ -78,7 +79,7 @@ Resulting table
 
 Example:
 
-`LOAD Customer,TextCount(OrderNumber) as OrderNumberTextCount Resident Temp Group By Customer;`
+LOAD Customer,TextCount(OrderNumber) as OrderNumberTextCount Resident Temp Group By Customer;
 
 Resulting table
 
