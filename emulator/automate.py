@@ -8,7 +8,7 @@ import os
 
 from .bridge import PREFIX, SANDBOX_SPACE_ID, SafetyError, valid_id
 
-BASE = "api/workflows/automations"
+BASE = "workflows/automations"  # la CLI ya antepone /api
 
 
 def _id(automation_id: str) -> str:
@@ -17,9 +17,16 @@ def _id(automation_id: str) -> str:
     return automation_id
 
 
+def _rows(resp) -> list[dict]:
+    """La API devuelve la lista pelada; algunos proxies la envuelven en `data`."""
+    if isinstance(resp, list):
+        return resp
+    return (resp or {}).get("data") or []
+
+
 def ls(bridge) -> list[dict]:
     """Automatizaciones visibles para la credencial."""
-    return (bridge.get(BASE) or {}).get("data") or []
+    return _rows(bridge.get(BASE))
 
 
 def show(bridge, automation_id: str) -> dict:
@@ -66,13 +73,17 @@ def copy(bridge, automation_id: str, name: str) -> dict:
                        {"name": name, "spaceId": SANDBOX_SPACE_ID}) or {}
 
 
-def run(bridge, automation_id: str) -> dict:
-    """Lanza una ejecución (escribe: sin `--apply` el Bridge simula)."""
-    return bridge.post(f"{BASE}/{_id(automation_id)}/runs", {}) or {}
+def run(bridge, automation_id: str, context: str = "api") -> dict:
+    """Lanza una ejecución (escribe: sin `--apply` el Bridge simula).
+
+    `context` es obligatorio y hoy solo admite `"api"` (medido: sin el, el
+    servidor responde `The context field is required`).
+    """
+    return bridge.post(f"{BASE}/{_id(automation_id)}/runs", {"context": context}) or {}
 
 
 def runs(bridge, automation_id: str) -> list[dict]:
-    return (bridge.get(f"{BASE}/{_id(automation_id)}/runs") or {}).get("data") or []
+    return _rows(bridge.get(f"{BASE}/{_id(automation_id)}/runs"))
 
 
 def run_get(bridge, automation_id: str, run_id: str) -> dict:

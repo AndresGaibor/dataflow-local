@@ -12,12 +12,12 @@ from emulator.bridge import SANDBOX_SPACE_ID, Bridge, SafetyError  # noqa: E402
 from fakes import FakeRunner  # noqa: E402
 
 A = "b" * 24
-BASE = "api/workflows/automations"
+BASE = "workflows/automations"
 
 
 def emu_routes(extra=None):
     routes = {
-        ("GET", BASE): {"data": [{"id": A, "name": "emu_demo", "spaceId": SANDBOX_SPACE_ID}]},
+        ("GET", BASE): [{"id": A, "name": "emu_demo", "spaceId": SANDBOX_SPACE_ID}],
         ("GET", f"{BASE}/{A}"): {"id": A, "name": "emu_demo", "spaceId": SANDBOX_SPACE_ID},
         ("POST", BASE): {"id": A, "name": "emu_demo", "spaceId": SANDBOX_SPACE_ID},
     }
@@ -76,10 +76,12 @@ def test_enable_and_disable_post_their_action():
 def test_run_and_runs_use_the_runs_routes():
     r = FakeRunner(emu_routes({
         ("POST", f"{BASE}/{A}/runs"): {"id": "run-1"},
-        ("GET", f"{BASE}/{A}/runs"): {"data": [{"id": "run-1"}]},
+        ("GET", f"{BASE}/{A}/runs"): [{"id": "run-1"}],
     }))
     b = Bridge(runner=r, apply=True)
     assert automate.run(b, A)["id"] == "run-1"
+    body = [c for c in r.calls if c[0] == "POST" and c[1].endswith("/runs")][-1][2]
+    assert body == {"context": "api"}  # obligatorio para el servidor
     assert automate.runs(b, A) == [{"id": "run-1"}]
 
 

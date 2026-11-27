@@ -169,9 +169,9 @@ class Bridge:
                         and body[0].get("op") == "replace" and body[0].get("path") == "/enabled"
                         and isinstance(body[0].get("value"), bool) and set(body[0]) == {"op", "path", "value"})
             ok = patch_ok and self._task_app_is_emu(m.group(1))
-        elif method == "POST" and path == "api/workflows/automations" and isinstance(body, dict):
+        elif method == "POST" and path == "workflows/automations" and isinstance(body, dict):
             ok = _is_emu({"name": body.get("name"), "spaceId": body.get("spaceId")})
-        elif method in ("PUT", "DELETE", "POST") and (m := re.fullmatch(r"api/workflows/automations/([^/]+)(?:/.*)?", path)):
+        elif method in ("PUT", "DELETE", "POST") and (m := re.fullmatch(r"workflows/automations/([^/]+)(?:/.*)?", path)):
             ok = self._automation_is_emu(m.group(1))
         if not ok:
             raise SafetyError(f"escritura no permitida: {method} {path}")
@@ -180,7 +180,7 @@ class Bridge:
         """Una automatizacion es nuestra si su nombre lleva el prefijo y esta en el espacio permitido."""
         if not valid_id(automation_id):
             raise SafetyError(f"id de automatización inválido: {automation_id!r}")
-        resp = self._raw("GET", f"api/workflows/automations/{automation_id}") or {}
+        resp = self._raw("GET", f"workflows/automations/{automation_id}") or {}
         return _is_emu({"name": resp.get("name"), "spaceId": resp.get("spaceId")})
 
     def _task_app(self, task_id: str) -> str:
