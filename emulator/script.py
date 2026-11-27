@@ -86,7 +86,9 @@ def _literal(s: str) -> str:
 
 
 _AGG = r"\b(?:sum|avg|count|min|max)\s*\("
-_FUNCS = {"upper": "upper({0})", "lower": "lower({0})", "len": "length({0})", "trim": "trim({0})", "year": "year({0})", "month": "month({0})",
+_FUNCS = {"floor": "floor(TRY_CAST({0} AS DOUBLE))", "ceil": "ceil(TRY_CAST({0} AS DOUBLE))",
+          "abs": "abs(TRY_CAST({0} AS DOUBLE))",
+          "upper": "upper({0})", "lower": "lower({0})", "len": "length({0})", "trim": "trim({0})", "year": "year({0})", "month": "month({0})",
           # verificado en el tenant (2026-11-23): Sum de solo nulos o de texto da 0; Avg de solo nulos da NULL
           "isnull": "({0} IS NULL)", "sum": "COALESCE(SUM(TRY_CAST({0} AS DOUBLE)), 0)",
           "avg": "AVG(TRY_CAST({0} AS DOUBLE))", "min": "MIN({0})",
@@ -229,12 +231,28 @@ def _expr_sql(e: str) -> str | None:
             cases = " ".join(f"WHEN {n} = {i} THEN {v}" for i, v in enumerate(values[:-1], 1))
             return f"(CASE {cases} ELSE {values[-1]} END)"
         if name in ("date", "timestamp"):  # Date()/Timestamp() con el formato de Qlik
+            # `Date(Floor([c]))` es lo que genera Qlik al convertir un campo: Floor sobre una fecha
+            # de Qlik es la parte de fecha, y aqui las fechas ya son texto, asi que se usa [c] tal cual
+            raw_first = _split_top(args)[0].strip() if args.strip() else ""
+            auto = False
+            if mf := re.fullmatch(r"Floor\s*\((.*)\)", raw_first, re.IGNORECASE | re.DOTALL):
+                inner = _expr_sql(mf.group(1))
+                if inner is None:
+                    return None
+                a[0], auto = inner, True  # Qlik reconoce el formato del texto (medido)
             cast = "DATE" if name == "date" else "TIMESTAMP"
+            value = a[0]
+            if auto:  # mismos formatos que runner._AUTO_DATES, medidos contra el tenant
+                from .runner import _AUTO_DATES
+
+                value = "coalesce(" + ", ".join(f"CAST(try_strptime({a[0]}, '{f}') AS {cast})" for f in _AUTO_DATES) + ")"
+            else:
+                value = f"CAST({a[0]} AS {cast})"
             default = "'%Y-%m-%d'" if name == "date" else "'%Y-%m-%d %H:%M:%S'"
             if len(a) == 1:
-                return f"strftime(CAST({a[0]} AS {cast}), {default})"
+                return f"strftime({value}, {default})"
             fmt = _strftime(a[1]) if len(a) == 2 else None
-            return f"strftime(CAST({a[0]} AS {cast}), {fmt})" if fmt else None
+            return f"strftime({value}, {fmt})" if fmt else None
         if name in ("matchregexi", "matchregex") and len(a) == 2:  # el sufijo i = sin distinguir mayusculas
             flag = ", 'i'" if name == "matchregexi" else ""
             return f"regexp_matches(CAST({a[0]} AS VARCHAR), {a[1]}{flag})"

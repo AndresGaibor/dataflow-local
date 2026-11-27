@@ -81,3 +81,15 @@ def test_the_translated_sql_runs_and_gives_the_values_of_qlik():
     assert rows[0][2] == "dos"      # n = 2
     assert rows[0][3] is True       # MatchRegExi no distingue mayusculas
     assert rows[0][4] is None       # Null()
+
+
+def test_date_of_floor_is_the_date_part():
+    """`Date(Floor([c]))` es lo que genera Qlik al convertir un campo."""
+    sql = sql_of("Date(Floor([d]))")
+    # reconoce el formato del texto (M/D/YYYY ademas de ISO), como Qlik
+    assert "try_strptime(\"d\", '%m/%d/%Y')" in sql
+    assert "floor(" not in sql
+
+
+def test_floor_alone_rounds_numbers():
+    assert "floor(TRY_CAST(\"n\" AS DOUBLE))" in sql_of("Floor([n])")
