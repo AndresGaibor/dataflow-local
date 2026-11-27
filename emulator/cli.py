@@ -379,6 +379,8 @@ def main(argv=None):
     co.add_argument("files", nargs="*", help="archivos .dfw (por omision, samples/**/*.dfw)")
     co.add_argument("--stub", action="store_true", help="sirve las fuentes de base de datos con 20 filas de relleno para ver si el resto del flujo ejecuta")
     co.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
+    mc = sub.add_parser("mcp", help="servidor MCP (stdio): herramientas para asistentes, permisos por riesgo y auditoria")
+    mc.add_argument("--list", action="store_true", help="lista las herramientas con su riesgo y sale")
     sc = sub.add_parser("script", help="lee, escribe y valida el script de una app")
     scs = sc.add_subparsers(dest="action", required=True)
     scg = scs.add_parser("get", help="imprime el script actual de la app (lectura)")
@@ -441,6 +443,9 @@ def main(argv=None):
         sys.exit(1 if calibrate.disagreements(rows) else 0)
     if a.cmd == "compare":
         return _compare(a)
+    if a.cmd == "mcp":
+        from . import mcp as mcp_mod
+        return mcp_mod.main(["--list"] if a.list else [])
     if a.cmd == "script-node":
         sys.exit(_script_node(a))
     if a.cmd == "automate":

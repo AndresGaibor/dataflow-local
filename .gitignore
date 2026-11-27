@@ -11,3 +11,4 @@ dfemu.local.json
 build/
 dist/
 docs/_images/
+.dfemu-mcp/

@@ -38,6 +38,15 @@ python -m emulator.cli task enable ID_TAREA --apply   # una tarea deshabilitada 
 
 Sin `--apply` solo simula. Detalles y trampas (tareas deshabilitadas, destinos de Google Drive) en el apartado 10 ter del documento de hallazgos.
 
+## Asistente (MCP)
+
+`dfemu mcp` es un servidor [MCP](https://modelcontextprotocol.io/) en stdio: un asistente lista flujos, lee el
+grafo, traduce scripts, mide un caso de la batería y crea automatizaciones sin adivinar comandos. El permiso
+lo aplica el servidor: leer siempre, escribir con `DFEMU_MCP_ALLOW_WRITE=0` para apagarlo, ejecutar con
+`confirm: true`, borrar bloqueado salvo `DFEMU_MCP_ALLOW_DESTRUCTIVE=1`. Toda escritura se limita a objetos
+`emu_*` y cada llamada queda en `.dfemu-mcp/audit.jsonl` (herramienta, riesgo y resultado; nunca los
+argumentos). Catálogo de herramientas y cómo registrarlo: [docs/MCP.md](docs/MCP.md); `dfemu mcp --list`.
+
 ## Qué cubre y qué no
 
 `dfemu coverage` mide, sobre los `.dfw` de `samples/`, qué processors se usan y qué flujos puede ejecutar el emulador. Con `--stub` las fuentes de base de datos (BigQuery, PostgreSQL...) se sirven con 20 filas enteras de relleno para ver si el resto del flujo ejecuta; como el `.dfw` desidentificado no trae tipos, un error de tipos se marca `no concluyente` y no como fallo. Los límites conocidos están en el apartado 12 del documento de hallazgos: variantes de processors que el servidor no deja descubrir, `pivot` (no se puede crear por API), el nodo `script` (solo se traduce) y la comparación de orden en joins.
