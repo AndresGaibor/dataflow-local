@@ -73,7 +73,7 @@ Sin `--apply` solo simula. Detalles y trampas (tareas deshabilitadas, destinos d
 | cobertura de processors | valor |
 | --- | --- |
 | processors en el catalogo | 24 |
-| casos de bateria | 130 |
-| con al menos un caso medido | 18 |
-| sin caso | 6 |
+| casos de bateria | 131 |
+| con al menos un caso medido | 20 |
+| sin caso | 4 |
 <!-- processors:fin -->

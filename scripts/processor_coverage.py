@@ -19,14 +19,19 @@ CASES = os.path.join(ROOT, "scripts", "processor_battery_cases.json")
 README_BEGIN = "<!-- processors:inicio -->"
 README_END = "<!-- processors:fin -->"
 
+# tipos de caso que arman un grafo con varios processors dentro (ver build() de la bateria)
+IMPLIED = {
+    "forkunion": {"fork", "union", "filter", "sort"},
+    "join": {"fork", "join", "filter", "field-selector"},
+    "joinchain": {"fork", "join", "filter", "field-selector", "sort"},
+}
+
 # processors que no se pueden medir con la credencial actual y por que (ver apartado 12)
 BLOCKED = {
     "pivot": "sin donante de schemaEntityId (ningun flujo accesible tiene pivot)",
     "script": "el nodo hay que crearlo desde la interfaz",
     "subflow": "ningun flujo accesible trae subflows",
     "map-fields": "configuracion sin semantica documentada",
-    "fork": "la bateria arma cadenas de un solo destino; fork necesita varias salidas",
-    "union": "necesita dos entradas; la bateria arma una cadena de un solo flujo",
 }
 
 
@@ -38,6 +43,8 @@ def used_processors(cases: dict, allowed=None) -> set[str]:
     """
     used = set()
     for case in cases.values():
+        if isinstance(case, list) and case and case[0] in IMPLIED:
+            used |= IMPLIED[case[0]]
         stack = [case]
         while stack:
             item = stack.pop()

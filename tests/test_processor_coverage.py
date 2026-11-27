@@ -18,6 +18,11 @@ def test_used_processors_sees_plain_and_chained_cases():
     assert pc.used_processors(cases, {"strings", "math", "fork"}) == {"strings", "math"}
 
 
+def test_implied_processors_of_a_multi_node_case_are_counted():
+    """Un caso `forkunion` usa fork, union, filter y sort aunque el JSON solo diga el tipo."""
+    assert pc.used_processors({"x": ["forkunion", {}]}, set(pc.IMPLIED["forkunion"])) == {"fork", "union", "filter", "sort"}
+
+
 def test_coverage_counts_the_real_catalog():
     cov = pc.coverage()
     assert cov["catalog"] == 24
