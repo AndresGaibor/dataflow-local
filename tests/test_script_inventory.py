@@ -67,3 +67,20 @@ def test_scripts_from_paths_reads_qvs(tmp_path):
     p.write_text(QVS, encoding="utf-8")
     scripts = si.scripts_from_paths([str(p)])
     assert list(scripts) == ["a"] or "a" in scripts
+
+def test_readme_block_has_the_numbers_between_markers():
+    inv = si.inventory({"a": "SET x=1; LOAD Date([d]) AS x;"}, translate=lambda t, d: ("SELECT 1", []))
+    block = si.readme_block(inv)
+    assert block.startswith(si.README_BEGIN) and block.rstrip().endswith(si.README_END)
+    assert "| scripts en el corpus | 1 |" in block
+    assert "| sin cubrir | 0 |" in block
+
+
+def test_write_readme_replaces_the_block_and_keeps_the_rest(tmp_path):
+    inv = si.inventory({"a": "SET x=1;"}, translate=lambda t, d: ("SELECT 1", []))
+    target = tmp_path / "README.md"
+    target.write_text(chr(10).join(["# titulo", "", si.README_BEGIN, "viejo", si.README_END, "", "cola", ""]), encoding="utf-8")
+    si.write_readme(inv, str(target))
+    text = target.read_text(encoding="utf-8")
+    assert "viejo" not in text and "# titulo" in text and "cola" in text
+    assert "| scripts en el corpus | 1 |" in text

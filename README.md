@@ -57,3 +57,14 @@ Sin `--apply` solo simula. Detalles y trampas (tareas deshabilitadas, destinos d
 - `python scripts/e2e_ventas.py [--escenario ventas|calidad|normalizacion] [--local]` ejecuta un flujo de varios nodos (por omision `ventas`: clientes + cuentas, 12 nodos; `normalizacion` y `calidad`: datos sucios de 20 filas, sin editor) en el emulador y en el tenant y compara (`--local`: solo emulador; la primera vez hay que registrar las fuentes en el editor, ver 9 quater).
 - `python scripts/processor_battery.py [CASO ...]` ejecuta los casos indicados (o los 129) en el emulador y en el tenant y compara los resultados (escribe en el tenant, cuesta, y limpia lo que crea; lanzar solo los casos nuevos). Es la prueba que más ha corregido al emulador: ver el apartado 9 quater del documento de hallazgos.
 - Los objetos creados en el tenant llevan el prefijo `emu_`; `dfemu cleanup --apply` borra apps y archivos `emu_` de `DataFiles`. Los archivos escritos en carpetas de Google Drive no los ve.
+
+## Cobertura
+
+<!-- cobertura:inicio -->
+| cobertura de Qlik script | valor |
+| --- | --- |
+| scripts en el corpus | 8 |
+| constructs distintos | 13 |
+| sin cubrir | 0 |
+| cubiertos sin medir en el tenant | 5 |
+<!-- cobertura:fin -->

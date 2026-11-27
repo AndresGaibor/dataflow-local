@@ -93,6 +93,42 @@ _FUNCS = {"upper": "upper({0})", "lower": "lower({0})", "len": "length({0})", "t
           "max": "MAX({0})", "count": "COUNT({0})"}
 
 
+_FMT_TOKENS = [("YYYY", "%Y"), ("YY", "%y"), ("MM", "%m"), ("DD", "%d"),
+               ("hh", "%H"), ("mm", "%M"), ("ss", "%S"), ("M", "%m"), ("D", "%d")]
+
+
+# funciones que `translate` sabe resolver (las de `_FUNCS` mas las que tienen rama propia);
+# es la fuente de verdad que usa scripts/script_inventory.py para medir cobertura
+KNOWN_FUNCTIONS = {"IF", "COALESCE", "PICK", "DATE", "TIMESTAMP", "NULL", "MATCHREGEX", "MATCHREGEXI"}
+# implementadas segun la ayuda oficial (docs/Scripting/), pendientes de medir en el tenant:
+# el resto de funciones conocidas ya se midio contra Qlik (ver 9 quater del documento de hallazgos)
+DOCUMENTED_ONLY = {"PICK", "DATE", "TIMESTAMP", "NULL", "MATCHREGEX", "MATCHREGEXI"}
+
+
+def _strftime(literal: str) -> str | None:
+    """`'YYYY-MM-DD'` (ya como literal SQL) -> `'%Y-%m-%d'`; None si hay tokens que no conocemos."""
+    m = re.fullmatch(r"'([^']*)'", literal)
+    if not m:
+        return None
+    out, i, pat = "", 0, m.group(1)
+    while i < len(pat):
+        for token, repl in _FMT_TOKENS:
+            if pat.startswith(token, i):
+                out += repl
+                i += len(token)
+                break
+        else:
+            if pat[i] in "-/:., ":
+                out += pat[i]
+                i += 1
+            else:
+                return None
+    return f"'{out}'"
+
+
+KNOWN_FUNCTIONS |= {name.upper() for name in _FUNCS}
+
+
 def _call(e: str):
     """(nombre, argumentos) si `e` es una sola llamada `Nombre(...)`, si no None."""
     m = re.fullmatch(r"([A-Za-z_]+)\s*\((.*)\)", e, re.DOTALL)
@@ -179,6 +215,8 @@ def _expr_sql(e: str) -> str | None:
         if name == "count" and (md := re.match(r"DISTINCT\s+(.*)$", args, re.IGNORECASE | re.DOTALL)):
             inner = _expr_sql(md.group(1))
             return f"COUNT(DISTINCT {inner})" if inner else None
+        if name == "null" and not args.strip():
+            return "NULL"  # NULL() de Qlik
         a = [_expr_sql(x) for x in _split_top(args)]
         if not a or None in a:
             return None
@@ -186,6 +224,20 @@ def _expr_sql(e: str) -> str | None:
             return f"(CASE WHEN {a[0]} THEN {a[1]} ELSE {a[2]} END)"
         if name == "coalesce":
             return f"coalesce({', '.join(a)})"
+        if name == "pick" and len(a) >= 2:  # pick(n, e1, ..., eN): n-esima expresion
+            n, values = a[0], a[1:]
+            cases = " ".join(f"WHEN {n} = {i} THEN {v}" for i, v in enumerate(values[:-1], 1))
+            return f"(CASE {cases} ELSE {values[-1]} END)"
+        if name in ("date", "timestamp"):  # Date()/Timestamp() con el formato de Qlik
+            cast = "DATE" if name == "date" else "TIMESTAMP"
+            default = "'%Y-%m-%d'" if name == "date" else "'%Y-%m-%d %H:%M:%S'"
+            if len(a) == 1:
+                return f"strftime(CAST({a[0]} AS {cast}), {default})"
+            fmt = _strftime(a[1]) if len(a) == 2 else None
+            return f"strftime(CAST({a[0]} AS {cast}), {fmt})" if fmt else None
+        if name in ("matchregexi", "matchregex") and len(a) == 2:  # el sufijo i = sin distinguir mayusculas
+            flag = ", 'i'" if name == "matchregexi" else ""
+            return f"regexp_matches(CAST({a[0]} AS VARCHAR), {a[1]}{flag})"
         t = _FUNCS.get(name)
         return t.format(*a) if t and len(a) == 1 else None
     if re.search(r"\b(?!AND\b|OR\b|NOT\b)[A-Za-z_]+\s*\(", e, re.IGNORECASE):

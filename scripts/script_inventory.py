@@ -2,7 +2,7 @@
 
 Dice que sentencias y funciones aparecen en los scripts reales y si el traductor
 las cubre. La cobertura no se escribe a mano: se contrasta con lo que
-`emulator/script.py` sabe ejecutar.
+`emulator/script.py` sabe ejecutar (`KNOWN_STATEMENTS`, `KNOWN_FUNCTIONS`).
 
 El resultado de traducir cada script se informa aparte, porque los nodos de
 script de un flujo son fragmentos que hacen RESIDENT de tablas que crea otro
@@ -10,6 +10,7 @@ nodo: traducirlos sueltos casi nunca puede funcionar y eso no mide cobertura.
 
     python scripts/script_inventory.py                 # corpus de out/ y samples/
     python scripts/script_inventory.py --write         # escribe el informe en docs/
+    python scripts/script_inventory.py --readme        # regenera la tabla del README
     python scripts/script_inventory.py --json          # inventario en JSON
 """
 import argparse
@@ -40,6 +41,9 @@ KNOWN_STATEMENTS = {
     "LOAD", "SELECT", "SET", "TRACE", "DROP", "STORE", "THROW", "NOCONCATENATE",
     "LEFT JOIN", "INNER JOIN", "RIGHT JOIN", "OUTER JOIN", "FULL JOIN",
 }
+
+README_BEGIN = "<!-- cobertura:inicio -->"
+README_END = "<!-- cobertura:fin -->"
 
 
 def _clean(text: str) -> str:
@@ -137,7 +141,7 @@ def default_paths(root: str = ROOT) -> list[str]:
 
 
 def _known_functions() -> set[str]:
-    return {name.upper() for name in qvs._FUNCS}
+    return set(qvs.KNOWN_FUNCTIONS)
 
 
 def inventory(scripts: dict, translate=None, data_dir: str | None = None) -> dict:
@@ -163,7 +167,12 @@ def inventory(scripts: dict, translate=None, data_dir: str | None = None) -> dic
     known_funcs = _known_functions()
     for item, slot in constructs.items():
         known = item in KNOWN_STATEMENTS if slot["kind"] == "sentencia" else item in known_funcs
-        slot["status"] = "cubierto" if known else "no cubierto"
+        if not known:
+            slot["status"] = "no cubierto"
+        elif item in qvs.DOCUMENTED_ONLY:
+            slot["status"] = "cubierto (sin medir en el tenant)"
+        else:
+            slot["status"] = "cubierto"
 
     return {
         "scripts": len(scripts),
@@ -173,8 +182,14 @@ def inventory(scripts: dict, translate=None, data_dir: str | None = None) -> dic
     }
 
 
+def _split(constr: dict) -> tuple[list[str], list[str]]:
+    uncovered = [c for c, v in constr.items() if v["status"] == "no cubierto"]
+    unmeasured = [c for c, v in constr.items() if v["status"].startswith("cubierto (")]
+    return uncovered, unmeasured
+
+
 def report_md(inv: dict) -> str:
-    uncovered = [c for c, v in inv["constructs"].items() if v["status"] != "cubierto"]
+    uncovered, unmeasured = _split(inv["constructs"])
     head = [
         "# Cobertura de Qlik script",
         "",
@@ -183,6 +198,8 @@ def report_md(inv: dict) -> str:
         f"- Scripts del corpus: {inv['scripts']}",
         f"- Constructs distintos: {len(inv['constructs'])}",
         f"- Sin cubrir por el traductor: {len(uncovered)}",
+        f"- Cubiertos sin medir en el tenant: {len(unmeasured)}"
+        + (f" ({', '.join(sorted(unmeasured))})" if unmeasured else ""),
         f"- Scripts que traducen sueltos: {inv['translated']} de {inv['scripts']} "
         "(un nodo de script es un fragmento con RESIDENT del resto del flujo; no mide cobertura)",
         "",
@@ -199,10 +216,42 @@ def report_md(inv: dict) -> str:
     return "\n".join(head + rows) + "\n"
 
 
+def readme_block(inv: dict) -> str:
+    """Tabla compacta para el README, entre marcadores para poder regenerarla."""
+    uncovered, unmeasured = _split(inv["constructs"])
+    rows = [
+        README_BEGIN,
+        "| cobertura de Qlik script | valor |",
+        "| --- | --- |",
+        f"| scripts en el corpus | {inv['scripts']} |",
+        f"| constructs distintos | {len(inv['constructs'])} |",
+        f"| sin cubrir | {len(uncovered)} |",
+        f"| cubiertos sin medir en el tenant | {len(unmeasured)} |",
+        README_END,
+    ]
+    return "\n".join(rows)
+
+
+def write_readme(inv: dict, path: str) -> None:
+    """Reemplaza el bloque de cobertura del README (o lo anade al final)."""
+    with open(path, encoding="utf-8") as f:
+        text = f.read()
+    block = readme_block(inv)
+    if README_BEGIN in text and README_END in text:
+        head, _, rest = text.partition(README_BEGIN)
+        _, _, tail = rest.partition(README_END)
+        text = head + block + tail
+    else:
+        text = text.rstrip("\n") + "\n\n## Cobertura\n\n" + block + "\n"
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(description="Inventario de constructs de Qlik script sobre el corpus")
     p.add_argument("paths", nargs="*", help="archivos .qvs/.dfw/.pull.json (por omision, corpus y samples)")
     p.add_argument("--write", action="store_true", help="escribe docs/banco-de-pruebas/05-cobertura-script.md")
+    p.add_argument("--readme", action="store_true", help="regenera el bloque de cobertura del README")
     p.add_argument("--json", action="store_true", help="imprime el inventario en JSON")
     p.add_argument("--out", default=".", help="raiz del repositorio")
     a = p.parse_args(argv)
@@ -224,7 +273,11 @@ def main(argv=None) -> int:
             print(f"escrito {target}")
         else:
             print(md)
-    return 0 if not [c for c, v in inv["constructs"].items() if v["status"] != "cubierto"] else 1
+    if a.readme:
+        write_readme(inv, os.path.join(a.out, "README.md"))
+        print("README actualizado")
+    uncovered, _ = _split(inv["constructs"])
+    return 0 if not uncovered else 1
 
 
 if __name__ == "__main__":
