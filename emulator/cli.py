@@ -379,6 +379,16 @@ def main(argv=None):
     co.add_argument("files", nargs="*", help="archivos .dfw (por omision, samples/**/*.dfw)")
     co.add_argument("--stub", action="store_true", help="sirve las fuentes de base de datos con 20 filas de relleno para ver si el resto del flujo ejecuta")
     co.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
+    sc = sub.add_parser("script", help="lee, escribe y valida el script de una app")
+    scs = sc.add_subparsers(dest="action", required=True)
+    scg = scs.add_parser("get", help="imprime el script actual de la app (lectura)")
+    scg.add_argument("app")
+    scs_ = scs.add_parser("set", help="sube un .qvs como script de la app emu_")
+    scs_.add_argument("app")
+    scs_.add_argument("file")
+    scs_.add_argument("--apply", action="store_true", help="escribir en el tenant (sin esto solo simula)")
+    scv = scs.add_parser("validate", help="pide al servidor que valide un .qvs (no escribe)")
+    scv.add_argument("file")
     tr = sub.add_parser("translate", help="traduce un script de Qlik (qvs o .pull.json) a SQL de DuckDB")
     tr.add_argument("file")
     tr.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
@@ -412,6 +422,26 @@ def main(argv=None):
         return _compare(a)
     if a.cmd == "script-node":
         sys.exit(_script_node(a))
+    if a.cmd == "script":
+        b = make_bridge(getattr(a, "apply", False))
+        try:
+            if a.action == "get":
+                print(b.script_get(a.app), end="")
+            elif a.action == "set":
+                with open(a.file, encoding="utf-8", newline="") as f:
+                    b.script_set(a.app, f.read())
+                print("script subido" if a.apply else "script listo (simulación)")
+            else:
+                with open(a.file, encoding="utf-8", newline="") as f:
+                    errors = b.script_validate(f.read())
+                if errors:
+                    sys.exit("errores del servidor:\n" + "\n".join(f"  - {e}" for e in errors))
+                print("OK: el script valida")
+        except DryRun as e:
+            print(f"[simulación] {e.method} {e.path}")
+        except (SafetyError, BridgeError) as e:
+            sys.exit(f"error: {e}")
+        return 0
     if a.cmd == "task":
         sys.exit(_task(a))
     if a.cmd == "setup":

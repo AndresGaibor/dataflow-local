@@ -236,6 +236,16 @@ class Bridge:
         finally:
             os.remove(tmp)
 
+    def script_get(self, app_id: str) -> str:
+        """Script actual de la app (lectura; sirve para cualquier app valida)."""
+        if not valid_id(app_id):
+            raise SafetyError(f"id de app inválido: {app_id!r}")
+        return str((self._raw("GET", f"v1/apps/{app_id}/scripts/current") or {}).get("script", ""))
+
+    def script_validate(self, script: str) -> list:
+        """Errores que da el servidor para un script (`v1/apps/validatescript`, sin `--apply`)."""
+        return (self.post(VALIDATE, {"script": script}) or {}).get("Errors") or []
+
     def cli_read(self, args: list[str]) -> str:
         if args[:2] not in (["app", "tables"], ["app", "eval"]):
             raise SafetyError(f"comando de lectura no permitido: {args[:2]}")
