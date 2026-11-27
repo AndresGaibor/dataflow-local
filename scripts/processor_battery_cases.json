@@ -3693,5 +3693,41 @@
  "fork_union": [
   "forkunion",
   {}
+ ],
+ "cut_starts": [
+  "strings",
+  {
+   "type": "CUT",
+   "cutConfiguration": {
+    "columnsToProcess": [
+     "nombre"
+    ],
+    "newColumnName": "",
+    "shouldCreateNewColumn": false,
+    "pattern": {
+     "operator": "STARTS_WITH",
+     "value": "Ana",
+     "isCaseSensitive": true
+    }
+   }
+  }
+ ],
+ "cut_ends": [
+  "strings",
+  {
+   "type": "CUT",
+   "cutConfiguration": {
+    "columnsToProcess": [
+     "nombre"
+    ],
+    "newColumnName": "",
+    "shouldCreateNewColumn": false,
+    "pattern": {
+     "operator": "ENDS_WITH",
+     "value": "Ana",
+     "isCaseSensitive": true
+    }
+   }
+  }
  ]
 }

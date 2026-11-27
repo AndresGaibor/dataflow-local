@@ -367,13 +367,17 @@ def _typed(ctx, t, cfg, v):
             return D(_derived(v, c, "matching", lambda x: f"CASE WHEN regexp_matches({S(x)}, '^[a-zA-Z]+$') THEN 'TRUE' ELSE 'FALSE' END"))
         if k == "REMOVE_CONSECUTIVE_CHARACTERS":  # ReplaceRegEx([c], '(\Q\\s\E){2,}', ' '): con el patron por defecto no cambia nada util
             return D(_per_col(ctx, v, c, lambda x: S(x)))
-        if k == "CUT":  # EQUALS: IF(Match([c], 'a'), '', [c]); CONTAINS: Replace([c], 'a', ''); shortcut: sin STARTS_WITH/ENDS_WITH/regex
+        if k == "CUT":  # EQUALS: IF(Match([c], 'a'), '', [c]); CONTAINS: Replace([c], 'a', ''); STARTS_WITH/ENDS_WITH: corta el borde; shortcut: sin regex
             c = cfg["cutConfiguration"]
             op, val = c["pattern"]["operator"], lit(c["pattern"]["value"])
             if op == "EQUALS":
                 return D(_per_col(ctx, v, c, lambda x: f"CASE WHEN {S(x)} = {val} THEN '' ELSE {S(x)} END"))
             if op == "CONTAINS":
                 return D(_per_col(ctx, v, c, lambda x: f"replace({S(x)}, {val}, '')"))
+            if op == "STARTS_WITH":  # corta el prefijo cuando coincide
+                return D(_per_col(ctx, v, c, lambda x: f"CASE WHEN starts_with({S(x)}, {val}) THEN substr({S(x)}, length({val}) + 1) ELSE {S(x)} END"))
+            if op == "ENDS_WITH":  # corta el sufijo cuando coincide
+                return D(_per_col(ctx, v, c, lambda x: f"CASE WHEN ends_with({S(x)}, {val}) THEN substr({S(x)}, 1, length({S(x)}) - length({val})) ELSE {S(x)} END"))
             raise Unsupported(f"strings CUT {op}")
         if k == "REPLACE_ON_VALUE":
             op, val, rep = c["cellValue"]["operator"], lit(c["cellValue"]["value"]), lit(c["replaceValue"])
