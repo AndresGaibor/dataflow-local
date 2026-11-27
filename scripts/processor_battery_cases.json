@@ -3680,5 +3680,14 @@
     }
    ]
   ]
+ ],
+ "sample_first": [
+  "sample",
+  {
+   "type": "SAMPLE_FIRST_ROWS",
+   "sampleFirstRowsConfiguration": {
+    "rowCount": 5
+   }
+  }
  ]
 }

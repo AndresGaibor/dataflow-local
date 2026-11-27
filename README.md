@@ -68,3 +68,12 @@ Sin `--apply` solo simula. Detalles y trampas (tareas deshabilitadas, destinos d
 | sin cubrir | 0 |
 | cubiertos sin medir en el tenant | 5 |
 <!-- cobertura:fin -->
+
+<!-- processors:inicio -->
+| cobertura de processors | valor |
+| --- | --- |
+| processors en el catalogo | 24 |
+| casos de bateria | 130 |
+| con al menos un caso medido | 18 |
+| sin caso | 6 |
+<!-- processors:fin -->
