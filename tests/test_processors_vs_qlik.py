@@ -300,7 +300,7 @@ def test_contains_creates_col_contains_value_with_true_or_false(tmp_path):  # IF
 
 
 def test_padding_defaults_and_substring_defaults(tmp_path):
-    # sin parametros Qlik genera Repeat('0', 5 - Len(c)) & c y Mid(c, 1, 5); no se conocen las claves de los parametros
+    # sin parametros Qlik genera Repeat('0', 5 - Len(c)) & c y Mid(c, 1, 5); las claves de SUBSTRING ya se midieron (2026-11-27)
     cols, out = run_one(tmp_path, "id,n\n1,ab\n2,abcdefg\n", ["id", "n"], "strings", vcfg("PADDING", "paddingConfiguration"))
     assert [r[cols.index("m")] for r in out] == ["000ab", "abcdefg"]  # lpad de DuckDB truncaria 'abcdefg'
     cols, out = run_one(tmp_path, "id,n\n1,Guayaquil\n", ["id", "n"], "strings", vcfg("SUBSTRING", "substringConfiguration"))

@@ -357,8 +357,36 @@ def _typed(ctx, t, cfg, v):
                               lambda x: f"CASE WHEN strpos({S(x)}, {val}) > 0 THEN 'TRUE' ELSE 'FALSE' END"))
         if k == "PADDING":  # Repeat('0', 5 - Len([c])) & [c]; nunca trunca
             return D(_per_col(ctx, v, c, lambda x: f"repeat('0', greatest(5 - length({S(x)}), 0)) || {S(x)}"))
-        if k == "SUBSTRING":  # Mid([c], 1, 5)
-            return D(_per_col(ctx, v, c, lambda x: f"substr({S(x)}, 1, 5)"))
+        if k == "SUBSTRING":  # Mid([c], desde[, largo]) con los argumentos que genera Qlik (medido 2026-11-27)
+            cfg_sub = c
+
+            def _sub(x: str) -> str:
+                frm = cfg_sub.get("fromType", "FROM_BEGINNING")
+                to = cfg_sub.get("toType", "TO_INDEX")  # sin claves Qlik genera Mid(c, 1, 5)
+                idx = int(cfg_sub.get("fromIndex", 0) or 0)
+                if frm == "FROM_BEGINNING":
+                    start = "1"
+                elif frm == "FROM_INDEX":
+                    start = f"{idx + 1}"
+                elif frm == "FROM_N_BEFORE_END":  # medido: Mid(c, Len(c) - (n-1))
+                    n_end = int(cfg_sub.get("fromNBeforeEnd", 0) or 0)
+                    start = f"(length({x}) - {max(n_end - 1, 0)})"
+                else:
+                    raise Unsupported(f"SUBSTRING {frm}")
+                if to == "TO_END":  # todo el texto desde `start`
+                    if frm == "FROM_BEGINNING":
+                        return x  # Qlik no emite nada: el campo pasa igual
+                    if frm == "FROM_N_BEFORE_END":  # Qlik: Coalesce(EmptyIsNull(Mid(...)),[c])
+                        return f"coalesce(nullif(substr({x}, {start}), ''), {x})"
+                    return f"substr({x}, {start})"
+                if to == "TO_INDEX":
+                    n = int(cfg_sub.get("toIndex", 5) or 5)
+                    return f"substr({x}, {start}, {n if frm == 'FROM_BEGINNING' else n - idx + 1})"
+                if to == "TO_N_BEFORE_END":  # Qlik: Mid([c], start, Len([c]) - n)
+                    return f"substr({x}, {start}, length({x}) - {int(cfg_sub.get('toNBeforeEnd', 0) or 0)})"
+                raise Unsupported(f"SUBSTRING {to}")
+
+            return D(_per_col(ctx, v, c, _sub))
         if k == "CONVERT_TO_STRING":  # Text([c])
             return D(_per_col(ctx, v, c, lambda x: S(x)))
         if k == "REMOVE_NON_ALPHA_NUM_CHARS":  # KeepChar([c], ALPHA_NUM_CHARS); shortcut: solo letras ASCII y digitos

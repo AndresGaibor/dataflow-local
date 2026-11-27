@@ -3729,5 +3729,70 @@
     }
    }
   }
+ ],
+ "sub_index_index": [
+  "strings",
+  {
+   "type": "SUBSTRING",
+   "substringConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "fromType": "FROM_INDEX",
+    "fromIndex": 2,
+    "toType": "TO_INDEX",
+    "toIndex": 4
+   }
+  }
+ ],
+ "sub_index_end": [
+  "strings",
+  {
+   "type": "SUBSTRING",
+   "substringConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "fromType": "FROM_INDEX",
+    "fromIndex": 2,
+    "toType": "TO_END"
+   }
+  }
+ ],
+ "sub_n_before_end": [
+  "strings",
+  {
+   "type": "SUBSTRING",
+   "substringConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "fromType": "FROM_N_BEFORE_END",
+    "fromNBeforeEnd": 3,
+    "toType": "TO_END"
+   }
+  }
+ ],
+ "sub_to_n_before": [
+  "strings",
+  {
+   "type": "SUBSTRING",
+   "substringConfiguration": {
+    "columnsToProcess": [
+     "ciudad"
+    ],
+    "shouldCreateNewColumn": false,
+    "newColumnName": "",
+    "fromType": "FROM_BEGINNING",
+    "toType": "TO_N_BEFORE_END",
+    "toNBeforeEnd": 2
+   }
+  }
  ]
 }
