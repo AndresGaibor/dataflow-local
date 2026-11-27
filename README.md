@@ -4,7 +4,7 @@ Banco de pruebas local para los Data Flows de Qlik Cloud: valida, emula y compar
 
 ## Primeros pasos
 
-Requisitos: Python 3.10 o superior (se prueba con 3.12). Para solo emular y traducir en local no hace falta tenant; para comparar contra Qlik Cloud hace falta una API key.
+Requisitos: Python 3.11 o superior (se prueba con 3.12; el mínimo lo fija DuckDB 2). Para solo emular y traducir en local no hace falta tenant; para comparar contra Qlik Cloud hace falta una API key.
 
 ```
 pip install -e .          # instala el comando `dfemu` (o: pip install -r requirements.txt y usar python -m emulator.cli)

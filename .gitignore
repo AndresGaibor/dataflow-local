@@ -8,3 +8,5 @@ dfemu.local.json
 .tools/
 *.egg-info/
 .playwright-cli/
+build/
+dist/

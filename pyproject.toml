@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,11 +7,13 @@ name = "dfemu"
 version = "0.1.0"
 description = "Banco de pruebas para los Data Flows de Qlik Cloud: emulador (DuckDB), traductor de scripts y comparador contra el tenant"
 readme = "README.md"
-requires-python = ">=3.10"
-dependencies = ["duckdb"]
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+dependencies = ["duckdb>=2.0,<3"]
 
 [project.optional-dependencies]
-test = ["pytest"]
+test = ["pytest>=9,<10"]
 
 [project.scripts]
 dfemu = "emulator.cli:main"
