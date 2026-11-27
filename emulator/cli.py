@@ -389,6 +389,27 @@ def main(argv=None):
     scs_.add_argument("--apply", action="store_true", help="escribir en el tenant (sin esto solo simula)")
     scv = scs.add_parser("validate", help="pide al servidor que valide un .qvs (no escribe)")
     scv.add_argument("file")
+    au = sub.add_parser("automate", help="Qlik Automate: lista, crea, modifica, borra y ejecuta automatizaciones")
+    aus = au.add_subparsers(dest="action", required=True)
+    aus.add_parser("ls", help="lista automatizaciones").add_argument("--json", action="store_true")
+    aus.add_parser("show", help="definicion completa de una automatizacion").add_argument("automation")
+    aun = aus.add_parser("new", help="crea una automatizacion emu_ (dossier: JSON de workspace opcional)")
+    aun.add_argument("name")
+    aun.add_argument("--workspace", help="archivo JSON con el workspace del editor")
+    aun.add_argument("--description", default="")
+    aun.add_argument("--apply", action="store_true", help="escribir en el tenant (sin esto solo simula)")
+    aur = aus.add_parser("rm", help="borra una automatizacion emu_")
+    aur.add_argument("automation")
+    aur.add_argument("--apply", action="store_true", help="escribir en el tenant (sin esto solo simula)")
+    for action, text in (("enable", "habilita"), ("disable", "deshabilita"), ("run", "lanza una ejecucion de")):
+        ap_ = aus.add_parser(action, help=f"{text} una automatizacion emu_")
+        ap_.add_argument("automation")
+        ap_.add_argument("--apply", action="store_true", help="escribir en el tenant (sin esto solo simula)")
+    auc = aus.add_parser("copy", help="duplica una automatizacion emu_ con otro nombre")
+    auc.add_argument("automation")
+    auc.add_argument("name")
+    auc.add_argument("--apply", action="store_true", help="escribir en el tenant (sin esto solo simula)")
+    aus.add_parser("runs", help="ejecuciones de una automatizacion").add_argument("automation")
     tr = sub.add_parser("translate", help="traduce un script de Qlik (qvs o .pull.json) a SQL de DuckDB")
     tr.add_argument("file")
     tr.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
@@ -422,6 +443,37 @@ def main(argv=None):
         return _compare(a)
     if a.cmd == "script-node":
         sys.exit(_script_node(a))
+    if a.cmd == "automate":
+        from . import automate as au_mod
+        b = make_bridge(getattr(a, "apply", False))
+        try:
+            if a.action == "ls":
+                rows = au_mod.ls(b)
+                if a.json:
+                    print(json.dumps(rows, ensure_ascii=False, indent=1))
+                else:
+                    print("\n".join(f"{r.get('name')}  {r.get('id')}" for r in rows) or "sin automatizaciones")
+            elif a.action == "show":
+                print(json.dumps(au_mod.show(b, a.automation), ensure_ascii=False, indent=1))
+            elif a.action == "new":
+                workspace = json.load(open(a.workspace, encoding="utf-8")) if a.workspace else None
+                print(json.dumps(au_mod.new(b, a.name, workspace, a.description), ensure_ascii=False))
+            elif a.action == "rm":
+                au_mod.rm(b, a.automation)
+                print("borrada" if a.apply else "lista para borrar (simulación)")
+            elif a.action in ("enable", "disable"):
+                print(json.dumps(getattr(au_mod, a.action)(b, a.automation), ensure_ascii=False))
+            elif a.action == "copy":
+                print(json.dumps(au_mod.copy(b, a.automation, a.name), ensure_ascii=False))
+            elif a.action == "run":
+                print(json.dumps(au_mod.run(b, a.automation), ensure_ascii=False))
+            else:
+                print(json.dumps(au_mod.runs(b, a.automation), ensure_ascii=False, indent=1))
+        except DryRun as e:
+            print(f"[simulación] {e.method} {e.path}")
+        except (SafetyError, BridgeError) as e:
+            sys.exit(f"error: {e}")
+        return 0
     if a.cmd == "script":
         b = make_bridge(getattr(a, "apply", False))
         try:
