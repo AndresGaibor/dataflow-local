@@ -4008,5 +4008,110 @@
     "proposedPattern": "A_WORD_IN_LOWERCASE"
    }
   }
+ ],
+ "mod_year": [
+  "date",
+  {
+   "type": "MODIFY_DATES",
+   "modifyDateConfiguration": {
+    "columnsToProcess": [
+     "fecha_nacimiento"
+    ],
+    "newColumnRename": "salida",
+    "shouldCreateNewColumn": true,
+    "datePattern": "dd/MM/yyyy",
+    "timeUnit": "YEAR",
+    "useWith": "VALUE",
+    "column": "",
+    "constantValue": 3
+   }
+  }
+ ],
+ "mod_month": [
+  "date",
+  {
+   "type": "MODIFY_DATES",
+   "modifyDateConfiguration": {
+    "columnsToProcess": [
+     "fecha_nacimiento"
+    ],
+    "newColumnRename": "salida",
+    "shouldCreateNewColumn": true,
+    "datePattern": "dd/MM/yyyy",
+    "timeUnit": "MONTH",
+    "useWith": "VALUE",
+    "column": "",
+    "constantValue": 3
+   }
+  }
+ ],
+ "mod_week": [
+  "date",
+  {
+   "type": "MODIFY_DATES",
+   "modifyDateConfiguration": {
+    "columnsToProcess": [
+     "fecha_nacimiento"
+    ],
+    "newColumnRename": "salida",
+    "shouldCreateNewColumn": true,
+    "datePattern": "dd/MM/yyyy",
+    "timeUnit": "WEEK",
+    "useWith": "VALUE",
+    "column": "",
+    "constantValue": 3
+   }
+  }
+ ],
+ "mod_hour": [
+  "date",
+  {
+   "type": "MODIFY_DATES",
+   "modifyDateConfiguration": {
+    "columnsToProcess": [
+     "fecha_nacimiento"
+    ],
+    "newColumnRename": "salida",
+    "shouldCreateNewColumn": true,
+    "datePattern": "dd/MM/yyyy",
+    "timeUnit": "HOUR",
+    "useWith": "VALUE",
+    "column": "",
+    "constantValue": 3
+   }
+  }
+ ],
+ "mod_minute": [
+  "date",
+  {
+   "type": "MODIFY_DATES",
+   "modifyDateConfiguration": {
+    "columnsToProcess": [
+     "fecha_nacimiento"
+    ],
+    "newColumnRename": "salida",
+    "shouldCreateNewColumn": true,
+    "datePattern": "dd/MM/yyyy",
+    "timeUnit": "MINUTE",
+    "useWith": "VALUE",
+    "column": "",
+    "constantValue": 30
+   }
+  }
+ ],
+ "fecha_formato_num": [
+  "date",
+  {
+   "type": "FORMAT_DATES",
+   "formatDatesConfiguration": {
+    "columnsToProcess": [
+     "fecha_nacimiento"
+    ],
+    "newColumnRename": "salida",
+    "shouldCreateNewColumn": true,
+    "format": "YYYYMMDD",
+    "datePattern": "YYYY-MM-DD hh:mm:ss.fff"
+   }
+  }
  ]
 }

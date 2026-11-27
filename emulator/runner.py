@@ -568,15 +568,30 @@ def _date(ctx, v, k, c):
     if k in ("FORMAT_DATES", "MODIFY_DATES"):
         name = c.get("newColumnRename") or col
         d = f"TRY_CAST({S} AS DATE)"
-        if k == "FORMAT_DATES":  # Date([c], 'YYYY-MM-DD'); shortcut: solo el formato YYYYMMDD_DASH
-            if c["format"] != "YYYYMMDD_DASH":
+        if k == "FORMAT_DATES":  # Date([c], 'YYYY-MM-DD') / Date([c], 'YYYYMMDD') (medido 2026-11-27: el resto de valores da 500)
+            fmt = {"YYYYMMDD_DASH": "%Y-%m-%d", "YYYYMMDD": "%Y%m%d"}.get(c["format"])
+            if fmt is None:
                 raise Unsupported(f"FORMAT_DATES {c['format']}")
-            e = f"strftime({d}, '%Y-%m-%d')"
-        else:  # Date([c] + n); shortcut: solo dias y valor fijo; la fecha sale con el formato del SET (ver _qlik_text_format)
-            if c["timeUnit"] != "DAY" or c["useWith"] != "VALUE":
-                raise Unsupported(f"MODIFY_DATES {c['timeUnit']} {c['useWith']}")
-            e = f"CAST({d} + {int(c['constantValue'])} * INTERVAL 1 DAY AS DATE)"
-            ctx.converted_dates[name] = "date"
+            e = f"strftime({d}, '{fmt}')"
+        else:  # MODIFY_DATES: AddYears/AddMonths/Date(x + n*7)/Timestamp(x + n/24) segun la unidad (medido 2026-11-27)
+            unit = c["timeUnit"]
+            if c["useWith"] == "FIELD":
+                if not c.get("column"):
+                    raise Unsupported("MODIFY_DATES FIELD sin columna")
+                n = f"TRY_CAST({q(c['column'])} AS BIGINT)"
+            else:
+                n = str(int(c["constantValue"]))
+            steps = {"DAY": "INTERVAL 1 DAY", "WEEK": "INTERVAL 7 DAY", "MONTH": "INTERVAL 1 MONTH", "YEAR": "INTERVAL 1 YEAR"}
+            subs = {"HOUR": "INTERVAL 1 HOUR", "MINUTE": "INTERVAL 1 MINUTE", "SECOND": "INTERVAL 1 SECOND",
+                    "MILLISECOND": "INTERVAL 1 MILLISECOND", "MICROSECOND": "INTERVAL 1 MICROSECOND"}
+            if unit in steps:
+                e = f"CAST({d} + ({n}) * {steps[unit]} AS DATE)"
+                ctx.converted_dates[name] = "date"
+            elif unit in subs:  # Qlik: IF(...) time(...) Timestamp([c] + (n / 24)); sin parte de fecha devuelve solo la hora
+                e = f"CAST({S} AS TIMESTAMP) + ({n}) * {subs[unit]}"
+                ctx.converted_dates[name] = "timestamp"
+            else:
+                raise Unsupported(f"MODIFY_DATES {unit}")
         return f"SELECT *, {e} AS {q(name)} FROM {v}" if c["shouldCreateNewColumn"] and name != col else f"SELECT * REPLACE ({e} AS {q(col)}) FROM {v}"
     cast = "DATE" if k == "CONVERT_TO_DATE" else "TIMESTAMP"
     # auto: solo los formatos que Qlik reconoce con el SET en-US (medido: '2026/09/09', '09-09-2026' y 'M/D/YYYY hh:mm' dan NULL)
