@@ -426,8 +426,18 @@ def _typed(ctx, t, cfg, v):
             c = cfg["removeNegativeValuesConfiguration"]
             return D(_per_col(ctx, v, {**c, "shouldCreateNewColumn": False},
                               lambda x: f"CASE WHEN TRY_CAST({x} AS DOUBLE) < 0 THEN NULL ELSE {x} END"))
-        if k == "COMPARE_NUMBERS":  # IF([c] = 0, TRUE, FALSE) AS [salida]; shortcut: solo la comparacion por defecto
-            return D(_per_col(ctx, v, cfg["compareNumbersConfiguration"], lambda x: f"CASE WHEN TRY_CAST({x} AS DOUBLE) = 0 THEN 'TRUE' ELSE 'FALSE' END"))
+        if k == "COMPARE_NUMBERS":  # IF([c] op valor, Dual('TRUE',-1), Dual('FALSE',0)) (medido 2026-11-27)
+            cn = cfg["compareNumbersConfiguration"]
+            ops = {"EQUALS": "=", "EQUAL": "=", "NOT_EQUALS": "<>", "GREATER_THAN": ">", "GREATER_OR_EQUAL": ">=",
+                   "LESS_THAN": "<", "LESS_OR_EQUAL": "<=", "GREATER_THAN_OR_EQUAL": ">=", "LESS_THAN_OR_EQUAL": "<="}
+            op = ops.get(cn.get("comparisonOperator", "EQUALS"))
+            if op is None:
+                raise Unsupported(f"compare numbers {cn.get('comparisonOperator')}")
+            if cn.get("comparisonType") in ("FIELD", "OTHER_COLUMN") and cn.get("column"):
+                rhs = f"TRY_CAST({q(cn['column'])} AS DOUBLE)"
+            else:
+                rhs = str(cn.get("constantValue", 0))
+            return D(_per_col(ctx, v, cn, lambda x: f"CASE WHEN TRY_CAST({x} AS DOUBLE) {op} {rhs} THEN 'TRUE' ELSE 'FALSE' END"))
         if k == "ROUND_DOWN_REAL":  # IF([c] > 0, Floor([c]), Ceil([c])): hacia cero
             return D(_per_col(ctx, v, cfg["roundDownRealConfiguration"], lambda x: f"trunc(TRY_CAST({x} AS DOUBLE))"))
         if k in _ROUND:  # ROUND([c], 0.01) / CEIL([c], 0.1) / FLOOR([c], 0.1): paso 10^-precision (ROUND(x) si es 0)
