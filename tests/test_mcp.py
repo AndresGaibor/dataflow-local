@@ -254,3 +254,9 @@ def test_unknown_tool_is_an_error(tmp_path):
     srv, _ = server(tmp_path)
     resp = call(srv, "dfemu_no_existe")
     assert resp["isError"] and "desconocida" in text(resp)
+
+
+def test_la_tabla_de_docs_sale_del_registro():
+    docs = (mcp._root() / "docs" / "MCP.md").read_text(encoding="utf-8")
+    assert mcp.markdown_table() in docs
+    assert docs.count("| `dfemu_") == len(mcp.REGISTRY)

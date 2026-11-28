@@ -103,34 +103,37 @@ def _text(s: str) -> dict:
 class Tools:
     """Implementaciones. `remote_factory` permite inyectar un doble en las pruebas."""
 
-    def __init__(self, root: Path | None = None, remote_factory=None, bridge_factory=None):
+    def __init__(self, root: Path | None = None, remote_factory=None, bridge_factory=None, env: dict | None = None):
         self.root = Path(root) if root else _root()
+        self.env = dict(os.environ if env is None else env)
         self._remote_factory = remote_factory
         self._bridge_factory = bridge_factory
-        self._cache: dict[bool, object] = {}
+        self._bridges: dict[bool, object] = {}
+        self._remotes: dict[bool, object] = {}
 
     # ----- infraestructura -----
     def bridge(self, apply: bool):
-        if apply not in self._cache:
+        apply = apply and self.env.get("DFEMU_MCP_APPLY", "1") != "0"  # simulacro global
+        if apply not in self._bridges:
             if self._bridge_factory:
                 b = self._bridge_factory(apply)
             else:
                 from . import bridge
 
                 b = bridge.Bridge(apply=apply)
-            self._cache[apply] = b
-        return self._cache[apply]
+            self._bridges[apply] = b
+        return self._bridges[apply]
 
     def remote(self, apply: bool = False):
-        if apply not in self._cache:
+        if apply not in self._remotes:
             if self._remote_factory:
                 r = self._remote_factory(apply)
             else:
                 from .remote import Remote
 
                 r = Remote(self.bridge(apply))
-            self._cache[apply] = r
-        return self._cache[apply]
+            self._remotes[apply] = r
+        return self._remotes[apply]
 
     def _flow(self, name: str):
         for f in self.remote(False).list_dataflows():
@@ -305,6 +308,181 @@ class Tools:
         r = reload.run(self.bridge(True), ref.app_id, wait_for=True, timeout=float(timeout))
         return f"{ref.name}: " + reload.summary(r)
 
+    # ----- edicion de grafos por API (sin navegador) -----
+    def _graph_of(self, flow: str):
+        """Flujo emu_ + su volcado + el grafo, comprobando el prefijo antes de tocar nada."""
+        ref = self._flow(flow)
+        _emu_name(ref.name, "el flujo a editar")
+        dump = self.remote(False).pull(ref.app_id)
+        graph = (dump.get("dataflow") or {}).get("graph") or {}
+        if not graph:
+            raise Failed(f"`{ref.name}` no tiene grafo legible")
+        return ref, dump, graph
+
+    def _push(self, ref, dump: dict, graph: dict, nota: str = "") -> str:
+        from .remote import Clone
+
+        res = self.remote(True).push_graph(Clone(ref.app_id, dump["dataflowId"], ref.name), graph)
+        status = res.validity.get("status")
+        codes = [v.get("code") for v in res.validity.get("nodesConstraintViolations") or []]
+        line = f"{ref.name}: {status}" + (f" {codes}" if codes else "") + f" ({len(graph.get('nodes') or [])} nodos)"
+        return line + (f"\n{nota}" if nota else "")
+
+    def flow_add_node(self, flow: str, type: str, after: str, config: dict | None = None, label: str = "") -> str:
+        from . import flowctl
+
+        ref, dump, graph = self._graph_of(flow)
+        ctype = next((k for k, s in flowctl.PROCESSORS.items() if type in (k, s.get("palette"))), type)
+        nuevo = flowctl.add_node(graph, ctype, after, label or flowctl.PROCESSORS.get(ctype, {}).get("label", ctype),
+                                 config or {})
+        insertado = [n for n in nuevo["nodes"] if n["id"] not in {x["id"] for x in graph["nodes"]}]
+        nota = f"nodo {insertado[0].get('label')} ({insertado[0].get('id')}) tras {after}" if insertado else ""
+        return self._push(ref, dump, nuevo, nota)
+
+    def flow_set_node(self, flow: str, node: str, config: dict | None = None, label: str | None = None) -> str:
+        from . import flowctl
+
+        ref, dump, graph = self._graph_of(flow)
+        return self._push(ref, dump, flowctl.set_node(graph, node, config or {}, label), f"nodo {node} actualizado")
+
+    def flow_remove_node(self, flow: str, node: str) -> str:
+        from . import flowctl
+
+        ref, dump, graph = self._graph_of(flow)
+        return self._push(ref, dump, flowctl.remove_node(graph, node), f"nodo {node} quitado y aristas reconectadas")
+
+    def flow_clone(self, base: str, name: str) -> str:
+        _emu_name(name, "el nombre del clon")
+        ref = self._flow(base)
+        c = self.remote(True).clone(ref.app_id, name)
+        return f"{name}: {c.app_id} (clon de {ref.name})"
+
+    def flow_backup(self, flow: str) -> str:
+        ref, dump, _graph = self._graph_of(flow)
+        out = self.root / "out" / "backups"
+        out.mkdir(parents=True, exist_ok=True)
+        path = out / f"{ref.name}-{time.strftime('%Y%m%d-%H%M%S')}.json"
+        path.write_text(json.dumps(dump, ensure_ascii=False, indent=1), encoding="utf-8")
+        return f"copia de {ref.name} en {path.relative_to(self.root).as_posix()}"
+
+    def flow_restore(self, flow: str, file: str) -> str:
+        ref, dump, _graph = self._graph_of(flow)
+        data = json.loads(Path(file).read_text(encoding="utf-8"))
+        graph = (data.get("dataflow") or data).get("graph") or data.get("graph")
+        if not graph:
+            raise Failed(f"`{file}` no trae un grafo (`dataflow.graph`)")
+        return self._push(ref, dump, graph, f"restaurado desde {file}")
+
+    # ----- Qlik script -----
+    def script_get(self, app: str) -> str:
+        ref = self._flow(app)
+        return f"script de {ref.name}:\n\n" + self.bridge(False).script_get(ref.app_id)
+
+    def script_set(self, app: str, script: str = "", path: str = "") -> str:
+        ref = self._flow(app)
+        _emu_name(ref.name, "la app del script")
+        if path:
+            text = Path(path).read_text(encoding="utf-8", newline="")
+        elif script:
+            text = script
+        else:
+            raise Failed("pasa `script` con el texto o `path` con el archivo .qvs")
+        self.bridge(True).script_set(ref.app_id, text)
+        return f"{ref.name}: script subido ({len(text.splitlines())} lineas)"
+
+    def script_validate(self, script: str = "", path: str = "") -> str:
+        if path:
+            text = Path(path).read_text(encoding="utf-8", newline="")
+        elif script:
+            text = script
+        else:
+            raise Failed("pasa `script` o `path`")
+        errors = self.bridge(False).script_validate(text)
+        return "sin errores" if not errors else "\n".join(f"- {e.get('qErrorString') or e}" for e in errors)
+
+    # ----- automatizaciones: definicion y parada -----
+    def automation_show(self, automation: str) -> str:
+        from . import automate
+
+        return json.dumps(automate.show(self.bridge(False), automation), ensure_ascii=False, indent=1)
+
+    def automation_update(self, automation: str, name: str = "", description: str = "") -> str:
+        from . import automate
+
+        info = automate.show(self.bridge(False), automation)
+        _emu_name(info.get("name") or "", "la automatizacion a modificar")
+        fields = {k: v for k, v in (("name", name), ("description", description)) if v}
+        if not fields:
+            raise Failed("nada que cambiar: pasa `name` o `description`")
+        if "name" in fields:
+            _emu_name(fields["name"], "el nombre nuevo")
+        a = automate.set(self.bridge(True), automation, **fields)
+        return f"{a.get('name')} ({a.get('id')}): {', '.join(sorted(fields))} actualizado"
+
+    def automation_copy(self, automation: str, name: str) -> str:
+        from . import automate
+
+        _emu_name(name, "el nombre de la copia")
+        a = automate.copy(self.bridge(True), automation, name)
+        return f"copia creada: {a.get('name')} ({a.get('id')})"
+
+    def automation_stop(self, automation: str, run_id: str) -> str:
+        from . import automate
+
+        r = automate.stop(self.bridge(True), automation, run_id)
+        return f"{run_id}: {r.get('status', 'parada solicitada')}"
+
+    # ----- tareas de recarga (scheduling) -----
+    def task_list(self, app: str) -> str:
+        from . import tasks
+
+        ref = self._flow(app)
+        rows = tasks.list_tasks(self.bridge(False), ref.app_id)
+        if not rows:
+            return f"{ref.name}: sin tareas"
+        return "\n".join(f"- {t.get('id')} {'habilitada' if t.get('enabled') else 'deshabilitada'} {t.get('name')}"
+                         for t in rows)
+
+    def task_schedule(self, app: str, name: str, recurrence: str, timezone: str = "UTC", enabled: bool = False) -> str:
+        from . import tasks
+
+        ref = self._flow(app)
+        _emu_name(ref.name, "la app de la tarea")
+        t = tasks.schedule(self.bridge(True), ref.app_id, name, recurrence, timezone, enabled)
+        return f"tarea {t.get('id')} creada ({'habilitada' if t.get('enabled') else 'deshabilitada'})"
+
+    def task_start(self, task: str) -> str:
+        from . import tasks
+
+        return str(tasks.start(self.bridge(True), task).get("message") or "tarea arrancada")
+
+    def task_set_enabled(self, task: str, enabled: bool = True) -> str:
+        from . import tasks
+
+        tasks.set_enabled(self.bridge(True), task, enabled)
+        return f"tarea {'habilitada' if enabled else 'deshabilitada'}"
+
+    def task_delete(self, task: str) -> str:
+        from . import tasks
+
+        tasks.delete(self.bridge(True), task)
+        return "tarea borrada"
+
+    # ----- emulador local -----
+    def emulate(self, file: str, data_dir: str = "data/practica", head: int = 3) -> str:
+        from . import compare, dfw, runner
+
+        dump = dfw.load(file)
+        out = self.root / "out" / "mcp"
+        res = runner.run(dump, str(self.root / data_dir), str(out))
+        fps = compare.local_fingerprints([t["dest"] for t in res], head=int(head))
+        lines = [f"{len(res)} destinos escritos en out/mcp/"]
+        for t in res:
+            stem = Path(str(t["dest"])).stem
+            cols = len((fps.get(stem) or {}).get("columns") or {})
+            lines.append(f"- {stem}: {t.get('rows')} filas, {cols} columnas")
+        return "\n".join(lines)
+
     def flow_delete(self, flow: str) -> str:
         ref = self._flow(flow)
         _emu_name(ref.name, "el flujo a borrar")
@@ -355,6 +533,49 @@ REGISTRY: dict[str, tuple[str, str, dict, str]] = {
         {"automation": _S, "context": _S, "confirm": _B}, ["automation"]), "automation_run"),
     "dfemu_battery_run": ("execute", "Mide un caso de la bateria contra el tenant (exige confirm).", _schema(
         {"case": _S, "confirm": _B}, ["case"]), "battery_run"),
+    # ----- edicion de grafos (API) -----
+    "dfemu_flow_clone": ("write", "Clona un flujo base en un flujo emu_ nuevo.", _schema(
+        {"base": _S, "name": _S}, ["base", "name"]), "flow_clone"),
+    "dfemu_flow_add_node": ("write", "Inserta un processor tras un nodo y sube el grafo (acepta el tipo o el nombre de la paleta).",
+                            _schema({"flow": _S, "type": _S, "after": _S, "config": {"type": "object"}, "label": _S},
+                                    ["flow", "type", "after"]), "flow_add_node"),
+    "dfemu_flow_set_node": ("write", "Mezcla configuracion en un nodo existente.", _schema(
+        {"flow": _S, "node": _S, "config": {"type": "object"}, "label": _S}, ["flow", "node"]), "flow_set_node"),
+    "dfemu_flow_remove_node": ("write", "Quita un nodo y reconecta sus aristas.", _schema(
+        {"flow": _S, "node": _S}, ["flow", "node"]), "flow_remove_node"),
+    "dfemu_flow_backup": ("read", "Guarda el .dfw actual en out/backups y devuelve la ruta.", _schema(
+        {"flow": _S}, ["flow"]), "flow_backup"),
+    "dfemu_flow_restore": ("write", "Sube un grafo guardado (backup) a un flujo emu_.", _schema(
+        {"flow": _S, "file": _S}, ["flow", "file"]), "flow_restore"),
+    # ----- Qlik script -----
+    "dfemu_script_get": ("read", "Script de Qlik actual de una app emu_.", _schema({"app": _S}, ["app"]), "script_get"),
+    "dfemu_script_set": ("write", "Sube un script de Qlik a una app emu_ (texto o archivo).", _schema(
+        {"app": _S, "script": _S, "path": _S}, ["app"]), "script_set"),
+    "dfemu_script_validate": ("read", "Pide al servidor que valide un script (no escribe).", _schema(
+        {"script": _S, "path": _S}), "script_validate"),
+    # ----- automatizaciones -----
+    "dfemu_automation_show": ("read", "Definicion completa de una automatizacion.", _schema(
+        {"automation": _S}, ["automation"]), "automation_show"),
+    "dfemu_automation_update": ("write", "Cambia nombre o descripcion de una automatizacion emu_.", _schema(
+        {"automation": _S, "name": _S, "description": _S}, ["automation"]), "automation_update"),
+    "dfemu_automation_copy": ("write", "Duplica una automatizacion emu_ con otro nombre emu_.", _schema(
+        {"automation": _S, "name": _S}, ["automation", "name"]), "automation_copy"),
+    "dfemu_automation_stop": ("execute", "Para una ejecucion en curso (exige confirm).", _schema(
+        {"automation": _S, "run_id": _S, "confirm": _B}, ["automation", "run_id"]), "automation_stop"),
+    # ----- tareas de recarga -----
+    "dfemu_task_list": ("read", "Tareas de recarga programadas de una app emu_.", _schema({"app": _S}, ["app"]), "task_list"),
+    "dfemu_task_schedule": ("write", "Programa una recarga con una regla RRULE.", _schema(
+        {"app": _S, "name": _S, "recurrence": _S, "timezone": _S, "enabled": _B},
+        ["app", "name", "recurrence"]), "task_schedule"),
+    "dfemu_task_start": ("execute", "Arranca una tarea habilitada (exige confirm).", _schema(
+        {"task": _S, "confirm": _B}, ["task"]), "task_start"),
+    "dfemu_task_set_enabled": ("write", "Habilita o deshabilita una tarea.", _schema(
+        {"task": _S, "enabled": _B}, ["task"]), "task_set_enabled"),
+    "dfemu_task_delete": ("destructive", "Borra una tarea de recarga (exige confirm y permiso).", _schema(
+        {"task": _S, "confirm": _B}, ["task"]), "task_delete"),
+    # ----- emulador local -----
+    "dfemu_emulate": ("read", "Ejecuta un .dfw en el emulador local y resume lo escrito.", _schema(
+        {"file": _S, "data_dir": _S, "head": _I}, ["file"]), "emulate"),
     "dfemu_flow_reload": ("execute", "Recarga un flujo emu_ y sigue el estado hasta el final (exige confirm).", _schema(
         {"flow": _S, "timeout": {"type": "number", "default": 180}, "confirm": _B}, ["flow"]), "flow_reload"),
     "dfemu_flow_delete": ("destructive", "Borra un flujo emu_ (exige confirm y permiso).", _schema(
@@ -368,6 +589,7 @@ class Server:
     def __init__(self, tools: Tools | None = None, env: dict | None = None, state_dir: Path | None = None):
         self.tools = tools or Tools()
         self.env = dict(os.environ if env is None else env)
+        self.tools.env = self.env  # el simulacro global tambien lo ve el emulador
         self.state_dir = Path(state_dir) if state_dir else Path(self.env.get("DFEMU_MCP_STATE_DIR") or
                                                                self.tools.root / ".dfemu-mcp")
 
@@ -417,6 +639,11 @@ class Server:
             self.audit(name, risk, False, int((time.monotonic() - started) * 1000))
             return {"content": [{"type": "text", "text": f"error: {e}"}], "isError": True}
         except Exception as e:  # noqa: BLE001 - el cliente ve el fallo, no la traza
+            from .bridge import DryRun
+
+            if isinstance(e, DryRun):  # simulacro: no se escribio nada
+                self.audit(name, risk, True, int((time.monotonic() - started) * 1000))
+                return _text(f"simulado: {e.method} {e.path} (activa las escrituras con DFEMU_MCP_APPLY=1)")
             self.audit(name, risk, False, int((time.monotonic() - started) * 1000))
             return {"content": [{"type": "text", "text": f"error: {type(e).__name__}: {e}"}], "isError": True}
 
@@ -464,8 +691,22 @@ class Server:
                 fout.flush()
 
 
+DOCS_INI, DOCS_FIN = "<!-- herramientas:inicio -->", "<!-- herramientas:fin -->"
+
+
+def markdown_table() -> str:
+    """Tabla del catalogo para docs/MCP.md: una fila por herramienta, generada del registro."""
+    rows = [DOCS_INI, "| Herramienta | Riesgo | Para qué |", "| --- | --- | --- |"]
+    rows += [f"| `{n}` | {r} | {d} |" for n, (r, d, _s, _m) in sorted(REGISTRY.items())]
+    rows.append(DOCS_FIN)
+    return chr(10).join(rows)
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
+    if "--markdown" in argv:
+        print(markdown_table())
+        return 0
     if "--list" in argv:
         for name, (risk, desc, _s, _m) in REGISTRY.items():
             print(f"{name:32} {risk:12} {desc}")

@@ -62,7 +62,7 @@ argumentos). Catálogo de herramientas y cómo registrarlo: [docs/MCP.md](docs/M
   `<!-- tests:inicio -->
 | cobertura de pruebas | valor |
 | --- | --- |
-| lineas de `emulator/` | 83.8 % |
-| lineas cubiertas | 2715 de 3241 |
+| lineas de `emulator/` | 84.3 % |
+| lineas cubiertas | 2857 de 3389 |
 | modulos con menos cobertura | `flowctl.py` (49.6 %), `__init__.py` (69.2 %), `uictl.py` (70.5 %) |
 <!-- tests:fin -->

@@ -37,27 +37,51 @@ búsqueda en la documentación) y falla con un mensaje claro en las que hablan c
 
 ## Herramientas
 
-Diecisiete, agrupadas por área. La primera llamada debería ser `dfemu_guide`.
+Treintaiséis, agrupadas por área (la tabla la genera `dfemu mcp --markdown` desde el registro).
+La primera llamada debería ser `dfemu_guide`.
 
+<!-- herramientas:inicio -->
 | Herramienta | Riesgo | Para qué |
 | --- | --- | --- |
-| `dfemu_guide` | read | Mapa de tareas por área (`overview`, `dataflow`, `script`, `automate`, `docs`, `battery`). |
-| `dfemu_status` | read | Objetos `emu_` del espacio de pruebas: flujos, archivos y automatizaciones. |
-| `dfemu_flow_list` | read | Flujos visibles y cuáles llevan prefijo `emu_`. |
-| `dfemu_flow_get` | read | `summary` (nodos en una línea) o `graph` (el `.dfw` completo). |
-| `dfemu_processors` | read | Los 24 processors del catálogo y cuáles tienen caso medido. |
-| `dfemu_script_translate` | read | Script de Qlik → SQL de DuckDB, con lo que no entendió. |
-| `dfemu_docs_search` | read | Busca texto en el corpus de `help.qlik.com` ya descargado. |
-| `dfemu_battery_cases` | read | Casos de la batería de processors. |
-| `dfemu_flow_push` | write | Sube un grafo a un clon `emu_` del flujo base y devuelve la validez del servidor. |
-| `dfemu_automation_create` | write | Crea una automatización `emu_`. |
-| `dfemu_automation_set_enabled` | write | Habilita o deshabilita una automatización `emu_`. |
-| `dfemu_automation_runs` | read | Ejecuciones de una automatización. |
-| `dfemu_automation_run` | execute | Ejecuta una automatización (exige `confirm: true`). |
-| `dfemu_battery_run` | execute | Mide un caso contra el tenant (exige `confirm: true`). |
-| `dfemu_flow_reload` | execute | Recarga un flujo `emu_` y sigue el estado hasta el final (exige `confirm: true`). |
-| `dfemu_flow_delete` | destructive | Borra un flujo `emu_`. |
-| `dfemu_automation_delete` | destructive | Borra una automatización `emu_`. |
+| `dfemu_automation_copy` | write | Duplica una automatizacion emu_ con otro nombre emu_. |
+| `dfemu_automation_create` | write | Crea una automatizacion emu_. |
+| `dfemu_automation_delete` | destructive | Borra una automatizacion emu_ (exige confirm y permiso). |
+| `dfemu_automation_run` | execute | Ejecuta una automatizacion emu_ (exige confirm). |
+| `dfemu_automation_runs` | read | Ejecuciones de una automatizacion. |
+| `dfemu_automation_set_enabled` | write | Habilita o deshabilita una automatizacion emu_. |
+| `dfemu_automation_show` | read | Definicion completa de una automatizacion. |
+| `dfemu_automation_stop` | execute | Para una ejecucion en curso (exige confirm). |
+| `dfemu_automation_update` | write | Cambia nombre o descripcion de una automatizacion emu_. |
+| `dfemu_battery_cases` | read | Casos de la bateria de processors. |
+| `dfemu_battery_run` | execute | Mide un caso de la bateria contra el tenant (exige confirm). |
+| `dfemu_docs_search` | read | Busca texto en la documentacion descargada de help.qlik.com. |
+| `dfemu_emulate` | read | Ejecuta un .dfw en el emulador local y resume lo escrito. |
+| `dfemu_flow_add_node` | write | Inserta un processor tras un nodo y sube el grafo (acepta el tipo o el nombre de la paleta). |
+| `dfemu_flow_backup` | read | Guarda el .dfw actual en out/backups y devuelve la ruta. |
+| `dfemu_flow_clone` | write | Clona un flujo base en un flujo emu_ nuevo. |
+| `dfemu_flow_delete` | destructive | Borra un flujo emu_ (exige confirm y permiso). |
+| `dfemu_flow_get` | read | Grafo de un flujo: resumen de nodos o el .dfw completo. |
+| `dfemu_flow_list` | read | Flujos visibles y cuales llevan prefijo emu_. |
+| `dfemu_flow_push` | write | Sube un grafo a un clon emu_ del flujo base. |
+| `dfemu_flow_reload` | execute | Recarga un flujo emu_ y sigue el estado hasta el final (exige confirm). |
+| `dfemu_flow_remove_node` | write | Quita un nodo y reconecta sus aristas. |
+| `dfemu_flow_restore` | write | Sube un grafo guardado (backup) a un flujo emu_. |
+| `dfemu_flow_set_node` | write | Mezcla configuracion en un nodo existente. |
+| `dfemu_guide` | read | Mapa de tareas: por donde empezar y en que orden usar el resto. |
+| `dfemu_processors` | read | Catalogo de processors y que casos tienen medidos. |
+| `dfemu_script_get` | read | Script de Qlik actual de una app emu_. |
+| `dfemu_script_set` | write | Sube un script de Qlik a una app emu_ (texto o archivo). |
+| `dfemu_script_translate` | read | Traduce un script de Qlik a SQL de DuckDB. |
+| `dfemu_script_validate` | read | Pide al servidor que valide un script (no escribe). |
+| `dfemu_status` | read | Que objetos emu_ hay ahora en el espacio de pruebas. |
+| `dfemu_task_delete` | destructive | Borra una tarea de recarga (exige confirm y permiso). |
+| `dfemu_task_list` | read | Tareas de recarga programadas de una app emu_. |
+| `dfemu_task_schedule` | write | Programa una recarga con una regla RRULE. |
+| `dfemu_task_set_enabled` | write | Habilita o deshabilita una tarea. |
+| `dfemu_task_start` | execute | Arranca una tarea habilitada (exige confirm). |
+<!-- herramientas:fin -->
+
+
 
 ## Permisos
 
@@ -69,6 +93,9 @@ El permiso lo aplica el servidor, no el asistente:
 | `write` | permitido | `DFEMU_MCP_ALLOW_WRITE=0` |
 | `execute` | permitido, con `confirm: true` | `DFEMU_MCP_ALLOW_EXECUTE=0` |
 | `destructive` | **bloqueado** | `DFEMU_MCP_ALLOW_DESTRUCTIVE=1`, y aun así exige `confirm: true` |
+
+Para enseñar el flujo sin escribir nada: `DFEMU_MCP_APPLY=0` convierte toda escritura en un simulacro que
+responde qué petición habría hecho (el mismo `DryRun` del CLI).
 
 Además, toda escritura se limita a objetos `emu_*`: el nombre se comprueba en el servidor antes de
 tocar el tenant, así que un `dfemu_flow_push` con nombre `produccion` se rechaza sin llamar a la API.

@@ -409,6 +409,7 @@ def main(argv=None):
     rl.add_argument("--apply", action="store_true", help="ejecutar en el tenant (sin esto solo simula)")
     mc = sub.add_parser("mcp", help="servidor MCP (stdio): herramientas para asistentes, permisos por riesgo y auditoria")
     mc.add_argument("--list", action="store_true", help="lista las herramientas con su riesgo y sale")
+    mc.add_argument("--markdown", action="store_true", help="tabla del catalogo en Markdown (la de docs/MCP.md)")
     sc = sub.add_parser("script", help="lee, escribe y valida el script de una app")
     scs = sc.add_subparsers(dest="action", required=True)
     scg = scs.add_parser("get", help="imprime el script actual de la app (lectura)")
@@ -475,7 +476,7 @@ def main(argv=None):
         return _reload(a)
     if a.cmd == "mcp":
         from . import mcp as mcp_mod
-        return mcp_mod.main(["--list"] if a.list else [])
+        return mcp_mod.main(["--list"] if a.list else ["--markdown"] if a.markdown else [])
     if a.cmd == "script-node":
         sys.exit(_script_node(a))
     if a.cmd == "automate":
