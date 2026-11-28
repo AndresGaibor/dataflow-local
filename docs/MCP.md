@@ -80,6 +80,36 @@ Cada llamada deja una línea en `.dfemu-mcp/audit.jsonl` (ignorado por git) con 
 riesgo, resultado y duración. **Nunca** los argumentos: un script o una ruta pueden llevar datos del
 tenant. `DFEMU_MCP_STATE_DIR` cambia la carpeta.
 
+## Skill del proyecto
+
+El repo trae una skill en `.agents/skills/dfemu/SKILL.md` (la que descubre Vibe en este proyecto). Es el mapa
+que necesita un asistente: qué comando sirve para cada tarea, la regla de escribir solo en `emu_` con `--apply`,
+el orden de intentos cuando la API no deja crear un nodo y cómo comprobar que un cambio está medido.
+`tests/test_skill.py` comprueba que su frontmatter es válido, que los comandos que documenta existen y que los
+documentos que enlaza están en el repo, así que no se puede quedar desfasada en silencio.
+
+Claude Code lee `.claude/skills/`: para usarla ahí, copia o enlaza la carpeta.
+
+```bash
+cp -r .agents/skills/dfemu .claude/skills/dfemu          # Linux/macOS
+mklink /D .claude\skills\dfemu .agents\skills\dfemu     # Windows (cmd)
+```
+
+## Capturar lo que manda la interfaz
+
+Hay cuerpos que la API no explica (`pivot`, `map-fields`, `subflow`, nodo `script`, `datasources`, import/export
+de `.dfw`: responden `ADF-500` o un 500 sin detalle). Cuando haga falta uno, se graba de la pestaña abierta:
+
+```bash
+playwright-cli attach --cdp=chrome     # sesión `chrome` (o DFEMU_BROWSER_SESSION)
+dfemu flow capture start               # instala el grabador en la pestaña de Qlik Cloud
+# ... la acción en la interfaz ...
+dfemu flow capture dump --only dataflows --save out/captures/pivot.json
+```
+
+`dump` imprime método, ruta sin host, estado y tamaños; con `--save` guarda los cuerpos completos. Es la única
+vía que queda para esos nodos, y por eso está a un comando en vez de en un script suelto.
+
 ## Límites conocidos
 
 - `pivot`, `map-fields`, `subflow` y el nodo `script` no se pueden crear por API en este tenant; para

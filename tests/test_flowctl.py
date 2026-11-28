@@ -69,3 +69,56 @@ def test_catalogo_de_procesadores_y_puertos():
 def test_add_sin_cfg_usa_la_configuracion_inicial():
     cfg = flowctl.add_node(_graph(), "sort", "src", "o", {})["nodes"][-1]["component"]["properties"]["configuration"]
     assert cfg["sortFields"] == [{"fieldPath": "", "sortOrder": "ASCENDING"}]
+
+
+# --- captura de los cuerpos que solo manda la interfaz ---------------------------------------
+def test_capture_summary_esconde_el_host_y_filtra():
+    items = [
+        {"url": "https://tenant.us.qlikcloud.com/api/v1/dataflow-apps/x/datasources", "method": "POST",
+         "status": 201, "req": "{}", "res": "ok"},
+        {"url": "https://tenant.us.qlikcloud.com/api/v1/items", "method": "GET", "status": 200, "req": None, "res": "[]"},
+    ]
+    todo = flowctl.capture_summary(items)
+    assert "tenant.us" not in todo  # el host no se imprime
+    assert "POST   /api/v1/dataflow-apps/x/datasources" in todo
+    solo = flowctl.capture_summary(items, only="datasources")
+    assert "datasources" in solo and "/api/v1/items" not in solo
+    assert flowctl.capture_summary([]) == "sin peticiones capturadas"
+
+
+def test_capture_start_instala_el_grabador(monkeypatch):
+    visto = {}
+
+    def fake_run_js(script):
+        visto["script"] = script
+        return {"ok": True, "n": 0, "msg": "grabador activo"}
+
+    monkeypatch.setattr(flowctl, "run_js", fake_run_js)
+    assert flowctl.capture("start") == "grabador activo"
+    assert "XMLHttpRequest.prototype.send" in visto["script"] and "window.fetch" in visto["script"]
+
+
+def test_capture_start_sin_pestana_no_miente(monkeypatch):
+    monkeypatch.setattr(flowctl, "run_js", lambda s: {"ok": False, "msg": "no hay pestana de Qlik Cloud abierta"})
+    assert flowctl.capture("start") == "error: no hay pestana de Qlik Cloud abierta"
+
+
+def test_capture_dump_guarda_el_json(monkeypatch, tmp_path):
+    items = [{"url": "/api/v1/dataflows/x", "method": "PUT", "status": 200, "req": '{"graph":{}}', "res": "{}"}]
+    monkeypatch.setattr(flowctl, "run_js", lambda s: {"ok": True, "items": items})
+    destino = tmp_path / "captura.json"
+    salida = flowctl.capture("dump", out=str(destino))
+    assert "1 peticiones guardadas" in salida and destino.exists()
+    import json as _json
+    assert _json.loads(destino.read_text(encoding="utf-8")) == items
+
+
+def test_capture_dump_falla_si_la_sesion_no_lee(monkeypatch):
+    monkeypatch.setattr(flowctl, "run_js", lambda s: {"ok": False, "msg": "sin sesion"})
+    with pytest.raises(flowctl.FlowError):
+        flowctl.capture("dump")
+
+
+def test_capture_rechaza_una_accion_desconocida():
+    with pytest.raises(flowctl.FlowError):
+        flowctl.capture("borrar")

@@ -47,7 +47,8 @@ grafo, traduce scripts, mide un caso de la batería y crea automatizaciones sin 
 lo aplica el servidor: leer siempre, escribir con `DFEMU_MCP_ALLOW_WRITE=0` para apagarlo, ejecutar con
 `confirm: true`, borrar bloqueado salvo `DFEMU_MCP_ALLOW_DESTRUCTIVE=1`. Toda escritura se limita a objetos
 `emu_*` y cada llamada queda en `.dfemu-mcp/audit.jsonl` (herramienta, riesgo y resultado; nunca los
-argumentos). Catálogo de herramientas y cómo registrarlo: [docs/MCP.md](docs/MCP.md); `dfemu mcp --list`.
+argumentos). Catálogo de herramientas y cómo registrarlo: [docs/MCP.md](docs/MCP.md); `dfemu mcp --list`. El repo incluye además la skill `.agents/skills/dfemu/SKILL.md` con el mapa de tareas, y
+`dfemu flow capture` para grabar los cuerpos que solo manda la interfaz (`pivot`, `datasources`, import/export).
 
 ## Qué cubre y qué no
 
@@ -62,6 +63,6 @@ argumentos). Catálogo de herramientas y cómo registrarlo: [docs/MCP.md](docs/M
 | cobertura de pruebas | valor |
 | --- | --- |
 | lineas de `emulator/` | 83.8 % |
-| lineas cubiertas | 2689 de 3207 |
-| modulos con menos cobertura | `flowctl.py` (45.3 %), `__init__.py` (69.2 %), `uictl.py` (70.5 %) |
+| lineas cubiertas | 2715 de 3241 |
+| modulos con menos cobertura | `flowctl.py` (49.6 %), `__init__.py` (69.2 %), `uictl.py` (70.5 %) |
 <!-- tests:fin -->

@@ -44,10 +44,11 @@ _JS = r"""async page => {
 }"""
 
 
-def call(method: str, path: str, body=None):
+def run_js(script: str):
+    """Corre un `async page => ...` en la sesion de playwright-cli y devuelve su valor ya decodificado."""
     fd, tmp = tempfile.mkstemp(suffix=".js")
     with os.fdopen(fd, "w", encoding="utf-8") as f:
-        f.write(_JS.replace("ARGS", json.dumps([method, path, body])))
+        f.write(script)
     try:
         p = subprocess.run(["playwright-cli", f"-s={SESSION}", "--raw", "run-code", f"--filename={tmp}"],
                            capture_output=True, text=True, encoding="utf-8", stdin=subprocess.DEVNULL, timeout=90, shell=os.name == "nt")
@@ -56,12 +57,90 @@ def call(method: str, path: str, body=None):
     finally:
         os.remove(tmp)
     try:
-        r = json.loads(json.loads(p.stdout))
+        return json.loads(p.stdout)
     except ValueError as e:
         raise FlowError(f"sesion '{SESSION}' no disponible (attach: playwright-cli attach --cdp=chrome): {(p.stdout + p.stderr)[:200]}") from e
+
+
+def call(method: str, path: str, body=None):
+    r = run_js(_JS.replace("ARGS", json.dumps([method, path, body])))
     if r["status"] == 0 or r["status"] >= 400:
         raise FlowError(f"{method} {path} -> {r['status']}: {r['body'][:300]}")
     return json.loads(r["body"]) if r["body"].strip() else None
+
+
+# --- captura de los cuerpos que solo manda la interfaz ---------------------------------------
+# La interfaz arma en el cliente los cuerpos de pivot, map-fields, subflow, nodo script, datasource
+# e import/export: por API ese cuerpo no se puede adivinar (ADF-500). Este grabador los recoge de la
+# pestana de Qlik Cloud ya abierta, que es la unica fuente que queda.
+_CAPTURE_START = r"""async page => {
+  const p = page.context().pages().find(x => /qlikcloud\.com/.test(x.url()));
+  if (!p) return JSON.stringify({ok: false, msg: 'no hay pestana de Qlik Cloud abierta'});
+  const n = await p.evaluate(() => {
+    if (window.__dfemuCap) return window.__dfemuCap.length;
+    window.__dfemuCap = [];
+    const push = (o) => { try { window.__dfemuCap.push(o); } catch (e) {} };
+    const of = window.fetch;
+    window.fetch = async (...a) => {
+      let url = '', method = 'GET', body = null;
+      try { const t = a[0]; url = typeof t === 'string' ? t : (t && t.url) || ''; const o = a[1] || {};
+            method = o.method || (t && t.method) || 'GET'; body = o.body === undefined ? null : String(o.body); } catch (e) {}
+      const r = await of(...a);
+      let text = null;
+      try { text = await r.clone().text(); } catch (e) {}
+      push({url, method, req: body, status: r.status, res: text});
+      return r;
+    };
+    const oo = XMLHttpRequest.prototype.open, os = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.open = function (m, u) { this.__m = m; this.__u = u; return oo.apply(this, arguments); };
+    XMLHttpRequest.prototype.send = function (b) {
+      const self = this;
+      this.addEventListener('load', () => push({url: String(self.__u), method: self.__m,
+        req: typeof b === 'string' ? b : null, status: self.status, res: self.responseText || ''}));
+      return os.apply(this, arguments);
+    };
+    return 0;
+  });
+  return JSON.stringify({ok: true, n, msg: 'grabador activo: haz la accion en la interfaz y luego `dfemu flow capture dump`'});
+}"""
+
+_CAPTURE_DUMP = r"""async page => {
+  const p = page.context().pages().find(x => /qlikcloud\.com/.test(x.url()));
+  if (!p) return JSON.stringify({ok: false, msg: 'no hay pestana de Qlik Cloud abierta', items: []});
+  const items = await p.evaluate(() => window.__dfemuCap || []);
+  return JSON.stringify({ok: true, items});
+}"""
+
+
+def capture_summary(items: list, only: str = "") -> str:
+    """Una linea por peticion. La URL sale sin host: el host lleva el tenant."""
+    rows = []
+    for it in items:
+        url = re.sub(r"^https?://[^/]+", "", str(it.get("url") or ""))
+        if only and only not in url:
+            continue
+        rows.append(f"{str(it.get('method')):6} {url[:78]:78} {it.get('status')}  "
+                    f"req {len(it.get('req') or ''):6}  res {len(it.get('res') or ''):6}")
+    return "\n".join(rows) or "sin peticiones capturadas"
+
+
+def capture(action: str, only: str = "", out: str = "") -> str:
+    """start: instala el grabador; dump: vuelca lo capturado (con `out`, guarda el JSON completo)."""
+    if action == "start":
+        r = run_js(_CAPTURE_START)
+        return r.get("msg") if r.get("ok") else f"error: {r.get('msg')}"
+    if action != "dump":
+        raise FlowError(f"accion de captura desconocida: {action}")
+    r = run_js(_CAPTURE_DUMP)
+    if not r.get("ok"):
+        raise FlowError(r.get("msg") or "no se pudo leer la captura")
+    items = r.get("items") or []
+    if out:
+        os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
+        with open(out, "w", encoding="utf-8") as f:
+            json.dump(items, f, ensure_ascii=False, indent=1)
+        return f"{capture_summary(items, only)}\n\n{len(items)} peticiones guardadas en {out}"
+    return capture_summary(items, only)
 
 
 # --- politica de escritura ------------------------------------------------------------------
@@ -235,6 +314,8 @@ def run(a) -> str:
                          for i in items.get("data", []) if i.get("resourceSubType") == "dataflow-prep")
     if a.action == "types":
         return "\n".join(f"{t:17} {s['palette']:18} in={','.join(s['in'])} out={','.join(s['out'])}" for t, s in PROCESSORS.items())
+    if a.action == "capture":  # no necesita un flujo: trabaja sobre la pestana abierta
+        return capture(a.step, a.only, a.save)
     df = resolve(a.flow)
     if a.action == "show":
         return render(df, a.full)
@@ -263,6 +344,10 @@ def main(argv=None) -> int:
     w.add_argument("--apply", action="store_true", help="escribir en el tenant (sin esto solo simula)")
     sub.add_parser("ls", help="flujos: id y nombre")
     sub.add_parser("types", help="los 24 procesadores de la paleta: tipo, nombre en la interfaz y puertos")
+    c = sub.add_parser("capture", help="graba los cuerpos que manda la interfaz (pivot, datasource, import/export...)")
+    c.add_argument("step", choices=["start", "dump"])
+    c.add_argument("--only", default="", help="dump: solo peticiones cuya URL contenga este texto")
+    c.add_argument("--save", default="", help="dump: guarda el JSON completo en esta ruta")
     for name, hlp in (("show", "nodos y aristas en pocas lineas"), ("node", "JSON completo de un nodo"), ("backup", "guarda el flujo en out/backups")):
         s = sub.add_parser(name, help=hlp)
         s.add_argument("flow", help="id (app o dataflow) o nombre exacto")
