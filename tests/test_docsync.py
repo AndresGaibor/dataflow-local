@@ -132,7 +132,13 @@ def test_check_reports_missing_and_returns_zero_when_complete(tmp_path, page_url
 
 
 def test_offline_corpus_has_no_broken_image_links():
-    """Los .md del repo no pueden referenciar imagenes que no existen en docs/_images."""
+    """Los .md del repo no pueden referenciar imagenes que no existen en docs/_images.
+
+    `docs/_images/` esta ignorado por git (son ~5.000 binarios): en un clon sin sincronizar no hay
+    imagenes que comprobar, asi que se omite en vez de fallar.
+    """
+    if not os.path.isdir(os.path.join(ROOT, "docs", "_images")):
+        pytest.skip("sin docs/_images: corre `python scripts/docsync.py` para comprobarlas")
     broken = ds.broken_images(os.path.join(ROOT, "docs"))
     assert broken == []
 
