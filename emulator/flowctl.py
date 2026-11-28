@@ -130,8 +130,43 @@ def capture_summary(items: list, only: str = "") -> str:
     return "\n".join(rows) or "sin peticiones capturadas"
 
 
+def capture_cdp(seconds: int = 120, out: str = "out/captures/cdp.jsonl", match: str = "dataflow") -> str:
+    """Graba la red con CDP (Node) mientras haces la accion en la pestaña.
+
+    El gancho de `fetch` de `capture start` se pierde al recargar y no ve service workers; este grabador
+    escucha el protocolo de Chrome y no se pierde nada. Necesita la instancia con --remote-debugging-port.
+    """
+    import subprocess
+
+    script = os.path.join(ROOT, "scripts", "cdp_capture.mjs")
+    os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
+    try:
+        p = subprocess.run(["node", script, "--port", os.environ.get("DFEMU_CDP_PORT", "9222"),
+                            "--match", match, "--out", out, "--seconds", str(int(seconds))],
+                           capture_output=True, text=True, encoding="utf-8", timeout=seconds + 60,
+                           shell=os.name == "nt")
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise FlowError(f"no se pudo grabar con CDP: {e}") from e
+    lineas = []
+    if os.path.exists(out):
+        with open(out, encoding="utf-8") as f:
+            for l in f:
+                try:
+                    o = json.loads(l)
+                except ValueError:
+                    continue
+                if o.get("method"):
+                    lineas.append(f"{o['method']:6} {str(o.get('url'))[:70]:70} req {o.get('reqBytes')}")
+    detalle = "\n".join(lineas) or "(sin peticiones)"
+    lineas_out = p.stdout.strip().splitlines()
+    cabecera = lineas_out[0] if lineas_out else "grabador"
+    return f"{cabecera}\n{detalle}"
+
+
 def capture(action: str, only: str = "", out: str = "") -> str:
     """start: instala el grabador; dump: vuelca lo capturado (con `out`, guarda el JSON completo)."""
+    if action == "cdp":
+        return capture_cdp(int(only or 120), out or "out/captures/cdp.jsonl")
     if action == "start":
         r = run_js(_CAPTURE_START)
         return r.get("msg") if r.get("ok") else f"error: {r.get('msg')}"
@@ -452,8 +487,8 @@ def main(argv=None) -> int:
     sub.add_parser("ls", help="flujos: id y nombre")
     sub.add_parser("types", help="los 24 procesadores de la paleta: tipo, nombre en la interfaz y puertos")
     c = sub.add_parser("capture", help="graba los cuerpos que manda la interfaz (pivot, datasource, import/export...)")
-    c.add_argument("step", choices=["start", "dump"])
-    c.add_argument("--only", default="", help="dump: solo peticiones cuya URL contenga este texto")
+    c.add_argument("step", choices=["start", "dump", "cdp"])
+    c.add_argument("--only", default="", help="dump: solo peticiones cuya URL contenga este texto; cdp: segundos")
     c.add_argument("--save", default="", help="dump: guarda el JSON completo en esta ruta")
     for name, hlp in (("show", "nodos y aristas en pocas lineas"), ("node", "JSON completo de un nodo"), ("backup", "guarda el flujo en out/backups")):
         s = sub.add_parser(name, help=hlp)

@@ -67,6 +67,7 @@ playwright-cli attach --cdp=chrome          # una vez; la sesión se llama `chro
 dfemu flow capture start                    # instala el grabador en la pestaña de Qlik Cloud
 # ... aquí se hace la acción en la interfaz: añadir Pivot, importar un .dfw, crear una fuente ...
 dfemu flow capture dump --only dataflows --save out/captures/pivot.json
+dfemu flow capture cdp --only 300   # grabador CDP: no se pierde al recargar ni con service workers
 ```
 
 `dump` imprime una línea por petición (método, ruta sin host, estado y tamaño) y con `--save` guarda los cuerpos

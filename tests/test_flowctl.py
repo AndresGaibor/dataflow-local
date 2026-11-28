@@ -201,3 +201,21 @@ def test_connect_une_y_no_pisa_una_entrada_ocupada():
     with pytest.raises(flowctl.FlowError) as e:
         flowctl.connect(g, "src", "dst")  # dst ya recibe de src
     assert "ya tiene una entrada conectada" in str(e.value)
+
+
+def test_capture_cdp_lanza_el_grabador_de_node(tmp_path, monkeypatch):
+    visto = {}
+
+    class P:
+        returncode = 0
+        stdout = "grabando en /dataflow/x\n"
+        stderr = ""
+
+    def falso(args, **kw):
+        visto["args"] = args
+        return P()
+
+    monkeypatch.setattr("subprocess.run", falso)
+    out = flowctl.capture_cdp(5, str(tmp_path / "c.jsonl"))
+    assert "cdp_capture.mjs" in " ".join(visto["args"]) and "--seconds" in visto["args"]
+    assert "grabando" in out and "(sin peticiones)" in out
