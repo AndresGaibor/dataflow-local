@@ -163,8 +163,45 @@ def capture_cdp(seconds: int = 120, out: str = "out/captures/cdp.jsonl", match: 
     return f"{cabecera}\n{detalle}"
 
 
+INTERESANTES = ("actions/schema", "datasources", "export", "import", "actions/copy")
+
+
+def capture_adopt(path: str) -> str:
+    """Resume un volcado del grabador CDP y saca lo que sirve para fabricar la herramienta.
+
+    Devuelve, por peticion interesante (esquema, datasource, export/import), el metodo, la ruta, el tamano y
+    el cuerpo ya formateado: es lo que se pega en la herramienta y en el caso de bateria.
+    """
+    if not os.path.exists(path):
+        raise FlowError(f"no existe {path}: graba antes con `dfemu flow capture cdp`")
+    piezas, reqs = [], 0
+    with open(path, encoding="utf-8") as f:
+        for linea in f:
+            try:
+                o = json.loads(linea)
+            except ValueError:
+                continue
+            url = str(o.get("url") or "")
+            if o.get("method"):
+                reqs += 1
+                if not any(x in url for x in INTERESANTES):
+                    continue
+                cuerpo = o.get("req")
+                try:
+                    pretty = json.dumps(json.loads(cuerpo), ensure_ascii=False, indent=1) if cuerpo else "(sin cuerpo)"
+                except (ValueError, TypeError):
+                    pretty = f"(no es JSON: {str(cuerpo)[:120]})"
+                piezas.append(f"### {o['method']} {url}\n```json\n{pretty[:4000]}\n```")
+    if not piezas:
+        return (f"{reqs} peticiones leidas de {path} y ninguna crea nada: repite la accion en la interfaz "
+                f"({', '.join(INTERESANTES)})")
+    return f"{len(piezas)} peticiones utiles de {reqs}\n\n" + "\n\n".join(piezas)
+
+
 def capture(action: str, only: str = "", out: str = "") -> str:
     """start: instala el grabador; dump: vuelca lo capturado (con `out`, guarda el JSON completo)."""
+    if action == "adopt":
+        return capture_adopt(out or "out/captures/cdp.jsonl")
     if action == "cdp":
         return capture_cdp(int(only or 120), out or "out/captures/cdp.jsonl")
     if action == "start":
@@ -487,9 +524,9 @@ def main(argv=None) -> int:
     sub.add_parser("ls", help="flujos: id y nombre")
     sub.add_parser("types", help="los 24 procesadores de la paleta: tipo, nombre en la interfaz y puertos")
     c = sub.add_parser("capture", help="graba los cuerpos que manda la interfaz (pivot, datasource, import/export...)")
-    c.add_argument("step", choices=["start", "dump", "cdp"])
+    c.add_argument("step", choices=["start", "dump", "cdp", "adopt"])
     c.add_argument("--only", default="", help="dump: solo peticiones cuya URL contenga este texto; cdp: segundos")
-    c.add_argument("--save", default="", help="dump: guarda el JSON completo en esta ruta")
+    c.add_argument("--save", default="", help="dump: guarda el JSON completo; adopt: ruta del volcado")
     for name, hlp in (("show", "nodos y aristas en pocas lineas"), ("node", "JSON completo de un nodo"), ("backup", "guarda el flujo en out/backups")):
         s = sub.add_parser(name, help=hlp)
         s.add_argument("flow", help="id (app o dataflow) o nombre exacto")

@@ -219,3 +219,27 @@ def test_capture_cdp_lanza_el_grabador_de_node(tmp_path, monkeypatch):
     out = flowctl.capture_cdp(5, str(tmp_path / "c.jsonl"))
     assert "cdp_capture.mjs" in " ".join(visto["args"]) and "--seconds" in visto["args"]
     assert "grabando" in out and "(sin peticiones)" in out
+
+
+def test_capture_adopt_saca_solo_las_peticiones_que_crean_algo(tmp_path):
+    volcado = tmp_path / "cdp.jsonl"
+    volcado.write_text(
+        '{"method":"POST","url":"/api/v1/dataflows/x/actions/schema","req":"{\\"a\\":1}","reqBytes":7}\n'
+        '{"method":"GET","url":"/api/v1/reloads","reqBytes":0}\n'
+        '{"ts":"2026-01-01T00:00:00Z","status":200,"url":"/api/v1/dataflows/x/actions/schema"}\n',
+        encoding="utf-8")
+    out = flowctl.capture_adopt(str(volcado))
+    assert "1 peticiones utiles de 2" in out
+    assert "actions/schema" in out and '"a": 1' in out
+    assert "reloads" not in out
+
+
+def test_capture_adopt_sin_peticiones_utiles_lo_dice(tmp_path):
+    volcado = tmp_path / "cdp.jsonl"
+    volcado.write_text('{"method":"GET","url":"/api/v1/reloads","reqBytes":0}\n', encoding="utf-8")
+    assert "ninguna crea nada" in flowctl.capture_adopt(str(volcado))
+
+
+def test_capture_adopt_sin_fichero_falla(tmp_path):
+    with pytest.raises(flowctl.FlowError):
+        flowctl.capture_adopt(str(tmp_path / "no-existe.jsonl"))
