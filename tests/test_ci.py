@@ -1,16 +1,15 @@
 """CI y cobertura publicada: el workflow y el bloque del README no se desincronizan.
 
-Sin push no hay CI ejecutado, asi que lo que si se puede comprobar en local es el contrato: la matriz
-(trabajo de Windows incluido), los pasos, y que la cifra del README sea la del ultimo `coverage.json`.
+Se comprueba con regex sobre el texto del workflow para no añadir PyYAML como dependencia.
 """
 import importlib.util
 import io
 import json
+import re
 import sys
 from pathlib import Path
 
 import pytest
-import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 WORKFLOW = ROOT / ".github" / "workflows" / "tests.yml"
@@ -24,35 +23,35 @@ def load_script(name: str):
 
 
 @pytest.fixture(scope="module")
-def workflow():
-    return yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
+def workflow() -> str:
+    return WORKFLOW.read_text(encoding="utf-8")
 
 
 def test_matrix_runs_ubuntu_and_windows_with_both_pythons(workflow):
-    job = workflow["jobs"]["pytest"]
-    matrix = job["strategy"]["matrix"]
-    assert set(matrix["os"]) == {"ubuntu-latest", "windows-latest"}
-    assert set(matrix["python-version"]) == {"3.11", "3.12"}
-    assert job["strategy"]["fail-fast"] is False
+    assert re.search(r"os:\s*\[\s*ubuntu-latest,\s*windows-latest\s*\]", workflow)
+    assert re.search(r'python-version:\s*\[\s*"3\.11",\s*"3\.12"\s*\]', workflow)
+    assert "fail-fast: false" in workflow
 
 
 def test_steps_cover_tests_coverage_mcp_and_samples(workflow):
-    runs = "\n".join(s.get("run", "") for s in workflow["jobs"]["pytest"]["steps"])
-    assert "pytest" in runs and "--cov=emulator" in runs
-    assert "scripts/test_coverage.py --check" in runs
-    assert "emulator.cli mcp --list" in runs
-    assert "emulator.cli coverage" in runs
+    assert "pytest" in workflow and "--cov=emulator" in workflow
+    assert "scripts/test_coverage.py --check" in workflow
+    assert "emulator.cli mcp --list" in workflow
+    assert "emulator.cli coverage" in workflow
 
 
-def test_workflow_installs_from_the_pinned_requirements(workflow):
-    uses = [s.get("uses", "") for s in workflow["jobs"]["pytest"]["steps"]]
-    assert any(u.startswith("actions/checkout@") for u in uses)
-    assert any(u.startswith("actions/setup-python@") for u in uses)
+def test_workflow_uses_existing_actions(workflow):
+    assert re.search(r"uses: actions/checkout@v\d+", workflow)
+    assert re.search(r"uses: actions/setup-python@v\d+", workflow)
 
 
-def test_requirements_pin_pytest_cov():
+def test_requirements_pin_everything_the_ci_installs():
     text = (ROOT / "requirements.txt").read_text(encoding="utf-8")
-    assert "pytest-cov==" in text
+    assert "duckdb==" in text and "pytest==" in text and "pytest-cov==" in text
+    # los tests no pueden depender de paquetes que el CI no instala
+    for name in ("yaml", "requests", "httpx"):
+        for test in (ROOT / "tests").glob("*.py"):
+            assert f"import {name}" not in test.read_text(encoding="utf-8"), f"{test.name} importa {name}"
 
 
 def test_readme_block_matches_the_last_coverage_report():
@@ -95,3 +94,26 @@ def test_check_fails_when_the_readme_is_stale(tmp_path, monkeypatch):
     assert cov.main(["--readme"]) == 0
     assert cov.main(["--check"]) == 0
     assert "<!-- tests:inicio -->" in (tmp_path / "README.md").read_text(encoding="utf-8")
+
+
+def test_check_tolera_decimas_entre_plataformas(tmp_path, monkeypatch):
+    cov = load_script("test_coverage")
+    monkeypatch.setattr(cov, "ROOT", tmp_path)
+    monkeypatch.setattr(cov, "REPORT", tmp_path / "out" / "coverage.json")
+    (tmp_path / "out").mkdir()
+
+    class Out(io.StringIO):
+        def reconfigure(self, **kw):
+            pass
+
+    monkeypatch.setattr(sys, "stdout", Out())
+    (tmp_path / "README.md").write_text("| lineas de `emulator/` | 84.3 % |\n", encoding="utf-8")
+
+    def report(pct: float) -> None:
+        cov.REPORT.write_text(json.dumps({"totals": {"percent_covered": pct, "covered_lines": 1,
+                                                     "num_statements": 1}, "files": {}}), encoding="utf-8")
+
+    report(84.0)  # Linux vs Windows pueden diferir en decimas
+    assert cov.main(["--check"]) == 0
+    report(86.0)  # eso ya no es una decima
+    assert cov.main(["--check"]) == 1

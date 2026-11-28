@@ -1,10 +1,11 @@
-"""La skill del proyecto no se puede quedar desfasada respecto al CLI ni a los documentos."""
+"""La skill del proyecto no se puede quedar desfasada respecto al CLI ni a los documentos.
+
+El frontmatter se lee sin PyYAML: `clave: valor` de primer nivel, que es todo lo que usa la skill.
+"""
 import re
 import subprocess
 import sys
 from pathlib import Path
-
-import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 SKILL = ROOT / ".agents" / "skills" / "dfemu" / "SKILL.md"
@@ -14,7 +15,13 @@ def frontmatter(path: Path) -> dict:
     text = path.read_text(encoding="utf-8")
     assert text.startswith("---\n"), f"{path.name} sin frontmatter"
     head = text.split("---", 2)[1]
-    return yaml.safe_load(head)
+    meta = {}
+    for line in head.splitlines():
+        if not line.strip() or line[:1].isspace() or ":" not in line:
+            continue
+        key, _, value = line.partition(":")
+        meta[key.strip()] = value.strip()
+    return meta
 
 
 def test_la_skill_tiene_frontmatter_valido():
