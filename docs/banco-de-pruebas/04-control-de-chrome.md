@@ -129,7 +129,9 @@ Observaciones:
 | `ui state` | validez, nodos con posición `@x,y` y aristas | sí |
 | `ui select N` / `ui panel` | selecciona el nodo y lista los controles del panel de propiedades (`rol \| etiqueta \| valor`) | sí |
 | `ui options ETIQUETA` | lista las opciones de un desplegable del panel (separadas por `\|`) | sí |
-| `ui fill ETIQUETA VALOR` | rellena un control del panel; en listas desplegables varios valores separados por `\|` | sí (input y listas) |
+| `ui fill ETIQUETA VALOR [--node N]` | rellena un control del panel por su **nombre accesible**; en listas desplegables varios valores separados por `\|`. Con `--node` abre antes el panel del nodo | sí (input, listas con `role=option`) |
+| `ui click TEXTO [--node N] [--wait MS]` | pulsa un botón, pestaña o texto visible por su nombre (sin coordenadas) | sí |
+| `ui steps RECETA.json` | ejecuta una receta de pasos (`abrir`/`fill`/`click`/`wait`) en **una sola sesión de página** | sí |
 | `ui apply` / `ui cancel` | pulsa Aplicar / Cancelar | sí |
 | `ui rename N TEXTO` | cambia el título con el lápiz del nodo (falla si no queda) | sí, guardado en el servidor |
 | `ui move N DX DY` | arrastra el nodo | sí |
@@ -170,7 +172,9 @@ sintéticos en la tabla no habilitan «Cargar en el flujo de datos» (la casilla
 corto `dfemu_flow_add_source`, que lo hace por API con el cuerpo capturado y deja el flujo `VALID`.
 
 El `schemaEntityId` de `pivot` y del nodo `script` sigue naciendo en «Aplicar», dentro del panel del nodo: el
-nodo creado por arrastre queda con `$state: UNCONFIGURED` y sin `schemaEntityId` (medido).
+nodo creado por arrastre queda con `$state: UNCONFIGURED` y sin `schemaEntityId` (medido). Por API, cualquier
+valor inventado para esa clave devuelve **500** (`INTERNAL_SERVER_ERROR`), así que solo lo puede producir la
+interfaz: es el motivo por el que el pivot hay que terminarlo desde el panel.
 
 ## El panel de propiedades de un nodo creado por arrastre
 
@@ -179,8 +183,35 @@ aplicar»** (no «Aplicar»). Para `Pivotar` son tres comboboxes —«Campo que 
 «Función de agregación»— y `dfemu ui fill` ya los encuentra aunque el panel no esté pegado a la derecha
 (antes solo miraba a partir de x=1230 y fallaba).
 
-Lo que falta para cerrar el círculo: las listas de esos comboboxes solo traen columnas cuando el nodo está
-conectado, así que hay que soltarlo sobre una arista (`ui add "Pivotar" --on NODO`), y ese soltar todavía
-deja el nodo sin conectar — la arista se puede crear por API con `ui connect`, pero la pestaña no se entera
-hasta recargarla. Ese encadenado (arrastrar sobre la arista → conectar → recargar → rellenar → «Ejecutar y
-aplicar») es lo siguiente a medir; el `schemaEntityId` nace en ese último paso.
+### El panel flota y se cierra entre llamadas: motor de pasos
+
+Dos `playwright-cli run-code` seguidos **no ven el mismo panel**: el panel de propiedades del nodo se cierra al
+soltar la pestaña, así que un `ui fill` aislado encuentra el control y el segundo ya no (medido con `Pivotar`).
+Por eso todo pasa por un único motor, `ui steps`, que recibe una receta y la ejecuta en la misma sesión:
+
+```json
+[ {"accion": "abrir", "node": "Pivotar"},
+  {"accion": "fill", "testid": "pivot.attributeFieldName", "value": "ciudad"},
+  {"accion": "fill", "testid": "pivot.valueFieldName", "value": "nombre"},
+  {"accion": "fill", "testid": "pivot.contains.type", "value": "Suma"},
+  {"accion": "click", "text": "Ejecutar y aplicar", "ms": 12000} ]
+```
+
+`ui fill` y `ui click` son azúcar sobre el mismo motor (`--node` antepone un `abrir`). Un paso que no deja el
+valor pedido se reporta `<- sin efecto` y el comando falla, en vez de dar por bueno el clic.
+
+Cómo se localizan los controles (todo por accesibilidad, nada por coordenadas):
+
+- **Nombre accesible**: los comboboxes del panel **no** traen `aria-label`; su etiqueta es el `<span id>` de
+  `aria-labelledby` («Campo que pivotar», «Campo de valores», «Función de agregación»). `ui panel` y `ui fill`
+  resuelven `aria-label` → `aria-labelledby` → `<label>` → `placeholder`, y Playwright busca por ese nombre.
+- **`data-testid` estables**: `pivot.attributeFieldName}`, `pivot.valueFieldName`, `pivot.contains.type`
+  (el primero sale con una llave pegada: se acepta por prefijo y se descartan los `.menuTrigger`).
+- **El panel flota** sobre el lienzo (x≈841), no pegado a la derecha: buscar solo a partir de x=1230 fallaba.
+  Se abre con *hover* + clic en el nodo (`abrir`), no basta con seleccionarlo.
+
+Lo que sigue abierto, medido: las listas de «Campo que pivotar» y «Campo de valores» **no son listas de
+opciones** sino grupos de casillas (`div._optionGroup`, `label._optionCheckbox`, `span._optionLabel`): pulsar
+la fila cierra el menú sin marcar nada y el `textContent` del combobox se queda vacío, así que la selección
+hay que hacerla marcando el `<input type=checkbox>` de la etiqueta. «Función de agregación» sí es una lista
+`role=option` y ya se rellena con `fill` (medido: quedó en «Suma»).

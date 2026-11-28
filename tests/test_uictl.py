@@ -23,7 +23,7 @@ def test_el_cli_acepta_las_acciones_documentadas(monkeypatch, capsys):
     monkeypatch.setattr(uictl, "run_js", lambda action, **a: llamadas.append((action, a)) or "ok")
     for argv in (["rename", "n", "t"], ["move", "n", "5", "-3"], ["fill", "Campo", "x|y"], ["apply"], ["undo"], ["add", "Ordenar", "--on", "abcd1234"], ["dataset", "cuentas.csv"], ["unlink", "a", "b"], ["rm", "n"], ["script"]):
         assert uictl.main(argv) == 0
-    assert [a for a, _ in llamadas] == ["rename", "move", "fill", "button", "tool", "add", "dataset", "unlink", "rm", "script"]
+    assert [a for a, _ in llamadas] == ["rename", "move", "steps", "button", "tool", "add", "dataset", "unlink", "rm", "script"]
 
 
 def test_apply_prueba_el_otro_nombre_del_boton(monkeypatch, capsys):
@@ -40,3 +40,28 @@ def test_apply_prueba_el_otro_nombre_del_boton(monkeypatch, capsys):
     assert uictl.main(["apply"]) == 0
     assert nombres == ["Aplicar", "Ejecutar y aplicar"]
     assert "ok" in capsys.readouterr().out or True
+
+
+def test_los_pasos_van_en_una_sola_sesion_y_abren_el_panel_del_nodo(monkeypatch):
+    """El panel flotante se cierra al soltar la pestana: abrir y rellenar viajan en el mismo run-code."""
+    vistos = []
+    monkeypatch.setattr(uictl, "run_js", lambda action, **a: vistos.append((action, a)) or [{"accion": "fill", "ok": True, "valor": "ciudad"}])
+    assert uictl.main(["fill", "Campo que pivotar", "ciudad", "--node", "Pivotar"]) == 0
+    assert vistos == [("steps", {"steps": [{"accion": "abrir", "node": "Pivotar"},
+                                          {"accion": "fill", "label": "Campo que pivotar", "value": "ciudad"}]})]
+
+
+def test_una_receta_json_se_lee_del_archivo(monkeypatch, tmp_path):
+    receta = tmp_path / "pivot.json"
+    receta.write_text('[{"accion": "abrir", "node": "Pivotar"}, {"accion": "click", "text": "Cancelar"}]', encoding="utf-8")
+    vistos = []
+    monkeypatch.setattr(uictl, "run_js", lambda action, **a: vistos.append(a) or [{"accion": "click", "ok": True}])
+    assert uictl.main(["steps", str(receta)]) == 0
+    assert vistos[0]["steps"][0] == {"accion": "abrir", "node": "Pivotar"}
+
+
+def test_un_paso_sin_efecto_falla_con_el_detalle(monkeypatch, capsys):
+    monkeypatch.setattr(uictl, "run_js", lambda action, **a: [{"accion": "fill", "label": "Campo", "pedido": "ciudad", "valor": "", "ok": False}])
+    with pytest.raises(SystemExit) as e:  # main traduce FlowError a SystemExit con el detalle
+        uictl.main(["fill", "Campo", "ciudad"])
+    assert "Campo" in str(e.value) and "sin efecto" in str(e.value)

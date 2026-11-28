@@ -46,20 +46,88 @@ _JS = {
     "select": r"""
   const b = await (await nodeLoc(A.node)).boundingBox(); await press(b.x + b.width / 2, b.y + 8); await page.waitForTimeout(700); return 'ok';""",
     "panel": r"""
-  return (await page.evaluate(() => [...document.querySelectorAll('input, button, textarea, select, [role=combobox], [role=switch], [role=checkbox], [role=radio]')].filter(e => { const r = e.getBoundingClientRect(); return r.x > 1230 && r.y > 100 && r.width > 0; }).map(e => { const lab = e.getAttribute('aria-label') || (e.labels && e.labels[0] && e.labels[0].innerText) || e.placeholder || ''; return (e.getAttribute('role') || e.tagName.toLowerCase()) + ' | ' + lab.trim().slice(0, 40) + ' | ' + (e.value || e.textContent || '').trim().slice(0, 40); }))).join('\n');""",
-    "fill": r"""
-  await page.evaluate(() => document.querySelectorAll('[data-ui]').forEach(e => e.removeAttribute('data-ui')));
-  const role = await page.evaluate(l => { const etq = x => [x.getAttribute('aria-label'), x.labels && x.labels[0] && x.labels[0].innerText, x.placeholder]; const todos = [...document.querySelectorAll('input, textarea, [role=combobox]')].filter(x => x.getBoundingClientRect().width > 0); const e = todos.find(x => x.getBoundingClientRect().x > 1230 && etq(x).some(t => (t || '').trim().startsWith(l))) || todos.find(x => etq(x).some(t => (t || '').trim().startsWith(l))); if (!e) return null; e.setAttribute('data-ui', '1'); return e.getAttribute('role') || e.tagName.toLowerCase(); }, A.label);
-  if (!role) throw new Error('no hay control "' + A.label + '" en el panel (ver `dfemu ui panel`)');
-  const c = page.locator('[data-ui="1"]'), b = await c.boundingBox();
-  if (role === 'combobox') {
-    await press(b.x + b.width / 2, b.y + b.height / 2); await page.waitForTimeout(600);
-    for (const v of A.value.split('|')) { await clickText(v); await page.waitForTimeout(300); }  // varios valores: lista separada por |
-    await page.keyboard.press('Escape');
-  } else {
-    await press(b.x + b.width / 2, b.y + b.height / 2); await page.keyboard.press('Control+A'); await page.keyboard.type(A.value); await page.keyboard.press('Tab');
+  // El nombre accesible sale de aria-label, aria-labelledby (es lo que usa Qlik: los comboboxes del panel
+  // no traen aria-label, solo un <span id> que los etiqueta), <label> o placeholder. Sin esto, el panel del
+  // Pivotar se veia como tres comboboxes vacios y no habia forma de rellenarlos por etiqueta.
+  const lineas = await page.evaluate(() => {
+    const nom = e => (e.getAttribute('aria-label') || (e.getAttribute('aria-labelledby') || '').split(/\s+/).map(i => (document.getElementById(i) || {}).textContent || '').join(' ') || (e.labels && e.labels[0] && e.labels[0].innerText) || e.placeholder || '').trim().replace(/\s+/g, ' ').slice(0, 50);
+    const sel = 'input, button, textarea, select, [role=combobox], [role=switch], [role=checkbox], [role=radio], [role=option]';
+    const todos = [...document.querySelectorAll(sel)].filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; });
+    const caja = document.querySelector('[role=dialog], [aria-label="Propiedades"], aside');
+    const dentro = caja ? todos.filter(e => caja.contains(e)) : [];
+    const fuera = todos.filter(e => e.getBoundingClientRect().x > 1230);
+    return (dentro.length ? dentro : fuera.length ? fuera : todos).map(e => (e.getAttribute('role') || e.tagName.toLowerCase()) + ' | ' + nom(e) + ' | ' + ((e.value || e.textContent || '').trim().slice(0, 44)));
+  });
+  return lineas.join('\n');""",
+    "steps": r"""
+  // Motor unico de la interfaz: ejecuta una lista de pasos en ESTA sesion de pagina. Hay que encadenarlos
+  // porque el panel flotante de propiedades se cierra al soltar la pestana: dos procesos de `playwright-cli`
+  // seguidos no ven el mismo panel (medido con el Pivotar).
+  //   {"accion":"abrir","node":"Pivotar"}          abre el panel de un nodo (hover + clic)
+  //   {"accion":"fill","label":"Campo","value":"x"} rellena por nombre accesible, o por --testid si lo hay
+  //   {"accion":"click","text":"Ejecutar y aplicar"} pulsa boton, pestana o texto
+  //   {"accion":"wait","ms":1500}
+  const abrir = async ref => {
+    const loc = await nodeLoc(ref), b = await loc.boundingBox();
+    await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2); await page.waitForTimeout(800);
+    await press(b.x + b.width / 2, b.y + b.height / 2); await page.waitForTimeout(2200);
+  };
+  const halla = async p => {
+    if (p.testid) {  // algunos testid salen con basura pegada ("pivot.valueFieldName}"), asi que se acepta el prefijo
+      const l = page.locator('[data-testid="' + p.testid + '"]');
+      if (await l.count()) return l.first();
+      const marcado = await page.evaluate(t => {
+        document.querySelectorAll('[data-ui]').forEach(e => e.removeAttribute('data-ui'));
+        const e = [...document.querySelectorAll('[data-testid]')].find(x => x.dataset.testid.startsWith(t) && !x.dataset.testid.endsWith('.menuTrigger'));
+        if (!e) return false; e.setAttribute('data-ui', '1'); return true;
+      }, p.testid);
+      if (marcado) return page.locator('[data-ui="1"]').first();
+    }
+    const nombre = p.label || p.text;
+    if (!nombre) return null;  // un paso por testid no trae texto: sin el no se consulta por nombre (Playwright revienta)
+    for (const l of [page.getByRole('combobox', {name: nombre}), page.getByLabel(nombre), page.getByRole('textbox', {name: nombre})]) if (await l.count()) return l.first();
+    return null;
+  };
+  const lee = loc => loc.evaluate(e => (e.value || e.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 60));
+  const pulsa = async loc => { await loc.click({force: true, timeout: 8000}).catch(async () => { await loc.dispatchEvent('click'); }); };
+  const opcion = async v => {  // 1) opcion con role=option; 2) fila del portal con el texto exacto
+    const pulsada = await page.evaluate(v => {
+      const vis = e => e.getBoundingClientRect().width > 0;
+      const ops = [...document.querySelectorAll('[role=option]')].filter(vis).filter(o => (o.textContent || '').trim() === v);
+      if (ops.length) { ops[0].click(); return true; }
+      const hojas = [...document.querySelectorAll('*')].filter(e => !e.children.length && vis(e) && (e.textContent || '').trim() === v);
+      if (!hojas.length) return false; hojas[hojas.length - 1].click(); return true;
+    }, v);
+    await page.waitForTimeout(900); return pulsada;
+  };
+  const informe = [];
+  for (const p of A.steps) {
+    if (p.accion === 'wait') { await page.waitForTimeout(p.ms || 1000); informe.push({accion: 'wait', ok: true}); continue; }
+    if (p.accion === 'abrir') { await abrir(p.node); informe.push({accion: 'abrir', node: p.node, ok: true}); continue; }
+    if (p.accion === 'click') {
+      let ok = false;
+      for (const l of [page.getByRole('button', {name: p.text}), page.getByRole('tab', {name: p.text}), page.getByLabel(p.text), page.getByText(p.text, {exact: true})]) {
+        if (await l.count()) { await l.last().click({force: true, timeout: 15000}).catch(async () => l.last().dispatchEvent('click')); ok = true; break; }
+      }
+      await page.waitForTimeout(p.ms || 1500); informe.push({accion: 'click', text: p.text, ok}); continue;
+    }
+    const ctrl = await halla(p);
+    if (!ctrl) { informe.push({accion: p.accion, label: p.label, testid: p.testid, ok: false, valor: null}); continue; }
+    const rol = (await ctrl.getAttribute('role')) || 'textbox';
+    if (rol !== 'combobox') {
+      await pulsa(ctrl); await page.keyboard.press('Control+A'); await page.keyboard.type(p.value);
+      await page.keyboard.press('Tab'); await page.waitForTimeout(400);
+    } else {
+      for (const v of String(p.value).split('|')) {  // varios valores: separados por |
+        if ((await lee(ctrl)) === v) continue;  // ya estaba
+        await pulsa(ctrl); await page.waitForTimeout(1200);
+        if (!(await opcion(v))) { await page.keyboard.type(v); await page.waitForTimeout(400); await page.keyboard.press('Enter'); await page.waitForTimeout(600); }
+      }
+    }
+    const ahora = await lee(ctrl);
+    informe.push({accion: 'fill', label: p.label, testid: p.testid, pedido: p.value, valor: ahora, ok: ahora === String(p.value).split('|').pop()});
   }
-  await page.waitForTimeout(500); return 'ok';""",
+  return JSON.stringify(informe);""",
     "options": r"""
   await page.evaluate(() => document.querySelectorAll('[data-ui]').forEach(e => e.removeAttribute('data-ui')));
   const ok = await page.evaluate(l => { const e = [...document.querySelectorAll('[role=combobox]')].find(x => x.getBoundingClientRect().x > 1230 && [x.getAttribute('aria-label'), x.labels && x.labels[0] && x.labels[0].innerText].some(t => (t || '').trim().startsWith(l))); if (e) e.setAttribute('data-ui', '1'); return !!e; }, A.label);
@@ -212,8 +280,33 @@ def run(a) -> str:
         return run_js(act, node=a.node)
     if act == "preview":
         return run_js("preview", node=a.node, n=a.rows)
-    if act == "fill":
-        return run_js("fill", label=a.label, value=a.value)
+    if act in ("fill", "click", "steps"):
+        if act == "steps":
+            if isinstance(a.steps, list):
+                pasos = a.steps
+            elif os.path.isfile(a.steps):
+                with open(a.steps, encoding="utf-8") as f:
+                    pasos = json.load(f)
+            else:
+                pasos = json.loads(a.steps)
+        elif act == "fill":
+            pasos = [{"accion": "fill", "label": a.label, "value": a.value}]
+        else:
+            pasos = [{"accion": "click", "text": a.text, "ms": a.wait}]
+        if getattr(a, "node", None):  # el panel del nodo hay que abrirlo en la misma sesion de pagina
+            pasos = [{"accion": "abrir", "node": a.node}] + pasos
+        informe = run_js("steps", steps=pasos)
+        if isinstance(informe, str):
+            try:
+                informe = json.loads(informe)
+            except ValueError:
+                return informe
+        lineas = [f"{x.get('accion')} {x.get('label') or x.get('testid') or x.get('text') or x.get('node') or ''}"
+                  f" = {x.get('valor') if x.get('valor') is not None else ''}".rstrip() + ("" if x.get("ok") else "   <- sin efecto")
+                  for x in informe]
+        if any(not x.get("ok") for x in informe):
+            raise flowctl.FlowError("pasos sin efecto:\n" + "\n".join(lineas))
+        return "\n".join(lineas)
     if act == "options":
         return run_js("options", label=a.label)
     if act in ("apply", "cancel"):
@@ -255,8 +348,17 @@ def main(argv=None) -> int:
         s.add_argument("node", help="prefijo del id o etiqueta")
         if n == "preview":
             s.add_argument("--rows", type=int, default=5)
-    s = sub.add_parser("fill", help="rellena un control del panel por su etiqueta; en listas desplegables varios valores con |")
-    s.add_argument("label"), s.add_argument("value")
+    for n, h in (("fill", "rellena un control del panel por su etiqueta; en listas desplegables varios valores con |"),
+                 ("click", "pulsa un boton, pestana o texto visible por su nombre (sin coordenadas)")):
+        s = sub.add_parser(n, help=h)
+        s.add_argument("label" if n == "fill" else "text")
+        if n == "fill":
+            s.add_argument("value")
+        else:
+            s.add_argument("--wait", type=int, default=1500, help="milisegundos a esperar tras pulsar")
+        s.add_argument("--node", help="abre antes el panel de este nodo (la misma sesion de pagina)")
+    s = sub.add_parser("steps", help="ejecuta una receta JSON de pasos en una sola sesion: abrir/fill/click/wait")
+    s.add_argument("steps", help="ruta del JSON o la lista en linea")
     s = sub.add_parser("options", help="opciones de una lista desplegable del panel")
     s.add_argument("label")
     sub.add_parser("apply", help="pulsa Aplicar en el panel"), sub.add_parser("cancel", help="pulsa Cancelar")
