@@ -140,6 +140,8 @@ class Bridge:
             ok = self._app_is_emu((df.get("context") or {}).get("dataAppId", ""))
         elif method == "POST" and path == "v1/reloads":
             ok = isinstance(body, dict) and self._app_is_emu(str(body.get("appId", "")))
+        elif method == "POST" and (m := re.fullmatch(r"v1/dataflow-apps/([^/]+)/datasources", path)):
+            ok = self._app_is_emu(m.group(1))  # el nodo fuente de un flujo: solo en apps emu_
         elif method == "POST" and (m := re.fullmatch(r"v1/reloads/([^/]+)/actions/cancel", path)):
             if not valid_id(m.group(1)):
                 raise SafetyError(f"id de recarga inválido: {m.group(1)!r}")

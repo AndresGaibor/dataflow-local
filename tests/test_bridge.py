@@ -140,6 +140,26 @@ def test_unknown_write_route_rejected(tmp_path):
     assert not writes(runner)
 
 
+@pytest.mark.parametrize("name, space, permitido", [
+    ("emu_x", SB, True),
+    ("fundamentos", SB, False),
+    ("emu_x", OTRO, False),
+])
+def test_datasource_de_un_flujo_solo_se_crea_en_apps_emu(tmp_path, name, space, permitido):
+    # el nodo fuente de un flujo: la ruta existe, y solo se permite cuando la app es emu_ del espacio de pruebas
+    routes = {
+        ("GET", "v1/apps/A"): {"attributes": {"name": name, "spaceId": space}},
+        ("POST", "v1/dataflow-apps/A/datasources"): {"sourceId": "s"},
+    }
+    b, runner = make(routes, tmp_path, apply=True)
+    if permitido:
+        assert b.post("v1/dataflow-apps/A/datasources", {"sourceId": "s"}) == {"sourceId": "s"}
+    else:
+        with pytest.raises(SafetyError):
+            b.post("v1/dataflow-apps/A/datasources", {"sourceId": "s"})
+        assert not writes(runner)
+
+
 def test_validatescript_allowed_in_dry_run(tmp_path):
     b, _ = make({("POST", "v1/apps/validatescript"): {"valid": True}}, tmp_path, apply=False)
     assert b.post("v1/apps/validatescript", {"script": "x"}) == {"valid": True}
