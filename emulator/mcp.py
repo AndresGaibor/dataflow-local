@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -142,10 +143,16 @@ class Tools:
         return self._remotes[apply]
 
     def _flow(self, name: str):
-        for f in self.remote(False).list_dataflows():
-            if f.name == name or f.app_id == name:
-                return f
-        raise Failed(f"no existe un flujo `{name}`")
+        remote = self.remote(False)
+        if re.fullmatch(r"[0-9a-f]{24}", name or ""):
+            for f in remote.list_dataflows():
+                if f.app_id == name:
+                    return f
+            raise Failed(f"no existe un flujo con id `{name}`")
+        try:
+            return remote.find(name)  # por nombre: el listado general se trunca
+        except Exception as e:  # noqa: BLE001 - el cliente ve el motivo real
+            raise Failed(str(e)) from e
 
     # ----- lectura -----
     def guide(self, mode: str = "overview") -> str:
@@ -395,6 +402,14 @@ class Tools:
             raise Failed(f"`{file}` no trae un grafo (`dataflow.graph`)")
         return self._push(ref, dump, graph, f"restaurado desde {file}")
 
+    def processor_definition(self, component: str) -> str:
+        """Definicion que da el servidor para un processor: configuracion inicial y puertos (medido)."""
+        d = self.bridge(False).get("v1/dataflows/components/definitions",
+                                   {"componentType": component, "nodeType": "processor"})
+        if not d or "type" not in d:
+            raise Failed(f"el servidor no devuelve definicion para `{component}`")
+        return json.dumps(d, ensure_ascii=False, indent=1)
+
     # ----- Qlik script -----
     def script_get(self, app: str) -> str:
         ref = self._flow(app)
@@ -617,6 +632,8 @@ REGISTRY: dict[str, tuple[str, str, dict, str]] = {
         {"flow": _S}, ["flow"]), "flow_backup"),
     "dfemu_flow_restore": ("write", "Sube un grafo guardado (backup) a un flujo emu_.", _schema(
         {"flow": _S, "file": _S}, ["flow", "file"]), "flow_restore"),
+    "dfemu_processor_definition": ("read", "Definición del servidor para un processor: configuración inicial y puertos.",
+                                   _schema({"component": _S}, ["component"]), "processor_definition"),
     # ----- Qlik script -----
     "dfemu_script_get": ("read", "Script de Qlik actual de una app emu_.", _schema({"app": _S}, ["app"]), "script_get"),
     "dfemu_script_set": ("write", "Sube un script de Qlik a una app emu_ (texto o archivo).", _schema(

@@ -82,6 +82,25 @@ class Remote:
             refs.append(FlowRef(it.get("name") or "", app_id, it.get("spaceId") or ""))
         return [r for r in refs if space_id is None or r.space_id == space_id]
 
+    def find(self, name: str) -> FlowRef:
+        """Busca un flujo por nombre exacto sin depender del listado general.
+
+        `v1/items` se trunca (el tenant tiene mas de 100 apps), asi que primero se filtra por `name`,
+        que es lo que hace la propia interfaz, y solo si no aparece se recorre el listado.
+        """
+        resp = self._b.get("v1/items", {"resourceType": "app", "limit": 20, "name": name})
+        items = (resp.get("data") or []) if isinstance(resp, dict) else (resp or [])
+        for it in items:
+            if it.get("name") != name or it.get("resourceSubType") != "dataflow-prep":
+                continue
+            app_id = (it.get("resourceAttributes") or {}).get("id") or it.get("resourceId")
+            if app_id:
+                return FlowRef(name, app_id, it.get("spaceId") or "")
+        for ref in self.list_dataflows():
+            if ref.name == name:
+                return ref
+        raise BridgeError(f"no existe un flujo `{name}`")
+
     def dataflow_id(self, app_id: str) -> str:
         return self._get(f"v1/dataflow-apps/{_check(app_id)}", "dataflowId")
 

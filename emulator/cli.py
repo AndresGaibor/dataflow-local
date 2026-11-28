@@ -251,12 +251,12 @@ def _reload(a) -> int:
     app = a.app
     try:
         if not re.fullmatch(r"[0-9a-f]{24}", app):  # 24 hex = id; si no, puede ser el nombre de un flujo
-            refs = [f for f in Remote(make_bridge(False)).list_dataflows() if f.name == app]
-            if refs:
-                app = refs[0].app_id
-            elif not valid_id(app):
-                print(f"error: ni id de app ni flujo `{app}`")
-                return 1
+            try:
+                app = Remote(make_bridge(False)).find(app).app_id
+            except (BridgeError, SafetyError):
+                if not valid_id(app):
+                    print(f"error: ni id de app ni flujo `{app}`")
+                    return 1
         r = reload.run(b, app, wait_for=not a.no_wait, timeout=a.timeout, interval=a.interval)
     except DryRun as e:
         print(f"[simulación] {e.method} {e.path}")

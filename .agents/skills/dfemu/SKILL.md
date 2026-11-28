@@ -31,6 +31,7 @@ Todo lo que se afirma sobre Qlik se **mide** primero: los hallazgos viven en
 | Añadir o cambiar un nodo | `dfemu flow add TIPO --after NODO --cfg JSON --apply`, `dfemu flow set`, `dfemu flow rm` |
 | Crear un flujo desde cero con sus nodos | `dfemu flow add` sobre un clon `emu_`, o `scripts/e2e_ventas.py --escenario ...` |
 | Recargar una app | `dfemu reload APP [--apply]` (acepta nombre de flujo o id) |
+| Saber la configuración de un processor | MCP: `dfemu_processor_definition` (el servidor da la config inicial y los puertos) |
 | Editar el grafo desde un asistente | MCP: `dfemu_flow_add_node`, `dfemu_flow_set_node`, `dfemu_flow_remove_node`, `dfemu_flow_backup`, `dfemu_flow_restore` |
 | Cambiar el script de una app | MCP: `dfemu_script_get`, `dfemu_script_set`, `dfemu_script_validate` |
 | Probar sin tocar el tenant | `DFEMU_MCP_APPLY=0` deja todas las escrituras del MCP en simulacro |

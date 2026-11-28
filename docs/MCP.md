@@ -37,7 +37,7 @@ búsqueda en la documentación) y falla con un mensaje claro en las que hablan c
 
 ## Herramientas
 
-Treintainueve, agrupadas por área (la tabla la genera `dfemu mcp --markdown` desde el registro).
+Cuarenta, agrupadas por área (la tabla la genera `dfemu mcp --markdown` desde el registro).
 La primera llamada debería ser `dfemu_guide`.
 
 <!-- herramientas:inicio -->
@@ -71,6 +71,7 @@ La primera llamada debería ser `dfemu_guide`.
 | `dfemu_flow_restore` | write | Sube un grafo guardado (backup) a un flujo emu_. |
 | `dfemu_flow_set_node` | write | Mezcla configuracion en un nodo existente. |
 | `dfemu_guide` | read | Mapa de tareas: por donde empezar y en que orden usar el resto. |
+| `dfemu_processor_definition` | read | Definición del servidor para un processor: configuración inicial y puertos. |
 | `dfemu_processors` | read | Catalogo de processors y que casos tienen medidos. |
 | `dfemu_script_get` | read | Script de Qlik actual de una app emu_. |
 | `dfemu_script_set` | write | Sube un script de Qlik a una app emu_ (texto o archivo). |

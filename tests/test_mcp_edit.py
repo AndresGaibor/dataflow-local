@@ -219,3 +219,26 @@ def test_emulate_ejecuta_un_dfw_local(tmp_path):
     srv = mcp.Server(tools=mcp.Tools(root=mcp._root()), env={"DFEMU_MCP_STATE_DIR": str(tmp_path)}, state_dir=tmp_path)
     out = text(call(srv, "dfemu_emulate", file="samples/fundamentos_filtro_basico.dfw"))
     assert "destinos escritos" in out
+
+
+# ----- definiciones del servidor -----
+def test_processor_definition_devuelve_lo_que_da_el_servidor(tmp_path):
+    r = FakeRunner(routes())
+    r.routes[("GET", "v1/dataflows/components/definitions")] = {
+        "type": "pivot", "properties": {"configuration": {"fieldToPivot": "", "valueField": "",
+                                                          "aggregation": "ONLY", "delimiter": ","}},
+        "handles": {"incoming": [{"type": "DEFAULT"}], "outgoing": [{"type": "DEFAULT"}]}}
+    tools = mcp.Tools(bridge_factory=lambda apply: Bridge(runner=r, apply=apply))
+    srv = mcp.Server(tools=tools, env={"DFEMU_MCP_STATE_DIR": str(tmp_path)}, state_dir=tmp_path)
+    out = json.loads(text(call(srv, "dfemu_processor_definition", component="pivot")))
+    assert out["type"] == "pivot" and out["properties"]["configuration"]["aggregation"] == "ONLY"
+    assert [h["type"] for h in out["handles"]["incoming"]] == ["DEFAULT"]
+
+
+def test_processor_definition_falla_si_el_servidor_no_contesta(tmp_path):
+    r = FakeRunner(routes())
+    r.routes[("GET", "v1/dataflows/components/definitions")] = {}
+    tools = mcp.Tools(bridge_factory=lambda apply: Bridge(runner=r, apply=apply))
+    srv = mcp.Server(tools=tools, env={"DFEMU_MCP_STATE_DIR": str(tmp_path)}, state_dir=tmp_path)
+    resp = call(srv, "dfemu_processor_definition", component="inventado")
+    assert resp["isError"] and "definicion" in text(resp)

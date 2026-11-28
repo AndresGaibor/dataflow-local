@@ -57,16 +57,22 @@ def run_js(script: str):
     finally:
         os.remove(tmp)
     try:
-        return json.loads(p.stdout)
+        value = json.loads(p.stdout)
     except ValueError as e:
         raise FlowError(f"sesion '{SESSION}' no disponible (attach: playwright-cli attach --cdp=chrome): {(p.stdout + p.stderr)[:200]}") from e
+    if isinstance(value, str):  # el script devolvio JSON.stringify(...): se decodifica la segunda vez
+        try:
+            value = json.loads(value)
+        except ValueError:
+            pass
+    return value
 
 
 def call(method: str, path: str, body=None):
     r = run_js(_JS.replace("ARGS", json.dumps([method, path, body])))
     if r["status"] == 0 or r["status"] >= 400:
         raise FlowError(f"{method} {path} -> {r['status']}: {r['body'][:300]}")
-    return json.loads(r["body"]) if r["body"].strip() else None
+    return json.loads(r["body"]) if r["body"].strip() else None  # el sobre {status, body} lo pone _JS
 
 
 # --- captura de los cuerpos que solo manda la interfaz ---------------------------------------
