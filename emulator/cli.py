@@ -10,9 +10,9 @@ import unicodedata
 import uuid
 
 from . import __version__
-from . import calibrate, compare, coverage, dfw, oracle, scriptnode, tasks
+from . import calibrate, compare, coverage, dfw, oracle, reload, scriptnode, tasks
 from . import script as qvs
-from .bridge import SANDBOX_SPACE_ID, Bridge, BridgeError, DryRun, SafetyError
+from .bridge import SANDBOX_SPACE_ID, Bridge, BridgeError, DryRun, SafetyError, valid_id
 from .remote import BASE_APP_ID, Remote, UnsupportedGraph
 
 
@@ -246,6 +246,28 @@ def _script_node(a) -> int:
     return 0 if status in ("VALID", "UNCHANGED") else 1
 
 
+def _reload(a) -> int:
+    b = make_bridge(a.apply)
+    app = a.app
+    try:
+        if not re.fullmatch(r"[0-9a-f]{24}", app):  # 24 hex = id; si no, puede ser el nombre de un flujo
+            refs = [f for f in Remote(make_bridge(False)).list_dataflows() if f.name == app]
+            if refs:
+                app = refs[0].app_id
+            elif not valid_id(app):
+                print(f"error: ni id de app ni flujo `{app}`")
+                return 1
+        r = reload.run(b, app, wait_for=not a.no_wait, timeout=a.timeout, interval=a.interval)
+    except DryRun as e:
+        print(f"[simulación] {e.method} {e.path}")
+        return 0
+    except (BridgeError, SafetyError, ValueError) as e:
+        print(f"error: {e}")
+        return 1
+    print(reload.summary(r))
+    return 0 if r.get("ok") is not False else 1
+
+
 def _task(a) -> int:
     b = make_bridge(a.apply)
     try:
@@ -379,6 +401,12 @@ def main(argv=None):
     co.add_argument("files", nargs="*", help="archivos .dfw (por omision, samples/**/*.dfw)")
     co.add_argument("--stub", action="store_true", help="sirve las fuentes de base de datos con 20 filas de relleno para ver si el resto del flujo ejecuta")
     co.add_argument("--data", default="data/practica", help="carpeta con los CSV de los datasets")
+    rl = sub.add_parser("reload", help="recarga una app emu_ por la API y sigue su estado")
+    rl.add_argument("app", help="id de la app emu_ (o nombre de un flujo emu_)")
+    rl.add_argument("--no-wait", action="store_true", help="lanza la recarga y no espera")
+    rl.add_argument("--timeout", type=float, default=300, help="segundos de espera (por omision 300)")
+    rl.add_argument("--interval", type=float, default=2, help="segundos entre consultas (por omision 2)")
+    rl.add_argument("--apply", action="store_true", help="ejecutar en el tenant (sin esto solo simula)")
     mc = sub.add_parser("mcp", help="servidor MCP (stdio): herramientas para asistentes, permisos por riesgo y auditoria")
     mc.add_argument("--list", action="store_true", help="lista las herramientas con su riesgo y sale")
     sc = sub.add_parser("script", help="lee, escribe y valida el script de una app")
@@ -443,6 +471,8 @@ def main(argv=None):
         sys.exit(1 if calibrate.disagreements(rows) else 0)
     if a.cmd == "compare":
         return _compare(a)
+    if a.cmd == "reload":
+        return _reload(a)
     if a.cmd == "mcp":
         from . import mcp as mcp_mod
         return mcp_mod.main(["--list"] if a.list else [])

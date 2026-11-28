@@ -38,6 +38,8 @@ python -m emulator.cli task enable ID_TAREA --apply   # una tarea deshabilitada 
 
 Sin `--apply` solo simula. Detalles y trampas (tareas deshabilitadas, destinos de Google Drive) en el apartado 10 ter del documento de hallazgos.
 
+`python -m emulator.cli reload APP` recarga una app `emu_` (acepta el id o el nombre del flujo) y sigue el estado `QUEUED → RELOADING → SUCCEEDED/FAILED`, mostrando la linea util del log cuando falla. Igual que el resto, simula sin `--apply`.
+
 ## Asistente (MCP)
 
 `dfemu mcp` es un servidor [MCP](https://modelcontextprotocol.io/) en stdio: un asistente lista flujos, lee el
@@ -59,7 +61,7 @@ argumentos). Catálogo de herramientas y cómo registrarlo: [docs/MCP.md](docs/M
   `<!-- tests:inicio -->
 | cobertura de pruebas | valor |
 | --- | --- |
-| lineas de `emulator/` | 83.6 % |
-| lineas cubiertas | 2620 de 3133 |
+| lineas de `emulator/` | 83.8 % |
+| lineas cubiertas | 2689 de 3207 |
 | modulos con menos cobertura | `flowctl.py` (45.3 %), `__init__.py` (69.2 %), `uictl.py` (70.5 %) |
 <!-- tests:fin -->

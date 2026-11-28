@@ -297,6 +297,14 @@ class Tools:
                                      str(self.root / "out" / "battery"))
         return f"{case}: {status} {detail}".strip()
 
+    def flow_reload(self, flow: str, timeout: float = 180) -> str:
+        from . import reload
+
+        ref = self._flow(flow)
+        _emu_name(ref.name, "el flujo a recargar")
+        r = reload.run(self.bridge(True), ref.app_id, wait_for=True, timeout=float(timeout))
+        return f"{ref.name}: " + reload.summary(r)
+
     def flow_delete(self, flow: str) -> str:
         ref = self._flow(flow)
         _emu_name(ref.name, "el flujo a borrar")
@@ -347,6 +355,8 @@ REGISTRY: dict[str, tuple[str, str, dict, str]] = {
         {"automation": _S, "context": _S, "confirm": _B}, ["automation"]), "automation_run"),
     "dfemu_battery_run": ("execute", "Mide un caso de la bateria contra el tenant (exige confirm).", _schema(
         {"case": _S, "confirm": _B}, ["case"]), "battery_run"),
+    "dfemu_flow_reload": ("execute", "Recarga un flujo emu_ y sigue el estado hasta el final (exige confirm).", _schema(
+        {"flow": _S, "timeout": {"type": "number", "default": 180}, "confirm": _B}, ["flow"]), "flow_reload"),
     "dfemu_flow_delete": ("destructive", "Borra un flujo emu_ (exige confirm y permiso).", _schema(
         {"flow": _S, "confirm": _B}, ["flow"]), "flow_delete"),
     "dfemu_automation_delete": ("destructive", "Borra una automatizacion emu_ (exige confirm y permiso).", _schema(

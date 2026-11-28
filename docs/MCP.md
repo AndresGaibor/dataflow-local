@@ -37,7 +37,7 @@ búsqueda en la documentación) y falla con un mensaje claro en las que hablan c
 
 ## Herramientas
 
-Dieciséis, agrupadas por área. La primera llamada debería ser `dfemu_guide`.
+Diecisiete, agrupadas por área. La primera llamada debería ser `dfemu_guide`.
 
 | Herramienta | Riesgo | Para qué |
 | --- | --- | --- |
@@ -55,6 +55,7 @@ Dieciséis, agrupadas por área. La primera llamada debería ser `dfemu_guide`.
 | `dfemu_automation_runs` | read | Ejecuciones de una automatización. |
 | `dfemu_automation_run` | execute | Ejecuta una automatización (exige `confirm: true`). |
 | `dfemu_battery_run` | execute | Mide un caso contra el tenant (exige `confirm: true`). |
+| `dfemu_flow_reload` | execute | Recarga un flujo `emu_` y sigue el estado hasta el final (exige `confirm: true`). |
 | `dfemu_flow_delete` | destructive | Borra un flujo `emu_`. |
 | `dfemu_automation_delete` | destructive | Borra una automatización `emu_`. |
 
