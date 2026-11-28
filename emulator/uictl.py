@@ -217,7 +217,15 @@ def run(a) -> str:
     if act == "options":
         return run_js("options", label=a.label)
     if act in ("apply", "cancel"):
-        return run_js("button", name="Aplicar" if act == "apply" else "Cancelar")
+        if act == "cancel":
+            return run_js("button", name="Cancelar")
+        # el boton se llama de una forma u otra segun el nodo: "Aplicar" o "Ejecutar y aplicar"
+        for nombre in ("Aplicar", "Ejecutar y aplicar"):
+            try:
+                return run_js("button", name=nombre)
+            except flowctl.FlowError as e:
+                ultimo = e
+        raise ultimo
     if act == "rename":
         return run_js("rename", node=a.node, text=a.text)
     if act == "move":
