@@ -23,6 +23,10 @@ jobs:
       - name: Instalar dependencias
         run: pip install -r requirements.txt
       - name: Pruebas locales (sin tenant)
-        run: python -m pytest -q
+        run: python -m pytest -q --cov=emulator --cov-report=json:out/coverage.json
+      - name: Cobertura publicada en el README
+        run: python scripts/test_coverage.py --check
+      - name: Herramientas del asistente (MCP)
+        run: python -m emulator.cli mcp --list
       - name: Emular los samples (sin tenant ni red)
         run: python -m emulator.cli coverage

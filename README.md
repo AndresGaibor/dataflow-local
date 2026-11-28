@@ -55,34 +55,11 @@ argumentos). Catálogo de herramientas y cómo registrarlo: [docs/MCP.md](docs/M
 
 ## Desarrollo
 
-- `python -m pytest` corre todo sin tenant ni red. `tests/conftest.py` fija ids de relleno aunque exista `dfemu.local.json`; con `DFEMU_TENANT=1` usa los ids reales y activa las pruebas contra el tenant.
-- `python scripts/docsync.py` replica la documentación de Qlik Cloud desde `help.qlik.com` (sitemap `cloud-services_en-US`, ~3.000 páginas): escribe `docs/<sección>/**.md` con frontmatter (`source_url`, `version`, `last_updated`, `sha256`), baja las imágenes a `docs/_images/` (ignorado por git) y deja `docs/manifest.json`. Es idempotente: `--check` falla si falta una página o una imagen, `--prune` borra los `.md` que ya no están en el sitemap y `--list` lista las familias disponibles. La documentación de Qlik Automate queda en `docs/Automate/`.
-- Los `.dfw` de `samples/` tienen ids desidentificados: sirven para validar y emular en local, no se pueden subir al tenant. Para eso se usan los grafos descargados con `dfemu pull` en `out/` (ignorado por git).
-- `dfemu automate ls|show|new|set|rm|enable|disable|copy|run|runs` controla Qlik Automate por API (`api/workflows/automations`, la ruta vigente): las escrituras solo sobre automatizaciones `emu_*` del espacio de pruebas y con `--apply`; `new` acepta `--workspace archivo.json` con los bloques del editor.
-- `dfemu script get APP` / `dfemu script set APP FILE --apply` / `dfemu script validate FILE` leen, escriben y validan el script de una app (las escrituras solo en apps `emu_` y con `--apply`; `validate` no escribe).
-- `dfemu script-node` crea un nodo `script` por API (reutilizando el de una copia de un flujo que ya los tiene) y guarda el script que genera Qlik, para verificarlo con `dfemu translate --compare`. Las reglas de trabajo del proyecto están en `CLAUDE.md`.
-- `dfemu translate SCRIPT --compare --apply` ejecuta un script de Qlik en el tenant y lo compara con su traducción local a SQL.
-- `python scripts/script_inventory.py --write` mide qué constructs de Qlik script aparecen en el corpus (`out/**/*.pull.json`, `samples/`) y cuáles cubre el traductor; deja la tabla en `docs/banco-de-pruebas/05-cobertura-script.md`. Un nodo de script es un fragmento con `RESIDENT` de tablas que crea otro nodo, así que la cobertura se mide contra lo que el traductor conoce, no traduciendo cada fragmento suelto.
-- `python scripts/e2e_ventas.py [--escenario ventas|calidad|normalizacion] [--local]` ejecuta un flujo de varios nodos (por omision `ventas`: clientes + cuentas, 12 nodos; `normalizacion` y `calidad`: datos sucios de 20 filas, sin editor) en el emulador y en el tenant y compara (`--local`: solo emulador; la primera vez hay que registrar las fuentes en el editor, ver 9 quater).
-- `python scripts/processor_battery.py [CASO ...]` ejecuta los casos indicados (o los 129) en el emulador y en el tenant y compara los resultados (escribe en el tenant, cuesta, y limpia lo que crea; lanzar solo los casos nuevos). Es la prueba que más ha corregido al emulador: ver el apartado 9 quater del documento de hallazgos.
-- Los objetos creados en el tenant llevan el prefijo `emu_`; `dfemu cleanup --apply` borra apps y archivos `emu_` de `DataFiles`. Los archivos escritos en carpetas de Google Drive no los ve.
-
-## Cobertura
-
-<!-- cobertura:inicio -->
-| cobertura de Qlik script | valor |
+- `python scripts/test_coverage.py` corre las pruebas con `pytest-cov` y publica la cifra en el bloque
+  `<!-- tests:inicio -->
+| cobertura de pruebas | valor |
 | --- | --- |
-| scripts en el corpus | 8 |
-| constructs distintos | 13 |
-| sin cubrir | 0 |
-| cubiertos sin medir en el tenant | 5 |
-<!-- cobertura:fin -->
-
-<!-- processors:inicio -->
-| cobertura de processors | valor |
-| --- | --- |
-| processors en el catalogo | 24 |
-| casos de bateria | 157 |
-| con al menos un caso medido | 20 |
-| sin caso | 4 |
-<!-- processors:fin -->
+| lineas de `emulator/` | 83.6 % |
+| lineas cubiertas | 2620 de 3133 |
+| modulos con menos cobertura | `flowctl.py` (45.3 %), `__init__.py` (69.2 %), `uictl.py` (70.5 %) |
+<!-- tests:fin -->
