@@ -1,6 +1,6 @@
 # dataflow-local: reglas del proyecto
 
-Banco de pruebas para los Data Flows de Qlik Cloud (emulador, comparador, traductor de scripts). Lo medido contra el tenant está en `docs/banco-de-pruebas/01-hallazgos-api-qlik.md`; empezar por ahí, no repetir pruebas ya hechas.
+Banco de pruebas para los Data Flows de Qlik Cloud (emulador, comparador, traductor de scripts). Lo medido contra el tenant está en `docs/banco-de-pruebas/01-hallazgos-api-qlik.md`; empezar por ahí, no repetir pruebas ya hechas. El punto de partida de una sesión nueva (estado, pendientes y entorno) está en `docs/banco-de-pruebas/06-handoff.md`.
 
 ## Seguridad (repositorio público)
 - El tenant solo se escribe a través de `Bridge` y solo sobre objetos `emu_*` del espacio de pruebas. Nada que no empiece por `emu_` se modifica ni se borra. Las escrituras exigen `--apply`; sin él, simulan.
