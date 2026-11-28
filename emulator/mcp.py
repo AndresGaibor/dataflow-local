@@ -406,7 +406,10 @@ class Tools:
         res = remoto.push_graph(nuevo, grafo)
         codes = [v.get("code") for v in res.validity.get("nodesConstraintViolations") or []]
         return (f"{name}: {nuevo.app_id} creado desde cero ({len(grafo['nodes'])} nodos) -> "
-                f"{res.validity.get('status')}" + (f" {codes}" if codes else ""))
+                f"{res.validity.get('status')}" + (f" {codes}" if codes else "") +
+                "\naviso: la recarga de un flujo nuevo falla en la seccion generada porque el FROM sale sin el "
+                "prefijo del conector del espacio (lib://DataFiles/... en vez de lib://<espacio>:DataFiles/...); "
+                "hay que abrirlo en el editor una vez para que enlace la conexion")
 
     def flow_add_source(self, flow: str, dataset: str, label: str = "", to: str = "", fields: str = "") -> str:
         """Registra un dataset del catalogo como fuente del flujo (lo que la interfaz hace al cargarlo)."""

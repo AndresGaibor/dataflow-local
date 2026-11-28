@@ -164,7 +164,9 @@ class Remote:
                               "publica el esquema del catalogo")
         cuerpo = {"datasources": [{
             "connections": conns,
-            "tables": [{"databaseName": it.get("name"), "dataconnectorName": next(iter(conns)),
+            # el nombre lleva el prefijo del conector: el script generado usa `lib://<nombre>/...` y sin el
+            # prefijo el motor no encuentra la conexion al recargar (medido: falla en la seccion generada)
+            "tables": [{"databaseName": it.get("name"), "dataconnectorName": f"{prefijo}{next(iter(conns))}",
                         "dataconnectorPrefix": prefijo, "fields": [{"name": c} for c in columnas],
                         "tableName": tabla, "tableAlias": tabla,
                         "formatSpec": "(txt, utf8, embedded labels, delimiter is ',', msq)", "ownerName": "TYPE9_CSV"}],
