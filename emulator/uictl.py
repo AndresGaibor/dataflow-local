@@ -86,14 +86,24 @@ _JS = {
   const n = await nodeLoc(A.node);  // menu del nodo > Eliminar; la tecla Suprimir no siempre borra
   await n.locator('button').last().evaluate(e => e.click()); await page.waitForTimeout(600); await clickText('Eliminar'); await page.waitForTimeout(1500); return 'ok';""",
     "add": r"""
+  // La paleta escucha los DragEvent HTML5: con mouse.down/move/up no se mueve nada (medido). Se lanzan
+  // dragstart/dragover/drop con un DataTransfer, que es lo que abre el catalogo o deja el procesador.
   await tab(A.tab || 'Procesadores');
-  await page.evaluate(n => {
-    document.querySelectorAll('[data-probe]').forEach(x => x.removeAttribute('data-probe'));
-    const e = [...document.querySelectorAll('[role=tabpanel] *')].find(x => x.children.length === 0 && x.offsetParent !== null && (x.textContent || '').replace(/[​\s]/g, '') === n.replace(/\s/g, ''));  // el texto lleva espacios de ancho cero
-    if (!e) throw new Error('no hay "' + n + '" en la paleta'); e.setAttribute('data-probe', '1'); e.scrollIntoView();
-  }, A.palette);
-  const it = await page.locator('[data-probe="1"]').boundingBox(), t = A.edge ? await edgeMid(A.edge) : {x: A.x, y: A.y}, c = center(it);
-  await dragTo(c.x, c.y, t.x, t.y); await page.waitForTimeout(2500); return 'ok';""",
+  const t = A.edge ? await edgeMid(A.edge) : {x: A.x, y: A.y};
+  const res = await page.evaluate(o => {
+    const row = [...document.querySelectorAll('[role=tabpanel] *')].find(x => x.children.length === 0 && x.offsetParent !== null && (x.textContent || '').replace(/[​\s]/g, '') === o.name.replace(/\s/g, ''));
+    if (!row) return 'no hay "' + o.name + '" en la paleta';
+    let src = row; while (src && src.getAttribute('draggable') !== 'true') src = src.parentElement;
+    const pane = document.querySelector('.react-flow__pane');
+    if (!src || !pane) return 'sin origen o lienzo';
+    const r = src.getBoundingClientRect(), p = pane.getBoundingClientRect(), dt = new DataTransfer();
+    const fire = (el, type, x, y) => el.dispatchEvent(new DragEvent(type, {bubbles: true, cancelable: true, composed: true, dataTransfer: dt, clientX: x, clientY: y}));
+    fire(src, 'dragstart', r.x + 10, r.y + 10); fire(pane, 'dragenter', o.x, o.y); fire(pane, 'dragover', o.x, o.y);
+    fire(pane, 'drop', o.x, o.y); fire(src, 'dragend', o.x, o.y);
+    return 'ok';
+  }, {name: A.palette, x: t.x, y: t.y});
+  if (res !== 'ok') throw new Error(res);
+  await page.waitForTimeout(2500); return 'ok';""",
     "dataset": r"""
   // Carga un dataset del catalogo como fuente: el arrastre de la paleta es HTML5, asi que se lanzan los
   // DragEvent con un DataTransfer (los clics sinteticos no abren el catalogo). Medido: abre el dialogo

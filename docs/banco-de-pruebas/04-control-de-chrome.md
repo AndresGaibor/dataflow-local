@@ -160,8 +160,14 @@ fire(src, 'dragstart', ...); fire(pane, 'dragenter', ...); fire(pane, 'dragover'
 fire(pane, 'drop', ...); fire(src, 'dragend', ...);   // abre el diálogo «Catálogo de datos»
 ```
 
-Está en `dfemu ui dataset NOMBRE`: lanza el arrastre, escribe en «Buscar datos», marca la fila y pulsa el botón
-de confirmación. Medido hasta hoy: el diálogo se abre y el filtro deja la fila del dataset a la vista, pero la
-casilla de la tabla no habilita el botón «Cargar en el flujo de datos» con un clic sintético — ese último gesto
-sigue pendiente. Para el mismo resultado sin interfaz, `dfemu_flow_add_source` (o `dfemu flow add-source`)
-registra la fuente por API con el cuerpo que capturó el grabador y deja el flujo `VALID`.
+Con eso **`dfemu ui add` ya crea los nodos que antes solo sabía crear la interfaz**: medido con «Pivotar»
+(nodo `Pivotar 1` y `Pivotar 2` en el grafo, y las aristas empiezan a pintarse). Antes el mismo comando con
+arrastre de ratón no movía nada.
+
+`dfemu ui dataset NOMBRE` usa el mismo arrastre y abre el «Catálogo de datos», pero ahí se atasca: los clics
+sintéticos en la tabla no habilitan «Cargar en el flujo de datos» (la casilla no cambia de estado) y la caja
+«Buscar datos» no filtra con `fill` ni con pulsaciones + `Enter`. Para cargar una fuente sigue siendo más
+corto `dfemu_flow_add_source`, que lo hace por API con el cuerpo capturado y deja el flujo `VALID`.
+
+El `schemaEntityId` de `pivot` y del nodo `script` sigue naciendo en «Aplicar», dentro del panel del nodo: el
+nodo creado por arrastre queda con `$state: UNCONFIGURED` y sin `schemaEntityId` (medido).
