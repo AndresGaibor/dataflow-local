@@ -288,6 +288,29 @@ def add_source_node(g: dict, label: str, entity_id: str, to: str | None = None) 
     return g
 
 
+def target_node(label: str, config: dict, x: int = 400, y: int = 100) -> dict:
+    """Nodo destino con la configuracion de otro flujo (conector y formato) y un unico handle de entrada."""
+    return {"type": "target", "id": str(uuid.uuid4()), "label": label,
+            "graphical": {"position": {"x": x, "y": y}},
+            "handles": {"incoming": [{"id": str(uuid.uuid4()), "type": "DEFAULT"}], "outgoing": []},
+            "component": {"type": "analyticsTarget", "properties": {"configuration": config}}}
+
+
+def connect(g: dict, origen: str, destino: str, port: str = "DEFAULT") -> dict:
+    """Une la salida de un nodo con la entrada de otro; rechaza pisar una entrada ya ocupada."""
+    g = copy.deepcopy(g)
+    a, b = find_node(g, origen), find_node(g, destino)
+    h_out, h_in = _handle(a, "outgoing", port), _handle(b, "incoming")
+    if not h_out:
+        raise FlowError(f"'{a['label']}' no tiene salida {port}")
+    if not h_in:
+        raise FlowError(f"'{b['label']}' no tiene entrada")
+    if any(e["targetHandle"] == h_in["id"] for e in g["edges"]):
+        raise FlowError(f"'{b['label']}' ya tiene una entrada conectada")
+    g["edges"].append(_edge(g, h_out["id"], h_in["id"]))
+    return g
+
+
 def remove_node(g: dict, ref: str) -> dict:
     """Quita el nodo y reconecta lo que llegaba con lo que salia por DEFAULT; lo de REJECT se descarta."""
     g = copy.deepcopy(g)

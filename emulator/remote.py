@@ -6,7 +6,7 @@ import sys
 import uuid
 from typing import NamedTuple
 
-from .bridge import PREFIX, SANDBOX_SPACE_ID, Bridge, BridgeError, SafetyError, valid_id
+from .bridge import PREFIX, SANDBOX_SPACE_ID, Bridge, BridgeError, SafetyError, _is_emu, valid_id
 
 # Flujo base que solo se lee y se clona; se configura con DFEMU_BASE_APP.
 BASE_APP_ID = os.environ.get("DFEMU_BASE_APP", "00000000-0000-0000-0000-000000000001")
@@ -188,6 +188,29 @@ class Remote:
         if not isinstance(resp, dict) or "id" not in resp or "dataflowId" not in resp:
             raise BridgeError("respuesta sin datos válidos de la copia")
         return Clone(_check(resp["id"]), _check(resp["dataflowId"]), name)
+
+    def create(self, name: str) -> Clone:
+        """Flujo nuevo y vacio (no es una copia): la app nace con su dataflow y sin nodos."""
+        if not _is_emu({"name": name, "spaceId": SANDBOX_SPACE_ID}):
+            raise SafetyError(f"'{name}' no es un nombre emu_ para crear un flujo")
+        resp = self._b.post("v1/dataflow-apps", {"name": name, "usage": "DATAFLOW_PREP",
+                                                 "spaceId": SANDBOX_SPACE_ID})
+        if not isinstance(resp, dict) or "dataflowId" not in resp:
+            raise BridgeError("respuesta sin dataflowId al crear el flujo")
+        app_id = ((resp.get("details") or {}).get("attributes") or {}).get("id") or resp.get("id")
+        return Clone(_check(app_id), _check(resp["dataflowId"]), name)
+
+    def target_template(self, base_app_id: str) -> dict:
+        """Configuracion del destino de otro flujo, para no inventar el conector de salida.
+
+        Shortcut: el destino de un flujo nuevo se clona del base (conector, formato y espacio); lo unico
+        que se cambia es el nombre del archivo.
+        """
+        for n in self._get(f"v1/dataflows/{_check(self.dataflow_id(base_app_id))}").get("graph", {}).get("nodes", []):
+            comp = n.get("component") or {}
+            if comp.get("type") == "analyticsTarget":
+                return copy.deepcopy((comp.get("properties") or {}).get("configuration") or {})
+        raise BridgeError(f"`{base_app_id}` no tiene destino del que copiar la plantilla")
 
     def push_graph(self, clone: Clone, graph: dict) -> PushResult:
         for attempt in range(1, MAX_STALE_PUTS + 1):

@@ -64,6 +64,7 @@ La primera llamada debería ser `dfemu_guide`.
 | `dfemu_flow_add_source` | write | Registra un dataset del catalogo como fuente del flujo y añade su nodo (el datasetId y el qri salen de v1/items; el conector se copia de una fuente existente). |
 | `dfemu_flow_backup` | read | Guarda el .dfw actual en out/backups y devuelve la ruta. |
 | `dfemu_flow_clone` | write | Clona un flujo base en un flujo emu_ nuevo. |
+| `dfemu_flow_create` | write | Crea un flujo desde cero (app nueva, no copia): una fuente por dataset y un destino; la plantilla del destino se copia de `base` (shortcut). |
 | `dfemu_flow_delete` | destructive | Borra un flujo emu_ (exige confirm y permiso). |
 | `dfemu_flow_get` | read | Grafo de un flujo: resumen de nodos o el .dfw completo. |
 | `dfemu_flow_list` | read | Flujos visibles y cuales llevan prefijo emu_. |
@@ -85,6 +86,7 @@ La primera llamada debería ser `dfemu_guide`.
 | `dfemu_task_schedule` | write | Programa una recarga con una regla RRULE. |
 | `dfemu_task_set_enabled` | write | Habilita o deshabilita una tarea. |
 | `dfemu_task_start` | execute | Arranca una tarea habilitada (exige confirm). |
+<!-- herramientas:fin -->
 <!-- herramientas:fin -->
 <!-- herramientas:fin -->
 <!-- herramientas:fin -->

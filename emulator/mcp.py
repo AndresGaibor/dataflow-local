@@ -371,6 +371,43 @@ class Tools:
         nota = f"nodo {insertado[0].get('label')} ({insertado[0].get('id')}) tras {after}" if insertado else ""
         return self._push(ref, dump, nuevo, nota)
 
+    def flow_create(self, name: str, datasets: str, base: str = "emu_e2e_calidad", label: str = "") -> str:
+        """Flujo desde cero: app nueva (no copia), una fuente por dataset y un destino.
+
+        La plantilla del destino se copia de `base` (conector y formato) y se cambia el nombre del archivo
+        a `emu_<name>`. Con mas de un dataset hay que añadir processors: el destino admite una entrada.
+        """
+        from . import flowctl
+
+        _emu_name(name, "el nombre del flujo nuevo")
+        remoto = self.remote(True)
+        ref_base = self._flow(base)
+        plantilla = remoto.target_template(ref_base.app_id)
+        salida = (plantilla.get("settings") or {})
+        if "fileName" in salida and "/" in str(salida.get("fileName", "")):
+            carpeta = str(salida["fileName"]).rsplit("/", 1)[0]
+            salida["fileName"] = f"{carpeta}/{name}"
+        nuevo = remoto.create(name)
+        vacio = remoto.pull(nuevo.app_id)
+        grafo = (vacio.get("dataflow") or {}).get("graph") or {"nodes": [], "edges": []}
+        nombres = [d.strip() for d in datasets.split(",") if d.strip()]
+        if not nombres:
+            raise Failed("di al menos un dataset para la fuente")
+        for ds in nombres:
+            fuente = remoto.add_source(nuevo.app_id, ds)
+            grafo = flowctl.add_source_node(grafo, fuente["table"], fuente["sourceId"])
+        destino = flowctl.target_node(label or "Destino", plantilla, 480, 120)
+        grafo["nodes"].append(destino)
+        if len(nombres) == 1:
+            grafo = flowctl.connect(grafo, nombres[0].rsplit(".", 1)[0], destino["label"])
+        else:
+            return (f"{name}: {nuevo.app_id} creado con {len(nombres)} fuentes y el destino sin conectar "
+                    "(el destino admite una entrada: añade processors y únelas)")
+        res = remoto.push_graph(nuevo, grafo)
+        codes = [v.get("code") for v in res.validity.get("nodesConstraintViolations") or []]
+        return (f"{name}: {nuevo.app_id} creado desde cero ({len(grafo['nodes'])} nodos) -> "
+                f"{res.validity.get('status')}" + (f" {codes}" if codes else ""))
+
     def flow_add_source(self, flow: str, dataset: str, label: str = "", to: str = "", fields: str = "") -> str:
         """Registra un dataset del catalogo como fuente del flujo (lo que la interfaz hace al cargarlo)."""
         from . import flowctl
@@ -639,6 +676,10 @@ REGISTRY: dict[str, tuple[str, str, dict, str]] = {
                             _schema({"flow": _S, "type": _S, "after": _S, "config": {"type": "object"}, "label": _S,
                                      "feed": {"type": "object"}},
                                     ["flow", "type", "after"]), "flow_add_node"),
+    "dfemu_flow_create": ("write", "Crea un flujo desde cero (app nueva, no copia): una fuente por dataset y un "
+                                    "destino; la plantilla del destino se copia de `base` (shortcut).",
+                           _schema({"name": _S, "datasets": _S, "base": _S, "label": _S},
+                                   ["name", "datasets"]), "flow_create"),
     "dfemu_flow_add_source": ("write", "Registra un dataset del catalogo como fuente del flujo y añade su nodo "
                                        "(el datasetId y el qri salen de v1/items; el conector se copia de una fuente existente).",
                               _schema({"flow": _S, "dataset": _S, "label": _S, "to": _S, "fields": _S},

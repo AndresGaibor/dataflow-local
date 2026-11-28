@@ -184,3 +184,20 @@ def test_add_source_node_no_pisa_una_entrada_ocupada():
     with pytest.raises(flowctl.FlowError) as e:
         flowctl.add_source_node(_graph(), "cuentas", "src-1", to="dst")  # dst ya recibe de src
     assert "ya tiene una entrada conectada" in str(e.value)
+
+
+def test_target_node_tiene_la_forma_real_del_destino():
+    # medido: type target, un handle de entrada y NINGUNO de salida (con salida el PUT da 500)
+    n = flowctl.target_node("Destino", {"name": "d"})
+    assert (n["type"], n["component"]["type"]) == ("target", "analyticsTarget")
+    assert [h["type"] for h in n["handles"]["incoming"]] == ["DEFAULT"]
+    assert n["handles"]["outgoing"] == []
+
+
+def test_connect_une_y_no_pisa_una_entrada_ocupada():
+    libre = {"nodes": _graph()["nodes"], "edges": []}
+    g = flowctl.connect(libre, "src", "dst")
+    assert ("src", "dst") in _links(g)
+    with pytest.raises(flowctl.FlowError) as e:
+        flowctl.connect(g, "src", "dst")  # dst ya recibe de src
+    assert "ya tiene una entrada conectada" in str(e.value)
