@@ -104,6 +104,81 @@ class Remote:
     def dataflow_id(self, app_id: str) -> str:
         return self._get(f"v1/dataflow-apps/{_check(app_id)}", "dataflowId")
 
+    # --- fuentes (medido 2026-11-28 con la interfaz y reproducido por API) ---------------------
+    def dataset(self, name: str) -> dict:
+        """Item del catalogo por nombre (o sin la extension): de ahi salen `datasetId` y `qri`."""
+        pedido = name[:-4] if name.lower().endswith(".csv") else name
+        for candidato in (f"{pedido}.csv", pedido):
+            resp = self._b.get("v1/items", {"resourceType": "dataset", "limit": 20, "name": candidato})
+            items = (resp.get("data") or []) if isinstance(resp, dict) else (resp or [])
+            for it in items:
+                if it.get("name", "").lower() in (candidato.lower(), f"{pedido.lower()}.csv"):
+                    return it
+        raise BridgeError(f"no hay un dataset `{name}` en el catalogo")
+
+    def _connections(self, app_id: str) -> dict:
+        """Bloque `connections` de una fuente ya registrada: lo pone el conector del espacio, no se inventa.
+
+        Se busca primero en el propio flujo y, si aun no tiene fuentes, en cualquier otro legible del
+        espacio (el conector es del espacio, no del flujo).
+        """
+        candidatos = [app_id] + [ref.app_id for ref in self.list_dataflows()]
+        for app in dict.fromkeys(candidatos):
+            try:
+                ds = self._get(f"v1/dataflow-apps/{_check(app)}/datasources")
+            except BridgeError:
+                continue
+            for s in ds.get("sources") or []:
+                if isinstance(s.get("connections"), dict) and s["connections"]:
+                    return s["connections"]
+        raise BridgeError("no hay ninguna fuente legible de la que copiar el conector del espacio; "
+                          "registra una a mano en algun flujo emu_")
+
+    def _local_fields(self, name: str) -> list:
+        """Columnas del CSV local con el mismo nombre: la API no expone las del catalogo.
+
+        Shortcut: solo sirve para los datasets de `data/practica`. Para otro, pasa `fields` a mano.
+        """
+        ruta = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "practica", name)
+        try:
+            with open(ruta, encoding="utf-8-sig") as f:
+                cabecera = f.readline().strip()
+        except OSError:
+            return []
+        return [c.strip().strip('"') for c in cabecera.split(",") if c.strip()]
+
+    def add_source(self, app_id: str, dataset: str, fields: list | None = None) -> dict:
+        """Registra un dataset del espacio como fuente del flujo y devuelve su `sourceId`.
+
+        El cuerpo lo manda la interfaz al pulsar «Cargar en el flujo de datos»: `{"datasources": [...]}`
+        con `datasetId`, `qri`, el conector y la tabla; los `fields` los resuelve el servidor (`[]` vale).
+        """
+        it = self.dataset(dataset)
+        attrs = it.get("resourceAttributes") or {}
+        conns = self._connections(app_id)
+        tabla = (it.get("name") or "").rsplit(".", 1)[0]
+        prefijo = next(iter(conns.values())).get("dataconnectorPrefix", "") if conns else ""
+        columnas = fields or self._local_fields(it.get("name") or "")
+        if not columnas:
+            raise BridgeError(f"no se que columnas tiene '{dataset}'; pasalas a mano (`fields`) — la API no "
+                              "publica el esquema del catalogo")
+        cuerpo = {"datasources": [{
+            "connections": conns,
+            "tables": [{"databaseName": it.get("name"), "dataconnectorName": next(iter(conns)),
+                        "dataconnectorPrefix": prefijo, "fields": [{"name": c} for c in columnas],
+                        "tableName": tabla, "tableAlias": tabla,
+                        "formatSpec": "(txt, utf8, embedded labels, delimiter is ',', msq)", "ownerName": "TYPE9_CSV"}],
+            "qri": attrs.get("secureQri") or attrs.get("qri"), "datasetId": it.get("resourceId")}]}
+        res = self._b.post(f"v1/dataflow-apps/{_check(app_id)}/datasources", cuerpo) or {}
+        source_id = res.get("id") or next((s.get("sourceId") for s in
+                                           (self._get(f"v1/dataflow-apps/{_check(app_id)}/datasources").get("sources") or [])
+                                           if s.get("datasetId") == it.get("resourceId")), None)
+        if not source_id:
+            raise BridgeError("el servidor aceptó la fuente pero no devolvió su id")
+        return {"sourceId": source_id, "datasetId": it.get("resourceId"), "name": it.get("name"),
+                "table": tabla, "fields": columnas}
+
+
     def script_of(self, app_id: str) -> str:
         return self._get(f"v1/apps/{_check(app_id)}/scripts/current", "script")
 

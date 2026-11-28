@@ -160,3 +160,27 @@ def test_un_puerto_de_salida_inexistente_falla():
     with pytest.raises(flowctl.FlowError) as e:
         flowctl.add_node(g, "map-fields", "f", "mf", {"columnsToProcess": ["x"]}, {"LOOKUP": "src:REJECT"})
     assert "no tiene salida REJECT" in str(e.value)
+
+
+def test_add_source_node_tiene_la_forma_que_deja_la_interfaz():
+    # medido: type source, un handle de salida DEFAULT y dataEntity.entityId = sourceId
+    g = flowctl.add_source_node({"nodes": _graph()["nodes"], "edges": []}, "cuentas", "src-1", to="dst")
+    n = g["nodes"][-1]
+    assert (n["type"], n["label"]) == ("source", "cuentas")
+    assert n["component"] == {"type": "analyticsSource",
+                              "properties": {"configuration": {}, "dataEntity": {"entityId": "src-1"},
+                                             "type": "dataset"}}
+    assert [h["type"] for h in n["handles"]["outgoing"]] == ["DEFAULT"]
+    assert _links(g) == {("cuentas", "dst")}
+
+
+def test_add_source_node_sin_destino_queda_suelto():
+    g = flowctl.add_source_node(_graph(), "cuentas", "src-1")
+    assert _links(g) == {("src", "dst")}
+    assert len(g["nodes"]) == 3
+
+
+def test_add_source_node_no_pisa_una_entrada_ocupada():
+    with pytest.raises(flowctl.FlowError) as e:
+        flowctl.add_source_node(_graph(), "cuentas", "src-1", to="dst")  # dst ya recibe de src
+    assert "ya tiene una entrada conectada" in str(e.value)

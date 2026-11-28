@@ -36,9 +36,9 @@ def routes(app_id=APP, items=None):
     }
 
 
-def make_bridge(routes_, tmp_path):
+def make_bridge(routes_, tmp_path, apply=False):
     runner = FakeRunner(routes_)
-    return Bridge(runner=runner, audit_path=str(tmp_path / "audit.jsonl")), runner
+    return Bridge(runner=runner, apply=apply, audit_path=str(tmp_path / "audit.jsonl")), runner
 
 
 def test_list_dataflows_filters_subtype_and_space(tmp_path):
@@ -471,3 +471,58 @@ def test_push_graph_stops_repeating_after_the_cap(tmp_path):
     b, runner = apply_bridge(write_routes(put=lambda _b: _put_resp("INVALID", [STALE])), tmp_path)
     res = Remote(b).push_graph(Clone(CLONE_APP, CLONE_DF, "emu_v_x"), GRAPH)
     assert len(_puts(runner)) == MAX_STALE_PUTS and res.validity["status"] == "INVALID"
+
+
+DATASET = {"name": "fechas_sucias.csv", "resourceId": "ds-1", "spaceId": SB,
+           "resourceAttributes": {"secureQri": "qri:qdf:space://x#y", "type": "DELIMETED"}}
+CONNS = {"DataFiles": {"name": "DataFiles", "typeName": "qix-datafiles", "sourceConnectorId": "qix-datafiles",
+                       "dataconnectorPrefix": "Entrenamiento Dataflow:", "space": SB}}
+
+
+def routes_fuente(app_id=APP, con_fuente=True):
+    r = routes(app_id)
+    r[("GET", "v1/items")] = [DATASET, {**DATASET, "name": "otro.csv", "resourceId": "ds-2"}]
+    # el propio flujo no tiene fuentes: el conector se busca en otro emu_
+    r[("GET", f"v1/dataflow-apps/{app_id}/datasources")] = {"sources": []}
+    r[("GET", f"v1/dataflow-apps/{BASE_APP_ID}/datasources")] = (
+        {"sources": [{"sourceId": "s-1", "datasetId": "ds-0", "connections": CONNS}]} if con_fuente else {"sources": []})
+    r[("POST", f"v1/dataflow-apps/{app_id}/datasources")] = {"id": "src-nueva"}
+    # el Bridge solo deja escribir en una app emu_ del espacio de pruebas
+    r[("GET", f"v1/apps/{app_id}")] = {"attributes": {"name": "emu_x", "spaceId": SB}}
+    return r
+
+
+def test_add_source_manda_el_cuerpo_que_usa_la_interfaz(tmp_path):
+    # medido 2026-11-28: {"datasources": [{datasetId, qri, connections, tables[]}]} -> 201 {"id": <sourceId>}
+    b, runner = make_bridge(routes_fuente(), tmp_path, apply=True)
+    fuente = Remote(b).add_source(APP, "fechas_sucias")
+    cuerpo = [c for c in runner.calls if c[0] == "POST"][0][2]
+    ds = cuerpo["datasources"][0]
+    assert (ds["datasetId"], ds["qri"]) == ("ds-1", "qri:qdf:space://x#y")
+    assert ds["connections"] == CONNS
+    tabla = ds["tables"][0]
+    assert (tabla["databaseName"], tabla["tableName"], tabla["tableAlias"]) == ("fechas_sucias.csv", "fechas_sucias", "fechas_sucias")
+    assert [f["name"] for f in tabla["fields"]] == ["id", "fecha_raw"]  # cabecera del CSV local
+    assert fuente == {"sourceId": "src-nueva", "datasetId": "ds-1", "name": "fechas_sucias.csv",
+                      "table": "fechas_sucias", "fields": ["id", "fecha_raw"]}
+
+
+def test_add_source_acepta_las_columnas_a_mano(tmp_path):
+    b, runner = make_bridge(routes_fuente(), tmp_path, apply=True)
+    Remote(b).add_source(APP, "fechas_sucias", ["a", "b"])
+    cuerpo = [c for c in runner.calls if c[0] == "POST"][0][2]
+    assert [f["name"] for f in cuerpo["datasources"][0]["tables"][0]["fields"]] == ["a", "b"]
+
+
+def test_add_source_sin_columnas_ni_csv_local_lo_dice(tmp_path):
+    b, _ = make_bridge(routes_fuente(), tmp_path)
+    with pytest.raises(BridgeError) as e:
+        Remote(b).add_source(APP, "otro")
+    assert "fields" in str(e.value)
+
+
+def test_add_source_sin_ninguna_fuente_de_donde_copiar_el_conector(tmp_path):
+    b, _ = make_bridge(routes_fuente(con_fuente=False), tmp_path)
+    with pytest.raises(BridgeError) as e:
+        Remote(b).add_source(APP, "fechas_sucias")
+    assert "conector" in str(e.value)

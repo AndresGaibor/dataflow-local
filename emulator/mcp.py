@@ -371,6 +371,16 @@ class Tools:
         nota = f"nodo {insertado[0].get('label')} ({insertado[0].get('id')}) tras {after}" if insertado else ""
         return self._push(ref, dump, nuevo, nota)
 
+    def flow_add_source(self, flow: str, dataset: str, label: str = "", to: str = "", fields: str = "") -> str:
+        """Registra un dataset del catalogo como fuente del flujo (lo que la interfaz hace al cargarlo)."""
+        from . import flowctl
+
+        ref, dump, graph = self._graph_of(flow)
+        fuente = self.remote(True).add_source(ref.app_id, dataset,
+                                              [c.strip() for c in fields.split(",") if c.strip()] or None)
+        nuevo = flowctl.add_source_node(graph, label or fuente["table"], fuente["sourceId"], to or None)
+        return self._push(ref, dump, nuevo, f"fuente {fuente['name']} (sourceId {fuente['sourceId']}) añadida")
+
     def flow_set_node(self, flow: str, node: str, config: dict | None = None, label: str | None = None) -> str:
         from . import flowctl
 
@@ -629,6 +639,10 @@ REGISTRY: dict[str, tuple[str, str, dict, str]] = {
                             _schema({"flow": _S, "type": _S, "after": _S, "config": {"type": "object"}, "label": _S,
                                      "feed": {"type": "object"}},
                                     ["flow", "type", "after"]), "flow_add_node"),
+    "dfemu_flow_add_source": ("write", "Registra un dataset del catalogo como fuente del flujo y añade su nodo "
+                                       "(el datasetId y el qri salen de v1/items; el conector se copia de una fuente existente).",
+                              _schema({"flow": _S, "dataset": _S, "label": _S, "to": _S, "fields": _S},
+                                      ["flow", "dataset"]), "flow_add_source"),
     "dfemu_flow_set_node": ("write", "Mezcla configuracion en un nodo existente.", _schema(
         {"flow": _S, "node": _S, "config": {"type": "object"}, "label": _S}, ["flow", "node"]), "flow_set_node"),
     "dfemu_flow_remove_node": ("write", "Quita un nodo y reconecta sus aristas.", _schema(

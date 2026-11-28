@@ -260,6 +260,34 @@ def set_node(g: dict, ref: str, cfg: dict, label: str | None) -> dict:
     return g
 
 
+def add_source_node(g: dict, label: str, entity_id: str, to: str | None = None) -> dict:
+    """Añade el nodo fuente con el `sourceId` que devuelve `POST .../datasources`.
+
+    La interfaz lo deja con esta forma exacta (medido): `type: source`, un único handle de salida y el
+    `dataEntity.entityId` apuntando a la fuente registrada. `to` lo conecta a un nodo existente.
+    """
+    g = copy.deepcopy(g)
+    h_out = {"id": str(uuid.uuid4()), "type": "DEFAULT"}
+    pos = [n["graphical"]["position"] for n in g["nodes"] if n.get("graphical")] or [{"x": 0, "y": 0}]
+    nuevo = {"type": "source", "id": str(uuid.uuid4()), "label": label,
+             "graphical": {"position": {"x": min(p["x"] for p in pos) - 260, "y": min(p["y"] for p in pos)}},
+             "handles": {"outgoing": [h_out]},
+             "component": {"type": "analyticsSource",
+                           "properties": {"configuration": {}, "dataEntity": {"entityId": entity_id},
+                                          "type": "dataset"}}}
+    g["nodes"].append(nuevo)
+    if to:
+        destino = find_node(g, to)
+        h_in = _handle(destino, "incoming")
+        if not h_in:
+            raise FlowError(f"'{destino['label']}' no tiene entrada")
+        # si el destino ya tenia una entrada conectada, la nueva arista la deja sin efecto: se rechaza
+        if any(e["targetHandle"] == h_in["id"] for e in g["edges"]):
+            raise FlowError(f"'{destino['label']}' ya tiene una entrada conectada; quita esa arista primero")
+        g["edges"].append(_edge(g, h_out["id"], h_in["id"]))
+    return g
+
+
 def remove_node(g: dict, ref: str) -> dict:
     """Quita el nodo y reconecta lo que llegaba con lo que salia por DEFAULT; lo de REJECT se descarta."""
     g = copy.deepcopy(g)
@@ -367,6 +395,21 @@ def run(a) -> str:
                 raise FlowError(f"--feed espera PUERTO=NODO[:PUERTO], no '{f}'")
             feeds[port] = ref
         g = add_node(df["graph"], t, a.after, a.label or PROCESSORS.get(t, {}).get("label", t), _json(a.cfg), feeds)
+    elif a.action == "add-source":
+        from .bridge import Bridge, DryRun
+        from .remote import Remote
+
+        app = (df.get("context") or {}).get("dataAppId") or ""
+        if not app:
+            raise FlowError("no se pudo leer la app del flujo; use el id")
+        if not a.apply:
+            return f"[simulacion] registraria '{a.dataset}' como fuente y lo pondria en el grafo; use --apply"
+        try:
+            fuente = Remote(Bridge(apply=True)).add_source(
+                app, a.dataset, [c.strip() for c in (a.fields or "").split(",") if c.strip()] or None)
+        except DryRun:  # nunca deberia llegar: apply=True
+            return "[simulacion] sin --apply no se registra la fuente"
+        g = add_source_node(df["graph"], a.label or fuente["table"], fuente["sourceId"], a.to or None)
     elif a.action == "set":
         g = set_node(df["graph"], a.node, _json(a.cfg), a.label)
     elif a.action == "rm":
@@ -401,6 +444,10 @@ def main(argv=None) -> int:
     s.add_argument("--after", required=True), s.add_argument("--label"), s.add_argument("--cfg", help="JSON de la configuracion")
     s.add_argument("--feed", action="append", metavar="PUERTO=NODO[:PUERTO]",
                    help="conecta una entrada extra (p. ej. LOOKUP=filtro:REJECT); el servidor exige la LOOKUP de map-fields")
+    s = sub.add_parser("add-source", help="registra un dataset del catalogo como fuente", parents=[w])
+    s.add_argument("flow"), s.add_argument("--dataset", required=True, help="nombre del dataset (con o sin .csv)")
+    s.add_argument("--label"), s.add_argument("--to", help="nodo al que conectarla")
+    s.add_argument("--fields", help="columnas separadas por comas (por defecto, la cabecera del CSV local)")
     s = sub.add_parser("set", help="mezcla configuracion en un nodo", parents=[w])
     s.add_argument("flow"), s.add_argument("node"), s.add_argument("--cfg", default="{}"), s.add_argument("--label")
     s = sub.add_parser("rm", help="quita un nodo y reconecta", parents=[w])
