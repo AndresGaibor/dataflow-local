@@ -147,3 +147,21 @@ Receta típica para configurar un procesador nuevo: `ui add "Ordenar" --on <orig
 Trampas del editor, ya resueltas en el código: la pestaña de la paleta activa se pliega si se pulsa; el lápiz de renombrar solo existe con el nodo seleccionado (esperar 800 ms); Suprimir no siempre borra un nodo (usar su menú); en las etiquetas del panel, `aria-label` no siempre existe (se usa también `label` y `placeholder`); tras un `layout` el lienzo se aleja y los nodos cambian de coordenadas (las acciones buscan el nodo en cada llamada, no guardan posiciones).
 
 Pruebas: `tests/test_uictl.py` pasa cada acción por `node --check`, porque un `\n` mal escapado en el JavaScript ya rompió una acción.
+
+## Arrastrar de la paleta: son eventos HTML5, no del ratón
+
+El arrastre de «Conjuntos de datos» (y de los procesadores) **no** responde a `mouse.down/move/up` ni a
+`page.dragAndDrop`: la fila es un `div[draggable=true]` que escucha `dragstart`/`dragover`/`drop`. Lo que sí
+funciona es lanzarlos con un `DataTransfer` desde la página:
+
+```js
+const dt = new DataTransfer();
+fire(src, 'dragstart', ...); fire(pane, 'dragenter', ...); fire(pane, 'dragover', ...);
+fire(pane, 'drop', ...); fire(src, 'dragend', ...);   // abre el diálogo «Catálogo de datos»
+```
+
+Está en `dfemu ui dataset NOMBRE`: lanza el arrastre, escribe en «Buscar datos», marca la fila y pulsa el botón
+de confirmación. Medido hasta hoy: el diálogo se abre y el filtro deja la fila del dataset a la vista, pero la
+casilla de la tabla no habilita el botón «Cargar en el flujo de datos» con un clic sintético — ese último gesto
+sigue pendiente. Para el mismo resultado sin interfaz, `dfemu_flow_add_source` (o `dfemu flow add-source`)
+registra la fuente por API con el cuerpo que capturó el grabador y deja el flujo `VALID`.

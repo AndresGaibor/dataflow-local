@@ -94,6 +94,45 @@ _JS = {
   }, A.palette);
   const it = await page.locator('[data-probe="1"]').boundingBox(), t = A.edge ? await edgeMid(A.edge) : {x: A.x, y: A.y}, c = center(it);
   await dragTo(c.x, c.y, t.x, t.y); await page.waitForTimeout(2500); return 'ok';""",
+    "dataset": r"""
+  // Carga un dataset del catalogo como fuente: el arrastre de la paleta es HTML5, asi que se lanzan los
+  // DragEvent con un DataTransfer (los clics sinteticos no abren el catalogo). Medido: abre el dialogo
+  // "Catalogo de datos" y deja el nodo.
+  await tab(A.tab || 'Fuentes');
+  const started = await page.evaluate(o => {
+    const n = o.name;
+    const row = [...document.querySelectorAll('[role=tabpanel] *')].find(x => x.children.length === 0 && x.offsetParent !== null && (x.textContent || '').replace(/[​\s]/g, '') === n.replace(/\s/g, ''));
+    if (!row) return 'no hay "' + n + '" en la paleta';
+    let src = row; while (src && src.getAttribute('draggable') !== 'true') src = src.parentElement;
+    const pane = document.querySelector('.react-flow__pane');
+    if (!src || !pane) return 'sin origen o lienzo';
+    const r = src.getBoundingClientRect(), p = pane.getBoundingClientRect(), dt = new DataTransfer();
+    const fire = (el, type, x, y) => el.dispatchEvent(new DragEvent(type, {bubbles: true, cancelable: true, composed: true, dataTransfer: dt, clientX: x, clientY: y}));
+    const x = p.x + o.x, y = p.y + o.y;
+    fire(src, 'dragstart', r.x + 10, r.y + 10); fire(pane, 'dragenter', x, y); fire(pane, 'dragover', x, y);
+    fire(pane, 'drop', x, y); fire(src, 'dragend', x, y);
+    return 'ok';
+  }, {name: A.palette || 'Conjuntos de datos', x: A.x || 420, y: A.y || 260});
+  if (started !== 'ok') throw new Error(started);
+  await page.waitForSelector('[role=dialog]', {timeout: 20000});
+  await page.waitForTimeout(800);
+  const caja = page.locator('[role=dialog] input[aria-label="Buscar datos"], [role=dialog] input[placeholder*="uscar"]').first();
+  await caja.fill(A.dataset);
+  await page.waitForTimeout(2500);
+  // la busqueda deja pocas filas: la ultima casilla es la del resultado (la primera es "seleccionar todo")
+  const btn = page.getByRole('button', {name: /Cargar en el flujo|Añadir al flujo|Agregar al flujo|Cargar selecci|Seleccionar/i}).last();
+  const cajas = page.locator('[role=dialog] input[type=checkbox]');
+  const b = await cajas.last().boundingBox();
+  if (!b) throw new Error('la tabla del catalogo no muestra casillas para ' + A.dataset);
+  await press(b.x + b.width / 2, b.y + b.height / 2);
+  await page.waitForTimeout(900);
+  await btn.waitFor({state: 'visible', timeout: 10000});
+  await btn.click({timeout: 20000});
+  await page.waitForTimeout(4000);
+  const fin = await page.evaluate(() => ({dialogos: document.querySelectorAll('[role=dialog]').length,
+                                          nodos: document.querySelectorAll('.react-flow__node').length}));
+  const marcada = 'casillas ' + await cajas.count();
+  return 'ok [' + marcada + '] dialogos ' + fin.dialogos + ', nodos ' + fin.nodos;""",
     "unlink": r"""
   const t = await edgeMid(A.src, A.dst); await press(t.x, t.y); await page.waitForTimeout(500); await page.keyboard.press('Delete'); await page.waitForTimeout(1200); return 'ok';""",
     "tool": r"""
@@ -175,6 +214,8 @@ def run(a) -> str:
         return run_js("move", node=a.node, dx=a.dx, dy=a.dy)
     if act == "add":
         return run_js("add", palette=a.palette, edge=a.on, x=a.x, y=a.y, tab=a.tab)
+    if act == "dataset":
+        return run_js("dataset", dataset=a.dataset, palette=a.palette, x=a.x, y=a.y, tab=a.tab)
     if act in ("undo", "redo"):
         return run_js("tool", name="Deshacer" if act == "undo" else "Rehacer")  # botones de la barra; Ctrl+Y no rehace
     if act == "layout":
@@ -211,6 +252,10 @@ def main(argv=None) -> int:
     s.add_argument("--nth", type=int, default=0, help="con varios puertos del mismo tipo, el n-esimo")
     s = sub.add_parser("unlink", help="borra la arista entre dos nodos (prefijos de id de 8 caracteres)")
     s.add_argument("src"), s.add_argument("dst")
+    s = sub.add_parser("dataset", help="carga un dataset del catalogo como fuente (abre el catalogo y confirma)")
+    s.add_argument("dataset", help="nombre del dataset, p. ej. cuentas.csv")
+    s.add_argument("--palette", default="Conjuntos de datos", help="fila de la paleta (por omision, Conjuntos de datos)")
+    s.add_argument("--tab", default="Fuentes"), s.add_argument("--x", type=int, default=420), s.add_argument("--y", type=int, default=260)
     s = sub.add_parser("add", help="arrastra un procesador de la paleta a una arista (--on ORIGEN) o a un punto (--x --y)")
     s.add_argument("palette", help="nombre en la paleta, p. ej. Ordenar"), s.add_argument("--on", help="prefijo del id del nodo origen de la arista")
     s.add_argument("--x", type=int, default=700), s.add_argument("--y", type=int, default=420)

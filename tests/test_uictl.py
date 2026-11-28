@@ -21,6 +21,6 @@ def test_el_javascript_de_cada_accion_es_valido(action, tmp_path):
 def test_el_cli_acepta_las_acciones_documentadas(monkeypatch, capsys):
     llamadas = []
     monkeypatch.setattr(uictl, "run_js", lambda action, **a: llamadas.append((action, a)) or "ok")
-    for argv in (["rename", "n", "t"], ["move", "n", "5", "-3"], ["fill", "Campo", "x|y"], ["apply"], ["undo"], ["add", "Ordenar", "--on", "abcd1234"], ["unlink", "a", "b"], ["rm", "n"], ["script"]):
+    for argv in (["rename", "n", "t"], ["move", "n", "5", "-3"], ["fill", "Campo", "x|y"], ["apply"], ["undo"], ["add", "Ordenar", "--on", "abcd1234"], ["dataset", "cuentas.csv"], ["unlink", "a", "b"], ["rm", "n"], ["script"]):
         assert uictl.main(argv) == 0
-    assert [a for a, _ in llamadas] == ["rename", "move", "fill", "button", "tool", "add", "unlink", "rm", "script"]
+    assert [a for a, _ in llamadas] == ["rename", "move", "fill", "button", "tool", "add", "dataset", "unlink", "rm", "script"]
