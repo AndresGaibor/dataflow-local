@@ -116,7 +116,7 @@ class Remote:
                     return it
         raise BridgeError(f"no hay un dataset `{name}` en el catalogo")
 
-    def _connections(self, app_id: str) -> dict:
+    def _connections(self, app_id: str, store_type: str = "", space: str = "") -> dict:
         """Bloque `connections` de una fuente ya registrada: lo pone el conector del espacio, no se inventa.
 
         Se busca primero en el propio flujo y, si aun no tiene fuentes, en cualquier otro legible del
@@ -129,8 +129,13 @@ class Remote:
             except BridgeError:
                 continue
             for s in ds.get("sources") or []:
-                if isinstance(s.get("connections"), dict) and s["connections"]:
-                    return s["connections"]
+                for conns in (s.get("connections") or {}).values():
+                    if not isinstance(conns, dict) or not conns.get("dataconnectorPrefix"):
+                        continue
+                    mismo_tipo = not store_type or conns.get("typeName") == store_type
+                    mismo_espacio = not space or conns.get("space") == space
+                    if mismo_tipo and mismo_espacio:
+                        return {conns.get("name", "DataFiles"): conns}
         raise BridgeError("no hay ninguna fuente legible de la que copiar el conector del espacio; "
                           "registra una a mano en algun flujo emu_")
 
@@ -155,18 +160,23 @@ class Remote:
         """
         it = self.dataset(dataset)
         attrs = it.get("resourceAttributes") or {}
-        conns = self._connections(app_id)
+        conns = self._connections(app_id, attrs.get("dataStoreType", ""), it.get("spaceId") or "")
         tabla = (it.get("name") or "").rsplit(".", 1)[0]
         prefijo = next(iter(conns.values())).get("dataconnectorPrefix", "") if conns else ""
         columnas = fields or self._local_fields(it.get("name") or "")
         if not columnas:
             raise BridgeError(f"no se que columnas tiene '{dataset}'; pasalas a mano (`fields`) — la API no "
                               "publica el esquema del catalogo")
+        # La CLAVE del conector lleva el prefijo del espacio ("Entrenamiento Dataflow:DataFiles"): el script
+        # que genera el servidor escribe `lib://<clave>/...`, y con la clave corta el motor no encuentra la
+        # conexion al recargar (medido: `lib://DataFiles/...` -> recarga FAILED en la seccion generada)
+        clave = f"{prefijo}{next(iter(conns))}"
+        conns = {clave: next(iter(conns.values()))}
         cuerpo = {"datasources": [{
             "connections": conns,
             # el nombre lleva el prefijo del conector: el script generado usa `lib://<nombre>/...` y sin el
             # prefijo el motor no encuentra la conexion al recargar (medido: falla en la seccion generada)
-            "tables": [{"databaseName": it.get("name"), "dataconnectorName": f"{prefijo}{next(iter(conns))}",
+            "tables": [{"databaseName": it.get("name"), "dataconnectorName": clave,
                         "dataconnectorPrefix": prefijo, "fields": [{"name": c} for c in columnas],
                         "tableName": tabla, "tableAlias": tabla,
                         "formatSpec": "(txt, utf8, embedded labels, delimiter is ',', msq)", "ownerName": "TYPE9_CSV"}],

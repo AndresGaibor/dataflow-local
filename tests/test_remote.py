@@ -499,10 +499,11 @@ def test_add_source_manda_el_cuerpo_que_usa_la_interfaz(tmp_path):
     cuerpo = [c for c in runner.calls if c[0] == "POST"][0][2]
     ds = cuerpo["datasources"][0]
     assert (ds["datasetId"], ds["qri"]) == ("ds-1", "qri:qdf:space://x#y")
-    assert ds["connections"] == CONNS
+    assert list(ds["connections"]) == ["Entrenamiento Dataflow:DataFiles"]  # la clave lleva el prefijo
     tabla = ds["tables"][0]
     assert (tabla["databaseName"], tabla["tableName"], tabla["tableAlias"]) == ("fechas_sucias.csv", "fechas_sucias", "fechas_sucias")
     assert [f["name"] for f in tabla["fields"]] == ["id", "fecha_raw"]  # cabecera del CSV local
+    assert tabla["dataconnectorName"] == "Entrenamiento Dataflow:DataFiles"
     assert fuente == {"sourceId": "src-nueva", "datasetId": "ds-1", "name": "fechas_sucias.csv",
                       "table": "fechas_sucias", "fields": ["id", "fecha_raw"]}
 
