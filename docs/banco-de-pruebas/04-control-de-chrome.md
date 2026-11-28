@@ -171,3 +171,16 @@ corto `dfemu_flow_add_source`, que lo hace por API con el cuerpo capturado y dej
 
 El `schemaEntityId` de `pivot` y del nodo `script` sigue naciendo en «Aplicar», dentro del panel del nodo: el
 nodo creado por arrastre queda con `$state: UNCONFIGURED` y sin `schemaEntityId` (medido).
+
+## El panel de propiedades de un nodo creado por arrastre
+
+Al pulsar el nodo, el panel trae los controles reales y el botón de confirmación se llama **«Ejecutar y
+aplicar»** (no «Aplicar»). Para `Pivotar` son tres comboboxes —«Campo que pivotar», «Campo de valores» y
+«Función de agregación»— y `dfemu ui fill` ya los encuentra aunque el panel no esté pegado a la derecha
+(antes solo miraba a partir de x=1230 y fallaba).
+
+Lo que falta para cerrar el círculo: las listas de esos comboboxes solo traen columnas cuando el nodo está
+conectado, así que hay que soltarlo sobre una arista (`ui add "Pivotar" --on NODO`), y ese soltar todavía
+deja el nodo sin conectar — la arista se puede crear por API con `ui connect`, pero la pestaña no se entera
+hasta recargarla. Ese encadenado (arrastrar sobre la arista → conectar → recargar → rellenar → «Ejecutar y
+aplicar») es lo siguiente a medir; el `schemaEntityId` nace en ese último paso.
