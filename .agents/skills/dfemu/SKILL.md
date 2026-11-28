@@ -39,10 +39,18 @@ Todo lo que se afirma sobre Qlik se **mide** primero: los hallazgos viven en
 | Qlik Automate | `dfemu automate ls|new|show|run|runs|enable|disable|rm` |
 | Buscar en la documentación de Qlik | `dfemu_docs_search` (MCP) o grep en `docs/` |
 
-## Lo que la API no deja crear: usa la interfaz
+## Nodos que la interfaz crea a mano: qué deja la API y qué no
 
-`pivot`, `map-fields`, `subflow`, el nodo `script`, el nodo fuente (`datasources`) y el import/export de `.dfw`
-responden `ADF-500` o un 500 sin detalle si se inventa el cuerpo. Medido, no supuesto (apartado 12).
+Medido, no supuesto (apartado 12). `dfemu_flow_add_node` inserta los cuatro processors y el servidor dice qué falta:
+
+| Nodo | Por API | Lo que falta |
+|---|---|---|
+| `subflow` | queda **VALID** | nada: el clon trae el subflow propio |
+| `map-fields` | entra y se configura | la entrada `LOOKUP` conectada (`feed`: `{"LOOKUP": "filtro:REJECT"}`) y la resolución de campos |
+| `pivot` | entra y se configura | `schemaEntityId`, que solo crea la interfaz |
+| `script` | entra y se configura | `schemaEntityId`; el `POTENTIAL_STALE_SCRIPT` lo limpia otro PUT |
+| `datasources` | `ADF-500` con `{}`, `{datasetId}` o `{datasetId,sourceId}` | el cuerpo entero |
+| import/export `.dfw` | sin cuerpo conocido | el archivo que manda la interfaz |
 
 Orden de intentos, del más barato al más caro:
 

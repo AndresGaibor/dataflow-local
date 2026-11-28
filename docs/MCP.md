@@ -41,6 +41,7 @@ Cuarenta, agrupadas por área (la tabla la genera `dfemu mcp --markdown` desde e
 La primera llamada debería ser `dfemu_guide`.
 
 <!-- herramientas:inicio -->
+<!-- herramientas:inicio -->
 | Herramienta | Riesgo | Para qué |
 | --- | --- | --- |
 | `dfemu_automation_copy` | write | Duplica una automatizacion emu_ con otro nombre emu_. |
@@ -59,7 +60,7 @@ La primera llamada debería ser `dfemu_guide`.
 | `dfemu_docs_check` | read | Comprueba que la documentación de help.qlik.com esté completa (docsync --check). |
 | `dfemu_docs_search` | read | Busca texto en la documentacion descargada de help.qlik.com. |
 | `dfemu_emulate` | read | Ejecuta un .dfw en el emulador local y resume lo escrito. |
-| `dfemu_flow_add_node` | write | Inserta un processor tras un nodo y sube el grafo (acepta el tipo o el nombre de la paleta). |
+| `dfemu_flow_add_node` | write | Inserta un processor tras un nodo y sube el grafo (acepta el tipo o el nombre de la paleta). `feed` conecta entradas extra: {LOOKUP: 'filtro:REJECT'} (obligatoria en map-fields). |
 | `dfemu_flow_backup` | read | Guarda el .dfw actual en out/backups y devuelve la ruta. |
 | `dfemu_flow_clone` | write | Clona un flujo base en un flujo emu_ nuevo. |
 | `dfemu_flow_delete` | destructive | Borra un flujo emu_ (exige confirm y permiso). |
@@ -83,6 +84,7 @@ La primera llamada debería ser `dfemu_guide`.
 | `dfemu_task_schedule` | write | Programa una recarga con una regla RRULE. |
 | `dfemu_task_set_enabled` | write | Habilita o deshabilita una tarea. |
 | `dfemu_task_start` | execute | Arranca una tarea habilitada (exige confirm). |
+<!-- herramientas:fin -->
 <!-- herramientas:fin -->
 
 

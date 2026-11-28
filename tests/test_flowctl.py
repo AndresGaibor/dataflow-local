@@ -122,3 +122,35 @@ def test_capture_dump_falla_si_la_sesion_no_lee(monkeypatch):
 def test_capture_rechaza_una_accion_desconocida():
     with pytest.raises(flowctl.FlowError):
         flowctl.capture("borrar")
+
+
+def test_map_fields_sin_lookup_se_rechaza_antes_de_subirlo():
+    # medido en el tenant: con la entrada LOOKUP al aire el nodo sale NODE_TOPOLOGY_NOT_FULFILLED
+    g = flowctl.add_node(_graph(), "filter", "src", "f", {})
+    with pytest.raises(flowctl.FlowError) as e:
+        flowctl.add_node(g, "map-fields", "f", "mf", {"columnsToProcess": ["segmento"]})
+    assert "LOOKUP" in str(e.value) and "feed" in str(e.value)
+
+
+def test_la_entrada_extra_se_conecta_por_su_puerto():
+    g = flowctl.add_node(flowctl.add_node(_graph(), "filter", "src", "f", {}), "map-fields", "f", "mf",
+                         {"columnsToProcess": ["segmento"], "mapFrom": "segmento", "mapTo": "SEG"},
+                         {"LOOKUP": "f:REJECT"})
+    mf = flowctl.find_node(g, "mf")
+    loo = flowctl._handle(mf, "incoming", "LOOKUP")["id"]
+    assert ("f", "mf") in _links(g) or ("f", "mf") in _links(g)
+    assert any(e["targetHandle"] == loo for e in g["edges"])
+    assert {h["type"] for h in mf["handles"]["incoming"]} == {"DEFAULT", "LOOKUP"}
+
+
+def test_una_entrada_que_el_nodo_no_tiene_falla():
+    with pytest.raises(flowctl.FlowError) as e:
+        flowctl.add_node(_graph(), "filter", "src", "f", {}, {"LOOKUP": "src"})
+    assert "no tiene entrada LOOKUP" in str(e.value)
+
+
+def test_un_puerto_de_salida_inexistente_falla():
+    g = flowctl.add_node(_graph(), "filter", "src", "f", {})
+    with pytest.raises(flowctl.FlowError) as e:
+        flowctl.add_node(g, "map-fields", "f", "mf", {"columnsToProcess": ["x"]}, {"LOOKUP": "src:REJECT"})
+    assert "no tiene salida REJECT" in str(e.value)

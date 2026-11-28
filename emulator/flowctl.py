@@ -186,8 +186,25 @@ def _edge(g: dict, sh: str, th: str) -> dict:
     return {"id": f"reactflow__edge-{owner[sh]}{sh}-{owner[th]}{th}", "sourceHandle": sh, "targetHandle": th}
 
 
-def add_node(g: dict, ctype: str, after: str, label: str, cfg: dict) -> dict:
-    """Inserta un procesador tras `after`: todo lo que colgaba de su salida DEFAULT pasa a colgar del nuevo."""
+REQ_IN = {"map-fields": ["LOOKUP"]}  # medido: el servidor exige la entrada LOOKUP conectada
+
+
+def _ref_handle(g: dict, ref: str) -> dict:
+    """`nodo` o `nodo:PUERTO` -> el handle de salida que se conecta."""
+    node, _, port = ref.partition(":")
+    h = _handle(find_node(g, node), "outgoing", port or "DEFAULT")
+    if not h:
+        raise FlowError(f"'{node}' no tiene salida {port or 'DEFAULT'}")
+    return h
+
+
+def add_node(g: dict, ctype: str, after: str, label: str, cfg: dict, feeds: dict | None = None) -> dict:
+    """Inserta un procesador tras `after`: todo lo que colgaba de su salida DEFAULT pasa a colgar del nuevo.
+
+    `feeds` conecta entradas extra por tipo de puerto: {"LOOKUP": "filtro:REJECT"}. Las que el servidor
+    exige (REQ_IN) y queden al aire se rechazan aqui, para no subir un grafo que el tenant marca INVALID
+    con NODE_TOPOLOGY_NOT_FULFILLED.
+    """
     g = copy.deepcopy(g)
     a = find_node(g, after)
     out = _handle(a, "outgoing")
@@ -201,17 +218,27 @@ def add_node(g: dict, ctype: str, after: str, label: str, cfg: dict) -> dict:
     base = copy.deepcopy(spec["cfg"])
     cfg = merge(base, {**cfg, "$state": cfg.get("$state", "CONFIGURED")}) if cfg else base  # con configuracion propia pasa a CONFIGURED
     pos = a["graphical"]["position"]
-    g["nodes"].append({
+    nuevo = {
         "type": "processor", "id": new_id, "label": label,
         "graphical": {"position": {"x": pos["x"] + 160, "y": pos["y"] + 140}},
         "handles": {"incoming": ins, "outgoing": outs},
-        "component": {"type": ctype, "properties": {"configuration": cfg}}})
+        "component": {"type": ctype, "properties": {"configuration": cfg}}}
+    g["nodes"].append(nuevo)
     for e in g["edges"]:
         if e["sourceHandle"] == out["id"]:
             e["sourceHandle"] = h_out
     for e in g["edges"]:
         e.update(_edge(g, e["sourceHandle"], e["targetHandle"]))
     g["edges"].append(_edge(g, out["id"], h_in))
+    for port, ref in (feeds or {}).items():
+        th = _handle(nuevo, "incoming", port)
+        if not th:
+            raise FlowError(f"'{label}' no tiene entrada {port}; sus entradas son {[h['type'] for h in ins]}")
+        g["edges"].append(_edge(g, _ref_handle(g, ref)["id"], th["id"]))
+    al_aire = [p for p in REQ_IN.get(ctype, [])
+               if (h := _handle(nuevo, "incoming", p)) and not any(e["targetHandle"] == h["id"] for e in g["edges"])]
+    if al_aire:  # el servidor lo marca NODE_TOPOLOGY_NOT_FULFILLED, asi que se dice antes de subirlo
+        raise FlowError(f"{ctype} necesita {' y '.join(al_aire)} conectada: pasa feeds={{'{al_aire[0]}': 'nodo[:PUERTO]'}}")
     return g
 
 
@@ -331,7 +358,13 @@ def run(a) -> str:
         return backup(df)
     if a.action == "add":
         t = next((k for k, s in PROCESSORS.items() if a.type in (k, s["palette"])), a.type)  # acepta el tipo o el nombre de la paleta
-        g = add_node(df["graph"], t, a.after, a.label or PROCESSORS.get(t, {}).get("label", t), _json(a.cfg))
+        feeds = {}
+        for f in a.feed or []:
+            port, _, ref = f.partition("=")
+            if not port or not ref:
+                raise FlowError(f"--feed espera PUERTO=NODO[:PUERTO], no '{f}'")
+            feeds[port] = ref
+        g = add_node(df["graph"], t, a.after, a.label or PROCESSORS.get(t, {}).get("label", t), _json(a.cfg), feeds)
     elif a.action == "set":
         g = set_node(df["graph"], a.node, _json(a.cfg), a.label)
     elif a.action == "rm":
@@ -364,6 +397,8 @@ def main(argv=None) -> int:
     s = sub.add_parser("add", help="inserta un procesador tras un nodo", parents=[w])
     s.add_argument("flow"), s.add_argument("type", help="p. ej. filter, field-selector")
     s.add_argument("--after", required=True), s.add_argument("--label"), s.add_argument("--cfg", help="JSON de la configuracion")
+    s.add_argument("--feed", action="append", metavar="PUERTO=NODO[:PUERTO]",
+                   help="conecta una entrada extra (p. ej. LOOKUP=filtro:REJECT); el servidor exige la LOOKUP de map-fields")
     s = sub.add_parser("set", help="mezcla configuracion en un nodo", parents=[w])
     s.add_argument("flow"), s.add_argument("node"), s.add_argument("--cfg", default="{}"), s.add_argument("--label")
     s = sub.add_parser("rm", help="quita un nodo y reconecta", parents=[w])

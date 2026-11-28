@@ -63,7 +63,7 @@ El servidor publica además recursos (documentación y hallazgos), prompts con r
   `<!-- tests:inicio -->
 | cobertura de pruebas | valor |
 | --- | --- |
-| lineas de `emulator/` | 84.1 % |
-| lineas cubiertas | 2964 de 3524 |
-| modulos con menos cobertura | `flowctl.py` (48.4 %), `__init__.py` (69.2 %), `uictl.py` (70.5 %) |
+| lineas de `emulator/` | 84.0 % |
+| lineas cubiertas | 2980 de 3547 |
+| modulos con menos cobertura | `flowctl.py` (50.2 %), `__init__.py` (69.2 %), `uictl.py` (70.5 %) |
 <!-- tests:fin -->

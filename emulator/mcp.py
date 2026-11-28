@@ -63,8 +63,10 @@ GUIDE = {
         "- construye el grafo nuevo (o reutiliza el de un flujo parecido) y pasalo a `dfemu_flow_push`\n"
         "  con un nombre `emu_*`; el servidor clona el flujo base, lo sube y responde la validez del servidor.\n"
         "- `dfemu_processors` dice que processors estan medidos; lo que no este medido, no lo afirmes.\n"
-        "- `pivot`, `map-fields`, `subflow` y el nodo `script` no se pueden crear por API en este tenant: para esos\n"
-        "  usa `dfemu flow types` y `dfemu flow add TIPO --after NODO` (sesion de Chrome ya iniciada y exige --apply)."
+        "- `dfemu_flow_add_node` crea tambien `subflow`, `map-fields`, `pivot` y el nodo `script`: entra el nodo y\n"
+        "  el servidor dice que falta. `subflow` queda VALID; `map-fields` exige la entrada LOOKUP conectada\n"
+        "  (`feed`: {LOOKUP: nodo:REJECT}); `pivot` y `script` piden un `schemaEntityId` que solo crea la\n"
+        "  interfaz (POST actions/schema responde 403). El nodo fuente (`datasources`) sigue sin cuerpo."
     ),
     "script": (
         "Qlik script:\n"
@@ -357,13 +359,14 @@ class Tools:
         line = f"{ref.name}: {status}" + (f" {codes}" if codes else "") + f" ({len(graph.get('nodes') or [])} nodos)"
         return line + (f"\n{nota}" if nota else "")
 
-    def flow_add_node(self, flow: str, type: str, after: str, config: dict | None = None, label: str = "") -> str:
+    def flow_add_node(self, flow: str, type: str, after: str, config: dict | None = None, label: str = "",
+                      feed: dict | None = None) -> str:
         from . import flowctl
 
         ref, dump, graph = self._graph_of(flow)
         ctype = next((k for k, s in flowctl.PROCESSORS.items() if type in (k, s.get("palette"))), type)
         nuevo = flowctl.add_node(graph, ctype, after, label or flowctl.PROCESSORS.get(ctype, {}).get("label", ctype),
-                                 config or {})
+                                 config or {}, feed or {})
         insertado = [n for n in nuevo["nodes"] if n["id"] not in {x["id"] for x in graph["nodes"]}]
         nota = f"nodo {insertado[0].get('label')} ({insertado[0].get('id')}) tras {after}" if insertado else ""
         return self._push(ref, dump, nuevo, nota)
@@ -621,8 +624,10 @@ REGISTRY: dict[str, tuple[str, str, dict, str]] = {
     # ----- edicion de grafos (API) -----
     "dfemu_flow_clone": ("write", "Clona un flujo base en un flujo emu_ nuevo.", _schema(
         {"base": _S, "name": _S}, ["base", "name"]), "flow_clone"),
-    "dfemu_flow_add_node": ("write", "Inserta un processor tras un nodo y sube el grafo (acepta el tipo o el nombre de la paleta).",
-                            _schema({"flow": _S, "type": _S, "after": _S, "config": {"type": "object"}, "label": _S},
+    "dfemu_flow_add_node": ("write", "Inserta un processor tras un nodo y sube el grafo (acepta el tipo o el nombre de la paleta). "
+                                     "`feed` conecta entradas extra: {LOOKUP: 'filtro:REJECT'} (obligatoria en map-fields).",
+                            _schema({"flow": _S, "type": _S, "after": _S, "config": {"type": "object"}, "label": _S,
+                                     "feed": {"type": "object"}},
                                     ["flow", "type", "after"]), "flow_add_node"),
     "dfemu_flow_set_node": ("write", "Mezcla configuracion en un nodo existente.", _schema(
         {"flow": _S, "node": _S, "config": {"type": "object"}, "label": _S}, ["flow", "node"]), "flow_set_node"),
@@ -861,8 +866,9 @@ def prompt_text(name: str, args: dict) -> str:
             "3. `dfemu_flow_get` del clon (format=summary) para ver los nodos y sus ids.\n"
             "4. `dfemu_flow_add_node` / `dfemu_flow_set_node` con la configuracion de cada nodo.\n"
             "5. `dfemu_flow_reload` (confirm=true) para recargar y leer el estado final.\n"
-            "6. Si algo no se puede crear por API (pivot, map-fields, subflow, nodo script, datasources) dilo y usa la\n"
-            "   receta `capturar-interfaz` en vez de inventar el cuerpo.\n"
+            "6. `subflow`, `map-fields`, `pivot` y el nodo `script` se crean con `dfemu_flow_add_node`; si el\n"
+            "   servidor pide un `schemaEntityId` (pivot, script) o el nodo es una fuente (`datasources`), dilo y\n"
+            "   usa la receta `capturar-interfaz` en vez de inventar el cuerpo.\n"
             "Todo queda en objetos emu_ y auditado; borra el clon con `dfemu_flow_delete` cuando termines."
         )
     if name == "medir-processor":
