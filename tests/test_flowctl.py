@@ -40,6 +40,12 @@ def test_nodo_ambiguo_o_inexistente_falla():
         flowctl.find_node(_graph(), "zz")
 
 
+def test_la_etiqueta_exacta_manda_sobre_un_id_que_empieza_igual():
+    # un uuid que empieza por las mismas letras que la etiqueta no puede ganarle (CI fallo asi)
+    g = {"nodes": [_node("f9e71392-x", "x", "otro"), _node("zz", "x", "f")], "edges": []}
+    assert flowctl.find_node(g, "f")["id"] == "zz"
+
+
 def test_escritura_solo_en_emu_o_permitidos(monkeypatch):
     monkeypatch.setattr(flowctl, "_allowed_names", lambda: {"ok"})
     monkeypatch.setattr(flowctl, "call", lambda *a: {"attributes": {"name": "fundamentos", "spaceId": "x"}})

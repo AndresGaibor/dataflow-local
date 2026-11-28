@@ -171,7 +171,9 @@ def check_writable(df: dict) -> None:
 
 # --- operaciones sobre el grafo (puras) -------------------------------------------------------
 def find_node(g: dict, ref: str) -> dict:
-    hits = [n for n in g["nodes"] if n["id"].startswith(ref) or n["label"].lower() == ref.lower()]
+    """La etiqueta exacta manda sobre el prefijo del id: un uuid puede empezar por las mismas letras."""
+    hits = ([n for n in g["nodes"] if n["label"].lower() == ref.lower()]
+            or [n for n in g["nodes"] if n["id"].startswith(ref)])
     if len(hits) != 1:
         raise FlowError(f"nodo '{ref}': {len(hits)} coincidencias entre {[n['id'][:8] + ' ' + n['label'] for n in g['nodes']]}")
     return hits[0]
