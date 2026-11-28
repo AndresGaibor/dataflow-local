@@ -49,6 +49,7 @@ lo aplica el servidor: leer siempre, escribir con `DFEMU_MCP_ALLOW_WRITE=0` para
 `emu_*` y cada llamada queda en `.dfemu-mcp/audit.jsonl` (herramienta, riesgo y resultado; nunca los
 argumentos). Catálogo de herramientas y cómo registrarlo: [docs/MCP.md](docs/MCP.md); `dfemu mcp --list`. El repo incluye además la skill `.agents/skills/dfemu/SKILL.md` con el mapa de tareas, y
 `dfemu flow capture` para grabar los cuerpos que solo manda la interfaz (`pivot`, `datasources`, import/export).
+El servidor publica además recursos (documentación y hallazgos), prompts con recetas y notificaciones de progreso.
 
 ## Qué cubre y qué no
 
@@ -63,6 +64,6 @@ argumentos). Catálogo de herramientas y cómo registrarlo: [docs/MCP.md](docs/M
 | cobertura de pruebas | valor |
 | --- | --- |
 | lineas de `emulator/` | 84.3 % |
-| lineas cubiertas | 2857 de 3389 |
+| lineas cubiertas | 2944 de 3493 |
 | modulos con menos cobertura | `flowctl.py` (49.6 %), `__init__.py` (69.2 %), `uictl.py` (70.5 %) |
 <!-- tests:fin -->

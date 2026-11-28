@@ -37,7 +37,7 @@ búsqueda en la documentación) y falla con un mensaje claro en las que hablan c
 
 ## Herramientas
 
-Treintaiséis, agrupadas por área (la tabla la genera `dfemu mcp --markdown` desde el registro).
+Treintainueve, agrupadas por área (la tabla la genera `dfemu mcp --markdown` desde el registro).
 La primera llamada debería ser `dfemu_guide`.
 
 <!-- herramientas:inicio -->
@@ -54,6 +54,9 @@ La primera llamada debería ser `dfemu_guide`.
 | `dfemu_automation_update` | write | Cambia nombre o descripcion de una automatizacion emu_. |
 | `dfemu_battery_cases` | read | Casos de la bateria de processors. |
 | `dfemu_battery_run` | execute | Mide un caso de la bateria contra el tenant (exige confirm). |
+| `dfemu_compare` | execute | Compara el emulador con el tenant para un .dfw (exige confirm). |
+| `dfemu_coverage` | read | Corre el emulador sobre los samples y resume qué ejecuta y qué no. |
+| `dfemu_docs_check` | read | Comprueba que la documentación de help.qlik.com esté completa (docsync --check). |
 | `dfemu_docs_search` | read | Busca texto en la documentacion descargada de help.qlik.com. |
 | `dfemu_emulate` | read | Ejecuta un .dfw en el emulador local y resume lo escrito. |
 | `dfemu_flow_add_node` | write | Inserta un processor tras un nodo y sube el grafo (acepta el tipo o el nombre de la paleta). |
@@ -82,6 +85,20 @@ La primera llamada debería ser `dfemu_guide`.
 <!-- herramientas:fin -->
 
 
+
+## Recursos y prompts
+
+Además de herramientas, el servidor publica las dos capacidades que un cliente sabe usar:
+
+- **Recursos** (`resources/list` y `resources/read`): los documentos que hacen falta para trabajar aquí —
+  catálogo del MCP, hallazgos medidos de la API, cobertura de script, la skill del proyecto y el README — como
+  `dfemu://docs/mcp`, `dfemu://docs/hallazgos`, `dfemu://docs/cobertura-script`, `dfemu://skill/dfemu`,
+  `dfemu://readme`. Se truncan a 400 000 caracteres para no inflar el mensaje.
+- **Prompts** (`prompts/list` y `prompts/get`): recetas listas para lanzar — `crear-dataflow`, `medir-processor`,
+  `capturar-interfaz` y `recargar-app`. Cada una dice la secuencia de herramientas y lo que **no** se puede hacer
+  por API, para que el asistente no invente cuerpos.
+- **Progreso** (`notifications/progress`): si la llamada trae `_meta.progressToken`, las herramientas largas
+  (`dfemu_flow_reload`, `dfemu_automation_run`, `dfemu_compare`) avisan del paso en el que están.
 
 ## Permisos
 

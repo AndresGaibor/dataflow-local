@@ -71,6 +71,9 @@ añade el caso a la batería.
   `destructive` bloqueado salvo `DFEMU_MCP_ALLOW_DESTRUCTIVE=1` **y** `confirm: true`.
 - Toda escritura se limita a nombres `emu_*` y cada llamada queda en `.dfemu-mcp/audit.jsonl` (sin argumentos).
 - Empieza por `dfemu_guide` (modos `overview`, `dataflow`, `script`, `automate`, `docs`, `battery`).
+- Publica también recursos (`dfemu://docs/hallazgos`, `dfemu://skill/dfemu`...) y prompts (`crear-dataflow`,
+  `medir-processor`, `capturar-interfaz`, `recargar-app`): úsalos antes de inventar una secuencia.
+- Las herramientas largas emiten `notifications/progress` si el cliente manda `_meta.progressToken`.
 
 ## Antes de dar algo por bueno
 

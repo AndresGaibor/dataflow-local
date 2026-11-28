@@ -27,6 +27,7 @@ from pathlib import Path
 
 PROTOCOL = "2025-06-18"
 SERVER = {"name": "dfemu", "version": "0.1.0"}
+RUN_TERMINAL = ("finished", "failed", "stopped", "canceled", "cancelled", "success", "completed")
 RISK_ENV = {"write": "DFEMU_MCP_ALLOW_WRITE", "execute": "DFEMU_MCP_ALLOW_EXECUTE",
             "destructive": "DFEMU_MCP_ALLOW_DESTRUCTIVE"}
 
@@ -108,10 +109,15 @@ class Tools:
         self.env = dict(os.environ if env is None else env)
         self._remote_factory = remote_factory
         self._bridge_factory = bridge_factory
+        self.on_progress = None  # callable(str) -> None; el servidor lo conecta a notifications/progress
         self._bridges: dict[bool, object] = {}
         self._remotes: dict[bool, object] = {}
 
     # ----- infraestructura -----
+    def _progress(self, msg: str) -> None:
+        if callable(self.on_progress):
+            self.on_progress(str(msg))
+
     def bridge(self, apply: bool):
         apply = apply and self.env.get("DFEMU_MCP_APPLY", "1") != "0"  # simulacro global
         if apply not in self._bridges:
@@ -272,11 +278,27 @@ class Tools:
         return f"{a.get('name')}: {'habilitada' if enabled else 'deshabilitada'}"
 
     # ----- ejecucion y borrado -----
-    def automation_run(self, automation: str, context: str = "api") -> str:
+    def automation_run(self, automation: str, context: str = "api", wait: bool = True,
+                       timeout: float = 300) -> str:
         from . import automate
 
-        r = automate.run(self.bridge(True), automation, context)
-        return f"ejecucion lanzada: {r.get('id')} ({r.get('status')})"
+        b = self.bridge(True)
+        r = automate.run(b, automation, context)
+        rid = r.get("id")
+        if not wait or not rid:
+            return f"ejecucion lanzada: {rid} ({r.get('status')})"
+        deadline, seen = time.monotonic() + float(timeout), []
+        while True:
+            runs = automate.runs(b, automation) or []
+            cur = next((x for x in runs if x.get("id") == rid), runs[0] if runs else {})
+            status = str(cur.get("status") or "").lower()
+            if not seen or seen[-1] != status:
+                seen.append(status)
+                self._progress(f"{automation}: {status}")
+            if status in RUN_TERMINAL or time.monotonic() >= deadline:
+                break
+            time.sleep(2)
+        return f"ejecucion {rid}: {' / '.join(seen) or 'sin estado'}"
 
     def automation_runs(self, automation: str) -> str:
         from . import automate
@@ -483,6 +505,54 @@ class Tools:
             lines.append(f"- {stem}: {t.get('rows')} filas, {cols} columnas")
         return "\n".join(lines)
 
+    # ----- diagnostico: emulador, cobertura, documentacion y comparacion -----
+    def coverage(self, stub: bool = False) -> str:
+        from . import coverage as cov
+
+        rows = cov.report(cov.default_paths(), str(self.root / "data" / "practica"), bool(stub))
+        counts: dict[str, int] = {}
+        for _p, status, _d in rows:
+            counts[status] = counts.get(status, 0) + 1
+        resumen = ", ".join(f"{k}={v}" for k, v in sorted(counts.items()))
+        otros = [f"- {status}: {Path(p).name}" for p, status, _d in rows if status != "ejecuta"]
+        return f"{len(rows)} flujos: {resumen}" + (chr(10) + chr(10).join(otros[:15]) if otros else "")
+
+    def docs_check(self) -> str:
+        import subprocess
+
+        p = subprocess.run([sys.executable, "scripts/docsync.py", "--check"], cwd=str(self.root),
+                           capture_output=True, text=True, encoding="utf-8", timeout=900)
+        tail = [l for l in (p.stdout + p.stderr).strip().splitlines() if l.strip()][-3:]
+        return ("ok: " if p.returncode == 0 else "falta documentacion: ") + " | ".join(tail)
+
+    def compare(self, file: str, data_dir: str = "data/practica", head: int = 0, app: str = "", base: str = "") -> str:
+        import uuid as _uuid
+
+        from . import compare as cmp_mod
+        from . import dfw, oracle, runner
+        from .remote import BASE_APP_ID, Remote
+
+        d = dfw.load(file)
+        errs = dfw.validate(d)
+        if errs:
+            raise Failed("el .dfw no es valido: " + "; ".join(errs))
+        targets = runner.run(d, str(self.root / data_dir), str(self.root / "out" / "mcp"))
+        local = cmp_mod.local_fingerprints([t["dest"] for t in targets], head=int(head))
+        self._progress(f"emulador: {len(targets)} destinos; pidiendo el script al tenant")
+        bridge = self.bridge(True)
+        remote_ref = Remote(bridge)
+        if app:
+            script = remote_ref.script_of(self._flow(app).app_id)
+        else:
+            res = remote_ref.validity_of(d["dataflow"]["graph"], base or BASE_APP_ID)
+            if res.validity.get("status") == "REJECTED" or not res.script:
+                raise Failed(f"el servidor no genero script: {res.validity.get('label', '')}")
+            script = res.script
+        self._progress("script obtenido; ejecutandolo en la app oraculo")
+        remote = oracle.run_script(bridge, script, _uuid.uuid4().hex[:8], head=int(head))
+        diffs = cmp_mod.compare(local, remote)
+        return "OK: sin diferencias" if not diffs else chr(10).join(diffs)
+
     def flow_delete(self, flow: str) -> str:
         ref = self._flow(flow)
         _emu_name(ref.name, "el flujo a borrar")
@@ -576,6 +646,13 @@ REGISTRY: dict[str, tuple[str, str, dict, str]] = {
     # ----- emulador local -----
     "dfemu_emulate": ("read", "Ejecuta un .dfw en el emulador local y resume lo escrito.", _schema(
         {"file": _S, "data_dir": _S, "head": _I}, ["file"]), "emulate"),
+    # ----- diagnostico -----
+    "dfemu_coverage": ("read", "Corre el emulador sobre los samples y resume qué ejecuta y qué no.", _schema(
+        {"stub": _B}), "coverage"),
+    "dfemu_docs_check": ("read", "Comprueba que la documentación de help.qlik.com esté completa (docsync --check).",
+                         _schema({}), "docs_check"),
+    "dfemu_compare": ("execute", "Compara el emulador con el tenant para un .dfw (exige confirm).", _schema(
+        {"file": _S, "data_dir": _S, "head": _I, "app": _S, "base": _S, "confirm": _B}, ["file"]), "compare"),
     "dfemu_flow_reload": ("execute", "Recarga un flujo emu_ y sigue el estado hasta el final (exige confirm).", _schema(
         {"flow": _S, "timeout": {"type": "number", "default": 180}, "confirm": _B}, ["flow"]), "flow_reload"),
     "dfemu_flow_delete": ("destructive", "Borra un flujo emu_ (exige confirm y permiso).", _schema(
@@ -657,9 +734,38 @@ class Server:
         if method == "initialize":
             return {"jsonrpc": "2.0", "id": mid, "result": {
                 "protocolVersion": msg.get("params", {}).get("protocolVersion") or PROTOCOL,
-                "capabilities": {"tools": {"listChanged": False}},
+                "capabilities": {"tools": {"listChanged": False}, "resources": {"listChanged": False},
+                                 "prompts": {"listChanged": False}},
                 "serverInfo": SERVER,
                 "instructions": "Llama primero a dfemu_guide; toda escritura va a objetos emu_ y queda auditada."}}
+        if method == "resources/list":
+            return {"jsonrpc": "2.0", "id": mid, "result": {"resources": [
+                {"uri": uri, "name": name, "mimeType": "text/markdown"} for uri, name, _p in RESOURCES]}}
+        if method == "resources/read":
+            uri = str((msg.get("params") or {}).get("uri") or "")
+            match = next((p for u, _n, p in RESOURCES if u == uri), None)
+            if match is None:
+                return {"jsonrpc": "2.0", "id": mid, "error": {"code": -32602, "message": f"recurso desconocido: {uri}"}}
+            path = self.tools.root / match
+            if not path.exists():
+                return {"jsonrpc": "2.0", "id": mid, "error": {"code": -32602, "message": f"falta {match}"}}
+            text = path.read_text(encoding="utf-8", errors="replace")[:MAX_RESOURCE]
+            return {"jsonrpc": "2.0", "id": mid, "result": {"contents": [
+                {"uri": uri, "mimeType": "text/markdown", "text": text}]}}
+        if method == "prompts/list":
+            return {"jsonrpc": "2.0", "id": mid, "result": {"prompts": [
+                {"name": n, "description": d, "arguments": [{"name": a, "required": False} for a in args]}
+                for n, (d, args) in PROMPTS.items()]}}
+        if method == "prompts/get":
+            params = msg.get("params") or {}
+            name = str(params.get("name") or "")
+            try:
+                text = prompt_text(name, params.get("arguments") or {})
+            except Failed as e:
+                return {"jsonrpc": "2.0", "id": mid, "error": {"code": -32602, "message": str(e)}}
+            return {"jsonrpc": "2.0", "id": mid, "result": {
+                "description": PROMPTS[name][0],
+                "messages": [{"role": "user", "content": {"type": "text", "text": text}}]}}
         if method == "tools/list":
             return {"jsonrpc": "2.0", "id": mid, "result": {"tools": self.list_tools()}}
         if method == "tools/call":
@@ -685,13 +791,94 @@ class Server:
                                        "error": {"code": -32700, "message": "no es JSON"}}) + "\n")
                 fout.flush()
                 continue
-            resp = self.handle(msg)
+            token = ((msg.get("params") or {}).get("_meta") or {}).get("progressToken")
+            if token is not None and msg.get("method") == "tools/call":
+                counter = {"n": 0}
+
+                def emit(text: str, _fout=fout, _token=token, _n=counter) -> None:
+                    _n["n"] += 1
+                    _fout.write(json.dumps({"jsonrpc": "2.0", "method": "notifications/progress",
+                                            "params": {"progressToken": _token, "progress": _n["n"],
+                                                       "message": text}}, ensure_ascii=False) + chr(10))
+                    _fout.flush()
+
+                self.tools.on_progress = emit
+            try:
+                resp = self.handle(msg)
+            finally:
+                self.tools.on_progress = None
             if resp is not None:
                 fout.write(json.dumps(resp, ensure_ascii=False) + "\n")
                 fout.flush()
 
 
 DOCS_INI, DOCS_FIN = "<!-- herramientas:inicio -->", "<!-- herramientas:fin -->"
+
+# recursos: documentos del repo que el cliente puede abrir desde el asistente
+RESOURCES = [
+    ("dfemu://docs/mcp", "Catálogo de herramientas y permisos del MCP", "docs/MCP.md"),
+    ("dfemu://docs/hallazgos", "Hallazgos medidos de la API de Qlik Cloud", "docs/banco-de-pruebas/01-hallazgos-api-qlik.md"),
+    ("dfemu://docs/cobertura-script", "Cobertura de Qlik script del corpus", "docs/banco-de-pruebas/05-cobertura-script.md"),
+    ("dfemu://skill/dfemu", "Skill del proyecto: mapa de tareas", ".agents/skills/dfemu/SKILL.md"),
+    ("dfemu://readme", "README del repositorio", "README.md"),
+]
+MAX_RESOURCE = 400_000  # el cliente no necesita mas y evita mensajes enormes
+
+# prompts: recetas que el cliente ofrece como comando
+PROMPTS = {
+    "crear-dataflow": ("Crear un Data Flow emu_ y dejarlo valido", ["base", "objetivo"]),
+    "medir-processor": ("Medir un processor contra el tenant y dejar evidencia", ["processor"]),
+    "capturar-interfaz": ("Capturar el cuerpo que solo manda la interfaz", ["accion"]),
+    "recargar-app": ("Recargar una app emu_ y seguir el estado", ["app"]),
+}
+
+
+def prompt_text(name: str, args: dict) -> str:
+    """Receta concreta; los argumentos son pistas, no obligatorios."""
+    base = args.get("base") or "emu_e2e_calidad"
+    if name == "crear-dataflow":
+        return (
+            f"Quiero un Data Flow para: {args.get('objetivo') or 'describir el objetivo'}.\n\n"
+            f"1. `dfemu_flow_clone` con base `{base}` y un nombre `emu_*` nuevo.\n"
+            "2. `dfemu_processors` para saber que processors estan medidos; no uses uno sin caso sin avisar.\n"
+            "3. `dfemu_flow_get` del clon (format=summary) para ver los nodos y sus ids.\n"
+            "4. `dfemu_flow_add_node` / `dfemu_flow_set_node` con la configuracion de cada nodo.\n"
+            "5. `dfemu_flow_reload` (confirm=true) para recargar y leer el estado final.\n"
+            "6. Si algo no se puede crear por API (pivot, map-fields, subflow, nodo script, datasources) dilo y usa la\n"
+            "   receta `capturar-interfaz` en vez de inventar el cuerpo.\n"
+            "Todo queda en objetos emu_ y auditado; borra el clon con `dfemu_flow_delete` cuando termines."
+        )
+    if name == "medir-processor":
+        return (
+            f"Procesador a medir: {args.get('processor') or 'el que corresponda'}.\n\n"
+            "1. `dfemu_battery_cases` para ver si ya hay un caso.\n"
+            "2. Si falta, crea el caso en `scripts/processor_battery_cases.json` (fuente -> processor -> destino).\n"
+            "3. `dfemu_battery_run` (confirm=true) y compara: solo vale si el emulador y el tenant coinciden.\n"
+            "4. Si el servidor no acepta el enum o la configuracion, manda `{}` o un valor invalido y lee el error:\n"
+            "   los mensajes `Cannot deserialize ... Enum class` y `VALUE_MISSING_ON_REQUIRED_FIELD` listan lo valido.\n"
+            "5. Documenta en el apartado 12 de `docs/banco-de-pruebas/01-hallazgos-api-qlik.md` y regenera la cobertura\n"
+            "   con `python scripts/processor_coverage.py --readme`."
+        )
+    if name == "capturar-interfaz":
+        return (
+            f"Accion a capturar: {args.get('accion') or 'añadir un pivot, importar un .dfw, crear una fuente'}.\n\n"
+            "1. Pide al usuario que deje la pestaña de Qlik Cloud abierta en el editor del flujo.\n"
+            "2. `dfemu flow capture start` (CLI; instala el grabador en la pestaña).\n"
+            "3. El usuario hace la accion en la interfaz.\n"
+            "4. `dfemu flow capture dump --only dataflows --save out/captures/<nombre>.json`.\n"
+            "5. Con ese JSON: añade el caso al catalogo o a la bateria, documenta el hallazgo y, si el servidor lo\n"
+            "   acepta tal cual, envuelvelo en una herramienta nueva del MCP."
+        )
+    if name == "recargar-app":
+        return (
+            f"App: {args.get('app') or 'emu_e2e_calidad'}.\n\n"
+            "1. `dfemu_status` para confirmar que existe y es emu_.\n"
+            "2. `dfemu_flow_reload` con confirm=true (o `dfemu reload <app> --apply`).\n"
+            "3. Lee el estado: QUEUED / RELOADING / SUCCEEDED / FAILED. Si falla, la linea util del log dice por que\n"
+            "   (destino inexistente, script con error...). No reintentes a ciegas: los errores de destino se arreglan\n"
+            "   en el nodo destino."
+        )
+    raise Failed(f"prompt desconocido `{name}`")
 
 
 def markdown_table() -> str:

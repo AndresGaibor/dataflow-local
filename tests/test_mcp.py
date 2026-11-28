@@ -72,7 +72,7 @@ def test_notifications_get_no_response():
 
 def test_unknown_method_is_an_error():
     srv = mcp.Server(tools=mcp.Tools(), env={})
-    out = srv.handle({"jsonrpc": "2.0", "id": 7, "method": "resources/list"})
+    out = srv.handle({"jsonrpc": "2.0", "id": 7, "method": "completion/complete"})
     assert out["error"]["code"] == -32601
 
 
